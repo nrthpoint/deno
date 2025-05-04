@@ -1,4 +1,4 @@
-import { useSettings } from "@/hooks/useSettings";
+import { useSettings } from "@/context/SettingsContext";
 import { Stack } from "expo-router";
 import { View } from "react-native";
 import { List, Switch } from "react-native-paper";

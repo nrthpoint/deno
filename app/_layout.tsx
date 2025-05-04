@@ -1,4 +1,4 @@
-import { SettingsProvider } from "@/hooks/useSettings";
+import { SettingsProvider } from "@/context/SettingsContext";
 import { Stack } from "expo-router";
 import { MD3DarkTheme, PaperProvider } from "react-native-paper";
 

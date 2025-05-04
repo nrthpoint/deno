@@ -1,5 +1,5 @@
 import { useGroupedRunData } from "@/hooks/useHealthData";
-import { useSettings } from "@/hooks/useSettings";
+import { useSettings } from "@/context/SettingsContext";
 import {
   HealthkitWriteAuthorization,
   HKAuthorizationRequestStatus,
