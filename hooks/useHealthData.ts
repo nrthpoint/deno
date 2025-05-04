@@ -5,10 +5,20 @@ import {
   UnitOfEnergy,
   HKWorkout,
   HKWorkoutActivityType,
+  LengthUnit,
 } from "@kingstinct/react-native-healthkit";
 import { useEffect, useState } from "react";
 
-export function useGroupedRunData() {
+type RunGroupWithFastest = {
+  runs: HKWorkout[];
+  fastestRun?: HKWorkout;
+};
+
+type RunGroupWithFastestSet = Record<number, RunGroupWithFastest>;
+
+export function useGroupedRunData(
+  distanceUnit: LengthUnit = UnitOfLength.Miles
+) {
   const [groupedRuns, setGroupedRuns] = useState<RunGroupWithFastestSet | null>(
     null
   );
@@ -23,7 +33,7 @@ export function useGroupedRunData() {
       }
 
       const data = await queryWorkoutSamples({
-        distanceUnit: UnitOfLength.Miles,
+        distanceUnit,
         energyUnit: UnitOfEnergy.Kilocalories,
       });
 
@@ -37,22 +47,16 @@ export function useGroupedRunData() {
     };
 
     fetchRuns();
-  }, []);
+  }, [distanceUnit]);
 
   return groupedRuns;
 }
-
-type RunGroupWithFastest = {
-  runs: HKWorkout[];
-  fastestRun?: HKWorkout;
-};
-
-type RunGroupWithFastestSet = Record<number, RunGroupWithFastest>;
 
 const groupRunsByDistance = (
   runs: HKWorkout[],
   tolerance = 0.25
 ): RunGroupWithFastestSet => {
+  console.log("Grouping runs by distance", runs);
   const grouped: RunGroupWithFastestSet = {};
 
   for (const run of runs) {
@@ -82,7 +86,6 @@ const groupRunsByDistance = (
 
     grouped[nearestMile].runs.push(run);
 
-    // Find the fastest run in the group
     const fastestRun = grouped[nearestMile].runs.reduce((prev, curr) => {
       if (!prev || !curr) return prev || curr;
       return prev.duration < curr.duration ? prev : curr;

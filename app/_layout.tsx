@@ -1,19 +1,20 @@
+import { SettingsProvider } from "@/hooks/useSettings";
 import { Stack } from "expo-router";
 import { MD3DarkTheme, PaperProvider } from "react-native-paper";
 
 export default function RootLayout() {
   return (
     <PaperProvider theme={MD3DarkTheme}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: {
-            flexGrow: 1,
-            backgroundColor: MD3DarkTheme.colors.background,
-            paddingTop: 60,
-          },
-        }}
-      />
+      <SettingsProvider>
+        <Stack
+          screenOptions={{
+            contentStyle: {
+              flexGrow: 1,
+              backgroundColor: MD3DarkTheme.colors.background,
+            },
+          }}
+        />
+      </SettingsProvider>
     </PaperProvider>
   );
 }
