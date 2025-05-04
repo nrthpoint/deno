@@ -56,7 +56,6 @@ const groupRunsByDistance = (
   runs: HKWorkout[],
   tolerance = 0.25
 ): RunGroupWithFastestSet => {
-  console.log("Grouping runs by distance", runs);
   const grouped: RunGroupWithFastestSet = {};
 
   for (const run of runs) {
