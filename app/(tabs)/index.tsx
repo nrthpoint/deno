@@ -1,5 +1,5 @@
 import { useSettings } from "@/context/SettingsContext";
-import { useGroupedRunData } from "@/hooks/useHealthData";
+import { getPace, useGroupedRunData } from "@/hooks/useHealthData";
 import {
   HealthkitWriteAuthorization,
   HKAuthorizationRequestStatus,
@@ -22,8 +22,8 @@ export default function Index() {
   const [authorizationStatus, requestAuthorization] =
     useHealthkitAuthorization(saveableWorkoutStuff);
 
-  const { unit } = useSettings();
-  const groupedRuns = useGroupedRunData(unit);
+  const { unit, speedType } = useSettings();
+  const groupedRuns = useGroupedRunData(unit, speedType);
   const theme = useTheme();
 
   return (
@@ -51,9 +51,15 @@ export default function Index() {
                       fontSize: size * 0.8,
                     }}
                   >
-                    {runs.fastestRun?.totalDistance?.quantity.toFixed(2)}
-                    {unit} in {Math.round(runs.fastestRun?.duration || 0) / 60}{" "}
-                    mins
+                    {speedType === "time" ? (
+                      <>
+                        {runs.fastestRun?.totalDistance?.quantity.toFixed(2)}
+                        {unit} in{" "}
+                        {Math.round(runs.fastestRun?.duration || 0) / 60} mins
+                      </>
+                    ) : (
+                      <>{`${getPace(runs.fastestRun)} min/${unit}`}</>
+                    )}
                   </Text>
                 )}
               />

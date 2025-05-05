@@ -1,3 +1,4 @@
+import { SpeedType } from "@/context/SettingsContext";
 import {
   queryWorkoutSamples,
   isProtectedDataAvailable,
@@ -17,7 +18,8 @@ type RunGroupWithFastest = {
 type RunGroupWithFastestSet = Record<number, RunGroupWithFastest>;
 
 export function useGroupedRunData(
-  distanceUnit: LengthUnit = UnitOfLength.Miles
+  distanceUnit: LengthUnit = UnitOfLength.Miles,
+  groupingType: SpeedType
 ) {
   const [groupedRuns, setGroupedRuns] = useState<RunGroupWithFastestSet | null>(
     null
@@ -41,19 +43,20 @@ export function useGroupedRunData(
         (d) => d.workoutActivityType === HKWorkoutActivityType.running
       );
 
-      const grouped = groupRunsByDistance(runs, 0.25);
+      const grouped = groupRunsByDistance(runs, groupingType, 0.25);
 
       setGroupedRuns(grouped);
     };
 
     fetchRuns();
-  }, [distanceUnit]);
+  }, [distanceUnit, groupingType]);
 
   return groupedRuns;
 }
 
 const groupRunsByDistance = (
   runs: HKWorkout[],
+  groupingType: SpeedType,
   tolerance = 0.25
 ): RunGroupWithFastestSet => {
   const grouped: RunGroupWithFastestSet = {};
@@ -87,12 +90,35 @@ const groupRunsByDistance = (
     grouped[nearestMile].runs.push(run);
 
     const fastestRun = grouped[nearestMile].runs.reduce((prev, curr) => {
+      console.log("Comparing runs:", prev, curr);
       if (!prev || !curr) return prev || curr;
-      return prev.duration < curr.duration ? prev : curr;
+
+      if (groupingType === "time") {
+        return prev.duration < curr.duration ? prev : curr;
+      }
+
+      if (groupingType === "pace") {
+        const prevPace = getPace(prev);
+        const currPace = getPace(curr);
+
+        return prevPace < currPace ? prev : curr;
+      }
+
+      return prev;
     });
 
     grouped[nearestMile].fastestRun = fastestRun;
   }
 
   return grouped;
+};
+
+export const getPace = (run: HKWorkout): number => {
+  const distance = run.totalDistance?.quantity;
+
+  if (!distance || distance === 0) return 0;
+
+  const minutes = run.duration / 60;
+
+  return Number((minutes / distance).toFixed(2));
 };
