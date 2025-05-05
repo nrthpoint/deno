@@ -1,7 +1,7 @@
 import { useSettings } from "@/context/SettingsContext";
 import { Stack } from "expo-router";
 import { View } from "react-native";
-import { List, Switch } from "react-native-paper";
+import { List, MD3DarkTheme, Switch } from "react-native-paper";
 
 export default function SettingsModal() {
   const { unit, toggleUnit } = useSettings();
@@ -10,10 +10,15 @@ export default function SettingsModal() {
     <>
       <Stack.Screen
         options={{
-          title: "Settings",
+          title: "Unit Settings",
+          headerStyle: {
+            backgroundColor: MD3DarkTheme.colors.elevation.level2,
+          },
+          headerTintColor: MD3DarkTheme.colors.secondary,
+          headerBackTitle: "Back",
         }}
       />
-      <View style={{ flex: 1, padding: 24 }}>
+      <View>
         <List.Item
           title="Use Kilometers"
           right={() => (

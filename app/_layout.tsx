@@ -13,7 +13,9 @@ export default function RootLayout() {
               backgroundColor: MD3DarkTheme.colors.background,
             },
           }}
-        />
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
       </SettingsProvider>
     </PaperProvider>
   );

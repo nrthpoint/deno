@@ -1,14 +1,13 @@
-import { useGroupedRunData } from "@/hooks/useHealthData";
 import { useSettings } from "@/context/SettingsContext";
+import { useGroupedRunData } from "@/hooks/useHealthData";
 import {
   HealthkitWriteAuthorization,
   HKAuthorizationRequestStatus,
   HKQuantityTypeIdentifier,
   useHealthkitAuthorization,
 } from "@kingstinct/react-native-healthkit";
-import { Stack, router } from "expo-router";
-import { ScrollView } from "react-native";
-import { Button, Card, IconButton, Text, useTheme } from "react-native-paper";
+import { ScrollView, View } from "react-native";
+import { Button, Card, Icon, Text, useTheme } from "react-native-paper";
 
 const saveableWorkoutStuff: readonly HealthkitWriteAuthorization[] = [
   "HKQuantityTypeIdentifierDistanceWalkingRunning",
@@ -29,17 +28,6 @@ export default function Index() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: "Fastest Times",
-          headerRight: () => (
-            <IconButton
-              icon="cog"
-              onPress={() => router.push("/settings/modal")}
-            />
-          ),
-        }}
-      />
       <ScrollView
         contentContainerStyle={{
           padding: 16,
@@ -69,12 +57,19 @@ export default function Index() {
                   </Text>
                 )}
               />
-              {/* <Card.Content>
-                <Text variant="bodyMedium">
-                  {runs.fastestRun?.startDate.toLocaleDateString()}{" "}
-                  {runs.fastestRun?.startDate.toLocaleTimeString()}
-                </Text>
-              </Card.Content> */}
+              <Card.Content>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Icon source="clock" size={24} color="#fff" />
+                  <Text style={{ marginLeft: 8 }}>
+                    {Math.round(
+                      (new Date().getTime() -
+                        runs.fastestRun?.startDate.getTime()) /
+                        (1000 * 60 * 60 * 24)
+                    )}{" "}
+                    days ago
+                  </Text>
+                </View>
+              </Card.Content>
             </Card>
           ))}
 

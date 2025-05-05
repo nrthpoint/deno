@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 
 type RunGroupWithFastest = {
   runs: HKWorkout[];
-  fastestRun?: HKWorkout;
+  fastestRun: HKWorkout;
 };
 
 type RunGroupWithFastestSet = Record<number, RunGroupWithFastest>;
@@ -80,6 +80,7 @@ const groupRunsByDistance = (
     if (!grouped[nearestMile]) {
       grouped[nearestMile] = {
         runs: [],
+        fastestRun: run,
       };
     }
 
