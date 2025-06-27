@@ -65,7 +65,6 @@ const groupRunsByDistance = (
     const distance = run.totalDistance;
 
     if (distance === undefined) {
-      console.log("Distance is undefined for run:", run);
       continue;
     }
 
@@ -74,9 +73,6 @@ const groupRunsByDistance = (
       Math.abs(distance.quantity - nearestMile) <= tolerance;
 
     if (!isCloseEnough) {
-      console.log(
-        `Distance ${distance.quantity} is not close enough to ${nearestMile} (tolerance: ${tolerance})`
-      );
       continue;
     }
 
@@ -90,7 +86,6 @@ const groupRunsByDistance = (
     grouped[nearestMile].runs.push(run);
 
     const fastestRun = grouped[nearestMile].runs.reduce((prev, curr) => {
-      console.log("Comparing runs:", prev, curr);
       if (!prev || !curr) return prev || curr;
 
       if (groupingType === "time") {
