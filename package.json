@@ -4,15 +4,15 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
-    "web": "expo start --web",
+    "sim": "expo run:ios",
+    "device": "expo run:ios --device",
     "lint": "expo lint"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
-    "@kingstinct/react-native-healthkit": "^8.5.0",
+    "@kingstinct/react-native-healthkit": "^9.0.9",
     "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-native-community/slider": "^4.5.7",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
@@ -34,6 +34,7 @@
     "react-dom": "19.0.0",
     "react-native": "0.79.2",
     "react-native-gesture-handler": "~2.24.0",
+    "react-native-nitro-modules": "^0.26.4",
     "react-native-paper": "^5.14.0",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",

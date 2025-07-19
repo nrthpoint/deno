@@ -1,17 +1,21 @@
+import { DISTANCE_UNIT_OPTIONS } from "@/config/distanceUnits";
+import { TIME_RANGE_LABELS, TIME_RANGE_OPTIONS } from "@/config/timeRanges";
 import { useSettings } from "@/context/SettingsContext";
+import { WorkoutActivityType } from "@kingstinct/react-native-healthkit";
+import Slider from "@react-native-community/slider";
 import React from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SegmentedButtons, Text, useTheme } from "react-native-paper";
 
 export default function ConfigurationScreen() {
   const theme = useTheme();
 
   const {
+    distanceUnit,
     activityType,
-    speedType,
-    timeRange,
+    timeRangeInDays: timeRange,
+    setDistanceUnit,
     setActivityType,
-    setSpeedType,
     setTimeRange,
   } = useSettings();
 
@@ -24,39 +28,59 @@ export default function ConfigurationScreen() {
         backgroundColor: theme.colors.background,
       }}
     >
-      <Text variant="titleLarge">Activity Type</Text>
+      <Text variant="titleLarge">Distance Unit</Text>
       <SegmentedButtons
-        value={activityType}
-        onValueChange={setActivityType}
+        value={distanceUnit}
+        onValueChange={setDistanceUnit}
+        buttons={DISTANCE_UNIT_OPTIONS.map(option => ({
+          label: option.label,
+          value: option.value,
+        }))}
+      />
+
+      <Text variant="titleLarge">Activity</Text>
+      <SegmentedButtons
+        value={String(activityType)}
+        onValueChange={(value) => setActivityType(value as unknown as WorkoutActivityType)}
         buttons={[
-          { label: "Runs", value: "runs" },
-          { label: "Walks", value: "walks", disabled: true },
-          { label: "Cycles", value: "cycles", disabled: true },
-          { label: "Sprints", value: "sprints", disabled: true },
+          { label: "Running", value: String(WorkoutActivityType.running) },
+          { label: "Walking", value: String(WorkoutActivityType.walking) },
+          { label: "Cycling", value: String(WorkoutActivityType.cycling) },
         ]}
       />
 
-      <Text variant="titleLarge">Sort By</Text>
-      <SegmentedButtons
-        value={speedType}
-        onValueChange={setSpeedType}
-        buttons={[
-          { label: "Time", value: "time" },
-          { label: "Pace", value: "pace" },
-        ]}
-      />
-
-      <Text variant="titleLarge">Time Range</Text>
-      <SegmentedButtons
-        value={timeRange}
-        onValueChange={setTimeRange}
-        buttons={[
-          { label: "Month", value: "month" },
-          { label: "Quarter", value: "quarter" },
-          { label: "3 Months", value: "3_months" },
-          { label: "All Time", value: "all_time" },
-        ]}
-      />
+      <Text variant="titleLarge">Range</Text>
+      <View style={{ paddingHorizontal: 8 }}>
+        <Text variant="bodyLarge" style={{ textAlign: 'center', marginBottom: 8 }}>
+          {TIME_RANGE_LABELS[timeRange]}
+        </Text>
+        <Slider
+          style={{ width: '100%', height: 40 }}
+          minimumValue={0}
+          maximumValue={TIME_RANGE_OPTIONS.length - 1}
+          value={TIME_RANGE_OPTIONS.findIndex(option => option.value === timeRange)}
+          onValueChange={(sliderValue) => {
+            const index = Math.round(sliderValue);
+            setTimeRange(TIME_RANGE_OPTIONS[index].value);
+          }}
+          step={1}
+          minimumTrackTintColor={theme.colors.primary}
+          maximumTrackTintColor={theme.colors.outline}
+          thumbTintColor={theme.colors.primary}
+        />
+        <View style={{ 
+          flexDirection: 'row', 
+          justifyContent: 'space-between', 
+          marginTop: 8 
+        }}>
+          <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
+            {TIME_RANGE_OPTIONS[0].label}
+          </Text>
+          <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
+            {TIME_RANGE_OPTIONS[TIME_RANGE_OPTIONS.length - 1].label}
+          </Text>
+        </View>
+      </View>
     </ScrollView>
   );
 }

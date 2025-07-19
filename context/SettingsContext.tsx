@@ -1,19 +1,16 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { LengthUnit, UnitOfLength } from "@kingstinct/react-native-healthkit";
-
-export type ActivityType = "runs" | "walks" | "cycles" | "sprints";
-export type SpeedType = "time" | "pace";
-export type TimeRange = "month" | "quarter" | "3_months" | "all_time";
+import { LengthUnit, WorkoutActivityType } from "@kingstinct/react-native-healthkit";
+import { TimeRange, VALID_TIME_RANGES } from "@/config/timeRanges";
+import { VALID_DISTANCE_UNITS } from "@/config/distanceUnits";
+import { validateWorkoutActivityType } from "@/utils/validators";
 
 interface SettingsContextType {
-  unit: LengthUnit;
-  activityType: ActivityType;
-  speedType: SpeedType;
-  timeRange: TimeRange;
-  toggleUnit: () => void;
-  setActivityType: (type: ActivityType) => void;
-  setSpeedType: (type: SpeedType) => void;
+  distanceUnit: LengthUnit;
+  activityType: WorkoutActivityType;
+  timeRangeInDays: TimeRange;
+  setDistanceUnit: (unit: LengthUnit) => void;
+  setActivityType: (type: WorkoutActivityType) => void;
   setTimeRange: (range: TimeRange) => void;
 }
 
@@ -26,65 +23,72 @@ export const SettingsProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [unit, setUnit] = useState<LengthUnit>(UnitOfLength.Miles);
-  const [activityType, setActivityTypeState] = useState<ActivityType>("runs");
-  const [speedType, setSpeedTypeState] = useState<SpeedType>("time");
-  const [timeRange, setTimeRangeState] = useState<TimeRange>("month");
+  const [distanceUnit, setDistanceUnitState] = useState<LengthUnit>("mi"); // Default to miles
+  const [activityType, setActivityTypeState] = useState<WorkoutActivityType>(WorkoutActivityType.running);
+  const [timeRangeInDays, setTimeRangeState] = useState<TimeRange>(30); // Default to 1 month
 
   useEffect(() => {
     AsyncStorage.multiGet([
       "distanceUnit",
       "activityType",
-      "speedType",
       "timeRange",
     ]).then((values) => {
-      const map = Object.fromEntries(values);
+      const storedConfig = Object.fromEntries(values);
 
-      if (
-        map["distanceUnit"] === "km" ||
-        map["distanceUnit"] === UnitOfLength.Miles
-      ) {
-        setUnit(map["distanceUnit"]);
+      if (storedConfig["distanceUnit"]) {
+        const storedUnit = storedConfig["distanceUnit"] as LengthUnit;
+
+        // Check if the stored unit is valid using configuration
+        if (VALID_DISTANCE_UNITS.includes(storedUnit)) {
+          setDistanceUnitState(storedUnit);
+        }
       }
 
-      if (map["activityType"])
-        setActivityTypeState(map["activityType"] as ActivityType);
-      if (map["speedType"]) setSpeedTypeState(map["speedType"] as SpeedType);
-      if (map["timeRange"]) setTimeRangeState(map["timeRange"] as TimeRange);
+      if (storedConfig["activityType"]) {
+        const activityTypeValue = storedConfig["activityType"] as string;
+        const validActivityType = validateWorkoutActivityType(activityTypeValue);
+        
+        // If the activity type is valid, set it
+        if (validActivityType) {
+          setActivityTypeState(validActivityType);
+        }
+      }
+
+      if (storedConfig["timeRange"]) {
+        const timeRangeValue = parseInt(storedConfig["timeRange"] as string);
+
+        // Check if the timeRangeValue is a valid TimeRange
+        if (VALID_TIME_RANGES.includes(timeRangeValue as TimeRange)) {
+          setTimeRangeState(timeRangeValue as TimeRange);
+        }
+      }
     });
   }, []);
 
-  const toggleUnit = () => {
-    const next = unit === UnitOfLength.Miles ? "km" : UnitOfLength.Miles;
-    setUnit(next);
-    AsyncStorage.setItem("distanceUnit", next);
+  const setDistanceUnit = (val: LengthUnit) => {
+    setDistanceUnitState(val);
+    AsyncStorage.setItem("distanceUnit", val);
   };
 
-  const setActivityType = (val: ActivityType) => {
+  const setActivityType = (val: WorkoutActivityType) => {
     setActivityTypeState(val);
-    AsyncStorage.setItem("activityType", val);
-  };
-
-  const setSpeedType = (val: SpeedType) => {
-    setSpeedTypeState(val);
-    AsyncStorage.setItem("speedType", val);
+    // Convert enum value to string for AsyncStorage
+    AsyncStorage.setItem("activityType", String(val));
   };
 
   const setTimeRange = (val: TimeRange) => {
     setTimeRangeState(val);
-    AsyncStorage.setItem("timeRange", val);
+    AsyncStorage.setItem("timeRange", val.toString());
   };
 
   return (
     <SettingsContext.Provider
       value={{
-        unit,
+        distanceUnit,
         activityType,
-        speedType,
-        timeRange,
-        toggleUnit,
+        timeRangeInDays,
+        setDistanceUnit,
         setActivityType,
-        setSpeedType,
         setTimeRange,
       }}
     >

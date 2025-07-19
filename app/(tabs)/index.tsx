@@ -1,44 +1,43 @@
 import { useSettings } from "@/context/SettingsContext";
-import { getPace, useGroupedRunData } from "@/hooks/useHealthData";
 import {
-  HealthkitWriteAuthorization,
-  HKAuthorizationRequestStatus,
-  HKQuantityTypeIdentifier,
-  UnitOfLength,
+  GroupType,
+  useGroupedActivityData,
+} from "@/hooks/useGroupedActivityData";
+import { calculatePace } from "@/utils/workout";
+import {
+  AuthorizationRequestStatus,
+  ObjectTypeIdentifier,
   useHealthkitAuthorization,
 } from "@kingstinct/react-native-healthkit";
+import { useState } from "react";
 import { ScrollView, View } from "react-native";
-import { Button, Card, Icon, Text, useTheme } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Button,
+  Card,
+  Icon,
+  SegmentedButtons,
+  Text,
+  useTheme,
+} from "react-native-paper";
 
-const saveableWorkoutStuff: readonly HealthkitWriteAuthorization[] = [
-  "HKQuantityTypeIdentifierDistanceWalkingRunning",
-  "HKQuantityTypeIdentifierActiveEnergyBurned",
+const saveableWorkoutStuff: readonly ObjectTypeIdentifier[] = [
   "HKWorkoutTypeIdentifier",
   "HKWorkoutRouteTypeIdentifier",
-  HKQuantityTypeIdentifier.heartRate,
-  HKQuantityTypeIdentifier.runningSpeed,
 ];
-
-const formatDuration = (duration: number) => {
-  const totalSeconds = Math.round(duration);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  return [
-    hours > 0 ? `${hours}hr` : null,
-    minutes > 0 ? `${minutes}min` : null,
-    `${seconds}s`,
-  ]
-    .filter(Boolean)
-    .join(" ");
-};
 
 export default function Index() {
   const [authorizationStatus, requestAuthorization] =
     useHealthkitAuthorization(saveableWorkoutStuff);
 
-  const { unit, speedType } = useSettings();
-  const groupedRuns = useGroupedRunData(unit, speedType);
+  const { distanceUnit, timeRangeInDays, activityType } = useSettings();
+  const [groupType, setGroupingType] = useState<GroupType>("distance");
+  const { groups, loading } = useGroupedActivityData({
+    activityType,
+    distanceUnit,
+    timeRangeInDays,
+    groupType,
+  });
   const theme = useTheme();
 
   return (
@@ -52,14 +51,37 @@ export default function Index() {
           backgroundColor: theme.colors.background,
         }}
       >
-        <Text variant="headlineLarge" style={{ marginBottom: 16 }}>
-          Fastest runs by distance
-        </Text>
-        {groupedRuns &&
-          Object.entries(groupedRuns).map(([distance, runs]) => (
-            <Card key={distance} style={{ marginBottom: 16 }}>
+        <Text variant="titleLarge">Group By</Text>
+        <SegmentedButtons
+          value={groupType}
+          onValueChange={setGroupingType}
+          buttons={[
+            { label: "Distance", value: "distance" },
+            { label: "Pace", value: "pace" },
+            { label: "Weather", value: "weather" },
+          ]}
+        />
+
+        {loading && (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingVertical: 40,
+            }}
+          >
+            <ActivityIndicator size="large" />
+            <Text style={{ marginTop: 16 }}>Loading your runs...</Text>
+          </View>
+        )}
+
+        {!loading &&
+          groups &&
+          Object.entries(groups).map(([key, obj]) => (
+            <Card key={key} style={{ marginBottom: 16 }}>
               <Card.Title
-                title={`${distance} ${unit}`}
+                title={`${obj.title}`}
                 titleVariant="headlineMedium"
                 titleStyle={{ fontWeight: "bold" }}
                 rightStyle={{ marginRight: 16 }}
@@ -69,8 +91,7 @@ export default function Index() {
                       fontSize: size * 0.8,
                     }}
                   >
-                    {runs.fastestRun?.totalDistance?.quantity.toFixed(2)}
-                    {unit} in {formatDuration(runs.fastestRun?.duration || 0)}
+                    {obj.title}
                   </Text>
                 )}
               />
@@ -80,22 +101,36 @@ export default function Index() {
                   <Text style={{ marginLeft: 8, marginRight: 16 }}>
                     {Math.round(
                       (new Date().getTime() -
-                        runs.fastestRun?.startDate.getTime()) /
+                        obj.highlight.startDate.getTime()) /
                         (1000 * 60 * 60 * 24)
                     )}{" "}
                     days ago
                   </Text>
                   <Icon source="run-fast" size={24} color="#fff" />
                   <Text style={{ marginLeft: 8 }}>
-                    {getPace(runs.fastestRun || {}).toFixed(2)} min/
-                    {runs.fastestRun.totalDistance?.unit}
+                    {calculatePace(obj.highlight || {}).quantity.toFixed(2)}{" "}
+                    min/
+                    {obj.highlight.totalDistance?.unit}
                   </Text>
                 </View>
               </Card.Content>
             </Card>
           ))}
 
-        {authorizationStatus !== HKAuthorizationRequestStatus.unnecessary && (
+        {!loading && !groups && (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingVertical: 40,
+            }}
+          >
+            <Text>No running data found</Text>
+          </View>
+        )}
+
+        {authorizationStatus !== AuthorizationRequestStatus.unnecessary && (
           <Button
             mode="contained"
             onPress={async () => {
