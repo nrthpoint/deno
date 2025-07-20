@@ -12,8 +12,8 @@ export type WorkoutGroupWithHighlightSet = Record<
 >;
 
 export type ExtendedWorkout = WorkoutSample & {
-  totalDistance: number;
-  startDate: Date;
-  endDate: Date;
+  totalDistance: Quantity;
   averagePace: Quantity;
+  daysAgo: string;
+  prettyPace: string;
 };

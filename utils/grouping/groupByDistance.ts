@@ -14,11 +14,6 @@ export const groupRunsByDistance = (
 
   for (const run of runs) {
     const distance = run.totalDistance;
-
-    if (distance === undefined) {
-      continue;
-    }
-
     const nearestMile = Math.round(distance.quantity);
     const isCloseEnough =
       Math.abs(distance.quantity - nearestMile) <= tolerance;

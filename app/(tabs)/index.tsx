@@ -3,7 +3,6 @@ import {
   GroupType,
   useGroupedActivityData,
 } from "@/hooks/useGroupedActivityData";
-import { calculatePace } from "@/utils/workout";
 import {
   AuthorizationRequestStatus,
   ObjectTypeIdentifier,
@@ -99,18 +98,11 @@ export default function Index() {
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Icon source="clock" size={24} color="#fff" />
                   <Text style={{ marginLeft: 8, marginRight: 16 }}>
-                    {Math.round(
-                      (new Date().getTime() -
-                        obj.highlight.startDate.getTime()) /
-                        (1000 * 60 * 60 * 24)
-                    )}{" "}
-                    days ago
+                    {obj.highlight.daysAgo}
                   </Text>
                   <Icon source="run-fast" size={24} color="#fff" />
                   <Text style={{ marginLeft: 8 }}>
-                    {calculatePace(obj.highlight || {}).quantity.toFixed(2)}{" "}
-                    min/
-                    {obj.highlight.totalDistance?.unit}
+                    {obj.highlight.prettyPace}
                   </Text>
                 </View>
               </Card.Content>

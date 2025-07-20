@@ -1,6 +1,7 @@
-import { ExtendedWorkout, WorkoutGroupWithHighlightSet } from "@/types/workout";
-import { metersToKilometers, metersToMiles } from "@/utils/distance";
-import { calculatePace } from "@/utils/workout";
+import { WorkoutGroupWithHighlightSet } from "@/types/workout";
+import { groupRunsByDistance } from "@/utils/grouping/groupByDistance";
+import { groupRunsByPace } from "@/utils/grouping/groupByPace";
+import { parseWorkoutSamples } from "@/utils/parser";
 import {
   isProtectedDataAvailable,
   LengthUnit,
@@ -8,8 +9,6 @@ import {
   WorkoutActivityType,
 } from "@kingstinct/react-native-healthkit";
 import { useEffect, useState } from "react";
-import { groupRunsByDistance } from "./groupByDistance";
-import { groupRunsByPace } from "./groupByPace";
 
 export type GroupType = "distance" | "pace" | "weather";
 export const GROUP_TYPES = {
@@ -54,7 +53,7 @@ export function useGroupedActivityData({
         const endDate = new Date();
 
         // TODO: Filtering by activity type is not working as expected
-        const runs = await queryWorkoutSamples({
+        const samples = await queryWorkoutSamples({
           ascending: false,
           limit: 10000,
           filter: {
@@ -63,55 +62,12 @@ export function useGroupedActivityData({
           },
         });
 
-        console.log("Fetched runs:", runs.length);
-
-        const convertedRuns = runs
-          .map((run) => {
-            if (
-              run.workoutActivityType !== activityType ||
-              !run.totalDistance ||
-              !run.totalDistance.quantity
-            ) {
-              return null;
-            }
-
-            // Create deep copy to avoid mutation issues with Proxy
-            const plainRun = JSON.parse(JSON.stringify(run));
-
-            // Convert distance to miles if necessary. Assume default is meters.
-            let totalDistance;
-
-            if (distanceUnit === "mi") {
-              totalDistance = metersToMiles(plainRun.totalDistance);
-            } else if (distanceUnit === "km") {
-              totalDistance = metersToKilometers(plainRun.totalDistance);
-            } else {
-              totalDistance = plainRun.totalDistance;
-            }
-
-            const startDate = new Date(plainRun.startDate);
-            const endDate = new Date(plainRun.endDate);
-
-            const newRun = {
-              ...plainRun,
-              totalDistance,
-              startDate,
-              endDate,
-            } satisfies ExtendedWorkout;
-
-            // Calculate average pace
-            const averagePace = calculatePace(newRun);
-
-            return {
-              ...newRun,
-              averagePace,
-            };
-          })
-          .filter((run) => run !== null) as ExtendedWorkout[];
+        const convertedRuns = parseWorkoutSamples({ samples, distanceUnit });
 
         if (convertedRuns.length === 0) {
           setGroups(null);
           setLoading(false);
+
           return;
         }
 
