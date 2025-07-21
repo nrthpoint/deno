@@ -19,7 +19,7 @@ export const groupRunsByPace = (
 
     if (!isCloseEnough) {
       console.warn(
-        `Run with pace ${run.averagePace} min/mile is not close enough to a whole minute. Skipping.`
+        `Run with pace ${run.averagePace.quantity} min/mile is not close enough to a whole minute. Skipping.`
       );
       continue;
     }
@@ -41,7 +41,9 @@ export const groupRunsByPace = (
           return prev || curr;
         }
 
-        return prev.totalDistance > curr.totalDistance ? prev : curr;
+        return prev.totalDistance.quantity >= curr.totalDistance.quantity
+          ? prev
+          : curr;
       }
     );
 

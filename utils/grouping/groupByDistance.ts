@@ -40,7 +40,14 @@ export const groupRunsByDistance = (
         return prev || curr;
       }
 
-      return prev;
+      // Compare pace values - lower pace is faster
+      if (!prev.averagePace || !curr.averagePace) {
+        return prev.averagePace ? prev : curr;
+      }
+
+      return prev.averagePace.quantity <= curr.averagePace.quantity
+        ? prev
+        : curr;
     });
 
     grouped[nearestMile].highlight = fastestRun;
