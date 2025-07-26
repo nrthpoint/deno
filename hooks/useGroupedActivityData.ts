@@ -1,20 +1,20 @@
-import { WorkoutGroupWithHighlightSet } from "@/types/workout";
-import { groupRunsByDistance } from "@/utils/grouping/groupByDistance";
-import { groupRunsByPace } from "@/utils/grouping/groupByPace";
-import { parseWorkoutSamples } from "@/utils/parser";
+import { WorkoutGroupWithHighlightSet } from '@/types/workout';
+import { groupRunsByDistance } from '@/utils/grouping/groupByDistance';
+import { groupRunsByPace } from '@/utils/grouping/groupByPace';
+import { parseWorkoutSamples } from '@/utils/parser';
 import {
   isProtectedDataAvailable,
   LengthUnit,
   queryWorkoutSamples,
   WorkoutActivityType,
-} from "@kingstinct/react-native-healthkit";
-import { useEffect, useState } from "react";
+} from '@kingstinct/react-native-healthkit';
+import { useEffect, useState } from 'react';
 
-export type GroupType = "distance" | "pace" | "weather";
+export type GroupType = 'distance' | 'pace' | 'weather';
 export const GROUP_TYPES = {
-  Distance: "distance" as GroupType,
-  Pace: "pace" as GroupType,
-  Weather: "weather" as GroupType,
+  Distance: 'distance' as GroupType,
+  Pace: 'pace' as GroupType,
+  Weather: 'weather' as GroupType,
 };
 
 type UseGroupedActivityDataParams = {
@@ -26,13 +26,11 @@ type UseGroupedActivityDataParams = {
 
 export function useGroupedActivityData({
   activityType = WorkoutActivityType.running,
-  distanceUnit = "mi",
+  distanceUnit = 'mi',
   timeRangeInDays = 365,
   groupType = GROUP_TYPES.Distance,
 }: UseGroupedActivityDataParams = {}) {
-  const [groups, setGroups] = useState<WorkoutGroupWithHighlightSet | null>(
-    null
-  );
+  const [groups, setGroups] = useState<WorkoutGroupWithHighlightSet>({});
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -42,14 +40,12 @@ export function useGroupedActivityData({
         const authorized = await isProtectedDataAvailable();
 
         if (!authorized) {
-          console.log("Authorization not granted");
+          console.log('Authorization not granted');
           setLoading(false);
           return;
         }
 
-        const startDate = new Date(
-          Date.now() - timeRangeInDays * 24 * 60 * 60 * 1000
-        );
+        const startDate = new Date(Date.now() - timeRangeInDays * 24 * 60 * 60 * 1000);
         const endDate = new Date();
 
         // TODO: Filtering by activity type is not working as expected
@@ -65,7 +61,7 @@ export function useGroupedActivityData({
         const convertedRuns = parseWorkoutSamples({ samples, distanceUnit });
 
         if (convertedRuns.length === 0) {
-          setGroups(null);
+          setGroups({});
           setLoading(false);
 
           return;
@@ -78,16 +74,12 @@ export function useGroupedActivityData({
           case GROUP_TYPES.Pace:
             setGroups(groupRunsByPace(convertedRuns));
             break;
-          case GROUP_TYPES.Weather:
-            // Implement grouping by weather if needed
-            // setGroups(groupRunsByDistance(convertedRuns, 0.5)); // Example tolerance
-            break;
           default:
             setGroups(groupRunsByDistance(convertedRuns));
             break;
         }
       } catch (error) {
-        console.error("Error fetching runs:", error);
+        console.error('Error fetching runs:', error);
       } finally {
         setLoading(false);
       }

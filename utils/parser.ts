@@ -1,7 +1,7 @@
-import { ExtendedWorkout } from "@/types/workout";
-import { LengthUnit, WorkoutSample } from "@kingstinct/react-native-healthkit";
-import { metersToMiles, metersToKilometers } from "./distance";
-import { calculatePace } from "./workout";
+import { ExtendedWorkout } from '@/types/workout';
+import { LengthUnit, WorkoutSample } from '@kingstinct/react-native-healthkit';
+import { metersToMiles, metersToKilometers } from './distance';
+import { calculatePace, formatPace } from './workout';
 
 export const parseWorkoutSamples = ({
   samples,
@@ -33,9 +33,9 @@ const parseWorkoutSample = ({
   // Convert distance to target unit if necessary.
   let totalDistance;
 
-  if (distanceUnit === "mi") {
+  if (distanceUnit === 'mi') {
     totalDistance = metersToMiles(plainRun.totalDistance);
-  } else if (distanceUnit === "km") {
+  } else if (distanceUnit === 'km') {
     totalDistance = metersToKilometers(plainRun.totalDistance);
   } else {
     // Default to meters if no conversion is needed. This assumes the distance is already in meters.
@@ -52,15 +52,14 @@ const parseWorkoutSample = ({
     endDate,
   };
 
-  // Calculate average pace
   const averagePace = calculatePace(newRun);
 
   return {
     ...newRun,
     averagePace,
+    prettyPace: formatPace(averagePace),
     daysAgo: `${Math.floor(
-      (Date.now() - newRun.startDate.getTime()) / (1000 * 60 * 60 * 24)
+      (Date.now() - newRun.startDate.getTime()) / (1000 * 60 * 60 * 24),
     )} days ago`,
-    prettyPace: `${averagePace.quantity.toFixed(2)} min/${averagePace.unit}`,
   } satisfies ExtendedWorkout;
 };

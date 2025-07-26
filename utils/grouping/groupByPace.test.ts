@@ -1,49 +1,47 @@
-import { groupRunsByPace } from "./groupByPace";
-import { ExtendedWorkout } from "@/types/workout";
-import { Quantity } from "@kingstinct/react-native-healthkit";
+import { groupRunsByPace } from './groupByPace';
+import { ExtendedWorkout } from '@/types/workout';
+import { Quantity } from '@kingstinct/react-native-healthkit';
 
 // Helper function to create mock workouts
 const createMockWorkout = (
   averagePace: number,
   distance?: number,
-  distanceUnit: string = "mi"
+  distanceUnit: string = 'mi',
 ): ExtendedWorkout =>
   ({
     totalDistance: distance
       ? ({ unit: distanceUnit, quantity: distance } as Quantity)
-      : ({ unit: "mi", quantity: 3 } as Quantity),
-    averagePace: { unit: "min/mi", quantity: averagePace } as Quantity,
-    daysAgo: "1 day ago",
+      : ({ unit: 'mi', quantity: 3 } as Quantity),
+    averagePace: { unit: 'min/mi', quantity: averagePace } as Quantity,
+    daysAgo: '1 day ago',
     prettyPace: `${Math.floor(averagePace)}:${Math.round((averagePace % 1) * 60)
       .toString()
-      .padStart(2, "0")}`,
-  } as ExtendedWorkout);
+      .padStart(2, '0')}`,
+  }) as unknown as ExtendedWorkout;
 
 // Helper function to create workout without pace
 const createMockWorkoutWithoutPace = (): ExtendedWorkout =>
   ({
-    totalDistance: { unit: "mi", quantity: 3 } as Quantity,
+    totalDistance: { unit: 'mi', quantity: 3 } as Quantity,
     averagePace: undefined,
-    daysAgo: "1 day ago",
-    prettyPace: "",
-  } as unknown as ExtendedWorkout);
+    daysAgo: '1 day ago',
+    prettyPace: '',
+  }) as unknown as ExtendedWorkout;
 
 // Helper function to create workout without distance
-const createMockWorkoutWithoutDistance = (
-  averagePace: number
-): ExtendedWorkout =>
+const createMockWorkoutWithoutDistance = (averagePace: number): ExtendedWorkout =>
   ({
     totalDistance: undefined,
-    averagePace: { unit: "min/mi", quantity: averagePace } as Quantity,
-    daysAgo: "1 day ago",
+    averagePace: { unit: 'min/mi', quantity: averagePace } as Quantity,
+    daysAgo: '1 day ago',
     prettyPace: `${Math.floor(averagePace)}:${Math.round((averagePace % 1) * 60)
       .toString()
-      .padStart(2, "0")}`,
-  } as unknown as ExtendedWorkout);
+      .padStart(2, '0')}`,
+  }) as unknown as ExtendedWorkout;
 
-describe("groupRunsByPace", () => {
-  describe("basic functionality", () => {
-    it("should group runs by nearest whole minute pace", () => {
+describe('groupRunsByPace', () => {
+  describe('basic functionality', () => {
+    it('should group runs by nearest whole minute pace', () => {
       const runs = [
         createMockWorkout(7.3, 3), // Should be grouped as 7 min/mile
         createMockWorkout(7.4, 5), // Should be grouped as 7 min/mile
@@ -60,15 +58,15 @@ describe("groupRunsByPace", () => {
       expect(result[8].runs).toHaveLength(2);
     });
 
-    it("should create correct group titles", () => {
+    it('should create correct group titles', () => {
       const runs = [createMockWorkout(7.3)];
 
       const result = groupRunsByPace(runs);
 
-      expect(result[7].title).toBe("7 min/mile");
+      expect(result[7].title).toBe('7 min/mile');
     });
 
-    it("should set the longest distance run as highlight", () => {
+    it('should set the longest distance run as highlight', () => {
       const runs = [
         createMockWorkout(7.3, 3), // 3 miles
         createMockWorkout(7.4, 5), // 5 miles - should be highlight
@@ -81,8 +79,8 @@ describe("groupRunsByPace", () => {
     });
   });
 
-  describe("tolerance behavior", () => {
-    it("should use default tolerance of 0.5", () => {
+  describe('tolerance behavior', () => {
+    it('should use default tolerance of 0.5', () => {
       const runs = [
         createMockWorkout(7.5, 3), // 7.5 rounds to 8, diff = 0.5, exactly at tolerance
         createMockWorkout(7.49, 3), // 7.49 rounds to 7, diff = 0.49, within tolerance
@@ -96,7 +94,7 @@ describe("groupRunsByPace", () => {
       expect(result[7].runs).toHaveLength(1); // Second run (7.49 -> 7)
     });
 
-    it("should respect custom tolerance", () => {
+    it('should respect custom tolerance', () => {
       const runs = [
         createMockWorkout(7.6, 3), // 7.6 rounds to 8, diff = 0.4, outside tolerance 0.3
         createMockWorkout(7.8, 3), // 7.8 rounds to 8, diff = 0.2, within tolerance 0.3
@@ -108,7 +106,7 @@ describe("groupRunsByPace", () => {
       expect(result[8].runs).toHaveLength(1); // Only the second run should be included
     });
 
-    it("should exclude runs outside tolerance", () => {
+    it('should exclude runs outside tolerance', () => {
       const runs = [
         createMockWorkout(7.6, 3), // 7.6 rounds to 8, diff = 0.4, within default tolerance of 0.5
       ];
@@ -119,8 +117,8 @@ describe("groupRunsByPace", () => {
     });
   });
 
-  describe("highlight selection - longest distance", () => {
-    it("should set the first run as initial highlight", () => {
+  describe('highlight selection - longest distance', () => {
+    it('should set the first run as initial highlight', () => {
       const runs = [createMockWorkout(7.3, 5)];
 
       const result = groupRunsByPace(runs);
@@ -128,7 +126,7 @@ describe("groupRunsByPace", () => {
       expect(result[7].highlight).toBe(runs[0]);
     });
 
-    it("should update highlight to longest distance run", () => {
+    it('should update highlight to longest distance run', () => {
       const runs = [
         createMockWorkout(7.3, 3), // 3 miles
         createMockWorkout(7.4, 6), // 6 miles - should become highlight
@@ -140,7 +138,7 @@ describe("groupRunsByPace", () => {
       expect(result[7].highlight).toBe(runs[1]); // The 6-mile run
     });
 
-    it("should handle runs with same distance", () => {
+    it('should handle runs with same distance', () => {
       const runs = [
         createMockWorkout(7.3, 5), // 5 miles - first one should stay as highlight
         createMockWorkout(7.4, 5), // 5 miles - same distance
@@ -152,13 +150,9 @@ describe("groupRunsByPace", () => {
     });
   });
 
-  describe("data validation", () => {
-    it("should skip runs without averagePace", () => {
-      const runs = [
-        createMockWorkout(7.3),
-        createMockWorkoutWithoutPace(),
-        createMockWorkout(8.2),
-      ];
+  describe('data validation', () => {
+    it('should skip runs without averagePace', () => {
+      const runs = [createMockWorkout(7.3), createMockWorkoutWithoutPace(), createMockWorkout(8.2)];
 
       const result = groupRunsByPace(runs);
 
@@ -167,7 +161,7 @@ describe("groupRunsByPace", () => {
       expect(result[8].runs).toHaveLength(1);
     });
 
-    it("should skip runs without totalDistance", () => {
+    it('should skip runs without totalDistance', () => {
       const runs = [
         createMockWorkout(7.3, 5),
         createMockWorkoutWithoutDistance(7.4),
@@ -181,7 +175,7 @@ describe("groupRunsByPace", () => {
       expect(result[8].runs).toHaveLength(1);
     });
 
-    it("should handle runs with null/undefined pace and distance gracefully", () => {
+    it('should handle runs with null/undefined pace and distance gracefully', () => {
       const runs = [
         createMockWorkout(7.3),
         createMockWorkoutWithoutPace(),
@@ -195,14 +189,14 @@ describe("groupRunsByPace", () => {
     });
   });
 
-  describe("edge cases", () => {
-    it("should handle empty array", () => {
+  describe('edge cases', () => {
+    it('should handle empty array', () => {
       const result = groupRunsByPace([]);
 
       expect(result).toEqual({});
     });
 
-    it("should handle single run", () => {
+    it('should handle single run', () => {
       const runs = [createMockWorkout(8.0, 5)];
 
       const result = groupRunsByPace(runs);
@@ -212,7 +206,7 @@ describe("groupRunsByPace", () => {
       expect(result[8].highlight).toBe(runs[0]);
     });
 
-    it("should handle very fast paces", () => {
+    it('should handle very fast paces', () => {
       const runs = [createMockWorkout(4.8, 5)]; // Sub-5-minute mile
 
       const result = groupRunsByPace(runs);
@@ -221,7 +215,7 @@ describe("groupRunsByPace", () => {
       expect(result[5].runs).toHaveLength(1);
     });
 
-    it("should handle very slow paces", () => {
+    it('should handle very slow paces', () => {
       const runs = [createMockWorkout(12.3, 5)]; // 12+ minute mile
 
       const result = groupRunsByPace(runs);
@@ -230,7 +224,7 @@ describe("groupRunsByPace", () => {
       expect(result[12].runs).toHaveLength(1);
     });
 
-    it("should handle zero pace gracefully", () => {
+    it('should handle zero pace gracefully', () => {
       const runs = [createMockWorkout(0.0, 5)];
 
       const result = groupRunsByPace(runs);
@@ -240,8 +234,8 @@ describe("groupRunsByPace", () => {
     });
   });
 
-  describe("multiple runs per group", () => {
-    it("should handle multiple runs in the same pace group", () => {
+  describe('multiple runs per group', () => {
+    it('should handle multiple runs in the same pace group', () => {
       const runs = [
         createMockWorkout(8.0, 3),
         createMockWorkout(8.1, 5),
@@ -260,30 +254,30 @@ describe("groupRunsByPace", () => {
     });
   });
 
-  describe("console warnings", () => {
+  describe('console warnings', () => {
     let consoleSpy: jest.SpyInstance;
 
     beforeEach(() => {
-      consoleSpy = jest.spyOn(console, "warn").mockImplementation();
+      consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
     });
 
     afterEach(() => {
       consoleSpy.mockRestore();
     });
 
-    it("should log warning for runs outside tolerance", () => {
+    it('should log warning for runs outside tolerance', () => {
       const runs = [createMockWorkout(7.6)]; // Outside tolerance of 0.3
 
       groupRunsByPace(runs, 0.3);
 
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining(
-          "Run with pace 7.6 min/mile is not close enough to a whole minute. Skipping."
-        )
+          'Run with pace 7.6 min/mile is not close enough to a whole minute. Skipping.',
+        ),
       );
     });
 
-    it("should not log warning for runs within tolerance", () => {
+    it('should not log warning for runs within tolerance', () => {
       const runs = [createMockWorkout(7.4)]; // Within tolerance
 
       groupRunsByPace(runs);
@@ -292,8 +286,8 @@ describe("groupRunsByPace", () => {
     });
   });
 
-  describe("comparison with distance grouping", () => {
-    it("should group different distances with same pace together", () => {
+  describe('comparison with distance grouping', () => {
+    it('should group different distances with same pace together', () => {
       const runs = [
         createMockWorkout(7.3, 3), // 3 miles at ~7 min/mile
         createMockWorkout(7.4, 5), // 5 miles at ~7 min/mile

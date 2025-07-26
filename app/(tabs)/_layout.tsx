@@ -1,6 +1,6 @@
-import { router, Tabs } from "expo-router";
-import { IconButton, MD3DarkTheme } from "react-native-paper";
-import { Ionicons } from "@expo/vector-icons";
+import { router, Tabs } from 'expo-router';
+import { IconButton, MD3DarkTheme } from 'react-native-paper';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
   return (
@@ -19,25 +19,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Times",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="bar-chart" size={size} color={color} />
-          ),
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => <Ionicons name="bar-chart" size={size} color={color} />,
           headerRight: () => (
-            <IconButton
-              icon="cog"
-              onPress={() => router.push("/settings/modal")}
-            />
+            <IconButton icon="cog" onPress={() => router.push('/settings/modal')} />
           ),
         }}
       />
       <Tabs.Screen
         name="config"
         options={{
-          title: "Configure",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" size={size} color={color} />
-          ),
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => <Ionicons name="settings" size={size} color={color} />,
         }}
       />
     </Tabs>
