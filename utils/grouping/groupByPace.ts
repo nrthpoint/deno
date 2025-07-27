@@ -31,6 +31,7 @@ export const groupRunsByPace = (
         runs: [],
         highlight: run,
         worst: run,
+        rank: 0,
         percentageOfTotalWorkouts: 0,
         totalVariation: newQuantity(0, 's'),
         totalDistance: newQuantity(0, 'mi'),
