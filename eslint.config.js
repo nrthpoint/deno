@@ -1,9 +1,11 @@
 // https://docs.expo.dev/guides/using-eslint/
 const { defineConfig } = require('eslint/config');
 const expoConfig = require('eslint-config-expo/flat');
+const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 
 module.exports = defineConfig([
-  ...expoConfig,
+  expoConfig,
+  eslintPluginPrettierRecommended,
   {
     ignores: ['dist/*'],
   },
@@ -16,7 +18,8 @@ module.exports = defineConfig([
           patterns: [
             {
               group: ['../*', '../**/*'],
-              message: 'Use @/ imports instead of relative imports that go up directories (e.g., @/utils/file instead of ../utils/file).',
+              message:
+                'Use @/ imports instead of relative imports that go up directories (e.g., @/utils/file instead of ../utils/file).',
             },
           ],
         },

@@ -1,19 +1,12 @@
 import { GroupStats } from '@/components/GroupStats';
+import { AllSampleTypesInApp } from '@/config/sampleIdentifiers';
 import { useSettings } from '@/context/SettingsContext';
 import { GroupType, useGroupedActivityData } from '@/hooks/useGroupedActivityData';
-import {
-  ObjectTypeIdentifier,
-  useHealthkitAuthorization,
-} from '@kingstinct/react-native-healthkit';
-import { useState, useEffect } from 'react';
+import { useHealthkitAuthorization } from '@kingstinct/react-native-healthkit';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Button, Text } from 'react-native-paper';
 import Carousel from 'react-native-reanimated-carousel';
-
-const saveableWorkoutStuff: readonly ObjectTypeIdentifier[] = [
-  'HKWorkoutTypeIdentifier',
-  'HKWorkoutRouteTypeIdentifier',
-];
 
 const tabOptions: GroupType[] = ['pace', 'distance'];
 const tabColours: Record<GroupType, string> = {
@@ -24,7 +17,7 @@ const tabColours: Record<GroupType, string> = {
 
 export default function Index() {
   const [authorizationStatus, requestAuthorization] =
-    useHealthkitAuthorization(saveableWorkoutStuff);
+    useHealthkitAuthorization(AllSampleTypesInApp);
 
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
   const [groupType, setGroupingType] = useState<GroupType>('distance');
@@ -63,8 +56,13 @@ export default function Index() {
     );
   }
 
+  // Get the available options for the carousel
   const options = Object.keys(groups);
+
+  // Select the currently active option
   const actualSelectedOption = selectedOption || options[0];
+
+  // Selected group item.
   const selectedGroup = groups[actualSelectedOption];
 
   if (!selectedGroup) {

@@ -8,7 +8,9 @@
     "scheme": "deno",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.nrthpoint.deno",
@@ -18,18 +20,9 @@
         "NSHealthUpdateUsageDescription": "This app needs to write workout data to HealthKit to keep your fitness information synchronized across devices."
       }
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true,
-      "package": "com.nrthpoint.deno"
-    },
     "web": {
       "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "output": "static"
     },
     "plugins": [
       "expo-router",
@@ -39,14 +32,14 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#000000"
         }
       ],
       [
         "@kingstinct/react-native-healthkit",
         {
-          "NSHealthShareUsageDescription": "Your own custom usage description",
-          "NSHealthUpdateUsageDescription": "Your own custom usage description",
+          "NSHealthShareUsageDescription": "This app needs access to HealthKit data to track and analyze your workout activities, including distance, duration, and pace information.",
+          "NSHealthUpdateUsageDescription": "This app needs to write workout data to HealthKit to keep your fitness information synchronized across devices.",
           "background": true
         }
       ],
@@ -61,6 +54,9 @@
         "projectId": "9f72da41-06ea-4062-a451-99638abf36cb"
       }
     },
-    "owner": "nrthpoint"
+    "owner": "nrthpoint",
+    "android": {
+      "package": "com.nrthpoint.deno"
+    }
   }
 }
