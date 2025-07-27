@@ -1,4 +1,4 @@
-import { Quantity } from "@kingstinct/react-native-healthkit";
+import { Quantity } from '@kingstinct/react-native-healthkit';
 
 export const formatDuration = (duration: number) => {
   const totalSeconds = Math.round(duration);
@@ -9,24 +9,24 @@ export const formatDuration = (duration: number) => {
   return [
     hours > 0 ? `${hours}hr` : null,
     minutes > 0 ? `${minutes}min` : null,
-    `${seconds}s`,
+    seconds > 0 ? `${seconds}s` : null,
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(' ');
 };
 
 export const convertDurationToMinutes = (duration: Quantity): number => {
   if (!duration || !duration.quantity) return 0;
 
   switch (duration.unit) {
-    case "m":
+    case 'm':
       return duration.quantity;
-    case "s":
+    case 's':
       return duration.quantity / 60;
-    case "h":
+    case 'h':
       return duration.quantity * 60;
     default:
-      console.warn("Unsupported duration unit:", duration.unit);
+      console.warn('Unsupported duration unit:', duration.unit);
       return 0;
   }
 };

@@ -10,7 +10,7 @@ import {
   findFastestRun,
   findSlowestRun,
 } from '@/utils/workout';
-import { convertDurationToMinutes } from '@/utils/time';
+import { convertDurationToMinutes, formatDuration } from '@/utils/time';
 
 // TODO: Tolerance needs to be configurable based on distance unit
 export const groupRunsByDistance = (
@@ -34,6 +34,7 @@ export const groupRunsByDistance = (
     if (!grouped[nearestMile]) {
       grouped[nearestMile] = {
         title: `${nearestMile} ${run.totalDistance?.unit}`,
+        suffix: ' mi',
         runs: [],
         highlight: run,
         worst: run,
@@ -47,45 +48,52 @@ export const groupRunsByDistance = (
       } satisfies WorkoutGroupWithHighlight;
     }
 
-    grouped[nearestMile].runs.push(run);
+    const group = grouped[nearestMile];
 
-    // Update total distance and duration for the group
-    grouped[nearestMile].totalDistance = sumQuantities([
-      grouped[nearestMile].totalDistance,
-      run.totalDistance,
-    ]);
+    group.runs.push(run);
 
-    grouped[nearestMile].totalDuration = sumQuantities([
-      grouped[nearestMile].totalDuration,
-      run.duration,
-    ]);
+    group.totalDistance = sumQuantities([group.totalDistance, run.totalDistance]);
+    group.totalDuration = sumQuantities([group.totalDuration, run.duration]);
 
-    grouped[nearestMile].averagePace = calculatePaceFromDistanceAndDuration(
-      grouped[nearestMile].totalDistance,
-      grouped[nearestMile].totalDuration,
+    group.averagePace = calculatePaceFromDistanceAndDuration(
+      group.totalDistance,
+      group.totalDuration,
     );
 
-    grouped[nearestMile].prettyPace = formatPace(grouped[nearestMile].averagePace);
-
-    // Calculate percentage of total workouts
-    grouped[nearestMile].percentageOfTotalWorkouts =
-      (grouped[nearestMile].runs.length / runs.length) * 100;
-
-    grouped[nearestMile].highlight = findFastestRun(grouped[nearestMile].runs);
-    grouped[nearestMile].worst = findSlowestRun(grouped[nearestMile].runs);
+    group.prettyPace = formatPace(group.averagePace);
+    group.percentageOfTotalWorkouts = (group.runs.length / runs.length) * 100;
+    group.highlight = findFastestRun(group.runs);
+    group.worst = findSlowestRun(group.runs);
 
     // Calculate the variation in total duration for the group
-    const diff =
-      grouped[nearestMile].worst.duration.quantity -
-      grouped[nearestMile].highlight.duration.quantity;
+    const diff = group.worst.duration.quantity - group.highlight.duration.quantity;
 
-    const diffQuantity = newQuantity(Math.abs(diff), grouped[nearestMile].totalDuration.unit);
+    const diffQuantity = newQuantity(Math.abs(diff), group.totalDuration.unit);
 
     // Convert totalVariation from seconds to minutes.
-    grouped[nearestMile].totalVariation = {
+    group.totalVariation = {
       quantity: convertDurationToMinutes(diffQuantity),
       unit: 'm',
     };
+
+    // Compile stats from the highlight run
+    group.stats = [
+      {
+        type: 'pace',
+        label: 'Average Pace',
+        value: group.highlight.prettyPace,
+      },
+      {
+        type: 'distance',
+        label: 'Total Distance',
+        value: `${group.totalDistance.quantity.toFixed(2)} ${group.totalDistance.unit}`,
+      },
+      {
+        type: 'duration',
+        label: 'Total Duration',
+        value: formatDuration(group.totalDuration.quantity), // Convert minutes back to seconds for formatting
+      },
+    ];
   }
 
   return grouped;

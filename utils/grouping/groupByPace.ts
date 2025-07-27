@@ -3,8 +3,8 @@ import {
   WorkoutGroupWithHighlight,
   WorkoutGroupWithHighlightSet,
 } from '@/types/workout';
-import { newQuantity } from '@/utils/quantity';
-import { findLongestRun } from '@/utils/workout';
+import { newQuantity, sumQuantities } from '@/utils/quantity';
+import { findLongestRun, findShortestRun } from '@/utils/workout';
 
 export const groupRunsByPace = (
   runs: readonly ExtendedWorkout[],
@@ -32,6 +32,7 @@ export const groupRunsByPace = (
     if (!grouped[nearestMinutePace]) {
       grouped[nearestMinutePace] = {
         title: `${nearestMinutePace} min/mile`,
+        suffix: "'",
         runs: [],
         highlight: run,
         worst: run,
@@ -45,8 +46,39 @@ export const groupRunsByPace = (
       } satisfies WorkoutGroupWithHighlight;
     }
 
-    grouped[nearestMinutePace].runs.push(run);
-    grouped[nearestMinutePace].highlight = findLongestRun(grouped[nearestMinutePace].runs);
+    const group = grouped[nearestMinutePace];
+
+    group.runs.push(run);
+
+    group.totalDistance = sumQuantities([group.totalDistance, run.totalDistance]);
+    group.totalDuration = sumQuantities([group.totalDuration, run.duration]);
+    group.percentageOfTotalWorkouts = (group.runs.length / runs.length) * 100;
+    group.highlight = findLongestRun(group.runs);
+    group.worst = findShortestRun(group.runs);
+
+    const diffInDistance = Math.abs(
+      group.highlight.totalDistance.quantity - group.worst.totalDistance.quantity,
+    );
+    group.totalVariation = newQuantity(diffInDistance, group.highlight.totalDistance.unit);
+
+    // Stats for time and distance of highlight run
+    group.stats = [
+      {
+        type: 'pace',
+        label: 'Average Pace',
+        value: group.highlight.prettyPace,
+      },
+      {
+        type: 'distance',
+        label: 'Total Distance',
+        value: `${group.highlight.totalDistance.quantity.toFixed(2)} ${group.highlight.totalDistance.unit}`,
+      },
+      {
+        type: 'duration',
+        label: 'Total Duration',
+        value: `${group.highlight.duration.quantity.toFixed(2)} ${group.highlight.duration.unit}`,
+      },
+    ];
   }
 
   return grouped;

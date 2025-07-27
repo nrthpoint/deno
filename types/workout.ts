@@ -1,14 +1,14 @@
 import { Quantity, WorkoutSample } from '@kingstinct/react-native-healthkit';
 
-type HightlightStat = {
-  title: string;
+type HighlightStat = {
   type: 'pace' | 'distance' | 'duration';
+  label: string;
   value: string;
-  unit: string;
 };
 
 export type WorkoutGroupWithHighlight = {
   title: string;
+  suffix: string;
   runs: ExtendedWorkout[];
   // Stats for the group
   percentageOfTotalWorkouts: number;
@@ -18,7 +18,7 @@ export type WorkoutGroupWithHighlight = {
   averagePace: Quantity;
   prettyPace: string;
   // Stats for the highlight run
-  stats: HightlightStat[];
+  stats: HighlightStat[];
   highlight: ExtendedWorkout;
   worst: ExtendedWorkout;
 };

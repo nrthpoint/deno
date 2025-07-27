@@ -1,12 +1,13 @@
+import { GroupStats } from '@/components/GroupStats';
 import { useSettings } from '@/context/SettingsContext';
 import { GroupType, useGroupedActivityData } from '@/hooks/useGroupedActivityData';
 import {
   ObjectTypeIdentifier,
   useHealthkitAuthorization,
 } from '@kingstinct/react-native-healthkit';
-import { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { ActivityIndicator, Button, Card, Text, useTheme } from 'react-native-paper';
+import { useState, useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Button, Text, useTheme } from 'react-native-paper';
 import Carousel from 'react-native-reanimated-carousel';
 
 const saveableWorkoutStuff: readonly ObjectTypeIdentifier[] = [
@@ -28,8 +29,17 @@ export default function Index() {
     timeRangeInDays,
     groupType,
   });
-  const [selectedOption, setSelectedOption] = useState<string>('1');
+  const [selectedOption, setSelectedOption] = useState<string>('');
   const theme = useTheme();
+
+  // Auto-select the first group when groups are loaded or groupType changes
+  useEffect(() => {
+    const firstKey = Object.keys(groups)[0];
+
+    if (firstKey) {
+      setSelectedOption(firstKey);
+    }
+  }, [groups, groupType]);
 
   if (authorizationStatus !== 2) {
     return (
@@ -54,18 +64,29 @@ export default function Index() {
   }
 
   const options = Object.keys(groups);
-  const selectedGroup = groups[selectedOption] || {};
-  const highlight = selectedGroup.highlight;
-  const itemSuffix = groupType === 'distance' ? 'm' : "'";
+
+  // If no option is selected and we have groups, select the first one
+  const actualSelectedOption = selectedOption || options[0];
+  const selectedGroup = groups[actualSelectedOption];
+
+  if (!selectedGroup) {
+    return (
+      <View style={styles.spinnerContainer}>
+        <Text style={{ color: '#fff' }}>No data available for the selected group.</Text>
+      </View>
+    );
+  }
+
+  const itemSuffix = selectedGroup?.suffix || ' mi';
 
   return (
     <View style={styles.container}>
       <Carousel
-        width={180} // width of each card
+        loop={false}
+        width={180}
         height={200}
         data={options}
         scrollAnimationDuration={300}
-        loop={true}
         onSnapToItem={(index) => setSelectedOption(options[index])}
         style={styles.carousel}
         mode="parallax"
@@ -96,49 +117,12 @@ export default function Index() {
         ))}
       </View>
 
-      {selectedGroup && (
-        <ScrollView style={styles.statList}>
-          {/* Group Stats */}
-          <Text style={styles.sectionHeader}>Group Statistics</Text>
-
-          <Card style={styles.statCard}>
-            <Card.Content>
-              <Text style={styles.statLabel}>Percentage of Total Workouts</Text>
-              <Text style={styles.statValue}>
-                {selectedGroup.percentageOfTotalWorkouts?.toFixed(1)}%
-              </Text>
-            </Card.Content>
-          </Card>
-
-          <Card style={styles.statCard}>
-            <Card.Content>
-              <Text style={styles.statLabel}>Total Variation</Text>
-              <Text style={styles.statValue}>
-                {selectedGroup.totalVariation?.quantity?.toFixed(2)}{' '}
-                {selectedGroup.totalVariation?.unit}
-              </Text>
-            </Card.Content>
-          </Card>
-
-          {/* Individual Highlight Run Stats */}
-          {highlight && (
-            <>
-              <Text style={styles.sectionHeader}>Best Run</Text>
-              <Card key={highlight.averagePace.quantity} style={styles.statCard}>
-                <Card.Content>
-                  <Text style={styles.statLabel}>Average Pace</Text>
-                  <Text style={styles.statValue}>{highlight.prettyPace}</Text>
-                </Card.Content>
-              </Card>
-            </>
-          )}
-        </ScrollView>
-      )}
+      <GroupStats group={selectedGroup} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   spinnerContainer: {
     flex: 1,
     justifyContent: 'center',

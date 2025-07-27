@@ -111,3 +111,18 @@ export const findLongestRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
     return prev.totalDistance.quantity >= curr.totalDistance.quantity ? prev : curr;
   });
 };
+
+/**
+ * Finds the run with the shortest distance from an array of runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The run with the shortest distance, or undefined if no valid runs
+ */
+export const findShortestRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
+  return runs.reduce((prev, curr) => {
+    if (!prev || !curr || !prev.totalDistance || !curr.totalDistance) {
+      return prev || curr;
+    }
+
+    return prev.totalDistance.quantity <= curr.totalDistance.quantity ? prev : curr;
+  });
+};
