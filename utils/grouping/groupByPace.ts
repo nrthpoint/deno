@@ -5,6 +5,7 @@ import {
 } from '@/types/workout';
 import { newQuantity, sumQuantities } from '@/utils/quantity';
 import { findLongestRun, findShortestRun } from '@/utils/workout';
+import { formatDuration } from '@/utils/time';
 
 export const groupRunsByPace = (
   runs: readonly ExtendedWorkout[],
@@ -13,12 +14,6 @@ export const groupRunsByPace = (
   const grouped: WorkoutGroupWithHighlightSet = {};
 
   for (const run of runs) {
-    // Check if run has averagePace property
-    if (!run.averagePace || !run.totalDistance) {
-      continue;
-    }
-
-    // Round to nearest whole minute pace (e.g., 7.3 min/mile -> 7 min/mile)
     const nearestMinutePace = Math.round(run.averagePace.quantity);
     const isCloseEnough = Math.abs(run.averagePace.quantity - nearestMinutePace) <= tolerance;
 
@@ -76,7 +71,7 @@ export const groupRunsByPace = (
       {
         type: 'duration',
         label: 'Total Duration',
-        value: `${group.highlight.duration.quantity.toFixed(2)} ${group.highlight.duration.unit}`,
+        value: formatDuration(group.highlight.duration.quantity),
       },
     ];
   }

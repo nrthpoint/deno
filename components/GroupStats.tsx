@@ -1,4 +1,3 @@
-import { styles } from '@/app/(tabs)';
 import { WorkoutGroupWithHighlight } from '@/types/workout';
 import { ScrollView } from 'react-native';
 import { Card, Text } from 'react-native-paper';
@@ -36,4 +35,33 @@ export const GroupStats = ({ group }: { group: WorkoutGroupWithHighlight }) => {
       ))}
     </ScrollView>
   );
+};
+
+const styles = {
+  statList: {
+    backgroundColor: '#0A0A0A',
+    flex: 1,
+    paddingHorizontal: 10,
+    paddingTop: 20,
+  },
+  sectionHeader: {
+    color: '#fff',
+    fontSize: 18,
+    marginTop: 20,
+    marginBottom: 10,
+    paddingHorizontal: 5,
+  },
+  statCard: {
+    backgroundColor: '#1C1C1C',
+    marginVertical: 10,
+  },
+  statLabel: {
+    color: '#ccc',
+    fontSize: 14,
+    letterSpacing: 1,
+  },
+  statValue: {
+    fontSize: 28,
+    color: '#fff',
+  },
 };

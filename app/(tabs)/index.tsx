@@ -7,7 +7,7 @@ import {
 } from '@kingstinct/react-native-healthkit';
 import { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Button, Text, useTheme } from 'react-native-paper';
+import { ActivityIndicator, Button, Text } from 'react-native-paper';
 import Carousel from 'react-native-reanimated-carousel';
 
 const saveableWorkoutStuff: readonly ObjectTypeIdentifier[] = [
@@ -16,6 +16,11 @@ const saveableWorkoutStuff: readonly ObjectTypeIdentifier[] = [
 ];
 
 const tabOptions: GroupType[] = ['pace', 'distance'];
+const tabColours: Record<GroupType, string> = {
+  pace: '#1E5FD2',
+  distance: '#FF5722',
+  weather: '#4CAF50',
+};
 
 export default function Index() {
   const [authorizationStatus, requestAuthorization] =
@@ -30,7 +35,6 @@ export default function Index() {
     groupType,
   });
   const [selectedOption, setSelectedOption] = useState<string>('');
-  const theme = useTheme();
 
   // Auto-select the first group when groups are loaded or groupType changes
   useEffect(() => {
@@ -44,11 +48,7 @@ export default function Index() {
   if (authorizationStatus !== 2) {
     return (
       <View style={styles.spinnerContainer}>
-        <Button
-          mode="contained"
-          onPress={requestAuthorization}
-          style={{ backgroundColor: theme.colors.primary }}
-        >
+        <Button mode="contained" onPress={requestAuthorization}>
           Request HealthKit Authorization
         </Button>
       </View>
@@ -64,8 +64,6 @@ export default function Index() {
   }
 
   const options = Object.keys(groups);
-
-  // If no option is selected and we have groups, select the first one
   const actualSelectedOption = selectedOption || options[0];
   const selectedGroup = groups[actualSelectedOption];
 
@@ -77,10 +75,11 @@ export default function Index() {
     );
   }
 
-  const itemSuffix = selectedGroup?.suffix || ' mi';
+  const itemSuffix = selectedGroup.suffix || '';
+  const currentTabColor = tabColours[groupType];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: currentTabColor }]}>
       <Carousel
         loop={false}
         width={180}
@@ -96,7 +95,7 @@ export default function Index() {
         }}
         renderItem={({ item }) => (
           <View style={styles.carouselItem}>
-            <Text style={styles.carouselText}>
+            <Text style={[styles.carouselText, { color: currentTabColor }]}>
               {item}
               {itemSuffix}
             </Text>
@@ -108,9 +107,14 @@ export default function Index() {
         {tabOptions.map((tab) => (
           <Button
             key={tab}
-            mode={groupType === tab ? 'contained' : 'outlined'}
+            mode="contained"
             onPress={() => setGroupingType(tab)}
             style={styles.tabButton}
+            labelStyle={[
+              styles.tabButtonText,
+              { color: groupType === tab ? currentTabColor : '#FFFFFF' },
+            ]}
+            buttonColor={groupType === tab ? '#FFFFFF' : 'rgba(255, 255, 255, 0.2)'}
           >
             {tab}
           </Button>
@@ -131,7 +135,6 @@ export const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#002B75',
     paddingTop: 60,
   },
   carousel: {
@@ -143,7 +146,6 @@ export const styles = StyleSheet.create({
   carouselItem: {
     width: 140,
     height: 150,
-    borderWidth: 2,
     marginHorizontal: 8,
     borderRadius: 20,
     backgroundColor: '#FFF',
@@ -154,9 +156,11 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   carouselText: {
-    fontSize: 50,
+    verticalAlign: 'middle',
+    lineHeight: 140,
+    textAlign: 'center',
+    fontSize: 80,
     fontWeight: 'bold',
-    color: '#002B75',
     fontFamily: 'OrelegaOne',
   },
   activeText: {
@@ -171,33 +175,11 @@ export const styles = StyleSheet.create({
   tabButton: {
     flex: 1,
     marginHorizontal: 5,
+    borderRadius: 5,
   },
-  statList: {
-    backgroundColor: '#0A0A0A',
-    flex: 1,
-    paddingHorizontal: 10,
-    paddingTop: 20,
-  },
-  sectionHeader: {
-    color: '#fff',
-    fontSize: 18,
+  tabButtonText: {
+    textTransform: 'uppercase',
+    letterSpacing: 2,
     fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 10,
-    paddingHorizontal: 5,
-  },
-  statCard: {
-    backgroundColor: '#1C1C1C',
-    marginVertical: 10,
-  },
-  statLabel: {
-    color: '#ccc',
-    fontSize: 14,
-    letterSpacing: 1,
-  },
-  statValue: {
-    fontSize: 28,
-    color: '#fff',
-    fontFamily: 'OrelegaOne',
   },
 });
