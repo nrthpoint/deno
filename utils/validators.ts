@@ -1,8 +1,6 @@
-import { WorkoutActivityType } from "@kingstinct/react-native-healthkit";
+import { WorkoutActivityType } from '@kingstinct/react-native-healthkit';
 
-export const validateWorkoutActivityType = (
-  value: string
-): WorkoutActivityType | null => {
+export const validateWorkoutActivityType = (value: string): WorkoutActivityType | null => {
   const validValues = Object.values(WorkoutActivityType) as string[];
 
   if (validValues.includes(value)) {

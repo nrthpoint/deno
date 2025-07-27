@@ -84,12 +84,12 @@ describe('Time Utilities', () => {
     it('should handle unsupported unit and log warning', () => {
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
       const input: Quantity = { unit: 'unknown' as any, quantity: 100 };
-      
+
       const result = convertDurationToMinutes(input);
-      
+
       expect(result).toBe(0);
       expect(consoleSpy).toHaveBeenCalledWith('Unsupported duration unit:', 'unknown');
-      
+
       consoleSpy.mockRestore();
     });
   });

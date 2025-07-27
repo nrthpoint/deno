@@ -1,11 +1,11 @@
-import { Quantity } from "@kingstinct/react-native-healthkit";
+import { Quantity } from '@kingstinct/react-native-healthkit';
 
 export function metersToMiles(m: Quantity): Quantity {
   const newUnit = {
     ...m,
   };
 
-  newUnit.unit = "mi";
+  newUnit.unit = 'mi';
   newUnit.quantity = m.quantity * 0.000621371; // Convert meters to miles
 
   return newUnit;
@@ -16,7 +16,7 @@ export function metersToKilometers(m: Quantity): Quantity {
     ...m,
   };
 
-  newUnit.unit = "km";
+  newUnit.unit = 'km';
   newUnit.quantity = m.quantity / 1000; // Convert meters to kilometers
 
   return newUnit;
