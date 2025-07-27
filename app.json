@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "deno",
+    "name": "Deno",
     "slug": "deno",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "deno",
@@ -10,15 +10,21 @@
     "newArchEnabled": true,
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.deno"
+      "supportsTablet": false,
+      "bundleIdentifier": "com.nrthpoint.deno",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSHealthShareUsageDescription": "This app needs access to HealthKit data to track and analyze your workout activities, including distance, duration, and pace information.",
+        "NSHealthUpdateUsageDescription": "This app needs to write workout data to HealthKit to keep your fitness information synchronized across devices."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.nrthpoint.deno"
     },
     "web": {
       "bundler": "metro",
@@ -36,10 +42,25 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "@kingstinct/react-native-healthkit"
+      [
+        "@kingstinct/react-native-healthkit",
+        {
+          "NSHealthShareUsageDescription": "Your own custom usage description",
+          "NSHealthUpdateUsageDescription": "Your own custom usage description",
+          "background": true
+        }
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9f72da41-06ea-4062-a451-99638abf36cb"
+      }
+    },
+    "owner": "nrthpoint"
   }
 }

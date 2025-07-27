@@ -1,0 +1,43 @@
+{
+  "cli": {
+    "version": ">= 12.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "simulator": false
+      }
+    },
+    "production": {
+      "ios": {
+        "autoIncrement": true,
+        "simulator": false
+      },
+      "android": {
+        "autoIncrement": true
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "harry@kind.dev",
+        "ascAppId": "6749207709",
+        "appleTeamId": "NT8LT6F69W"
+      },
+      "android": {
+        "serviceAccountKeyPath": "../google-service-account.json",
+        "track": "internal"
+      }
+    }
+  }
+}
