@@ -6,13 +6,19 @@ export const formatDuration = (duration: number) => {
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
 
-  return [
+  const result = [
     hours > 0 ? `${hours}hr` : null,
     minutes > 0 ? `${minutes}min` : null,
     seconds > 0 ? `${seconds}s` : null,
   ]
     .filter(Boolean)
     .join(' ');
+
+  if (!result) {
+    return '0sec';
+  }
+
+  return result;
 };
 
 export const convertDurationToMinutes = (duration: Quantity): number => {

@@ -15,9 +15,7 @@
     "check-format": "prettier --check .",
     "prebuild": "expo prebuild",
     "build": "eas build --platform ios",
-    "submit": "eas submit --platform ios",
-    "android": "expo run:android",
-    "ios": "expo run:ios"
+    "submit": "eas submit --platform ios"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",

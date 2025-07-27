@@ -3,7 +3,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { MD3DarkTheme, PaperProvider } from 'react-native-paper';
+import { PaperProvider } from 'react-native-paper';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -11,7 +11,16 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded] = useFonts({
     OrelegaOne: require('../assets/fonts/OrelegaOne-Regular.ttf'),
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    'Lato-Regular': require('../assets/fonts/Lato/Lato-Regular.ttf'),
+    'Lato-Bold': require('../assets/fonts/Lato/Lato-Bold.ttf'),
+    'Lato-Italic': require('../assets/fonts/Lato/Lato-Italic.ttf'),
+    'Lato-BoldItalic': require('../assets/fonts/Lato/Lato-BoldItalic.ttf'),
+    'Lato-Light': require('../assets/fonts/Lato/Lato-Light.ttf'),
+    'Lato-LightItalic': require('../assets/fonts/Lato/Lato-LightItalic.ttf'),
+    'Lato-Black': require('../assets/fonts/Lato/Lato-Black.ttf'),
+    'Lato-BlackItalic': require('../assets/fonts/Lato/Lato-BlackItalic.ttf'),
+    'Lato-Thin': require('../assets/fonts/Lato/Lato-Thin.ttf'),
+    'Lato-ThinItalic': require('../assets/fonts/Lato/Lato-ThinItalic.ttf'),
   });
 
   useEffect(() => {
@@ -25,18 +34,18 @@ export default function RootLayout() {
   }
 
   return (
-    <PaperProvider theme={MD3DarkTheme}>
+    <PaperProvider>
       <SettingsProvider>
         <Stack
           screenOptions={{
             headerShown: false,
             contentStyle: {
               flexGrow: 1,
-              backgroundColor: MD3DarkTheme.colors.background,
+              backgroundColor: '#121212',
             },
           }}
         >
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" />
         </Stack>
       </SettingsProvider>
     </PaperProvider>

@@ -1,67 +1,94 @@
+import { colors } from '@/config/colors';
+import { LatoFonts } from '@/config/fonts';
 import { WorkoutGroupWithHighlight } from '@/types/workout';
-import { ScrollView } from 'react-native';
-import { Card, Text } from 'react-native-paper';
+import { Ionicons } from '@expo/vector-icons';
+import { ScrollView, StyleSheet } from 'react-native';
+import { Text } from 'react-native-paper';
+import { StatCard } from './StatCard';
+import { formatDuration } from '@/utils/time';
+
+const getStatIcon = (label: string) => {
+  const lowerLabel = label.toLowerCase();
+  if (lowerLabel.includes('time') || lowerLabel.includes('duration')) {
+    return <Ionicons name="time" size={40} color="#FFFFFF" />;
+  }
+
+  if (lowerLabel.includes('distance')) {
+    return <Ionicons name="location" size={40} color="#FFFFFF" />;
+  }
+
+  if (lowerLabel.includes('pace') || lowerLabel.includes('speed')) {
+    return <Ionicons name="speedometer" size={40} color="#FFFFFF" />;
+  }
+
+  if (lowerLabel.includes('heart') || lowerLabel.includes('hr')) {
+    return <Ionicons name="heart" size={40} color="#FFFFFF" />;
+  }
+
+  return <Ionicons name="stats-chart" size={40} color="#FFFFFF" />;
+};
 
 export const GroupStats = ({ group }: { group: WorkoutGroupWithHighlight }) => {
   return (
     <ScrollView style={styles.statList}>
-      <Text style={styles.sectionHeader}>Group Statistics</Text>
+      <StatCard
+        icon={<Ionicons name="pie-chart" size={40} color="#FFFFFF" />}
+        label="Percentage of Total Workouts"
+        value={`${group.percentageOfTotalWorkouts?.toFixed(1)}%`}
+        backgroundColor="#2A2A2A"
+        accentColor="#4CAF50"
+        hasTooltip={true}
+        detailTitle="Workout Distribution"
+        detailDescription="This shows what percentage of your total workouts fall into this specific group or category."
+        additionalInfo={[
+          { label: 'Total Workouts in Group', value: '12' },
+          { label: 'Total Workouts Overall', value: '50' },
+          { label: 'Group Ranking', value: '#2 most common' },
+        ]}
+      />
 
-      <Card style={styles.statCard}>
-        <Card.Content>
-          <Text style={styles.statLabel}>Percentage of Total Workouts</Text>
-          <Text style={styles.statValue}>{group.percentageOfTotalWorkouts?.toFixed(1)}%</Text>
-        </Card.Content>
-      </Card>
-
-      <Card style={styles.statCard}>
-        <Card.Content>
-          <Text style={styles.statLabel}>Total Variation</Text>
-          <Text style={styles.statValue}>
-            {group.totalVariation?.quantity?.toFixed(2)} {group.totalVariation?.unit}
-          </Text>
-        </Card.Content>
-      </Card>
+      <StatCard
+        icon={<Ionicons name="trending-up" size={40} color="#FFFFFF" />}
+        label="Total Variation"
+        value={formatDuration(group.totalVariation?.quantity)}
+        backgroundColor="#2A2A2A"
+        accentColor="#FF9800"
+        hasTooltip={true}
+        detailTitle="Performance Variation"
+        detailDescription="The range of performance within this group, showing how consistent your workouts are."
+      />
 
       <Text style={styles.sectionHeader}>Best Run</Text>
 
       {group.stats.map((stat) => (
-        <Card key={stat.label} style={styles.statCard}>
-          <Card.Content>
-            <Text style={styles.statLabel}>{stat.label}</Text>
-            <Text style={styles.statValue}>{stat.value}</Text>
-          </Card.Content>
-        </Card>
+        <StatCard
+          key={stat.label}
+          icon={getStatIcon(stat.label)}
+          label={stat.label}
+          value={stat.value}
+          backgroundColor="#2A2A2A"
+          accentColor="#4d4d4dff"
+        />
       ))}
     </ScrollView>
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   statList: {
-    backgroundColor: '#0A0A0A',
+    backgroundColor: colors.background,
     flex: 1,
     paddingHorizontal: 10,
     paddingTop: 20,
   },
   sectionHeader: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 18,
+    fontFamily: LatoFonts.bold,
     marginTop: 20,
     marginBottom: 10,
     paddingHorizontal: 5,
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
   },
-  statCard: {
-    backgroundColor: '#1C1C1C',
-    marginVertical: 10,
-  },
-  statLabel: {
-    color: '#ccc',
-    fontSize: 14,
-    letterSpacing: 1,
-  },
-  statValue: {
-    fontSize: 28,
-    color: '#fff',
-  },
-};
+});

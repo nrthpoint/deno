@@ -1,24 +1,19 @@
-import { router, Tabs } from 'expo-router';
-import { IconButton, MD3DarkTheme } from 'react-native-paper';
+import { colors } from '@/config/colors';
 import { Ionicons } from '@expo/vector-icons';
+import { router, Tabs } from 'expo-router';
+import { IconButton } from 'react-native-paper';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerStyle: {
-          backgroundColor: MD3DarkTheme.colors.elevation.level2,
-        },
-        headerTintColor: MD3DarkTheme.colors.secondary,
-        headerTitleStyle: {
-          color: MD3DarkTheme.colors.onSurface,
-        },
-        tabBarStyle: { backgroundColor: MD3DarkTheme.colors.elevation.level2 },
+        tabBarStyle: { backgroundColor: colors.background, borderTopColor: '#1C1C1C' },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
+          title: 'Activity',
           headerShown: false,
           tabBarIcon: ({ color, size }) => <Ionicons name="bar-chart" size={size} color={color} />,
           headerRight: () => (
@@ -29,7 +24,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="config"
         options={{
-          headerShown: false,
+          title: 'Settings',
           tabBarIcon: ({ color, size }) => <Ionicons name="settings" size={size} color={color} />,
         }}
       />

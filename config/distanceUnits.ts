@@ -4,12 +4,13 @@ export interface DistanceUnitConfig {
   value: LengthUnit;
   label: string;
   shortLabel: string;
+  enabled?: boolean;
 }
 
 export const DISTANCE_UNIT_OPTIONS: DistanceUnitConfig[] = [
-  { value: 'mi', label: 'Miles', shortLabel: 'mi' },
-  { value: 'km', label: 'Kilometers', shortLabel: 'km' },
-  { value: 'm', label: 'Meters', shortLabel: 'm' },
+  { value: 'mi', label: 'Miles', shortLabel: 'mi', enabled: true },
+  { value: 'km', label: 'Kilometers', shortLabel: 'km', enabled: false },
+  { value: 'm', label: 'Meters', shortLabel: 'm', enabled: false },
 ];
 
 // Helper functions for easy access

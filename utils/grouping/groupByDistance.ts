@@ -66,10 +66,7 @@ export const groupRunsByDistance = (
     const diff = group.worst.duration.quantity - group.highlight.duration.quantity;
     const diffQuantity = newQuantity(Math.abs(diff), group.totalDuration.unit);
 
-    group.totalVariation = {
-      quantity: convertDurationToMinutes(diffQuantity),
-      unit: 'm',
-    };
+    group.totalVariation = diffQuantity;
 
     group.stats = [
       {

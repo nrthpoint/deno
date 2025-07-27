@@ -76,6 +76,8 @@ export default function Index() {
   const itemSuffix = selectedGroup.suffix || '';
   const currentTabColor = tabColours[groupType];
 
+  console.log('Selected Group:', selectedGroup);
+
   return (
     <View style={[styles.container, { backgroundColor: currentTabColor }]}>
       <Carousel
@@ -85,6 +87,7 @@ export default function Index() {
         data={options}
         scrollAnimationDuration={300}
         onSnapToItem={(index) => setSelectedOption(options[index])}
+        snapEnabled={true}
         style={styles.carousel}
         mode="parallax"
         modeConfig={{
@@ -173,7 +176,7 @@ export const styles = StyleSheet.create({
   tabButton: {
     flex: 1,
     marginHorizontal: 5,
-    borderRadius: 5,
+    borderRadius: 15,
   },
   tabButtonText: {
     textTransform: 'uppercase',
