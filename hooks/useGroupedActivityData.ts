@@ -2,9 +2,11 @@ import { WorkoutGroupWithHighlightSet } from '@/types/workout';
 import { groupRunsByDistance } from '@/utils/grouping/groupByDistance';
 import { groupRunsByPace } from '@/utils/grouping/groupByPace';
 import { parseWorkoutSamples } from '@/utils/parser';
+import { newQuantity } from '@/utils/quantity';
 import {
   isProtectedDataAvailable,
   LengthUnit,
+  Quantity,
   queryWorkoutSamples,
   WorkoutActivityType,
 } from '@kingstinct/react-native-healthkit';
@@ -24,6 +26,11 @@ type UseGroupedActivityDataParams = {
   groupType?: GroupType;
 };
 
+export type MetaWorkoutData = {
+  totalRuns: number;
+  totalDistance: Quantity;
+};
+
 export function useGroupedActivityData({
   activityType = WorkoutActivityType.running,
   distanceUnit = 'mi',
@@ -31,6 +38,10 @@ export function useGroupedActivityData({
   groupType = GROUP_TYPES.Distance,
 }: UseGroupedActivityDataParams = {}) {
   const [groups, setGroups] = useState<WorkoutGroupWithHighlightSet>({});
+  const [meta, setMeta] = useState<MetaWorkoutData>({
+    totalRuns: 0,
+    totalDistance: { quantity: 0, unit: distanceUnit },
+  });
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -58,7 +69,23 @@ export function useGroupedActivityData({
           },
         });
 
-        const convertedRuns = parseWorkoutSamples({ samples, distanceUnit });
+        // Filter samples by activity type if specified
+        const filteredSamples = samples.filter((sample) => {
+          return !activityType || sample.workoutActivityType === activityType;
+        });
+
+        setMeta({
+          totalRuns: filteredSamples.length,
+          totalDistance: newQuantity(
+            filteredSamples.reduce(
+              (acc, sample) => acc + (sample?.totalDistance?.quantity ?? 0),
+              0,
+            ),
+            distanceUnit,
+          ),
+        });
+
+        const convertedRuns = parseWorkoutSamples({ samples: filteredSamples, distanceUnit });
 
         if (convertedRuns.length === 0) {
           setGroups({});
@@ -88,5 +115,5 @@ export function useGroupedActivityData({
     fetchRuns();
   }, [distanceUnit, timeRangeInDays, groupType, activityType]);
 
-  return { groups, loading };
+  return { groups, meta, loading };
 }

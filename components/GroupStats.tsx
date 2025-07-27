@@ -6,6 +6,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import { StatCard } from './StatCard';
 import { formatDuration } from '@/utils/time';
+import { MetaWorkoutData } from '@/hooks/useGroupedActivityData';
 
 const getStatIcon = (label: string) => {
   const lowerLabel = label.toLowerCase();
@@ -28,7 +29,13 @@ const getStatIcon = (label: string) => {
   return <Ionicons name="stats-chart" size={40} color="#FFFFFF" />;
 };
 
-export const GroupStats = ({ group }: { group: WorkoutGroupWithHighlight }) => {
+export const GroupStats = ({
+  group,
+  meta,
+}: {
+  group: WorkoutGroupWithHighlight;
+  meta: MetaWorkoutData;
+}) => {
   return (
     <ScrollView style={styles.statList}>
       <StatCard
@@ -39,11 +46,11 @@ export const GroupStats = ({ group }: { group: WorkoutGroupWithHighlight }) => {
         accentColor="#4CAF50"
         hasTooltip={true}
         detailTitle="Workout Distribution"
-        detailDescription="This shows what percentage of your total workouts fall into this specific group or category."
+        detailDescription="This shows what percentage of your total workouts fall into this specific group, for the selected time period."
         additionalInfo={[
-          { label: 'Total Workouts in Group', value: '12' },
-          { label: 'Total Workouts Overall', value: '50' },
-          { label: 'Group Ranking', value: '#2 most common' },
+          { label: 'Total Workouts in Group', value: group.runs.length.toString() },
+          { label: 'Total Workouts Overall', value: meta.totalRuns.toString() },
+          { label: 'Group Ranking', value: `${group.rankSuffix}` },
         ]}
       />
 
@@ -56,6 +63,21 @@ export const GroupStats = ({ group }: { group: WorkoutGroupWithHighlight }) => {
         hasTooltip={true}
         detailTitle="Performance Variation"
         detailDescription="The range of performance within this group, showing how consistent your workouts are."
+      />
+
+      <StatCard
+        icon={<Ionicons name="fitness" size={40} color="#FFFFFF" />}
+        label="Total Runs in Group"
+        value={`${group.runs?.length || 0}`}
+        backgroundColor="#2A2A2A"
+        accentColor="#9C27B0"
+        hasTooltip={true}
+        detailTitle="Group Size"
+        detailDescription="The total number of workout sessions included in this performance group."
+        additionalInfo={[
+          { label: 'Average per Week', value: `${((group.runs?.length || 0) / 4).toFixed(1)}` },
+          { label: 'Group Category', value: group.title || 'Performance Group' },
+        ]}
       />
 
       <Text style={styles.sectionHeader}>Best Run</Text>

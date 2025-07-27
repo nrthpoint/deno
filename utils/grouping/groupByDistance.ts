@@ -4,13 +4,13 @@ import {
   WorkoutGroupWithHighlightSet,
 } from '@/types/workout';
 import { newQuantity, sumQuantities } from '@/utils/quantity';
+import { formatDuration } from '@/utils/time';
 import {
   calculatePaceFromDistanceAndDuration,
-  formatPace,
   findFastestRun,
   findSlowestRun,
+  formatPace,
 } from '@/utils/workout';
-import { convertDurationToMinutes, formatDuration } from '@/utils/time';
 
 // TODO: Tolerance needs to be configurable based on distance unit
 export const groupRunsByDistance = (
@@ -34,6 +34,7 @@ export const groupRunsByDistance = (
     if (!grouped[nearestMile]) {
       grouped[nearestMile] = {
         title: `${nearestMile} ${run.totalDistance?.unit}`,
+        rank: 0, // This will be set later
         suffix: '',
         runs: [],
         highlight: run,
@@ -71,21 +72,50 @@ export const groupRunsByDistance = (
     group.stats = [
       {
         type: 'pace',
-        label: 'Average Pace',
+        label: 'Best Pace',
         value: group.highlight.prettyPace,
       },
       {
+        type: 'pace',
+        label: 'Worst Pace',
+        value: formatPace(group.worst.averagePace),
+      },
+      {
+        type: 'duration',
+        label: 'Fastest Time',
+        value: formatDuration(group.highlight.duration.quantity),
+      },
+      {
+        type: 'duration',
+        label: 'Slowest Run',
+        value: formatDuration(group.worst.duration.quantity),
+      },
+      {
         type: 'distance',
-        label: 'Total Distance',
+        label: 'Cumulative Distance',
         value: `${group.totalDistance.quantity.toFixed(2)} ${group.totalDistance.unit}`,
       },
       {
         type: 'duration',
-        label: 'Total Duration',
+        label: 'Cumulative Duration',
         value: formatDuration(group.totalDuration.quantity),
       },
     ];
   }
+
+  // Set ranks based on the number of runs in each group
+  const sortedGroups = Object.values(grouped).sort((a, b) => b.runs.length - a.runs.length);
+
+  sortedGroups.forEach((group, index) => {
+    group.rank = index + 1;
+    // Add rank suffix for display. Include "least common" for the last group
+    group.rankSuffix =
+      index === sortedGroups.length - 1
+        ? 'Least Common'
+        : index === 0
+          ? 'Most Common'
+          : `${index + 1}th Most Common`;
+  });
 
   return grouped;
 };

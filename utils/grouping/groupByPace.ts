@@ -4,7 +4,7 @@ import {
   WorkoutGroupWithHighlightSet,
 } from '@/types/workout';
 import { newQuantity, sumQuantities } from '@/utils/quantity';
-import { findLongestRun, findShortestRun } from '@/utils/workout';
+import { findLongestRun, findShortestRun, formatPace } from '@/utils/workout';
 import { formatDuration } from '@/utils/time';
 
 export const groupRunsByPace = (
@@ -60,8 +60,33 @@ export const groupRunsByPace = (
     group.stats = [
       {
         type: 'pace',
-        label: 'Average Pace',
+        label: 'Best Pace',
         value: group.highlight.prettyPace,
+      },
+      {
+        type: 'pace',
+        label: 'Worst Pace',
+        value: formatPace(group.worst.averagePace),
+      },
+      {
+        type: 'duration',
+        label: 'Best Duration',
+        value: formatDuration(group.highlight.duration.quantity),
+      },
+      {
+        type: 'duration',
+        label: 'Worst Duration',
+        value: formatDuration(group.worst.duration.quantity),
+      },
+      {
+        type: 'distance',
+        label: 'Best Distance',
+        value: `${group.highlight.totalDistance.quantity.toFixed(2)} ${group.highlight.totalDistance.unit}`,
+      },
+      {
+        type: 'distance',
+        label: 'Worst Distance',
+        value: `${group.worst.totalDistance.quantity.toFixed(2)} ${group.worst.totalDistance.unit}`,
       },
       {
         type: 'distance',

@@ -9,6 +9,8 @@ type HighlightStat = {
 export type WorkoutGroupWithHighlight = {
   title: string;
   suffix: string;
+  rank: number;
+  rankSuffix?: string;
   runs: ExtendedWorkout[];
   // Stats for the group
   percentageOfTotalWorkouts: number;

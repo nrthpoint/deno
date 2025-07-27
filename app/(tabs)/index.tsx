@@ -21,7 +21,7 @@ export default function Index() {
 
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
   const [groupType, setGroupingType] = useState<GroupType>('distance');
-  const { groups, loading } = useGroupedActivityData({
+  const { groups, meta, loading } = useGroupedActivityData({
     activityType,
     distanceUnit,
     timeRangeInDays,
@@ -76,8 +76,6 @@ export default function Index() {
   const itemSuffix = selectedGroup.suffix || '';
   const currentTabColor = tabColours[groupType];
 
-  console.log('Selected Group:', selectedGroup);
-
   return (
     <View style={[styles.container, { backgroundColor: currentTabColor }]}>
       <Carousel
@@ -122,7 +120,7 @@ export default function Index() {
         ))}
       </View>
 
-      <GroupStats group={selectedGroup} />
+      <GroupStats group={selectedGroup} meta={meta} />
     </View>
   );
 }
