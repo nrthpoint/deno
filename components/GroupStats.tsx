@@ -1,12 +1,13 @@
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { WorkoutGroupWithHighlight } from '@/types/workout';
-import { Ionicons } from '@expo/vector-icons';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Text } from 'react-native-paper';
-import { StatCard } from './StatCard';
-import { formatDuration } from '@/utils/time';
 import { MetaWorkoutData } from '@/hooks/useGroupedActivityData';
+import { WorkoutGroupWithHighlight } from '@/types/workout';
+import { formatDuration } from '@/utils/time';
+import { Ionicons } from '@expo/vector-icons';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { HalfMoonProgress } from './HalfMoonProgress';
+import { StatCard } from './StatCard';
+import { VariationBar } from './VariationBar';
 
 const getStatIcon = (label: string) => {
   const lowerLabel = label.toLowerCase();
@@ -32,66 +33,93 @@ const getStatIcon = (label: string) => {
 export const GroupStats = ({
   group,
   meta,
+  tabColour,
 }: {
   group: WorkoutGroupWithHighlight;
   meta: MetaWorkoutData;
+  tabColour?: string;
 }) => {
   return (
     <ScrollView style={styles.statList}>
-      <StatCard
-        icon={<Ionicons name="pie-chart" size={40} color="#FFFFFF" />}
-        label="Percentage of Total Workouts"
-        value={`${group.percentageOfTotalWorkouts?.toFixed(1)}%`}
-        backgroundColor="#2A2A2A"
-        accentColor="#4CAF50"
-        hasTooltip={true}
-        detailTitle="Workout Distribution"
-        detailDescription="This shows what percentage of your total workouts fall into this specific group, for the selected time period."
-        additionalInfo={[
-          { label: 'Total Workouts in Group', value: group.runs.length.toString() },
-          { label: 'Total Workouts Overall', value: meta.totalRuns.toString() },
-          { label: 'Group Ranking', value: `${group.rankSuffix}` },
-        ]}
-      />
+      {/* Visual cards row - side by side */}
+      <View style={styles.visualCardsRow}>
+        <View style={styles.visualCardHalf}>
+          <HalfMoonProgress
+            value={group.runs.length}
+            total={meta.totalRuns}
+            color={tabColour || '#4CAF50'}
+            label="of Total Workouts"
+            size={100}
+            hasTooltip={true}
+            detailTitle="Workout Distribution"
+            detailDescription="This shows what percentage of your total workouts fall into this specific group, for the selected time period."
+            additionalInfo={[
+              { label: 'Total Workouts in Group', value: group.runs.length.toString() },
+              { label: 'Total Workouts Overall', value: meta.totalRuns.toString() },
+              { label: 'Group Ranking', value: `${group.rankSuffix}` },
+            ]}
+          />
+        </View>
 
-      <StatCard
-        icon={<Ionicons name="trending-up" size={40} color="#FFFFFF" />}
-        label="Total Variation"
-        value={formatDuration(group.totalVariation?.quantity)}
-        backgroundColor="#2A2A2A"
-        accentColor="#FF9800"
-        hasTooltip={true}
-        detailTitle="Performance Variation"
-        detailDescription="The range of performance within this group, showing how consistent your workouts are."
-      />
+        <View style={styles.visualCardHalf}>
+          <VariationBar
+            values={[
+              {
+                value: group.worst.duration.quantity,
+                displayText: formatDuration(group.worst.duration.quantity),
+              },
+              {
+                value: group.highlight.duration.quantity,
+                displayText: formatDuration(group.highlight.duration.quantity),
+              },
+            ]}
+            color="#FF9800"
+            label="Duration Variation"
+            width={170}
+            hasTooltip={true}
+            detailTitle="Performance Variation"
+            detailDescription="The range of performance within this group, showing how consistent your workouts are."
+            additionalInfo={[
+              { label: 'Best Time', value: formatDuration(group.highlight.duration.quantity) },
+              { label: 'Worst Time', value: formatDuration(group.worst.duration.quantity) },
+              {
+                label: 'Variation Range',
+                value: formatDuration(
+                  Math.abs(group.worst.duration.quantity - group.highlight.duration.quantity),
+                ),
+              },
+            ]}
+          />
+        </View>
+      </View>
 
-      <StatCard
-        icon={<Ionicons name="fitness" size={40} color="#FFFFFF" />}
-        label="Total Runs in Group"
-        value={`${group.runs?.length || 0}`}
-        backgroundColor="#2A2A2A"
-        accentColor="#9C27B0"
-        hasTooltip={true}
-        detailTitle="Group Size"
-        detailDescription="The total number of workout sessions included in this performance group."
-        additionalInfo={[
-          { label: 'Average per Week', value: `${((group.runs?.length || 0) / 4).toFixed(1)}` },
-          { label: 'Group Category', value: group.title || 'Performance Group' },
-        ]}
-      />
-
-      <Text style={styles.sectionHeader}>Best Run</Text>
-
-      {group.stats.map((stat) => (
+      <View style={styles.container}>
         <StatCard
-          key={stat.label}
-          icon={getStatIcon(stat.label)}
-          label={stat.label}
-          value={stat.value}
+          icon={<Ionicons name="fitness" size={40} color="#FFFFFF" />}
+          label="Total Runs in Group"
+          value={`${group.runs?.length || 0}`}
           backgroundColor="#2A2A2A"
-          accentColor="#4d4d4dff"
+          accentColor="#9C27B0"
+          hasTooltip={true}
+          detailTitle="Group Size"
+          detailDescription="The total number of workout sessions included in this performance group."
+          additionalInfo={[
+            { label: 'Average per Week', value: `${((group.runs?.length || 0) / 4).toFixed(1)}` },
+            { label: 'Group Category', value: group.title || 'Performance Group' },
+          ]}
         />
-      ))}
+
+        {group.stats.map((stat) => (
+          <StatCard
+            key={stat.label}
+            icon={getStatIcon(stat.label)}
+            label={stat.label}
+            value={stat.value}
+            backgroundColor="#2A2A2A"
+            accentColor="#4d4d4dff"
+          />
+        ))}
+      </View>
     </ScrollView>
   );
 };
@@ -100,8 +128,33 @@ const styles = StyleSheet.create({
   statList: {
     backgroundColor: colors.background,
     flex: 1,
-    paddingHorizontal: 10,
+  },
+  container: {
+    flex: 1,
+    padding: 10,
+    paddingVertical: 0,
+  },
+  visualCardsRow: {
+    flexDirection: 'row',
+    gap: 18,
+    padding: 10,
     paddingTop: 20,
+    paddingBottom: 10,
+  },
+  visualCardHalf: {
+    backgroundColor: '#2A2A2A',
+    borderRadius: 12,
+    paddingVertical: 16,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  visualCard: {
+    backgroundColor: '#2A2A2A',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 12,
+    marginHorizontal: 5,
   },
   sectionHeader: {
     color: '#FFFFFF',

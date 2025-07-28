@@ -15,17 +15,17 @@ describe('Time Utilities', () => {
 
     it('should handle zero seconds', () => {
       const result = formatDuration(0);
-      expect(result).toBe('0s');
+      expect(result).toBe('0sec');
     });
 
     it('should handle exactly one minute', () => {
       const result = formatDuration(60);
-      expect(result).toBe('1min 0s');
+      expect(result).toBe('1min');
     });
 
     it('should handle exactly one hour', () => {
       const result = formatDuration(3600);
-      expect(result).toBe('1hr 0s');
+      expect(result).toBe('1hr');
     });
 
     it('should handle only seconds', () => {

@@ -120,7 +120,7 @@ export default function Index() {
         ))}
       </View>
 
-      <GroupStats group={selectedGroup} meta={meta} />
+      <GroupStats group={selectedGroup} meta={meta} tabColour={currentTabColor} />
     </View>
   );
 }
