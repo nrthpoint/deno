@@ -1,33 +1,69 @@
 import { LatoFonts } from '@/config/fonts';
+import { convertDurationToMinutes } from '@/utils/time';
+import { formatPace } from '@/utils/workout';
 import { Ionicons } from '@expo/vector-icons';
+import { Quantity } from '@kingstinct/react-native-healthkit';
 import React, { useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
+import { StatCardProps } from './StatCard.types';
 
-interface StatCardProps {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  backgroundColor?: string;
-  accentColor?: string;
-  detailTitle?: string;
-  detailDescription?: string;
-  additionalInfo?: { label: string; value: string }[];
-  hasTooltip?: boolean;
-}
+const formatQuantityValue = (
+  value: Quantity,
+  type?: string,
+): { displayValue: string; unit: string } => {
+  if (!value || value.quantity === undefined || value.quantity === null) {
+    return { displayValue: '0', unit: value?.unit || '' };
+  }
 
-export const StatCard: React.FC<StatCardProps> = ({
-  icon,
-  label,
-  value,
-  backgroundColor = '#2A2A2A',
-  accentColor = '#1C1C1C',
-  detailTitle,
-  detailDescription,
-  additionalInfo,
-  hasTooltip = false,
-}) => {
+  switch (type) {
+    case 'pace':
+      const paceFormatted = formatPace(value);
+
+      // Extract the time part and unit part from formatted pace (e.g., "6:30 min/mi")
+      const paceMatch = paceFormatted.match(/^(\d+:\d+)\s*(.*)$/);
+
+      if (paceMatch) {
+        return { displayValue: paceMatch[1], unit: paceMatch[2] || value.unit };
+      }
+
+      return { displayValue: paceFormatted, unit: '' };
+
+    case 'duration':
+      const durationInMinutes = convertDurationToMinutes(value);
+      return { displayValue: `${durationInMinutes}`, unit: 'min' };
+
+    case 'distance':
+      return {
+        displayValue: value.quantity.toFixed(2),
+        unit: value.unit || '',
+      };
+
+    default:
+      return {
+        displayValue: value.quantity.toString(),
+        unit: value.unit || '',
+      };
+  }
+};
+
+export const StatCard: React.FC<StatCardProps> = ({ stat }) => {
   const [modalVisible, setModalVisible] = useState(false);
+
+  const {
+    icon,
+    label,
+    value,
+    type = 'default',
+    backgroundColor = '#2A2A2A',
+    accentColor = '#1e1e1eff',
+    detailTitle,
+    detailDescription,
+    additionalInfo,
+    hasTooltip = false,
+  } = stat;
+
+  const { displayValue, unit } = formatQuantityValue(value, type);
 
   const handlePress = () => {
     if (hasTooltip) {
@@ -43,14 +79,17 @@ export const StatCard: React.FC<StatCardProps> = ({
 
       <View style={styles.content}>
         <Text style={styles.label}>{label}</Text>
-        <Text style={styles.value}>{value}</Text>
+        <View style={styles.valueContainer}>
+          <Text style={styles.value}>{displayValue}</Text>
+          {unit && <Text style={styles.unit}>{unit}</Text>}
+        </View>
       </View>
 
-      {hasTooltip && (
+      {/* {hasTooltip && (
         <View style={styles.infoButton}>
           <Ionicons name="information-circle" size={20} color="#FFFFFF" />
         </View>
-      )}
+      )} */}
     </View>
   );
 
@@ -78,7 +117,10 @@ export const StatCard: React.FC<StatCardProps> = ({
                 <Text style={styles.modalTitle}>{detailTitle || label}</Text>
               </View>
 
-              <Text style={styles.modalValue}>{value}</Text>
+              <View style={styles.modalValueContainer}>
+                <Text style={styles.modalValue}>{displayValue}</Text>
+                {unit && <Text style={styles.modalUnit}>{unit}</Text>}
+              </View>
 
               {detailDescription && (
                 <Text style={styles.modalDescription}>{detailDescription}</Text>
@@ -115,7 +157,7 @@ export const StatCard: React.FC<StatCardProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    borderRadius: 12,
+    borderRadius: 4,
     marginVertical: 8,
     overflow: 'hidden',
     elevation: 2,
@@ -152,12 +194,24 @@ const styles = StyleSheet.create({
     letterSpacing: 1.6,
     marginBottom: 8,
   },
+  valueContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 4,
+  },
   value: {
     fontSize: 24,
     color: '#FFFFFF',
     fontFamily: LatoFonts.bold,
     textTransform: 'uppercase',
     fontWeight: '700',
+  },
+  unit: {
+    fontSize: 14,
+    color: '#CCCCCC',
+    fontFamily: LatoFonts.regular,
+    marginBottom: 2,
+    textTransform: 'uppercase',
   },
   infoButton: {
     position: 'absolute',
@@ -216,12 +270,23 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1.2,
   },
+  modalValueContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    gap: 6,
+    marginBottom: 16,
+  },
   modalValue: {
     fontSize: 32,
     color: '#FFFFFF',
     fontFamily: LatoFonts.bold,
-    textAlign: 'center',
-    marginBottom: 16,
+  },
+  modalUnit: {
+    fontSize: 18,
+    color: '#CCCCCC',
+    fontFamily: LatoFonts.regular,
+    marginBottom: 4,
   },
   modalDescription: {
     fontSize: 14,

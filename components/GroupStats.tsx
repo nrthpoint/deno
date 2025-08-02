@@ -1,12 +1,12 @@
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { MetaWorkoutData } from '@/hooks/useGroupedActivityData';
-import { WorkoutGroupWithHighlight } from '@/types/workout';
+import { MetaWorkoutData, WorkoutGroupWithHighlight } from '@/types/workout';
 import { formatDuration } from '@/utils/time';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { HalfMoonProgress } from './HalfMoonProgress';
-import { StatCard } from './StatCard';
+import { StatCard } from './StatCard/StatCard';
+import { Stat } from './StatCard/StatCard.types';
 import { VariationBar } from './VariationBar';
 
 const getStatIcon = (label: string) => {
@@ -30,6 +30,28 @@ const getStatIcon = (label: string) => {
   return <Ionicons name="stats-chart" size={40} color="#FFFFFF" />;
 };
 
+const createGroupSizeStat = (group: WorkoutGroupWithHighlight): Stat => ({
+  type: 'default',
+  label: 'Total Runs in Group',
+  value: { quantity: group.runs?.length || 0, unit: 'runs' },
+  icon: <Ionicons name="fitness" size={40} color="#FFFFFF" />,
+  hasTooltip: true,
+  detailTitle: 'Group Size',
+  detailDescription: 'The total number of workout sessions included in this performance group.',
+  additionalInfo: [
+    { label: 'Average per Week', value: `${((group.runs?.length || 0) / 4).toFixed(1)}` },
+    { label: 'Group Category', value: group.title || 'Performance Group' },
+  ],
+});
+
+const enhanceStatWithDefaults = (stat: any): Stat => ({
+  type: stat.type || 'default',
+  label: stat.label,
+  value: stat.value,
+  icon: getStatIcon(stat.label),
+  hasTooltip: false,
+});
+
 export const GroupStats = ({
   group,
   meta,
@@ -41,8 +63,12 @@ export const GroupStats = ({
 }) => {
   return (
     <ScrollView style={styles.statList}>
-      {/* Visual cards row - side by side */}
-      <View style={styles.visualCardsRow}>
+      <View
+        style={[
+          styles.visualCardsRow,
+          { backgroundColor: tabColour ? `${tabColour}80` : undefined },
+        ]}
+      >
         <View style={styles.visualCardHalf}>
           <HalfMoonProgress
             value={group.runs.length}
@@ -56,7 +82,7 @@ export const GroupStats = ({
             additionalInfo={[
               { label: 'Total Workouts in Group', value: group.runs.length.toString() },
               { label: 'Total Workouts Overall', value: meta.totalRuns.toString() },
-              { label: 'Group Ranking', value: `${group.rankSuffix}` },
+              { label: 'Group Ranking', value: `${group.rankLabel}` },
             ]}
           />
         </View>
@@ -94,30 +120,10 @@ export const GroupStats = ({
       </View>
 
       <View style={styles.container}>
-        <StatCard
-          icon={<Ionicons name="fitness" size={40} color="#FFFFFF" />}
-          label="Total Runs in Group"
-          value={`${group.runs?.length || 0}`}
-          backgroundColor="#2A2A2A"
-          accentColor="#9C27B0"
-          hasTooltip={true}
-          detailTitle="Group Size"
-          detailDescription="The total number of workout sessions included in this performance group."
-          additionalInfo={[
-            { label: 'Average per Week', value: `${((group.runs?.length || 0) / 4).toFixed(1)}` },
-            { label: 'Group Category', value: group.title || 'Performance Group' },
-          ]}
-        />
+        <StatCard stat={createGroupSizeStat(group)} />
 
         {group.stats.map((stat) => (
-          <StatCard
-            key={stat.label}
-            icon={getStatIcon(stat.label)}
-            label={stat.label}
-            value={stat.value}
-            backgroundColor="#2A2A2A"
-            accentColor="#4d4d4dff"
-          />
+          <StatCard key={stat.label} stat={enhanceStatWithDefaults(stat)} />
         ))}
       </View>
     </ScrollView>
@@ -138,11 +144,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 18,
     padding: 10,
-    paddingTop: 20,
-    paddingBottom: 10,
+    marginBottom: 10,
   },
   visualCardHalf: {
-    backgroundColor: '#2A2A2A',
+    //backgroundColor: '#2A2A2A',
     borderRadius: 12,
     paddingVertical: 16,
     flex: 1,

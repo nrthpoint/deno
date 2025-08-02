@@ -1,22 +1,20 @@
-import { WorkoutGroupWithHighlightSet } from '@/types/workout';
-import { groupRunsByDistance } from '@/utils/grouping/groupByDistance';
-import { groupRunsByPace } from '@/utils/grouping/groupByPace';
+import { MetaWorkoutData, WorkoutGroupWithHighlightSet } from '@/types/workout';
+import { groupRunsByDistance } from '@/utils/grouping/distance/groupByDistance';
+import { groupRunsByPace } from '@/utils/grouping/pace/groupByPace';
 import { parseWorkoutSamples } from '@/utils/parser';
 import { newQuantity } from '@/utils/quantity';
 import {
   isProtectedDataAvailable,
   LengthUnit,
-  Quantity,
   queryWorkoutSamples,
   WorkoutActivityType,
 } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from 'react';
 
-export type GroupType = 'distance' | 'pace' | 'weather';
+export type GroupType = 'distance' | 'pace';
 export const GROUP_TYPES = {
   Distance: 'distance' as GroupType,
   Pace: 'pace' as GroupType,
-  Weather: 'weather' as GroupType,
 };
 
 type UseGroupedActivityDataParams = {
@@ -24,11 +22,6 @@ type UseGroupedActivityDataParams = {
   distanceUnit?: LengthUnit;
   timeRangeInDays?: number;
   groupType?: GroupType;
-};
-
-export type MetaWorkoutData = {
-  totalRuns: number;
-  totalDistance: Quantity;
 };
 
 export function useGroupedActivityData({
@@ -50,6 +43,8 @@ export function useGroupedActivityData({
         setLoading(true);
         const authorized = await isProtectedDataAvailable();
 
+        console.log('HealthKit Authorization Status:', authorized);
+
         if (!authorized) {
           console.log('Authorization not granted');
           setLoading(false);
@@ -60,7 +55,7 @@ export function useGroupedActivityData({
         const endDate = new Date();
 
         // TODO: Filtering by activity type is not working as expected
-        const samples = await queryWorkoutSamples({
+        const originalSamples = await queryWorkoutSamples({
           ascending: false,
           limit: 10000,
           filter: {
@@ -69,8 +64,10 @@ export function useGroupedActivityData({
           },
         });
 
+        console.log(`Fetched ${originalSamples.length} samples from HealthKit`);
+
         // Filter samples by activity type if specified
-        const filteredSamples = samples.filter((sample) => {
+        const filteredSamples = originalSamples.filter((sample) => {
           return !activityType || sample.workoutActivityType === activityType;
         });
 
@@ -85,9 +82,9 @@ export function useGroupedActivityData({
           ),
         });
 
-        const convertedRuns = parseWorkoutSamples({ samples: filteredSamples, distanceUnit });
+        const samples = parseWorkoutSamples({ samples: filteredSamples, distanceUnit });
 
-        if (convertedRuns.length === 0) {
+        if (samples.length === 0) {
           setGroups({});
           setLoading(false);
 
@@ -96,13 +93,13 @@ export function useGroupedActivityData({
 
         switch (groupType) {
           case GROUP_TYPES.Distance:
-            setGroups(groupRunsByDistance(convertedRuns));
+            setGroups(groupRunsByDistance({ samples }));
             break;
           case GROUP_TYPES.Pace:
-            setGroups(groupRunsByPace(convertedRuns));
+            setGroups(groupRunsByPace({ samples }));
             break;
           default:
-            setGroups(groupRunsByDistance(convertedRuns));
+            setGroups(groupRunsByDistance({ samples }));
             break;
         }
       } catch (error) {

@@ -85,7 +85,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
             y={(height - barHeight) / 2}
             width={width - 2 * margin}
             height={barHeight}
-            fill="#f0f0f0"
+            fill="#ffffff25"
             rx={barHeight / 2}
           />
 
@@ -95,7 +95,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
             y={(height - barHeight) / 2}
             width={width - 2 * margin}
             height={barHeight}
-            fill={color}
+            fill={`#ffffff25`}
             opacity={0.3}
             rx={barHeight / 2}
           />
@@ -106,7 +106,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
             y1={(height - barHeight) / 2 - 5}
             x2={avgPosition}
             y2={(height + barHeight) / 2 + 5}
-            stroke={color}
+            stroke={`#fff`}
             strokeWidth={3}
             strokeLinecap="round"
           />
@@ -116,17 +116,17 @@ export const VariationBar: React.FC<VariationBarProps> = ({
       <View style={styles.textContainer}>
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: color }]}>{getDisplayValue(min)}</Text>
+            <Text style={[styles.statValue]}>{getDisplayValue(min)}</Text>
             <Text style={styles.statLabel}>Min</Text>
           </View>
 
           {/* <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: color }]}>{getDisplayValue(average)}</Text>
+            <Text style={[styles.statValue]}>{getDisplayValue(average)}</Text>
             <Text style={styles.statLabel}>Avg</Text>
           </View> */}
 
           <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: color }]}>{getDisplayValue(max)}</Text>
+            <Text style={[styles.statValue]}>{getDisplayValue(max)}</Text>
             <Text style={styles.statLabel}>Max</Text>
           </View>
         </View>
@@ -134,11 +134,11 @@ export const VariationBar: React.FC<VariationBarProps> = ({
         <Text style={styles.labelText}>{label}</Text>
       </View>
 
-      {hasTooltip && (
+      {/* {hasTooltip && (
         <View style={styles.infoButton}>
           <Ionicons name="information-circle" size={16} color="#FFFFFF" />
         </View>
-      )}
+      )} */}
     </View>
   );
 
@@ -233,20 +233,24 @@ const styles = StyleSheet.create({
   },
   statValue: {
     fontSize: 14,
+    color: '#FFFFFF',
     fontWeight: 'bold',
+    textTransform: 'uppercase',
     ...getLatoFont('bold'),
   },
   statLabel: {
     fontSize: 10,
-    color: '#666',
+    color: '#ffffff',
+    textTransform: 'uppercase',
     ...getLatoFont('regular'),
   },
   labelText: {
     fontSize: 12,
-    color: '#666',
+    color: '#ffffff',
     textAlign: 'center',
     textTransform: 'uppercase',
     letterSpacing: 1.4,
+    marginTop: 4,
     ...getLatoFont('regular'),
   },
   infoButton: {

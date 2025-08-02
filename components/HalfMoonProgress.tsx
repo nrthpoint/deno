@@ -9,7 +9,7 @@ interface HalfMoonProgressProps {
   value: number;
   total: number;
   color: string;
-  label: string;
+  label?: string;
   size?: number;
   detailTitle?: string;
   detailDescription?: string;
@@ -66,7 +66,7 @@ export const HalfMoonProgress: React.FC<HalfMoonProgressProps> = ({
           {/* Background half circle */}
           <Path
             d={backgroundPath}
-            stroke="#e0e0e0"
+            stroke="#ffffff20"
             strokeWidth={strokeWidth}
             fill="none"
             strokeLinecap="round"
@@ -74,7 +74,7 @@ export const HalfMoonProgress: React.FC<HalfMoonProgressProps> = ({
           {/* Progress arc */}
           <Path
             d={progressPath}
-            stroke={color}
+            stroke={'#fff'}
             strokeWidth={strokeWidth}
             fill="none"
             strokeLinecap="round"
@@ -83,15 +83,15 @@ export const HalfMoonProgress: React.FC<HalfMoonProgressProps> = ({
       </View>
 
       <View style={styles.textContainer}>
-        <Text style={[styles.valueText, { color: color }]}>{percentage.toFixed(0)}%</Text>
+        <Text style={[styles.valueText, { color: '#fff' }]}>{percentage.toFixed(0)}%</Text>
         <Text style={styles.labelText}>{label}</Text>
       </View>
-
+      {/* 
       {hasTooltip && (
         <View style={styles.infoButton}>
           <Ionicons name="information-circle" size={16} color="#FFFFFF" />
         </View>
-      )}
+      )} */}
     </View>
   );
 
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   labelText: {
     marginTop: 4,
     fontSize: 12,
-    color: '#666',
+    color: '#ffffff',
     textAlign: 'center',
     textTransform: 'uppercase',
     letterSpacing: 1.4,

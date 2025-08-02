@@ -10,9 +10,8 @@ import Carousel from 'react-native-reanimated-carousel';
 
 const tabOptions: GroupType[] = ['pace', 'distance'];
 const tabColours: Record<GroupType, string> = {
-  pace: '#1E5FD2',
+  pace: '#0066B4',
   distance: '#FF5722',
-  weather: '#4CAF50',
 };
 
 export default function Index() {
@@ -27,7 +26,12 @@ export default function Index() {
     timeRangeInDays,
     groupType,
   });
+
   const [selectedOption, setSelectedOption] = useState<string>('');
+  const tabOptionLabels: Record<GroupType, string> = {
+    pace: 'Pace',
+    distance: distanceUnit === 'km' ? 'Kilometers' : 'Miles',
+  };
 
   // Auto-select the first group when groups are loaded or groupType changes
   useEffect(() => {
@@ -58,6 +62,7 @@ export default function Index() {
 
   // Get the available options for the carousel
   const options = Object.keys(groups);
+  console.log('Available options:', options);
 
   // Select the currently active option
   const actualSelectedOption = selectedOption || options[0];
@@ -81,7 +86,7 @@ export default function Index() {
       <Carousel
         loop={false}
         width={180}
-        height={200}
+        height={180}
         data={options}
         scrollAnimationDuration={300}
         onSnapToItem={(index) => setSelectedOption(options[index])}
@@ -113,9 +118,9 @@ export default function Index() {
               styles.tabButtonText,
               { color: groupType === tab ? currentTabColor : '#FFFFFF' },
             ]}
-            buttonColor={groupType === tab ? '#FFFFFF' : 'rgba(255, 255, 255, 0.2)'}
+            buttonColor={groupType === tab ? '#FFFFFF' : 'rgba(255, 255, 255, 0.1)'}
           >
-            {tab}
+            {tabOptionLabels[tab]}
           </Button>
         ))}
       </View>
@@ -174,9 +179,10 @@ export const styles = StyleSheet.create({
   tabButton: {
     flex: 1,
     marginHorizontal: 5,
-    borderRadius: 15,
+    borderRadius: 5,
   },
   tabButtonText: {
+    fontSize: 11,
     textTransform: 'uppercase',
     letterSpacing: 2,
     fontWeight: 'bold',

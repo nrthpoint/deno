@@ -44,6 +44,10 @@ export const calculatePaceFromDistanceAndDuration = (
   distance: Quantity,
   duration: Quantity,
 ): Quantity => {
+  console.log('Calculating pace from distance and duration:', {
+    distance,
+    duration,
+  });
   if (!distance || !duration || distance.quantity === 0) {
     return { unit: 'min/undefined', quantity: 0 };
   }
@@ -51,10 +55,12 @@ export const calculatePaceFromDistanceAndDuration = (
   const durationMinutes = convertDurationToMinutes(duration);
   const paceQuantity = Number((durationMinutes / distance.quantity).toFixed(2));
 
-  return {
+  const res = {
     unit: `min/${distance.unit}`,
     quantity: paceQuantity,
   };
+  console.log('Calculated pace:', res);
+  return res;
 };
 
 /**
