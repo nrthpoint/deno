@@ -2,56 +2,12 @@ import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { MetaWorkoutData, WorkoutGroupWithHighlight } from '@/types/workout';
 import { formatDuration } from '@/utils/time';
-import { Ionicons } from '@expo/vector-icons';
-import { ScrollView, StyleSheet, View, Text } from 'react-native';
-import { HalfMoonProgress } from './HalfMoonProgress';
-import { StatCard } from './StatCard/StatCard';
-import { Stat } from './StatCard/StatCard.types';
-import { VariationBar } from './VariationBar';
-import { SampleComparisonCard } from './SampleComparisonCard/SampleComparisonCard';
-
-const getStatIcon = (label: string) => {
-  const lowerLabel = label.toLowerCase();
-  if (lowerLabel.includes('time') || lowerLabel.includes('duration')) {
-    return <Ionicons name="time" size={40} color="#FFFFFF" />;
-  }
-
-  if (lowerLabel.includes('distance')) {
-    return <Ionicons name="location" size={40} color="#FFFFFF" />;
-  }
-
-  if (lowerLabel.includes('pace') || lowerLabel.includes('speed')) {
-    return <Ionicons name="speedometer" size={40} color="#FFFFFF" />;
-  }
-
-  if (lowerLabel.includes('heart') || lowerLabel.includes('hr')) {
-    return <Ionicons name="heart" size={40} color="#FFFFFF" />;
-  }
-
-  return <Ionicons name="stats-chart" size={40} color="#FFFFFF" />;
-};
-
-const createGroupSizeStat = (group: WorkoutGroupWithHighlight): Stat => ({
-  type: 'default',
-  label: 'Total Runs in Group',
-  value: { quantity: group.runs?.length || 0, unit: 'runs' },
-  icon: <Ionicons name="fitness" size={40} color="#FFFFFF" />,
-  hasTooltip: true,
-  detailTitle: 'Group Size',
-  detailDescription: 'The total number of workout sessions included in this performance group.',
-  additionalInfo: [
-    { label: 'Average per Week', value: `${((group.runs?.length || 0) / 4).toFixed(1)}` },
-    { label: 'Group Category', value: group.title || 'Performance Group' },
-  ],
-});
-
-const enhanceStatWithDefaults = (stat: any): Stat => ({
-  type: stat.type || 'default',
-  label: stat.label,
-  value: stat.value,
-  icon: getStatIcon(stat.label),
-  hasTooltip: false,
-});
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { HalfMoonProgress } from '@/components/HalfMoonProgress';
+import { SampleComparisonCard } from '@/components/SampleComparisonCard/SampleComparisonCard';
+import { StatCard } from '@/components/StatCard/StatCard';
+import { VariationBar } from '@/components/VariationBar';
+import { createGroupSizeStat, enhanceStatWithDefaults } from './utils';
 
 export const GroupStats = ({
   group,
@@ -67,7 +23,7 @@ export const GroupStats = ({
       <View
         style={[
           styles.visualCardsRow,
-          { backgroundColor: tabColour ? `${tabColour}80` : undefined },
+          { backgroundColor: tabColour ? `${tabColour}CC` : undefined },
         ]}
       >
         <View style={styles.visualCardHalf}>
@@ -134,7 +90,11 @@ export const GroupStats = ({
           sample1={group.highlight}
           sample2={group.mostRecent}
           sample1Label="All-Time Best"
-          sample2Label="Most Recent"
+          sample2Label={`Most Recent (${group.mostRecent.endDate.toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })})`}
           propertiesToCompare={['duration', 'averagePace', 'distance', 'elevation', 'humidity']}
         />
       </View>

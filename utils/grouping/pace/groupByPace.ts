@@ -4,7 +4,7 @@ import {
   GroupingSampleParserParams,
   GroupingStatsParams,
 } from '@/utils/grouping/interface';
-import { sortGroupsByRunCount } from '@/utils/grouping/sort';
+import { assignRankToGroups } from '@/utils/grouping/sort';
 import { newQuantity, sumQuantities } from '@/utils/quantity';
 import { findLongestRun, findShortestRun } from '@/utils/workout';
 
@@ -24,7 +24,7 @@ export const groupRunsByPace = (params: GroupingParameters): WorkoutGroupWithHig
     calculateGroupStats({ group: groups[groupKey], samples });
   }
 
-  sortGroupsByRunCount(groups);
+  assignRankToGroups(groups);
 
   return groups;
 };
@@ -35,10 +35,6 @@ const parseSampleIntoGroup = ({
   tolerance = 0.5,
   groupSize = 1.0,
 }: GroupingSampleParserParams) => {
-  console.log(
-    `Parsing sample with pace: ${sample.averagePace.quantity} ${sample.averagePace.unit}`,
-  );
-
   // Calculate the nearest group based on groupSize (e.g., 0.5 minute increments)
   const nearestGroup = Math.round(sample.averagePace.quantity / groupSize) * groupSize;
   const isCloseEnough = Math.abs(sample.averagePace.quantity - nearestGroup) <= tolerance;

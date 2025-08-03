@@ -1,4 +1,4 @@
-import { GroupStats } from '@/components/GroupStats';
+import { GroupStats } from '@/components/GroupStats/GroupStats';
 import { GroupingConfigModal, GroupingConfig } from '@/components/GroupingConfigModal';
 import { AllSampleTypesInApp } from '@/config/sampleIdentifiers';
 import { useSettings } from '@/context/SettingsContext';

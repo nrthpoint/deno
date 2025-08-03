@@ -34,9 +34,9 @@ const getConfigLabels = (groupType: GroupType, distanceUnit: string) => {
         groupSize: {
           label: 'Distance Grouping',
           unit: distanceUnit,
-          min: 0.2,
+          min: 0.5,
           max: 2.0,
-          step: 0.2,
+          step: 0.5,
         },
       };
     case 'pace':

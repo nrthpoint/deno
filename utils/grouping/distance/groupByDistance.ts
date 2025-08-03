@@ -4,7 +4,7 @@ import {
   GroupingSampleParserParams,
   GroupingStatsParams,
 } from '@/utils/grouping/interface';
-import { sortGroupsByRunCount } from '@/utils/grouping/sort';
+import { assignRankToGroups, sortGroupsByKeyInAscending } from '@/utils/grouping/sort';
 import { newQuantity, sumQuantities } from '@/utils/quantity';
 import {
   calculatePaceFromDistanceAndDuration,
@@ -29,9 +29,8 @@ export const groupRunsByDistance = (params: GroupingParameters): WorkoutGroupWit
     calculateGroupStats({ group: groups[groupKey], samples });
   }
 
-  sortGroupsByRunCount(groups);
-
-  return groups;
+  assignRankToGroups(groups);
+  return sortGroupsByKeyInAscending(groups);
 };
 
 const parseSampleIntoGroup = ({
@@ -56,7 +55,7 @@ const parseSampleIntoGroup = ({
   }
 
   // Create a string key for the group (e.g., "5.0" for 5.0 miles)
-  const groupKey = nearestGroup.toFixed(1);
+  const groupKey = nearestGroup % 1 === 0 ? nearestGroup.toString() : nearestGroup.toFixed(1);
 
   // If the group for this distance doesn't exist, create it
   if (!groups[groupKey]) {
