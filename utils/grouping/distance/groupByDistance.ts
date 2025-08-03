@@ -14,14 +14,15 @@ import {
 } from '@/utils/workout';
 
 const DEFAULT_TOLERANCE = 0.25; // 0.25 of a mile.
+const DEFAULT_GROUP_SIZE = 1.0; // 1 mile increments
 
 export const groupRunsByDistance = (params: GroupingParameters): WorkoutGroupWithHighlightSet => {
   const groups: WorkoutGroupWithHighlightSet = {} as WorkoutGroupWithHighlightSet;
 
-  const { samples, tolerance = DEFAULT_TOLERANCE } = params;
+  const { samples, tolerance = DEFAULT_TOLERANCE, groupSize = DEFAULT_GROUP_SIZE } = params;
 
   for (const sample of samples) {
-    parseSampleIntoGroup({ sample, tolerance, groups });
+    parseSampleIntoGroup({ sample, tolerance, groupSize, groups });
   }
 
   for (const groupKey in groups) {
@@ -33,24 +34,34 @@ export const groupRunsByDistance = (params: GroupingParameters): WorkoutGroupWit
   return groups;
 };
 
-const parseSampleIntoGroup = ({ sample, groups, tolerance = 0.25 }: GroupingSampleParserParams) => {
+const parseSampleIntoGroup = ({
+  sample,
+  groups,
+  tolerance = 0.25,
+  groupSize = 1.0,
+}: GroupingSampleParserParams) => {
   const distance = sample.totalDistance;
-  const nearestMile = Math.round(distance.quantity);
-  const isCloseEnough = Math.abs(distance.quantity - nearestMile) <= tolerance;
+
+  // Calculate the nearest group based on groupSize (e.g., 0.5 mile increments)
+  const nearestGroup = Math.round(distance.quantity / groupSize) * groupSize;
+  const isCloseEnough = Math.abs(distance.quantity - nearestGroup) <= tolerance;
 
   if (!isCloseEnough) {
     console.warn(
-      `Run with distance ${distance.quantity} is not close enough to a whole ${nearestMile}${distance.unit}. Skipping.`,
+      `Run with distance ${distance.quantity} is not close enough to ${nearestGroup}${distance.unit}. Skipping.`,
     );
 
     // Skip and return the groups as is.
     return groups;
   }
 
+  // Create a string key for the group (e.g., "5.0" for 5.0 miles)
+  const groupKey = nearestGroup.toFixed(1);
+
   // If the group for this distance doesn't exist, create it
-  if (!groups[nearestMile]) {
-    groups[nearestMile] = {
-      title: `${nearestMile} ${sample.totalDistance?.unit}`,
+  if (!groups[groupKey]) {
+    groups[groupKey] = {
+      title: `${nearestGroup.toFixed(1)} ${sample.totalDistance?.unit}`,
       suffix: '',
       rank: 0,
       rankLabel: '',
@@ -70,7 +81,7 @@ const parseSampleIntoGroup = ({ sample, groups, tolerance = 0.25 }: GroupingSamp
     } satisfies WorkoutGroupWithHighlight;
   }
 
-  const group = groups[nearestMile];
+  const group = groups[groupKey];
 
   // Add the sample to the group
   group.runs.push(sample);

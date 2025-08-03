@@ -22,6 +22,8 @@ type UseGroupedActivityDataParams = {
   distanceUnit?: LengthUnit;
   timeRangeInDays?: number;
   groupType?: GroupType;
+  tolerance?: number;
+  groupSize?: number;
 };
 
 export function useGroupedActivityData({
@@ -29,6 +31,8 @@ export function useGroupedActivityData({
   distanceUnit = 'mi',
   timeRangeInDays = 365,
   groupType = GROUP_TYPES.Distance,
+  tolerance,
+  groupSize,
 }: UseGroupedActivityDataParams = {}) {
   const [groups, setGroups] = useState<WorkoutGroupWithHighlightSet>({});
   const [meta, setMeta] = useState<MetaWorkoutData>({
@@ -92,13 +96,13 @@ export function useGroupedActivityData({
 
         switch (groupType) {
           case GROUP_TYPES.Distance:
-            setGroups(groupRunsByDistance({ samples }));
+            setGroups(groupRunsByDistance({ samples, tolerance, groupSize }));
             break;
           case GROUP_TYPES.Pace:
-            setGroups(groupRunsByPace({ samples }));
+            setGroups(groupRunsByPace({ samples, tolerance, groupSize }));
             break;
           default:
-            setGroups(groupRunsByDistance({ samples }));
+            setGroups(groupRunsByDistance({ samples, tolerance, groupSize }));
             break;
         }
       } catch (error) {
@@ -109,7 +113,7 @@ export function useGroupedActivityData({
     };
 
     fetchRuns();
-  }, [distanceUnit, timeRangeInDays, groupType, activityType]);
+  }, [distanceUnit, timeRangeInDays, groupType, activityType, tolerance, groupSize]);
 
   return { groups, meta, loading };
 }

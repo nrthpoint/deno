@@ -1,11 +1,12 @@
 import { GroupStats } from '@/components/GroupStats';
+import { GroupingConfigModal, GroupingConfig } from '@/components/GroupingConfigModal';
 import { AllSampleTypesInApp } from '@/config/sampleIdentifiers';
 import { useSettings } from '@/context/SettingsContext';
 import { GroupType, useGroupedActivityData } from '@/hooks/useGroupedActivityData';
 import { useHealthkitAuthorization } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Button, Text } from 'react-native-paper';
+import { ActivityIndicator, Button, Text, IconButton } from 'react-native-paper';
 import Carousel from 'react-native-reanimated-carousel';
 
 const tabOptions: GroupType[] = ['pace', 'distance'];
@@ -14,23 +15,52 @@ const tabColours: Record<GroupType, string> = {
   distance: '#FF5722',
 };
 
+// Default configurations for each group type
+const getDefaultConfig = (groupType: GroupType): GroupingConfig => {
+  switch (groupType) {
+    case 'distance':
+      return { tolerance: 0.25, groupSize: 1.0 };
+    case 'pace':
+      return { tolerance: 0.5, groupSize: 1.0 };
+    default:
+      return { tolerance: 0.25, groupSize: 1.0 };
+  }
+};
+
 export default function Index() {
   const [authorizationStatus, requestAuthorization] =
     useHealthkitAuthorization(AllSampleTypesInApp);
 
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
   const [groupType, setGroupingType] = useState<GroupType>('distance');
+  const [configModalVisible, setConfigModalVisible] = useState(false);
+  const [groupingConfigs, setGroupingConfigs] = useState<Record<GroupType, GroupingConfig>>({
+    distance: getDefaultConfig('distance'),
+    pace: getDefaultConfig('pace'),
+  });
+
+  const currentConfig = groupingConfigs[groupType];
+
   const { groups, meta, loading } = useGroupedActivityData({
     activityType,
     distanceUnit,
     timeRangeInDays,
     groupType,
+    tolerance: currentConfig.tolerance,
+    groupSize: currentConfig.groupSize,
   });
 
   const [selectedOption, setSelectedOption] = useState<string>('');
   const tabOptionLabels: Record<GroupType, string> = {
     pace: 'Pace',
     distance: distanceUnit === 'km' ? 'Kilometers' : 'Miles',
+  };
+
+  const handleConfigChange = (config: GroupingConfig) => {
+    setGroupingConfigs((prev) => ({
+      ...prev,
+      [groupType]: config,
+    }));
   };
 
   // Auto-select the first group when groups are loaded or groupType changes
@@ -82,6 +112,16 @@ export default function Index() {
 
   return (
     <View style={[styles.container, { backgroundColor: currentTabColor }]}>
+      {/* Settings Icon */}
+      <View style={styles.settingsContainer}>
+        <IconButton
+          icon="cog"
+          size={24}
+          iconColor="#FFFFFF"
+          onPress={() => setConfigModalVisible(true)}
+        />
+      </View>
+
       <Carousel
         loop={false}
         width={180}
@@ -125,6 +165,16 @@ export default function Index() {
       </View>
 
       <GroupStats group={selectedGroup} meta={meta} tabColour={currentTabColor} />
+
+      {/* Configuration Modal */}
+      <GroupingConfigModal
+        visible={configModalVisible}
+        onDismiss={() => setConfigModalVisible(false)}
+        groupType={groupType}
+        distanceUnit={distanceUnit}
+        config={currentConfig}
+        onConfigChange={handleConfigChange}
+      />
     </View>
   );
 }
@@ -139,6 +189,12 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 60,
+  },
+  settingsContainer: {
+    position: 'absolute',
+    top: 60,
+    right: 20,
+    zIndex: 10,
   },
   carousel: {
     marginTop: 40,
