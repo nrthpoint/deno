@@ -22,6 +22,8 @@ export type WorkoutGroupWithHighlight = {
   totalVariation: Quantity;
   totalDistance: Quantity;
   totalDuration: Quantity;
+  totalElevationAscended: Quantity;
+  averageHumidity: Quantity;
   averagePace: Quantity;
   prettyPace: string;
 
@@ -29,12 +31,15 @@ export type WorkoutGroupWithHighlight = {
   stats: HighlightStat[];
   highlight: ExtendedWorkout;
   worst: ExtendedWorkout;
+  mostRecent: ExtendedWorkout;
 };
 
 export type WorkoutGroupWithHighlightSet = Record<string, WorkoutGroupWithHighlight>;
 
 export type ExtendedWorkout = WorkoutSample & {
   totalDistance: Quantity;
+  totalElevationAscended?: Quantity;
+  humidity?: Quantity;
   averagePace: Quantity;
   daysAgo: string;
   prettyPace: string;

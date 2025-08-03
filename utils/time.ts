@@ -21,18 +21,24 @@ export const formatDuration = (duration: number) => {
   return result;
 };
 
-export const convertDurationToMinutes = (duration: Quantity): number => {
+export const convertDurationToMinutes = (duration: Quantity, decimalPlaces: number = 2): number => {
   if (!duration || !duration.quantity) return 0;
 
+  let result: number;
   switch (duration.unit) {
     case 'm':
-      return duration.quantity;
+      result = duration.quantity;
+      break;
     case 's':
-      return duration.quantity / 60;
+      result = duration.quantity / 60;
+      break;
     case 'h':
-      return duration.quantity * 60;
+      result = duration.quantity * 60;
+      break;
     default:
       console.warn('Unsupported duration unit:', duration.unit);
-      return 0;
+      result = 0;
   }
+
+  return Number(result.toFixed(decimalPlaces));
 };

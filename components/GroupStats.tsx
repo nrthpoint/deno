@@ -3,11 +3,12 @@ import { LatoFonts } from '@/config/fonts';
 import { MetaWorkoutData, WorkoutGroupWithHighlight } from '@/types/workout';
 import { formatDuration } from '@/utils/time';
 import { Ionicons } from '@expo/vector-icons';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import { HalfMoonProgress } from './HalfMoonProgress';
 import { StatCard } from './StatCard/StatCard';
 import { Stat } from './StatCard/StatCard.types';
 import { VariationBar } from './VariationBar';
+import { SampleComparisonCard } from './SampleComparisonCard/SampleComparisonCard';
 
 const getStatIcon = (label: string) => {
   const lowerLabel = label.toLowerCase();
@@ -126,6 +127,17 @@ export const GroupStats = ({
           <StatCard key={stat.label} stat={enhanceStatWithDefaults(stat)} />
         ))}
       </View>
+
+      <View>
+        <Text style={styles.sectionHeader}>Most Recent Comparison</Text>
+        <SampleComparisonCard
+          sample1={group.highlight}
+          sample2={group.mostRecent}
+          sample1Label="All-Time Best"
+          sample2Label="Most Recent"
+          propertiesToCompare={['duration', 'averagePace', 'distance', 'elevation', 'humidity']}
+        />
+      </View>
     </ScrollView>
   );
 };
@@ -147,7 +159,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   visualCardHalf: {
-    //backgroundColor: '#2A2A2A',
     borderRadius: 12,
     paddingVertical: 16,
     flex: 1,
@@ -162,6 +173,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   sectionHeader: {
+    textAlign: 'center',
     color: '#FFFFFF',
     fontSize: 18,
     fontFamily: LatoFonts.bold,

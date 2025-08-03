@@ -40,7 +40,7 @@ const parseSampleIntoGroup = ({ sample, groups, tolerance = 0.25 }: GroupingSamp
 
   if (!isCloseEnough) {
     console.warn(
-      `Run with distance ${distance.quantity} is not close enough to a whole number. Skipping.`,
+      `Run with distance ${distance.quantity} is not close enough to a whole ${nearestMile}${distance.unit}. Skipping.`,
     );
 
     // Skip and return the groups as is.
@@ -57,11 +57,14 @@ const parseSampleIntoGroup = ({ sample, groups, tolerance = 0.25 }: GroupingSamp
       runs: [],
       highlight: sample,
       worst: sample,
+      mostRecent: sample,
       percentageOfTotalWorkouts: 0,
       totalVariation: newQuantity(0, 's'),
       totalDistance: newQuantity(0, 'mi'),
       totalDuration: newQuantity(0, 's'),
+      totalElevationAscended: newQuantity(0, 'm'),
       averagePace: newQuantity(0, 'min/mile'),
+      averageHumidity: newQuantity(0, '%'),
       prettyPace: '',
       stats: [],
     } satisfies WorkoutGroupWithHighlight;
@@ -69,9 +72,20 @@ const parseSampleIntoGroup = ({ sample, groups, tolerance = 0.25 }: GroupingSamp
 
   const group = groups[nearestMile];
 
+  // Add the sample to the group
   group.runs.push(sample);
+
+  // Aggregate the total distance, duration, and elevation ascended
   group.totalDistance = sumQuantities([group.totalDistance, sample.totalDistance]);
   group.totalDuration = sumQuantities([group.totalDuration, sample.duration]);
+  group.totalElevationAscended = sumQuantities([
+    group.totalElevationAscended,
+    sample.totalElevationAscended || newQuantity(0, 'm'),
+  ]);
+
+  if (sample.startDate > group.mostRecent.startDate) {
+    group.mostRecent = sample;
+  }
 
   return groups;
 };
@@ -80,6 +94,10 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   group.averagePace = calculatePaceFromDistanceAndDuration(
     group.totalDistance,
     group.totalDuration,
+  );
+  group.averageHumidity = newQuantity(
+    group.runs.reduce((sum, run) => sum + (run.humidity?.quantity || 0), 0) / group.runs.length,
+    '%',
   );
   group.prettyPace = formatPace(group.averagePace);
   group.percentageOfTotalWorkouts = (group.runs.length / samples.length) * 100;

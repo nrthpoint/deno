@@ -41,9 +41,8 @@ export function useGroupedActivityData({
     const fetchRuns = async () => {
       try {
         setLoading(true);
-        const authorized = await isProtectedDataAvailable();
 
-        console.log('HealthKit Authorization Status:', authorized);
+        const authorized = await isProtectedDataAvailable();
 
         if (!authorized) {
           console.log('Authorization not granted');

@@ -62,7 +62,6 @@ export default function Index() {
 
   // Get the available options for the carousel
   const options = Object.keys(groups);
-  console.log('Available options:', options);
 
   // Select the currently active option
   const actualSelectedOption = selectedOption || options[0];
