@@ -1,7 +1,7 @@
 import { Quantity, WorkoutSample } from '@kingstinct/react-native-healthkit';
 
 type HighlightStat = {
-  type: 'pace' | 'distance' | 'duration';
+  type: 'pace' | 'distance' | 'duration' | 'altitude';
   label: string;
   value: Quantity;
 };

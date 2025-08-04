@@ -14,7 +14,7 @@ import { StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Button, Text, IconButton } from 'react-native-paper';
 import Carousel from 'react-native-reanimated-carousel';
 
-const tabOptions: GroupType[] = ['pace', 'distance'];
+const tabOptions: GroupType[] = ['pace', 'distance', 'altitude'];
 
 // Default configurations for each group type
 const getDefaultConfig = (groupType: GroupType): GroupingConfig => {
@@ -23,6 +23,8 @@ const getDefaultConfig = (groupType: GroupType): GroupingConfig => {
       return { tolerance: 0.25, groupSize: 1.0 };
     case 'pace':
       return { tolerance: 0.5, groupSize: 1.0 };
+    case 'altitude':
+      return { tolerance: 50, groupSize: 100 };
     default:
       return { tolerance: 0.25, groupSize: 1.0 };
   }

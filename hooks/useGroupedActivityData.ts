@@ -1,5 +1,6 @@
 import { GROUP_TYPES, GroupType } from '@/types/groups';
 import { MetaWorkoutData, WorkoutGroupWithHighlightSet } from '@/types/workout';
+import { groupRunsByAltitude } from '@/utils/grouping/altitude/groupByAltitude';
 import { groupRunsByDistance } from '@/utils/grouping/distance/groupByDistance';
 import { groupRunsByPace } from '@/utils/grouping/pace/groupByPace';
 import { parseWorkoutSamples } from '@/utils/parser';
@@ -95,6 +96,9 @@ export function useGroupedActivityData({
             break;
           case GROUP_TYPES.Pace:
             setGroups(groupRunsByPace({ samples, tolerance, groupSize }));
+            break;
+          case GROUP_TYPES.Altitude:
+            setGroups(groupRunsByAltitude({ samples, tolerance, groupSize }));
             break;
           default:
             setGroups(groupRunsByDistance({ samples, tolerance, groupSize }));

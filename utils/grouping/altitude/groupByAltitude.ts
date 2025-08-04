@@ -1,0 +1,185 @@
+import { WorkoutGroupWithHighlight, WorkoutGroupWithHighlightSet } from '@/types/workout';
+import {
+  GroupingParameters,
+  GroupingSampleParserParams,
+  GroupingStatsParams,
+} from '@/utils/grouping/interface';
+import { assignRankToGroups, sortGroupsByKeyInAscending } from '@/utils/grouping/sort';
+import { newQuantity, sumQuantities } from '@/utils/quantity';
+import {
+  calculatePaceFromDistanceAndDuration,
+  findHighestElevationRun,
+  findLowestElevationRun,
+  formatPace,
+} from '@/utils/workout';
+
+const DEFAULT_TOLERANCE = 50; // 50 meters/feet tolerance
+const DEFAULT_GROUP_SIZE = 100; // 100 meters/feet increments
+
+export const groupRunsByAltitude = (params: GroupingParameters): WorkoutGroupWithHighlightSet => {
+  const groups: WorkoutGroupWithHighlightSet = {} as WorkoutGroupWithHighlightSet;
+
+  const { samples, tolerance = DEFAULT_TOLERANCE, groupSize = DEFAULT_GROUP_SIZE } = params;
+
+  // Filter out samples without elevation data
+  const samplesWithElevation = samples.filter(
+    (sample) => sample.totalElevationAscended && sample.totalElevationAscended.quantity > 0,
+  );
+
+  if (samplesWithElevation.length === 0) {
+    console.warn('No samples with elevation data found');
+    return {};
+  }
+
+  for (const sample of samplesWithElevation) {
+    parseSampleIntoGroup({ sample, tolerance, groupSize, groups });
+  }
+
+  for (const groupKey in groups) {
+    calculateGroupStats({ group: groups[groupKey], samples: samplesWithElevation });
+  }
+
+  assignRankToGroups(groups);
+  return sortGroupsByKeyInAscending(groups);
+};
+
+const parseSampleIntoGroup = ({
+  sample,
+  groups,
+  tolerance = DEFAULT_TOLERANCE,
+  groupSize = DEFAULT_GROUP_SIZE,
+}: GroupingSampleParserParams) => {
+  if (!sample.totalElevationAscended || sample.totalElevationAscended.quantity <= 0) {
+    return groups;
+  }
+
+  const elevation = sample.totalElevationAscended;
+
+  // Calculate the nearest group based on groupSize (e.g., 100m increments)
+  const nearestGroup = Math.round(elevation.quantity / groupSize) * groupSize;
+  const isCloseEnough = Math.abs(elevation.quantity - nearestGroup) <= tolerance;
+
+  if (!isCloseEnough) {
+    console.warn(
+      `Run with elevation ${elevation.quantity}${elevation.unit} is not close enough to ${nearestGroup}${elevation.unit}. Skipping.`,
+    );
+
+    // Skip and return the groups as is.
+    return groups;
+  }
+
+  // Create a string key for the group (e.g., "200" for 200m)
+  const groupKey = nearestGroup.toString();
+
+  // If the group for this elevation doesn't exist, create it
+  if (!groups[groupKey]) {
+    groups[groupKey] = {
+      title: `${nearestGroup} ${elevation.unit}`,
+      suffix: '',
+      rank: 0,
+      rankLabel: '',
+      runs: [],
+      highlight: sample,
+      worst: sample,
+      mostRecent: sample,
+      percentageOfTotalWorkouts: 0,
+      totalVariation: newQuantity(0, elevation.unit),
+      totalDistance: newQuantity(0, sample.totalDistance.unit),
+      totalDuration: newQuantity(0, 's'),
+      totalElevationAscended: newQuantity(0, elevation.unit),
+      averagePace: newQuantity(0, 'min/mile'),
+      averageHumidity: newQuantity(0, '%'),
+      prettyPace: '',
+      stats: [],
+    } satisfies WorkoutGroupWithHighlight;
+  }
+
+  const group = groups[groupKey];
+
+  // Add the sample to the group
+  group.runs.push(sample);
+
+  // Aggregate the total distance, duration, and elevation ascended
+  group.totalDistance = sumQuantities([group.totalDistance, sample.totalDistance]);
+  group.totalDuration = sumQuantities([group.totalDuration, sample.duration]);
+  group.totalElevationAscended = sumQuantities([
+    group.totalElevationAscended,
+    sample.totalElevationAscended || newQuantity(0, elevation.unit),
+  ]);
+
+  if (sample.startDate > group.mostRecent.startDate) {
+    group.mostRecent = sample;
+  }
+
+  return groups;
+};
+
+const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
+  group.averagePace = calculatePaceFromDistanceAndDuration(
+    group.totalDistance,
+    group.totalDuration,
+  );
+  group.averageHumidity = newQuantity(
+    group.runs.reduce((sum, run) => sum + (run.humidity?.quantity || 0), 0) / group.runs.length,
+    '%',
+  );
+  group.prettyPace = formatPace(group.averagePace);
+  group.percentageOfTotalWorkouts = (group.runs.length / samples.length) * 100;
+  group.highlight = findHighestElevationRun(group.runs);
+  group.worst = findLowestElevationRun(group.runs);
+
+  // Calculate elevation variation within the group
+  const elevations = group.runs
+    .map((run) => run.totalElevationAscended?.quantity || 0)
+    .filter((elevation) => elevation > 0);
+
+  const maxElevation = Math.max(...elevations);
+  const minElevation = Math.min(...elevations);
+  const elevationUnit = group.runs[0]?.totalElevationAscended?.unit || 'm';
+
+  group.totalVariation = newQuantity(maxElevation - minElevation, elevationUnit);
+
+  // Calculate average elevation gain per distance
+  const avgElevationPerDistance =
+    group.totalElevationAscended.quantity / group.totalDistance.quantity;
+
+  group.stats = [
+    {
+      type: 'altitude',
+      label: 'Highest Elevation Gain',
+      value: group.highlight.totalElevationAscended || newQuantity(0, elevationUnit),
+    },
+    {
+      type: 'altitude',
+      label: 'Lowest Elevation Gain',
+      value: group.worst.totalElevationAscended || newQuantity(0, elevationUnit),
+    },
+    {
+      type: 'pace',
+      label: 'Best Pace',
+      value: group.highlight.averagePace,
+    },
+    {
+      type: 'pace',
+      label: 'Average Pace',
+      value: group.averagePace,
+    },
+    {
+      type: 'distance',
+      label: 'Total Distance',
+      value: group.totalDistance,
+    },
+    {
+      label: 'Total Elevation Gain',
+      type: 'altitude',
+      value: group.totalElevationAscended,
+    },
+    {
+      type: 'altitude',
+      label: 'Avg Elevation/Distance',
+      value: newQuantity(avgElevationPerDistance, `${elevationUnit}/${group.totalDistance.unit}`),
+    },
+  ];
+
+  return group;
+};

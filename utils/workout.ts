@@ -127,3 +127,39 @@ export const findShortestRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
     return prev.totalDistance.quantity <= curr.totalDistance.quantity ? prev : curr;
   });
 };
+
+/**
+ * Finds the run with the highest elevation gain from an array of runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The run with the highest elevation gain, or undefined if no valid runs
+ */
+export const findHighestElevationRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
+  return runs.reduce((prev, curr) => {
+    if (!prev || !curr) {
+      return prev || curr;
+    }
+
+    const prevElevation = prev.totalElevationAscended?.quantity || 0;
+    const currElevation = curr.totalElevationAscended?.quantity || 0;
+
+    return prevElevation >= currElevation ? prev : curr;
+  });
+};
+
+/**
+ * Finds the run with the lowest elevation gain from an array of runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The run with the lowest elevation gain, or undefined if no valid runs
+ */
+export const findLowestElevationRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
+  return runs.reduce((prev, curr) => {
+    if (!prev || !curr) {
+      return prev || curr;
+    }
+
+    const prevElevation = prev.totalElevationAscended?.quantity || 0;
+    const currElevation = curr.totalElevationAscended?.quantity || 0;
+
+    return prevElevation <= currElevation ? prev : curr;
+  });
+};
