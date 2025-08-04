@@ -77,6 +77,8 @@ export const VariationBar: React.FC<VariationBarProps> = ({
 
   const variationContent = (
     <View style={styles.container}>
+      <Text style={styles.labelText}>{label}</Text>
+
       <View style={[styles.svgContainer, { width, height }]}>
         <Svg width={width} height={height}>
           {/* Background bar */}
@@ -130,8 +132,6 @@ export const VariationBar: React.FC<VariationBarProps> = ({
             <Text style={styles.statLabel}>Max</Text>
           </View>
         </View>
-
-        <Text style={styles.labelText}>{label}</Text>
       </View>
 
       {/* {hasTooltip && (
@@ -213,10 +213,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
   },
-  svgContainer: {
-    marginTop: 10,
-    marginBottom: 0,
-  },
+  svgContainer: {},
   textContainer: {
     maxWidth: '100%',
     alignItems: 'center',

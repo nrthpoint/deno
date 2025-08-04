@@ -1,4 +1,4 @@
-import { colors } from '@/config/colors';
+import { ColorProfile, colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { MetaWorkoutData, WorkoutGroupWithHighlight } from '@/types/workout';
 import { formatDuration } from '@/utils/time';
@@ -12,25 +12,25 @@ import { createGroupSizeStat, enhanceStatWithDefaults } from './utils';
 export const GroupStats = ({
   group,
   meta,
-  tabColour,
+  tabColor,
 }: {
   group: WorkoutGroupWithHighlight;
   meta: MetaWorkoutData;
-  tabColour?: string;
+  tabColor: ColorProfile;
 }) => {
   return (
     <ScrollView style={styles.statList}>
       <View
         style={[
           styles.visualCardsRow,
-          { backgroundColor: tabColour ? `${tabColour}CC` : undefined },
+          { backgroundColor: tabColor ? `${tabColor.secondary}` : undefined },
         ]}
       >
         <View style={styles.visualCardHalf}>
           <HalfMoonProgress
             value={group.runs.length}
             total={meta.totalRuns}
-            color={tabColour || '#4CAF50'}
+            color={tabColor?.primary || '#4CAF50'}
             label="of Total Workouts"
             size={100}
             hasTooltip={true}
@@ -87,14 +87,27 @@ export const GroupStats = ({
       <View>
         <Text style={styles.sectionHeader}>Most Recent Comparison</Text>
         <SampleComparisonCard
+          colorProfile={tabColor}
           sample1={group.highlight}
           sample2={group.mostRecent}
           sample1Label="All-Time Best"
-          sample2Label={`Most Recent (${group.mostRecent.endDate.toLocaleDateString('en-GB', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-          })})`}
+          sample2Label={`${(() => {
+            const today = new Date();
+            const mostRecent = group.mostRecent.endDate;
+            const diffTime = Math.floor(
+              (today.getTime() - mostRecent.getTime()) / (1000 * 60 * 60 * 24),
+            );
+
+            if (diffTime === 0) return 'Today';
+            if (diffTime === 1) return 'Yesterday';
+            if (diffTime < 7) return `${diffTime} days ago`;
+
+            return mostRecent.toLocaleDateString('en-GB', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            });
+          })()}`}
           propertiesToCompare={['duration', 'averagePace', 'distance', 'elevation', 'humidity']}
         />
       </View>

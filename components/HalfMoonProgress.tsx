@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: -10,
   },
   valueText: {
     fontSize: 24,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     ...getLatoFont('bold'),
   },
   labelText: {
-    marginTop: 4,
+    marginTop: 10,
     fontSize: 12,
     color: '#ffffff',
     textAlign: 'center',

@@ -300,44 +300,4 @@ describe('groupRunsByDistance', () => {
       expect(result[5].runs).toContain(samples[3]);
     });
   });
-
-  // describe('console warnings', () => {
-  //   let consoleSpy: jest.SpyInstance;
-
-  //   beforeEach(() => {
-  //     consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-  //   });
-
-  //   afterEach(() => {
-  //     consoleSpy.mockRestore();
-  //   });
-
-  //   it('should log warning for runs outside tolerance', () => {
-  //     const samples = [
-  //       createMockWorkout({
-  //         distance: 3.5,
-  //       }),
-  //     ]; // Outside default tolerance
-
-  //     groupRunsByDistance({ samples });
-
-  //     expect(consoleSpy).toHaveBeenCalledWith(
-  //       expect.stringContaining(
-  //         'Run with distance 3.5 is not close enough to a whole number. Skipping.',
-  //       ),
-  //     );
-  //   });
-
-  //   it('should not log warning for runs within tolerance', () => {
-  //     const samples = [
-  //       createMockWorkout({
-  //         distance: 3.2,
-  //       }),
-  //     ]; // Within tolerance
-
-  //     groupRunsByDistance({ samples });
-
-  //     expect(consoleSpy).not.toHaveBeenCalled();
-  //   });
-  // });
 });

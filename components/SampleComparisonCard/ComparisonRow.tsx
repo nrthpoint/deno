@@ -3,9 +3,10 @@ import { convertDurationToMinutes } from '@/utils/time';
 import { formatPace } from '@/utils/workout';
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
-import { ComparisonProperty, ComparisonRowProps } from './SampleComparisonCard.types';
+import { ComparisonProperty } from './SampleComparisonCard.types';
 import { LatoFonts } from '@/config/fonts';
 import { colors } from '@/config/colors';
+import { ComparisonRowProps } from './ComparisonRow.types';
 
 export interface StatDisplayData {
   displayValue: string;
@@ -93,7 +94,12 @@ const getPropertyLabel = (property: ComparisonProperty): string => {
   }
 };
 
-export const ComparisonRow: React.FC<ComparisonRowProps> = ({ property, sample1, sample2 }) => {
+export const ComparisonRow: React.FC<ComparisonRowProps> = ({
+  property,
+  sample1,
+  sample2,
+  colorProfile,
+}) => {
   const sample1Data = formatPropertyValue(property, sample1);
   const sample2Data = formatPropertyValue(property, sample2);
 
@@ -143,7 +149,7 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({ property, sample1,
     <View style={styles.barContainer}>
       <Svg width="100%" height="20" style={{ borderWidth: 1 }}>
         <Rect x={0} y={0} width={`${width}%`} height="8" fill="#E0E0E0" />
-        <Rect width="100%" height="8" x={0} y={6} fill={'#4CAF50'} />
+        <Rect width="100%" height="8" x={0} y={6} fill={colorProfile.primary} />
       </Svg>
     </View>
   );

@@ -1,3 +1,4 @@
+import { GROUP_TYPES, GroupType } from '@/types/groups';
 import { MetaWorkoutData, WorkoutGroupWithHighlightSet } from '@/types/workout';
 import { groupRunsByDistance } from '@/utils/grouping/distance/groupByDistance';
 import { groupRunsByPace } from '@/utils/grouping/pace/groupByPace';
@@ -10,12 +11,6 @@ import {
   WorkoutActivityType,
 } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from 'react';
-
-export type GroupType = 'distance' | 'pace';
-export const GROUP_TYPES = {
-  Distance: 'distance' as GroupType,
-  Pace: 'pace' as GroupType,
-};
 
 type UseGroupedActivityDataParams = {
   activityType?: WorkoutActivityType;

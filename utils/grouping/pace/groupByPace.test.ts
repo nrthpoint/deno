@@ -337,49 +337,6 @@ describe('groupRunsByPace', () => {
     });
   });
 
-  // describe('console warnings', () => {
-  //   let consoleSpy: jest.SpyInstance;
-
-  //   beforeEach(() => {
-  //     consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-  //   });
-
-  //   afterEach(() => {
-  //     consoleSpy.mockRestore();
-  //   });
-
-  //   it('should log warning for runs outside tolerance', () => {
-  //     const samples = [
-  //       createMockWorkout({
-  //         averagePace: 7.6, // Outside tolerance of 0.3
-  //       }),
-  //     ]; // Outside tolerance of 0.3
-
-  //     groupRunsByPace({
-  //       samples,
-  //       tolerance: 0.3,
-  //     });
-
-  //     expect(consoleSpy).toHaveBeenCalledWith(
-  //       expect.stringContaining(
-  //         'Run with pace 7.6 min/mile is not close enough to a whole minute. Skipping.',
-  //       ),
-  //     );
-  //   });
-
-  //   it('should not log warning for runs within tolerance', () => {
-  //     const samples = [
-  //       createMockWorkout({
-  //         averagePace: 7.2, // Within default tolerance of 0.5
-  //       }),
-  //     ]; // Within default tolerance of 0.5
-
-  //     groupRunsByPace({ samples });
-
-  //     expect(consoleSpy).not.toHaveBeenCalled();
-  //   });
-  // });
-
   describe('comparison with distance grouping', () => {
     it('should group different distances with same pace together', () => {
       const samples = [

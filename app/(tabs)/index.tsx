@@ -1,8 +1,13 @@
 import { GroupStats } from '@/components/GroupStats/GroupStats';
-import { GroupingConfigModal, GroupingConfig } from '@/components/GroupingConfigModal';
+import {
+  GroupingConfigModal,
+  GroupingConfig,
+} from '@/components/GroupingConfigModal/GroupingConfigModal';
+import { tabColors } from '@/config/colors';
 import { AllSampleTypesInApp } from '@/config/sampleIdentifiers';
 import { useSettings } from '@/context/SettingsContext';
-import { GroupType, useGroupedActivityData } from '@/hooks/useGroupedActivityData';
+import { useGroupedActivityData } from '@/hooks/useGroupedActivityData';
+import { GroupType } from '@/types/groups';
 import { useHealthkitAuthorization } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -10,10 +15,6 @@ import { ActivityIndicator, Button, Text, IconButton } from 'react-native-paper'
 import Carousel from 'react-native-reanimated-carousel';
 
 const tabOptions: GroupType[] = ['pace', 'distance'];
-const tabColours: Record<GroupType, string> = {
-  pace: '#0066B4',
-  distance: '#FF5722',
-};
 
 // Default configurations for each group type
 const getDefaultConfig = (groupType: GroupType): GroupingConfig => {
@@ -37,6 +38,7 @@ export default function Index() {
   const [groupingConfigs, setGroupingConfigs] = useState<Record<GroupType, GroupingConfig>>({
     distance: getDefaultConfig('distance'),
     pace: getDefaultConfig('pace'),
+    altitude: getDefaultConfig('altitude'),
   });
 
   const currentConfig = groupingConfigs[groupType];
@@ -54,6 +56,7 @@ export default function Index() {
   const tabOptionLabels: Record<GroupType, string> = {
     pace: 'Pace',
     distance: distanceUnit === 'km' ? 'Kilometers' : 'Miles',
+    altitude: 'Altitude',
   };
 
   const handleConfigChange = (config: GroupingConfig) => {
@@ -108,10 +111,10 @@ export default function Index() {
   }
 
   const itemSuffix = selectedGroup.suffix || '';
-  const currentTabColor = tabColours[groupType];
+  const colorProfile = tabColors[groupType];
 
   return (
-    <View style={[styles.container, { backgroundColor: currentTabColor }]}>
+    <View style={[styles.container, { backgroundColor: colorProfile.primary }]}>
       {/* Settings Icon */}
       <View style={styles.settingsContainer}>
         <IconButton
@@ -138,7 +141,7 @@ export default function Index() {
         }}
         renderItem={({ item }) => (
           <View style={styles.carouselItem}>
-            <Text style={[styles.carouselText, { color: currentTabColor }]}>
+            <Text style={[styles.carouselText, { color: colorProfile.primary }]}>
               {item}
               {itemSuffix}
             </Text>
@@ -155,7 +158,7 @@ export default function Index() {
             style={styles.tabButton}
             labelStyle={[
               styles.tabButtonText,
-              { color: groupType === tab ? currentTabColor : '#FFFFFF' },
+              { color: groupType === tab ? colorProfile.primary : '#FFFFFF' },
             ]}
             buttonColor={groupType === tab ? '#FFFFFF' : 'rgba(255, 255, 255, 0.1)'}
           >
@@ -164,7 +167,7 @@ export default function Index() {
         ))}
       </View>
 
-      <GroupStats group={selectedGroup} meta={meta} tabColour={currentTabColor} />
+      <GroupStats group={selectedGroup} meta={meta} tabColor={colorProfile} />
 
       {/* Configuration Modal */}
       <GroupingConfigModal
@@ -174,6 +177,7 @@ export default function Index() {
         distanceUnit={distanceUnit}
         config={currentConfig}
         onConfigChange={handleConfigChange}
+        colorProfile={colorProfile}
       />
     </View>
   );

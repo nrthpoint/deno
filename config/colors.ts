@@ -1,5 +1,30 @@
+import { GroupType } from '@/types/groups';
+
 export const colors = {
   neutral: '#FFFFFF',
   background: '#0A0A0A',
   surface: '#121212',
+  accent: '#1e1e1eff',
+  gray: '#333333',
+
+  // UI Component Colors
+  primary: '#282E9A',
+  secondary: '#151748',
+};
+
+export type ColorProfile = { primary: string; secondary: string };
+
+export const tabColors: Record<GroupType, ColorProfile> = {
+  pace: {
+    primary: '#0066B4',
+    secondary: '#004C86',
+  },
+  distance: {
+    primary: '#D332CB',
+    secondary: '#A0299A',
+  },
+  altitude: {
+    primary: '#6cea12ff',
+    secondary: '#15b10dff',
+  },
 };

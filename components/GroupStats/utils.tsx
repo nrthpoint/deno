@@ -42,8 +42,8 @@ export const getStatIcon = (label: string) => {
 
 export const createGroupSizeStat = (group: WorkoutGroupWithHighlight): Stat => ({
   type: 'default',
-  label: 'Total Runs in Group',
-  value: { quantity: group.runs?.length || 0, unit: 'runs' },
+  label: 'Total Workouts',
+  value: { quantity: group.runs?.length || 0, unit: group.runs?.length === 1 ? 'run' : 'runs' },
   icon: <Ionicons name="podium-outline" size={40} color="#FFFFFF" />,
   hasTooltip: true,
   detailTitle: 'Group Size',

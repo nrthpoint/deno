@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { StatCardProps } from './StatCard.types';
+import { colors } from '@/config/colors';
 
 const formatQuantityValue = (
   value: Quantity,
@@ -55,8 +56,8 @@ export const StatCard: React.FC<StatCardProps> = ({ stat }) => {
     label,
     value,
     type = 'default',
-    backgroundColor = '#2A2A2A',
-    accentColor = '#1e1e1eff',
+    backgroundColor = colors.surface,
+    accentColor = colors.accent,
     detailTitle,
     detailDescription,
     additionalInfo,

@@ -12,6 +12,7 @@ export const SampleComparisonCard = ({
   sample1Label,
   sample2Label,
   propertiesToCompare,
+  colorProfile,
 }: SampleComparisonCardProps) => {
   return (
     <View style={styles.container}>
@@ -22,6 +23,7 @@ export const SampleComparisonCard = ({
 
       {propertiesToCompare.map((property) => (
         <ComparisonRow
+          colorProfile={colorProfile}
           key={property}
           property={property}
           sample1={sample1}

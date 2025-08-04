@@ -2,9 +2,10 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Modal, Portal, Text, Button, IconButton } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
-import { GroupType } from '@/hooks/useGroupedActivityData';
-import { colors } from '@/config/colors';
+import { GroupType } from '@/types/groups';
+import { colors, ColorProfile } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { getConfigLabels } from './utils';
 
 export interface GroupingConfig {
   tolerance: number;
@@ -13,77 +14,23 @@ export interface GroupingConfig {
 
 export interface GroupingConfigModalProps {
   visible: boolean;
-  onDismiss: () => void;
   groupType: GroupType;
   distanceUnit: string;
   config: GroupingConfig;
+  colorProfile: ColorProfile;
+  onDismiss: () => void;
   onConfigChange: (config: GroupingConfig) => void;
 }
 
-const getConfigLabels = (groupType: GroupType, distanceUnit: string) => {
-  switch (groupType) {
-    case 'distance':
-      return {
-        tolerance: {
-          label: 'Distance Tolerance',
-          unit: distanceUnit,
-          min: 0.1,
-          max: 1.0,
-          step: 0.1,
-        },
-        groupSize: {
-          label: 'Distance Grouping',
-          unit: distanceUnit,
-          min: 0.5,
-          max: 2.0,
-          step: 0.5,
-        },
-      };
-    case 'pace':
-      return {
-        tolerance: {
-          label: 'Pace Tolerance',
-          unit: 'min',
-          min: 0.1,
-          max: 1.0,
-          step: 0.1,
-        },
-        groupSize: {
-          label: 'Pace Grouping',
-          unit: 'min',
-          min: 0.2,
-          max: 2.0,
-          step: 0.2,
-        },
-      };
-    default:
-      return {
-        tolerance: {
-          label: 'Tolerance',
-          unit: '',
-          min: 0.1,
-          max: 1.0,
-          step: 0.1,
-        },
-        groupSize: {
-          label: 'Group Size',
-          unit: '',
-          min: 0.2,
-          max: 2.0,
-          step: 0.2,
-        },
-      };
-  }
-};
-
-export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
+export const GroupingConfigModal = ({
   visible,
-  onDismiss,
   groupType,
   distanceUnit,
   config,
+  colorProfile,
+  onDismiss,
   onConfigChange,
-}) => {
+}: GroupingConfigModalProps) => {
   const labels = getConfigLabels(groupType, distanceUnit);
 
   const handleToleranceChange = (value: number) => {
@@ -99,7 +46,7 @@ export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
   return (
     <Portal>
       <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.modalContainer}>
-        <View style={styles.header}>
+        <View style={[styles.header, { borderBottomColor: colors.gray }]}>
           <Text style={styles.title}>Grouping Settings</Text>
           <IconButton icon="close" size={24} onPress={onDismiss} iconColor={colors.neutral} />
         </View>
@@ -116,9 +63,9 @@ export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
               step={labels.tolerance.step}
               value={config.tolerance}
               onValueChange={handleToleranceChange}
-              minimumTrackTintColor="#4CAF50"
+              minimumTrackTintColor={colorProfile.primary}
               maximumTrackTintColor="#666"
-              thumbTintColor="#4CAF50"
+              thumbTintColor={colorProfile.primary}
             />
             <View style={styles.sliderLabels}>
               <Text style={styles.sliderLabelText}>{labels.tolerance.min}</Text>
@@ -137,9 +84,9 @@ export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
               step={labels.groupSize.step}
               value={config.groupSize}
               onValueChange={handleGroupSizeChange}
-              minimumTrackTintColor="#4CAF50"
+              minimumTrackTintColor={colorProfile.primary}
               maximumTrackTintColor="#666"
-              thumbTintColor="#4CAF50"
+              thumbTintColor={colorProfile.primary}
             />
             <View style={styles.sliderLabels}>
               <Text style={styles.sliderLabelText}>{labels.groupSize.min}</Text>
@@ -148,8 +95,17 @@ export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
           </View>
         </View>
 
-        <View style={styles.actions}>
-          <Button mode="contained" onPress={onDismiss} style={styles.button}>
+        <View
+          style={[
+            styles.actions,
+            { borderTopColor: colors.gray, backgroundColor: colorProfile.primary },
+          ]}
+        >
+          <Button
+            mode="contained"
+            onPress={onDismiss}
+            style={[styles.button, { backgroundColor: colorProfile.primary }]}
+          >
             Apply Settings
           </Button>
         </View>
@@ -169,14 +125,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    paddingLeft: 24,
+    paddingRight: 10,
   },
   title: {
-    fontSize: 20,
+    fontSize: 14,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
+    textTransform: 'uppercase',
+    fontWeight: '600',
+    letterSpacing: 1.5,
   },
   content: {
     padding: 24,
@@ -190,7 +149,6 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.regular,
     color: colors.neutral,
     marginBottom: 16,
-    fontWeight: '600',
   },
   slider: {
     width: '100%',
@@ -209,9 +167,8 @@ const styles = StyleSheet.create({
   actions: {
     padding: 16,
     borderTopWidth: 1,
-    borderTopColor: '#333',
+    borderBottomStartRadius: 12,
+    borderBottomRightRadius: 12,
   },
-  button: {
-    backgroundColor: '#4CAF50',
-  },
+  button: {},
 });
