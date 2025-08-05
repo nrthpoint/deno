@@ -77,24 +77,6 @@ export default function Index() {
     }
   }, [groups, groupType]);
 
-  if (authorizationStatus !== 2) {
-    return (
-      <View style={styles.spinnerContainer}>
-        <Button mode="contained" onPress={requestAuthorization}>
-          Request HealthKit Authorization
-        </Button>
-      </View>
-    );
-  }
-
-  if (loading) {
-    return (
-      <View style={styles.spinnerContainer}>
-        <ActivityIndicator animating color="#fff" size="large" />
-      </View>
-    );
-  }
-
   // Get the available options for the carousel
   const options = Object.keys(groups);
 
@@ -104,19 +86,48 @@ export default function Index() {
   // Selected group item.
   const selectedGroup = groups[actualSelectedOption];
 
-  if (!selectedGroup) {
-    return (
-      <View style={styles.spinnerContainer}>
-        <Text style={{ color: '#fff' }}>No data available for the selected group.</Text>
-      </View>
-    );
-  }
+  // Handle no data case
+  const hasNoData = !loading && !selectedGroup && authorizationStatus === 2;
 
-  const itemSuffix = selectedGroup.suffix || '';
+  const itemSuffix = selectedGroup?.suffix || '';
   const colorProfile = tabColors[groupType];
 
   return (
     <View style={[styles.container, { backgroundColor: colorProfile.primary }]}>
+      {/* Authorization Overlay */}
+      {authorizationStatus !== 2 && (
+        <View style={styles.authorizationOverlay}>
+          <View style={styles.authorizationCard}>
+            <Text style={styles.authorizationTitle}>HealthKit Access Required</Text>
+            <Text style={styles.authorizationText}>
+              This app needs access to your HealthKit data to display workout statistics.
+            </Text>
+            <Button
+              mode="contained"
+              onPress={requestAuthorization}
+              style={styles.authorizationButton}
+            >
+              Grant Access
+            </Button>
+          </View>
+        </View>
+      )}
+
+      {/* Loading Overlay */}
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator animating color="#fff" size="large" />
+        </View>
+      )}
+
+      {/* No Data Overlay - positioned to not block tabs */}
+      {hasNoData && (
+        <View style={styles.noDataOverlay}>
+          <Text style={{ color: '#fff', textAlign: 'center', paddingHorizontal: 20 }}>
+            No data available for the selected group.
+          </Text>
+        </View>
+      )}
       {/* Settings Icon */}
       <View style={styles.settingsContainer}>
         <IconButton
@@ -131,10 +142,10 @@ export default function Index() {
         loop={false}
         width={180}
         height={180}
-        data={options}
+        data={options.length > 0 ? options : ['--']}
         scrollAnimationDuration={300}
-        onSnapToItem={(index) => setSelectedOption(options[index])}
-        snapEnabled={true}
+        onSnapToItem={(index) => options.length > 0 && setSelectedOption(options[index])}
+        snapEnabled={options.length > 0}
         style={styles.carousel}
         mode="parallax"
         modeConfig={{
@@ -169,7 +180,7 @@ export default function Index() {
         ))}
       </View>
 
-      <GroupStats group={selectedGroup} meta={meta} tabColor={colorProfile} />
+      {selectedGroup && <GroupStats group={selectedGroup} meta={meta} tabColor={colorProfile} />}
 
       {/* Configuration Modal */}
       <GroupingConfigModal
@@ -195,6 +206,71 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 60,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    zIndex: 100,
+  },
+  noDataOverlay: {
+    position: 'absolute',
+    top: 350, // Position below carousel area
+    left: 0,
+    right: 0,
+    bottom: 0, // Above tab buttons
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    zIndex: 50, // Lower than loading overlay
+  },
+  authorizationOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    zIndex: 200,
+  },
+  authorizationCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 30,
+    marginHorizontal: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  authorizationTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  authorizationText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 25,
+    lineHeight: 24,
+  },
+  authorizationButton: {
+    paddingHorizontal: 30,
   },
   settingsContainer: {
     position: 'absolute',

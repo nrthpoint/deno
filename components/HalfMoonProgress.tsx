@@ -45,12 +45,18 @@ export const HalfMoonProgress: React.FC<HalfMoonProgressProps> = ({
   `;
 
   // SVG path for progress arc
+  // Start from the left side (180 degrees) and move clockwise
+  const startX = strokeWidth / 2;
+  const startY = center;
   const endX = center + radius * Math.cos(Math.PI - progressAngleRad);
   const endY = center - radius * Math.sin(Math.PI - progressAngleRad);
 
+  // Use large arc flag when the arc is greater than 180 degrees (but since we're only doing 0-180, it's when > 90)
+  const largeArcFlag = progressAngle > 90 ? 1 : 0;
+
   const progressPath = `
-    M ${strokeWidth / 2} ${center}
-    A ${radius} ${radius} 0 ${progressAngle > 90 ? 1 : 0} 1 ${endX} ${endY}
+    M ${startX} ${startY}
+    A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}
   `;
 
   const handlePress = () => {

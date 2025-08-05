@@ -45,7 +45,7 @@ export function useGroupedActivityData({
         const authorized = await isProtectedDataAvailable();
 
         if (!authorized) {
-          console.log('Authorization not granted');
+          console.error('Authorization not granted');
           setLoading(false);
           return;
         }
@@ -62,8 +62,6 @@ export function useGroupedActivityData({
             endDate,
           },
         });
-
-        console.log(`Fetched ${originalSamples.length} samples from HealthKit`);
 
         // Filter samples by activity type if specified
         const filteredSamples = originalSamples.filter((sample) => {

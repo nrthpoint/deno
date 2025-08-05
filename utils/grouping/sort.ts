@@ -31,15 +31,11 @@ export const sortGroupsByKeyInAscending = (
   const sortedGroups: WorkoutGroupWithHighlightSet = {};
   const keys = Object.keys(groups);
 
-  console.log('Sorting groups by key in ascending order:', keys);
-
   keys
     .sort((a, b) => parseFloat(a) - parseFloat(b))
     .forEach((key) => {
       sortedGroups[key] = groups[key];
     });
-
-  console.log('Sorted groups:', Object.keys(sortedGroups));
 
   return sortedGroups;
 };
