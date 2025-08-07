@@ -1,7 +1,8 @@
 import { ExtendedWorkout } from '@/types/workout';
 import { LengthUnit, Quantity, WorkoutSample } from '@kingstinct/react-native-healthkit';
 import { metersToMiles, metersToKilometers } from './distance';
-import { calculatePace, formatPace } from './workout';
+import { calculatePace } from './workout';
+import { formatPace } from './time';
 
 export const parseWorkoutSamples = ({
   samples,

@@ -1,4 +1,5 @@
-import { calculatePace, formatPace } from './workout';
+import { formatPace } from './time';
+import { calculatePace } from './workout';
 import { WorkoutSample, Quantity } from '@kingstinct/react-native-healthkit';
 
 describe('Workout Utilities', () => {

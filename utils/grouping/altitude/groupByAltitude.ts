@@ -6,11 +6,11 @@ import {
 } from '@/utils/grouping/interface';
 import { assignRankToGroups, sortGroupsByKeyInAscending } from '@/utils/grouping/sort';
 import { newQuantity, sumQuantities } from '@/utils/quantity';
+import { formatPace } from '@/utils/time';
 import {
   calculatePaceFromDistanceAndDuration,
   findHighestElevationRun,
   findLowestElevationRun,
-  formatPace,
 } from '@/utils/workout';
 
 const DEFAULT_TOLERANCE = 50; // 50 meters/feet tolerance

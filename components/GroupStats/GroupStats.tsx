@@ -49,11 +49,11 @@ export const GroupStats = ({
             values={[
               {
                 value: group.worst.duration.quantity,
-                displayText: formatDuration(group.worst.duration.quantity),
+                displayText: formatDuration(group.worst.duration),
               },
               {
                 value: group.highlight.duration.quantity,
-                displayText: formatDuration(group.highlight.duration.quantity),
+                displayText: formatDuration(group.highlight.duration),
               },
             ]}
             color="#FF9800"
@@ -63,13 +63,14 @@ export const GroupStats = ({
             detailTitle="Performance Variation"
             detailDescription="The range of performance within this group, showing how consistent your workouts are."
             additionalInfo={[
-              { label: 'Best Time', value: formatDuration(group.highlight.duration.quantity) },
-              { label: 'Worst Time', value: formatDuration(group.worst.duration.quantity) },
+              { label: 'Best Time', value: formatDuration(group.highlight.duration) },
+              { label: 'Worst Time', value: formatDuration(group.worst.duration) },
               {
                 label: 'Variation Range',
-                value: formatDuration(
-                  Math.abs(group.worst.duration.quantity - group.highlight.duration.quantity),
-                ),
+                value: formatDuration({
+                  quantity: group.highlight.duration.quantity - group.worst.duration.quantity,
+                  unit: group.highlight.duration.unit,
+                }),
               },
             ]}
           />

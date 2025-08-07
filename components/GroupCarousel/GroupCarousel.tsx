@@ -1,0 +1,92 @@
+import { getLatoFont } from '@/config/fonts';
+import { GroupType } from '@/types/groups';
+import { StyleSheet, View } from 'react-native';
+import { Text } from 'react-native-paper';
+import Carousel from 'react-native-reanimated-carousel';
+
+interface GroupCarouselProps {
+  options: string[];
+  colorProfile: any;
+  itemSuffix: string;
+  tolerance: number;
+  groupType: GroupType;
+  distanceUnit: string;
+  setSelectedOption: (option: string) => void;
+}
+
+export const GroupCarousel = ({
+  options,
+  colorProfile,
+  itemSuffix,
+  tolerance,
+  groupType,
+  distanceUnit,
+  setSelectedOption,
+}: GroupCarouselProps) => {
+  return (
+    <Carousel
+      loop={false}
+      width={180}
+      height={180}
+      data={options.length > 0 ? options : ['--']}
+      scrollAnimationDuration={300}
+      onSnapToItem={(index) => options.length > 0 && setSelectedOption(options[index])}
+      snapEnabled={options.length > 0}
+      style={styles.carousel}
+      mode="parallax"
+      modeConfig={{
+        parallaxScrollingScale: 0.9,
+        parallaxScrollingOffset: 50,
+      }}
+      renderItem={({ item }) => (
+        <View style={styles.carouselItem}>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={[styles.carouselText, { color: colorProfile.primary }]}>
+              {item}
+              {itemSuffix}
+            </Text>
+            <Text
+              style={{
+                color: colorProfile.primary,
+                fontWeight: 'bold',
+                fontSize: 11,
+                textTransform: 'uppercase',
+                letterSpacing: 2,
+                ...getLatoFont('bold'),
+              }}
+            >
+              ± {tolerance}
+              {groupType === 'altitude' ? 'm' : groupType === 'pace' ? 'min/km' : distanceUnit}
+            </Text>
+          </View>
+        </View>
+      )}
+    />
+  );
+};
+
+const styles = StyleSheet.create({
+  carousel: {
+    marginTop: 40,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    width: '100%',
+  },
+  carouselItem: {
+    width: 140,
+    height: 150,
+    marginHorizontal: 8,
+    borderRadius: 20,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  carouselText: {
+    verticalAlign: 'middle',
+    lineHeight: 80,
+    textAlign: 'center',
+    fontSize: 80,
+    fontWeight: 'bold',
+    fontFamily: 'OrelegaOne',
+  },
+});

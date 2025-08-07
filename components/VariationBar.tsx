@@ -246,9 +246,9 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     textAlign: 'center',
     textTransform: 'uppercase',
-    letterSpacing: 1.4,
+    letterSpacing: 2,
     marginTop: 4,
-    ...getLatoFont('regular'),
+    ...getLatoFont('bold'),
   },
   infoButton: {
     position: 'absolute',

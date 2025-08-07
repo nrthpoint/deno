@@ -1,3 +1,4 @@
+import { AllSampleTypesInApp } from '@/config/sampleIdentifiers';
 import { GROUP_TYPES, GroupType } from '@/types/groups';
 import { MetaWorkoutData, WorkoutGroupWithHighlightSet } from '@/types/workout';
 import { groupRunsByAltitude } from '@/utils/grouping/altitude/groupByAltitude';
@@ -6,20 +7,22 @@ import { groupRunsByPace } from '@/utils/grouping/pace/groupByPace';
 import { parseWorkoutSamples } from '@/utils/parser';
 import { newQuantity } from '@/utils/quantity';
 import {
+  AuthorizationRequestStatus,
   isProtectedDataAvailable,
   LengthUnit,
   queryWorkoutSamples,
+  useHealthkitAuthorization,
   WorkoutActivityType,
 } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from 'react';
 
 type UseGroupedActivityDataParams = {
-  activityType?: WorkoutActivityType;
-  distanceUnit?: LengthUnit;
-  timeRangeInDays?: number;
-  groupType?: GroupType;
-  tolerance?: number;
-  groupSize?: number;
+  activityType: WorkoutActivityType;
+  distanceUnit: LengthUnit;
+  timeRangeInDays: number;
+  groupType: GroupType;
+  tolerance: number;
+  groupSize: number;
 };
 
 export function useGroupedActivityData({
@@ -29,7 +32,9 @@ export function useGroupedActivityData({
   groupType = GROUP_TYPES.Distance,
   tolerance,
   groupSize,
-}: UseGroupedActivityDataParams = {}) {
+}: UseGroupedActivityDataParams) {
+  const [authorizationStatus, requestAuthorization] =
+    useHealthkitAuthorization(AllSampleTypesInApp);
   const [groups, setGroups] = useState<WorkoutGroupWithHighlightSet>({});
   const [meta, setMeta] = useState<MetaWorkoutData>({
     totalRuns: 0,
@@ -109,8 +114,18 @@ export function useGroupedActivityData({
       }
     };
 
-    fetchRuns();
-  }, [distanceUnit, timeRangeInDays, groupType, activityType, tolerance, groupSize]);
+    if (authorizationStatus === AuthorizationRequestStatus.unnecessary) {
+      fetchRuns();
+    }
+  }, [
+    distanceUnit,
+    timeRangeInDays,
+    groupType,
+    activityType,
+    tolerance,
+    groupSize,
+    authorizationStatus,
+  ]);
 
-  return { groups, meta, loading };
+  return { groups, meta, loading, authorizationStatus, requestAuthorization };
 }

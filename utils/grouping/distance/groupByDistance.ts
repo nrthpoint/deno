@@ -6,11 +6,11 @@ import {
 } from '@/utils/grouping/interface';
 import { assignRankToGroups, sortGroupsByKeyInAscending } from '@/utils/grouping/sort';
 import { newQuantity, sumQuantities } from '@/utils/quantity';
+import { formatPace } from '@/utils/time';
 import {
   calculatePaceFromDistanceAndDuration,
   findFastestRun,
   findSlowestRun,
-  formatPace,
 } from '@/utils/workout';
 
 const DEFAULT_TOLERANCE = 0.25; // 0.25 of a mile.

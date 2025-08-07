@@ -185,8 +185,8 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     textAlign: 'center',
     textTransform: 'uppercase',
-    letterSpacing: 1.4,
-    ...getLatoFont('regular'),
+    letterSpacing: 2,
+    ...getLatoFont('bold'),
   },
   infoButton: {
     position: 'absolute',

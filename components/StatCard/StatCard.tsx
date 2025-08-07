@@ -1,20 +1,18 @@
+import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { convertDurationToMinutes } from '@/utils/time';
-import { formatPace } from '@/utils/workout';
-import { Ionicons } from '@expo/vector-icons';
+import { formatDuration, formatPace } from '@/utils/time';
 import { Quantity } from '@kingstinct/react-native-healthkit';
 import React, { useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { StatCardProps } from './StatCard.types';
-import { colors } from '@/config/colors';
 
 const formatQuantityValue = (
   value: Quantity,
   type?: string,
-): { displayValue: string; unit: string } => {
+): { displayValue: string; unit?: string } => {
   if (!value || value.quantity === undefined || value.quantity === null) {
-    return { displayValue: '0', unit: value?.unit || '' };
+    return { displayValue: '0', unit: value?.unit };
   }
 
   switch (type) {
@@ -28,22 +26,23 @@ const formatQuantityValue = (
         return { displayValue: paceMatch[1], unit: paceMatch[2] || value.unit };
       }
 
-      return { displayValue: paceFormatted, unit: '' };
+      return { displayValue: paceFormatted };
 
     case 'duration':
-      const durationInMinutes = convertDurationToMinutes(value);
-      return { displayValue: `${durationInMinutes}`, unit: 'min' };
+      const displayValue = formatDuration(value);
+
+      return { displayValue };
 
     case 'distance':
       return {
         displayValue: value.quantity.toFixed(2),
-        unit: value.unit || '',
+        unit: value.unit,
       };
 
     default:
       return {
         displayValue: value.quantity.toString(),
-        unit: value.unit || '',
+        unit: value.unit,
       };
   }
 };

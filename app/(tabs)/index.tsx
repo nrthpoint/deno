@@ -1,18 +1,18 @@
+import { GroupCarousel } from '@/components/GroupCarousel/GroupCarousel';
 import { GroupStats } from '@/components/GroupStats/GroupStats';
 import {
-  GroupingConfigModal,
   GroupingConfig,
+  GroupingConfigModal,
 } from '@/components/GroupingConfigModal/GroupingConfigModal';
+import { TabButtons } from '@/components/TabButtons/TabButtons';
 import { tabColors } from '@/config/colors';
-import { AllSampleTypesInApp } from '@/config/sampleIdentifiers';
 import { useSettings } from '@/context/SettingsContext';
 import { useGroupedActivityData } from '@/hooks/useGroupedActivityData';
 import { GroupType } from '@/types/groups';
-import { useHealthkitAuthorization } from '@kingstinct/react-native-healthkit';
+import { AuthorizationRequestStatus } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Button, Text, IconButton } from 'react-native-paper';
-import Carousel from 'react-native-reanimated-carousel';
+import { ActivityIndicator, Button, IconButton, Text } from 'react-native-paper';
 
 const tabOptions: GroupType[] = ['pace', 'distance', 'altitude'];
 
@@ -30,11 +30,35 @@ const getDefaultConfig = (groupType: GroupType): GroupingConfig => {
   }
 };
 
-export default function Index() {
-  const [authorizationStatus, requestAuthorization] =
-    useHealthkitAuthorization(AllSampleTypesInApp);
+const AuthorizationOverlay = ({
+  authorizationStatus,
+  requestAuthorization,
+}: {
+  authorizationStatus: AuthorizationRequestStatus | null;
+  requestAuthorization: () => Promise<AuthorizationRequestStatus>;
+}) => {
+  if (authorizationStatus === AuthorizationRequestStatus.unnecessary) {
+    return null;
+  }
 
+  return (
+    <View style={styles.authorizationOverlay}>
+      <View style={styles.authorizationCard}>
+        <Text style={styles.authorizationTitle}>Authorization Required</Text>
+        <Text style={styles.authorizationText}>
+          To access your workout data, please grant permission in the Health app.
+        </Text>
+        <Button mode="contained" onPress={requestAuthorization} style={styles.authorizationButton}>
+          Grant Permission
+        </Button>
+      </View>
+    </View>
+  );
+};
+
+export default function Index() {
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
+
   const [groupType, setGroupingType] = useState<GroupType>('distance');
   const [configModalVisible, setConfigModalVisible] = useState(false);
   const [groupingConfigs, setGroupingConfigs] = useState<Record<GroupType, GroupingConfig>>({
@@ -43,18 +67,19 @@ export default function Index() {
     altitude: getDefaultConfig('altitude'),
   });
 
-  const currentConfig = groupingConfigs[groupType];
+  const { tolerance, groupSize } = groupingConfigs[groupType];
+  const { groups, meta, loading, authorizationStatus, requestAuthorization } =
+    useGroupedActivityData({
+      activityType,
+      distanceUnit,
+      timeRangeInDays,
+      groupType,
+      tolerance,
+      groupSize,
+    });
 
-  const { groups, meta, loading } = useGroupedActivityData({
-    activityType,
-    distanceUnit,
-    timeRangeInDays,
-    groupType,
-    tolerance: currentConfig.tolerance,
-    groupSize: currentConfig.groupSize,
-  });
-
-  const [selectedOption, setSelectedOption] = useState<string>('');
+  const options = Object.keys(groups);
+  const [selectedOption, setSelectedOption] = useState<string>(options[0] || '');
   const tabOptionLabels: Record<GroupType, string> = {
     pace: 'Pace',
     distance: distanceUnit === 'km' ? 'Kilometers' : 'Miles',
@@ -77,41 +102,18 @@ export default function Index() {
     }
   }, [groups, groupType]);
 
-  // Get the available options for the carousel
-  const options = Object.keys(groups);
-
-  // Select the currently active option
-  const actualSelectedOption = selectedOption || options[0];
-
-  // Selected group item.
-  const selectedGroup = groups[actualSelectedOption];
-
-  // Handle no data case
+  const selectedGroup = groups[selectedOption];
   const hasNoData = !loading && !selectedGroup && authorizationStatus === 2;
-
   const itemSuffix = selectedGroup?.suffix || '';
   const colorProfile = tabColors[groupType];
 
   return (
     <View style={[styles.container, { backgroundColor: colorProfile.primary }]}>
       {/* Authorization Overlay */}
-      {authorizationStatus !== 2 && (
-        <View style={styles.authorizationOverlay}>
-          <View style={styles.authorizationCard}>
-            <Text style={styles.authorizationTitle}>HealthKit Access Required</Text>
-            <Text style={styles.authorizationText}>
-              This app needs access to your HealthKit data to display workout statistics.
-            </Text>
-            <Button
-              mode="contained"
-              onPress={requestAuthorization}
-              style={styles.authorizationButton}
-            >
-              Grant Access
-            </Button>
-          </View>
-        </View>
-      )}
+      <AuthorizationOverlay
+        authorizationStatus={authorizationStatus}
+        requestAuthorization={requestAuthorization}
+      />
 
       {/* Loading Overlay */}
       {loading && (
@@ -120,7 +122,7 @@ export default function Index() {
         </View>
       )}
 
-      {/* No Data Overlay - positioned to not block tabs */}
+      {/* No Data Overlay */}
       {hasNoData && (
         <View style={styles.noDataOverlay}>
           <Text style={{ color: '#fff', textAlign: 'center', paddingHorizontal: 20 }}>
@@ -128,6 +130,7 @@ export default function Index() {
           </Text>
         </View>
       )}
+
       {/* Settings Icon */}
       <View style={styles.settingsContainer}>
         <IconButton
@@ -138,60 +141,35 @@ export default function Index() {
         />
       </View>
 
-      <Carousel
-        loop={false}
-        width={180}
-        height={180}
-        data={options.length > 0 ? options : ['--']}
-        scrollAnimationDuration={300}
-        onSnapToItem={(index) => options.length > 0 && setSelectedOption(options[index])}
-        snapEnabled={options.length > 0}
-        style={styles.carousel}
-        mode="parallax"
-        modeConfig={{
-          parallaxScrollingScale: 0.9,
-          parallaxScrollingOffset: 50,
-        }}
-        renderItem={({ item }) => (
-          <View style={styles.carouselItem}>
-            <Text style={[styles.carouselText, { color: colorProfile.primary }]}>
-              {item}
-              {itemSuffix}
-            </Text>
-          </View>
-        )}
-      />
-
-      <View style={styles.tabRow}>
-        {tabOptions.map((tab) => (
-          <Button
-            key={tab}
-            mode="contained"
-            onPress={() => setGroupingType(tab)}
-            style={styles.tabButton}
-            labelStyle={[
-              styles.tabButtonText,
-              { color: groupType === tab ? colorProfile.primary : '#FFFFFF' },
-            ]}
-            buttonColor={groupType === tab ? '#FFFFFF' : 'rgba(255, 255, 255, 0.1)'}
-          >
-            {tabOptionLabels[tab]}
-          </Button>
-        ))}
-      </View>
-
-      {selectedGroup && <GroupStats group={selectedGroup} meta={meta} tabColor={colorProfile} />}
-
-      {/* Configuration Modal */}
       <GroupingConfigModal
         visible={configModalVisible}
         onDismiss={() => setConfigModalVisible(false)}
         groupType={groupType}
         distanceUnit={distanceUnit}
-        config={currentConfig}
+        config={{ tolerance, groupSize }}
         onConfigChange={handleConfigChange}
         colorProfile={colorProfile}
       />
+
+      <GroupCarousel
+        options={options}
+        colorProfile={colorProfile}
+        itemSuffix={itemSuffix}
+        tolerance={tolerance}
+        groupType={groupType}
+        distanceUnit={distanceUnit}
+        setSelectedOption={setSelectedOption}
+      />
+
+      <TabButtons
+        tabOptions={tabOptions}
+        groupType={groupType}
+        colorProfile={colorProfile}
+        tabOptionLabels={tabOptionLabels}
+        setGroupingType={setGroupingType}
+      />
+
+      {selectedGroup && <GroupStats group={selectedGroup} meta={meta} tabColor={colorProfile} />}
     </View>
   );
 }
@@ -274,54 +252,8 @@ export const styles = StyleSheet.create({
   },
   settingsContainer: {
     position: 'absolute',
-    top: 60,
+    top: 50,
     right: 20,
     zIndex: 10,
-  },
-  carousel: {
-    marginTop: 40,
-    paddingHorizontal: 20,
-    justifyContent: 'center',
-    width: '100%',
-  },
-  carouselItem: {
-    width: 140,
-    height: 150,
-    marginHorizontal: 8,
-    borderRadius: 20,
-    backgroundColor: '#FFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  activeItem: {
-    backgroundColor: '#fff',
-  },
-  carouselText: {
-    verticalAlign: 'middle',
-    lineHeight: 140,
-    textAlign: 'center',
-    fontSize: 80,
-    fontWeight: 'bold',
-    fontFamily: 'OrelegaOne',
-  },
-  activeText: {
-    color: '#1E5FD2',
-  },
-  tabRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginVertical: 16,
-    paddingHorizontal: 10,
-  },
-  tabButton: {
-    flex: 1,
-    marginHorizontal: 5,
-    borderRadius: 5,
-  },
-  tabButtonText: {
-    fontSize: 11,
-    textTransform: 'uppercase',
-    letterSpacing: 2,
-    fontWeight: 'bold',
   },
 });
