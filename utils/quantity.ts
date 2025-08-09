@@ -50,3 +50,11 @@ export function averageQuantity(quantities: Quantity[]): Quantity {
   const total = sumQuantities(quantities);
   return newQuantity(total.quantity / quantities.length, total.unit);
 }
+
+export function subtractQuantities(a: Quantity, b: Quantity): Quantity {
+  if (a.unit !== b.unit) {
+    throw new Error(`Unit mismatch: ${a.unit} !== ${b.unit}`);
+  }
+
+  return newQuantity(a.quantity - b.quantity, a.unit);
+}

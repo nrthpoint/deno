@@ -11,7 +11,6 @@ export const formatPace = (pace: Quantity, includeUnit: boolean = true): string 
   }
 
   if (!pace?.quantity || isNaN(pace.quantity) || pace.quantity < 0) {
-    console.warn('formatPace: Invalid pace quantity:', pace);
     throw new Error('formatPace: Pace quantity must be a valid non-negative number');
   }
 

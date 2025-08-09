@@ -7,6 +7,7 @@ import { SampleComparisonCard } from '@/components/SampleComparisonCard/SampleCo
 import { StatCard } from '@/components/StatCard/StatCard';
 import { VariationBar } from '@/components/VariationBar';
 import { Group, MetaWorkoutData } from '@/types/Groups';
+import { newQuantity, subtractQuantities } from '@/utils/quantity';
 
 export const GroupStats = ({
   group,
@@ -66,10 +67,7 @@ export const GroupStats = ({
               { label: 'Worst Time', value: formatDuration(group.worst.duration) },
               {
                 label: 'Variation Range',
-                value: formatDuration({
-                  quantity: group.highlight.duration.quantity - group.worst.duration.quantity,
-                  unit: group.highlight.duration.unit,
-                }),
+                value: formatDuration(group.totalVariation),
               },
             ]}
           />

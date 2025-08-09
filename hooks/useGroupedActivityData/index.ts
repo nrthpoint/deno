@@ -68,14 +68,10 @@ export function useGroupedActivityData({
           },
         });
 
-        console.log('Fetched workout samples:', originalSamples.length);
-
         // Filter samples by activity type if specified
         const filteredSamples = originalSamples.filter((sample) => {
           return !activityType || sample.workoutActivityType === activityType;
         });
-
-        console.log('Filtered workout samples:', filteredSamples.length);
 
         setMeta({
           totalRuns: filteredSamples.length,
@@ -89,9 +85,6 @@ export function useGroupedActivityData({
         });
 
         const samples = parseWorkoutSamples({ samples: filteredSamples, distanceUnit });
-
-        // log first 5 parsed workouts for debugging
-        console.log('Parsed workouts:', samples.slice(0, 5));
 
         if (samples.length === 0) {
           setGroups({});

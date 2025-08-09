@@ -9,7 +9,7 @@ import {
   assignRankToGroups,
   sortGroupsByKeyInAscending,
 } from '@/hooks/useGroupedActivityData/sort';
-import { newQuantity, sumQuantities } from '@/utils/quantity';
+import { newQuantity, subtractQuantities, sumQuantities } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
 import {
   calculatePaceFromDistanceAndDuration,
@@ -119,9 +119,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   group.percentageOfTotalWorkouts = (group.runs.length / samples.length) * 100;
   group.highlight = findFastestRun(group.runs);
   group.worst = findSlowestRun(group.runs);
-
-  const diff = group.worst.duration.quantity - group.highlight.duration.quantity;
-  group.totalVariation = newQuantity(Math.abs(diff), group.totalDuration.unit);
+  group.totalVariation = subtractQuantities(group.worst.duration, group.highlight.duration);
 
   group.stats = [
     {
