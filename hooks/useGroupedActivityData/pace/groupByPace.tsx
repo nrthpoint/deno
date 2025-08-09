@@ -5,7 +5,7 @@ import {
   GroupingStatsParams,
 } from '@/hooks/useGroupedActivityData/interface';
 import { assignRankToGroups } from '@/hooks/useGroupedActivityData/sort';
-import { newQuantity, sumQuantities } from '@/utils/quantity';
+import { newQuantity, subtractQuantities, sumQuantities } from '@/utils/quantity';
 import { findLongestRun, findShortestRun } from '@/utils/workout';
 import { Ionicons } from '@expo/vector-icons';
 import { Groups, Group } from '@/types/Groups';
@@ -102,12 +102,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   group.percentageOfTotalWorkouts = (group.runs.length / samples.length) * 100;
   group.highlight = findLongestRun(group.runs);
   group.worst = findShortestRun(group.runs);
-
-  // Calculate the total variation in distance
-  const diffInDistance = Math.abs(
-    group.highlight.totalDistance.quantity - group.worst.totalDistance.quantity,
-  );
-  group.totalVariation = newQuantity(diffInDistance, group.highlight.totalDistance.unit);
+  group.totalVariation = subtractQuantities(group.highlight.duration, group.worst.duration);
 
   group.stats = [
     {
@@ -142,7 +137,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     },
     {
       type: 'duration',
-      label: 'Best Duration',
+      label: 'Fastest Time',
       value: group.highlight.duration,
       workout: group.highlight,
       icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
@@ -150,7 +145,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     },
     {
       type: 'duration',
-      label: 'Worst Duration',
+      label: 'Slowest Time',
       value: group.worst.duration,
       workout: group.worst,
       icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,

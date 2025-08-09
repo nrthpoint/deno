@@ -163,7 +163,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     },
     {
       type: 'duration',
-      label: 'Slowest Run',
+      label: 'Slowest Time',
       value: group.worst.duration,
       workout: group.worst,
       icon: <Ionicons name="thumbs-down-outline" size={40} color="#FFFFFF" />,

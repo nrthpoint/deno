@@ -66,7 +66,10 @@ export const GroupStats = ({
               { label: 'Worst Time', value: formatDuration(group.worst.duration) },
               {
                 label: 'Variation Range',
-                value: formatDuration(group.totalVariation),
+                value:
+                  group.totalVariation.unit === 'mi'
+                    ? group.totalVariation.quantity.toFixed(2)
+                    : formatDuration(group.totalVariation),
               },
             ]}
           />
