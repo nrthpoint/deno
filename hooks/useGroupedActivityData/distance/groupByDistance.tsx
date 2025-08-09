@@ -1,10 +1,14 @@
 import React from 'react';
+
 import {
   GroupingParameters,
   GroupingSampleParserParams,
   GroupingStatsParams,
-} from '@/utils/grouping/interface';
-import { assignRankToGroups, sortGroupsByKeyInAscending } from '@/utils/grouping/sort';
+} from '@/hooks/useGroupedActivityData/interface';
+import {
+  assignRankToGroups,
+  sortGroupsByKeyInAscending,
+} from '@/hooks/useGroupedActivityData/sort';
 import { newQuantity, sumQuantities } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
 import {

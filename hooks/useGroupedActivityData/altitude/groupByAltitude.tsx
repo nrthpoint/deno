@@ -1,10 +1,9 @@
 import React from 'react';
+
 import {
-  GroupingParameters,
-  GroupingSampleParserParams,
-  GroupingStatsParams,
-} from '@/utils/grouping/interface';
-import { assignRankToGroups, sortGroupsByKeyInAscending } from '@/utils/grouping/sort';
+  assignRankToGroups,
+  sortGroupsByKeyInAscending,
+} from '@/hooks/useGroupedActivityData/sort';
 import { newQuantity, sumQuantities } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
 import {
@@ -14,6 +13,7 @@ import {
 } from '@/utils/workout';
 import { Ionicons } from '@expo/vector-icons';
 import { Groups, Group } from '@/types/Groups';
+import { GroupingParameters } from '@/hooks/useGroupedActivityData/interface';
 
 const DEFAULT_TOLERANCE = 50; // 50 meters/feet tolerance
 const DEFAULT_GROUP_SIZE = 100; // 100 meters/feet increments

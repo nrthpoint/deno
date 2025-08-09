@@ -5,7 +5,7 @@ import { Quantity } from '@kingstinct/react-native-healthkit';
  * @param pace - The pace as a Quantity object with decimal minutes and unit
  * @returns Formatted pace string in MM:SS UNIT format (e.g., "6:40 min/mi", "7:30 min/km")
  */
-export const formatPace = (pace: Quantity): string => {
+export const formatPace = (pace: Quantity, includeUnit: boolean = true): string => {
   if (pace?.quantity === 0) {
     return `0:00 ${pace.unit}`;
   }
@@ -25,7 +25,7 @@ export const formatPace = (pace: Quantity): string => {
   const timeFormatted = `${minutes}:${seconds.toString().padStart(2, '0')}`;
   const unitSuffix = pace.unit ? ` ${pace.unit}` : '';
 
-  return `${timeFormatted}${unitSuffix}`;
+  return !includeUnit ? timeFormatted : `${timeFormatted}${unitSuffix}`;
 };
 
 /**

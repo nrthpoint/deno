@@ -3,8 +3,8 @@ import {
   GroupingParameters,
   GroupingSampleParserParams,
   GroupingStatsParams,
-} from '@/utils/grouping/interface';
-import { assignRankToGroups } from '@/utils/grouping/sort';
+} from '@/hooks/useGroupedActivityData/interface';
+import { assignRankToGroups } from '@/hooks/useGroupedActivityData/sort';
 import { newQuantity, sumQuantities } from '@/utils/quantity';
 import { findLongestRun, findShortestRun } from '@/utils/workout';
 import { Ionicons } from '@expo/vector-icons';

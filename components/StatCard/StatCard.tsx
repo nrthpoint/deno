@@ -1,10 +1,11 @@
+import React, { useState } from 'react';
+
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import React, { useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { StatCardProps } from './StatCard.types';
-import { formatQuantityValue } from './StatCard.utils';
+import { formatQuantityValue, getAchievementBadge } from './StatCard.utils';
 
 export const StatCard = ({ stat }: StatCardProps) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,29 +25,7 @@ export const StatCard = ({ stat }: StatCardProps) => {
   } = stat;
 
   const { displayValue, unit } = formatQuantityValue(value, type);
-
-  // Helper function to get achievement badge data with priority
-  const getAchievementBadge = () => {
-    // Priority order: Fastest > Furthest > Longest > Highest Elevation > Personal Best
-    if (achievements.isAllTimeFastest) {
-      return { label: '🏃‍♂️ FASTEST', color: '#FF6B35' };
-    }
-    if (achievements.isAllTimeFurthest) {
-      return { label: '🏁 FURTHEST', color: '#4ECDC4' };
-    }
-    if (achievements.isAllTimeLongest) {
-      return { label: '⏱️ LONGEST', color: '#45B7D1' };
-    }
-    if (achievements.isAllTimeHighestElevation) {
-      return { label: '⛰️ HIGHEST', color: '#96CEB4' };
-    }
-    if (achievements.isPersonalBestPace && !achievements.isAllTimeFastest) {
-      return { label: '⚡ PB PACE', color: '#FECA57' };
-    }
-    return null;
-  };
-
-  const achievementBadge = getAchievementBadge();
+  const achievementBadge = getAchievementBadge(achievements);
 
   const handlePress = () => {
     if (hasTooltip) {

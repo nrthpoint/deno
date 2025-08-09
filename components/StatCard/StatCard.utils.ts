@@ -1,3 +1,4 @@
+import { WorkoutAchievements } from '@/types/ExtendedWorkout';
 import { formatPace, formatDuration } from '@/utils/time';
 import { Quantity } from '@kingstinct/react-native-healthkit';
 
@@ -11,16 +12,10 @@ export const formatQuantityValue = (
 
   switch (type) {
     case 'pace':
-      console.log('Formatting pace:', value);
-      const paceFormatted = formatPace(value);
-      const paceMatch = paceFormatted.match(/^(\d+:\d+)\s*(.*)$/);
-      console.log('Formatted pace:', paceFormatted, 'Match:', paceMatch);
+      const paceFormattedValue = formatPace(value, false);
+      const paceFormattedUnit = value.unit || 'min/mi';
 
-      if (paceMatch) {
-        return { displayValue: paceMatch[1], unit: paceMatch[2] || value.unit };
-      }
-
-      return { displayValue: paceFormatted };
+      return { displayValue: paceFormattedValue, unit: paceFormattedUnit };
 
     case 'duration':
       return { displayValue: formatDuration(value) };
@@ -37,4 +32,29 @@ export const formatQuantityValue = (
         unit: value.unit,
       };
   }
+};
+
+export const getAchievementBadge = (achievements: WorkoutAchievements) => {
+  // Priority order: Fastest > Furthest > Longest > Highest Elevation > Personal Best
+  if (achievements.isAllTimeFastest) {
+    return { label: '🏃‍♂️ FASTEST', color: '#FF6B35' };
+  }
+
+  if (achievements.isAllTimeFurthest) {
+    return { label: '🏁 FURTHEST', color: '#4ECDC4' };
+  }
+
+  if (achievements.isAllTimeLongest) {
+    return { label: '⏱️ LONGEST', color: '#45B7D1' };
+  }
+
+  if (achievements.isAllTimeHighestElevation) {
+    return { label: '⛰️ HIGHEST', color: '#96CEB4' };
+  }
+
+  if (achievements.isPersonalBestPace && !achievements.isAllTimeFastest) {
+    return { label: '⚡ PB PACE', color: '#FECA57' };
+  }
+
+  return null;
 };

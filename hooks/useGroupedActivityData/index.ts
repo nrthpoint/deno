@@ -1,8 +1,8 @@
 import { AllSampleTypesInApp } from '@/config/sampleIdentifiers';
 import { GroupType, Groups, MetaWorkoutData, GROUP_TYPES } from '@/types/Groups';
-import { groupRunsByAltitude } from '@/utils/grouping/altitude/groupByAltitude';
-import { groupRunsByDistance } from '@/utils/grouping/distance/groupByDistance';
-import { groupRunsByPace } from '@/utils/grouping/pace/groupByPace';
+import { groupRunsByAltitude } from '@/hooks/useGroupedActivityData/altitude/groupByAltitude';
+import { groupRunsByDistance } from '@/hooks/useGroupedActivityData/distance/groupByDistance';
+import { groupRunsByPace } from '@/hooks/useGroupedActivityData/pace/groupByPace';
 import { parseWorkoutSamples } from '@/utils/parser';
 import { newQuantity } from '@/utils/quantity';
 import {
