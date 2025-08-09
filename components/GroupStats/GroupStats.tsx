@@ -75,7 +75,12 @@ export const GroupStats = ({
 
       <View style={styles.container}>
         {group.stats.map((stat) => (
-          <StatCard key={stat.label} stat={stat} />
+          <StatCard
+            key={stat.label}
+            stat={stat}
+            groupWorkouts={stat.label === 'Total Workouts' ? group.runs : undefined}
+            groupTitle={stat.label === 'Total Workouts' ? group.title : undefined}
+          />
         ))}
       </View>
 

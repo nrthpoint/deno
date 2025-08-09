@@ -7,9 +7,11 @@ import { Button, Text } from 'react-native-paper';
 import { StatCardProps } from './StatCard.types';
 import { formatQuantityValue, getAchievementBadge } from './StatCard.utils';
 import { AchievementBadge } from './AchievementBadge';
+import { WorkoutListView } from '@/components/WorkoutListView';
 
-export const StatCard = ({ stat }: StatCardProps) => {
+export const StatCard = ({ stat, groupWorkouts, groupTitle }: StatCardProps) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [workoutListVisible, setWorkoutListVisible] = useState(false);
 
   const {
     icon,
@@ -29,7 +31,9 @@ export const StatCard = ({ stat }: StatCardProps) => {
   const achievementBadge = getAchievementBadge(achievements);
 
   const handlePress = () => {
-    if (hasTooltip) {
+    if (stat.label === 'Total Workouts' && groupWorkouts && groupTitle) {
+      setWorkoutListVisible(true);
+    } else if (hasTooltip) {
       setModalVisible(true);
     }
   };
@@ -61,7 +65,7 @@ export const StatCard = ({ stat }: StatCardProps) => {
 
   return (
     <>
-      {hasTooltip ? (
+      {hasTooltip || (stat.label === 'Total Workouts' && groupWorkouts) ? (
         <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>
           {cardContent}
         </TouchableOpacity>
@@ -127,6 +131,17 @@ export const StatCard = ({ stat }: StatCardProps) => {
             </View>
           </View>
         </Modal>
+      )}
+
+      {/* Workout List Modal */}
+      {stat.label === 'Total Workouts' && groupWorkouts && groupTitle && (
+        <WorkoutListView
+          visible={workoutListVisible}
+          onClose={() => setWorkoutListVisible(false)}
+          workouts={groupWorkouts}
+          groupTitle={groupTitle}
+          accentColor={accentColor}
+        />
       )}
     </>
   );
