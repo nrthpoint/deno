@@ -6,6 +6,7 @@ import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { StatCardProps } from './StatCard.types';
 import { formatQuantityValue, getAchievementBadge } from './StatCard.utils';
+import { AchievementBadge } from './AchievementBadge';
 
 export const StatCard = ({ stat }: StatCardProps) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -47,11 +48,7 @@ export const StatCard = ({ stat }: StatCardProps) => {
         </View>
 
         {/* Achievement Badge */}
-        {achievementBadge && (
-          <View style={[styles.achievementBadge, { backgroundColor: achievementBadge.color }]}>
-            <Text style={styles.achievementText}>{achievementBadge.label}</Text>
-          </View>
-        )}
+        {achievementBadge && <AchievementBadge achievement={achievementBadge} />}
       </View>
 
       {/* {hasTooltip && (
@@ -140,7 +137,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 4,
     marginVertical: 8,
-    overflow: 'hidden',
+    //overflow: 'hidden',
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: {
@@ -193,34 +190,6 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.regular,
     marginBottom: 2,
     textTransform: 'uppercase',
-  },
-  achievementBadge: {
-    marginTop: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 3,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  achievementText: {
-    fontSize: 10,
-    color: '#FFFFFF',
-    fontFamily: LatoFonts.bold,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    fontWeight: '800',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
   },
   infoButton: {
     position: 'absolute',

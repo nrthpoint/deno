@@ -34,6 +34,11 @@ export const formatQuantityValue = (
   }
 };
 
+export type AchievementBadge = {
+  label: string;
+  color: string;
+};
+
 export const getAchievementBadge = (achievements: WorkoutAchievements) => {
   // Priority order: Fastest > Furthest > Longest > Highest Elevation > Personal Best
   if (achievements.isAllTimeFastest) {
