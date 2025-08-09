@@ -66,6 +66,7 @@ const parseSampleIntoGroup = ({
   // If the group for this distance doesn't exist, create it
   if (!groups[groupKey]) {
     groups[groupKey] = {
+      type: 'distance',
       title: `${nearestGroup.toFixed(1)} ${sample.totalDistance?.unit}`,
       suffix: '',
       rank: 0,

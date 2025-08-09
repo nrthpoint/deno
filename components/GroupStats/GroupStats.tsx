@@ -7,7 +7,6 @@ import { SampleComparisonCard } from '@/components/SampleComparisonCard/SampleCo
 import { StatCard } from '@/components/StatCard/StatCard';
 import { VariationBar } from '@/components/VariationBar';
 import { Group, MetaWorkoutData } from '@/types/Groups';
-import { newQuantity, subtractQuantities } from '@/utils/quantity';
 
 export const GroupStats = ({
   group,

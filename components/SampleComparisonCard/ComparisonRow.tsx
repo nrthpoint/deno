@@ -1,4 +1,4 @@
-import { colors } from '@/config/colors';
+import { ColorProfile, colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { convertDurationToMinutes, formatPace } from '@/utils/time';
 import { StyleSheet, Text, View } from 'react-native';
@@ -93,6 +93,41 @@ const getPropertyLabel = (property: ComparisonProperty): string => {
   }
 };
 
+const BarChart = ({ width, colorProfile }: { width: number; colorProfile: ColorProfile }) => (
+  <View style={styles.barContainer}>
+    <Svg width="100%" height="20" style={{ borderWidth: 1 }}>
+      <Rect x={0} y={0} width={`${width}%`} height="8" fill="#E0E0E0" />
+      <Rect width="100%" height="8" x={0} y={6} fill={colorProfile.primary} />
+    </Svg>
+  </View>
+);
+
+const Stats = ({
+  sample1Data,
+  sample2Data,
+  sample1Better,
+}: {
+  sample1Data: StatDisplayData;
+  sample2Data: StatDisplayData;
+  sample1Better: boolean;
+}) => (
+  <View style={styles.valuesContainer}>
+    <View style={[styles.valueSection, styles.leftValue]}>
+      <Text style={[styles.valueText, sample1Better && styles.betterValue]}>
+        {sample1Data.displayValue}
+      </Text>
+      <Text style={styles.unitText}>{sample1Data.unit}</Text>
+    </View>
+
+    <View style={[styles.valueSection, styles.rightValue]}>
+      <Text style={[styles.valueText, !sample1Better && styles.betterValue]}>
+        {sample2Data.displayValue}
+      </Text>
+      <Text style={styles.unitText}>{sample2Data.unit}</Text>
+    </View>
+  </View>
+);
+
 export const ComparisonRow: React.FC<ComparisonRowProps> = ({
   property,
   sample1,
@@ -102,62 +137,21 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({
   const sample1Data = formatPropertyValue(property, sample1);
   const sample2Data = formatPropertyValue(property, sample2);
 
-  // Calculate which sample performs better (lower is better for pace and duration, higher for distance and elevation)
-  const lowerIsBetter = property === 'averagePace' || property === 'duration';
-  const sample1Better = lowerIsBetter
+  let widthOne = (sample1Data.numericValue / sample2Data.numericValue) * 100 || 0;
+  let widthTwo = (sample2Data.numericValue / sample1Data.numericValue) * 100 || 0;
+
+  let lowerIsBetter = property === 'averagePace' || property === 'duration';
+  let sample1Better = lowerIsBetter
     ? sample1Data.numericValue < sample2Data.numericValue
     : sample1Data.numericValue > sample2Data.numericValue;
 
-  // Calculate percentage for bar chart
-  let width = !sample1Better
-    ? (sample2Data.numericValue / sample1Data.numericValue) * 100
-    : (sample1Data.numericValue / sample2Data.numericValue) * 100;
-
-  // Set second bar to 0 to hide it if NaN.
-  if (isNaN(width) || !isFinite(width)) {
-    width = 0;
-  }
-
-  const Stats = ({
-    sample1Data,
-    sample2Data,
-    sample1Better,
-  }: {
-    sample1Data: StatDisplayData;
-    sample2Data: StatDisplayData;
-    sample1Better: boolean;
-  }) => (
-    <View style={styles.valuesContainer}>
-      <View style={[styles.valueSection, styles.leftValue]}>
-        <Text style={[styles.valueText, sample1Better && styles.betterValue]}>
-          {sample1Data.displayValue}
-        </Text>
-        <Text style={styles.unitText}>{sample1Data.unit}</Text>
-      </View>
-
-      <View style={[styles.valueSection, styles.rightValue]}>
-        <Text style={[styles.valueText, !sample1Better && styles.betterValue]}>
-          {sample2Data.displayValue}
-        </Text>
-        <Text style={styles.unitText}>{sample2Data.unit}</Text>
-      </View>
-    </View>
-  );
-
-  const BarChart = ({ width }: { width: number }) => (
-    <View style={styles.barContainer}>
-      <Svg width="100%" height="20" style={{ borderWidth: 1 }}>
-        <Rect x={0} y={0} width={`${width}%`} height="8" fill="#E0E0E0" />
-        <Rect width="100%" height="8" x={0} y={6} fill={colorProfile.primary} />
-      </Svg>
-    </View>
-  );
+  let width = widthOne > widthTwo ? widthOne : widthTwo;
 
   return (
     <View style={styles.comparisonRow}>
       <Text style={styles.propertyLabel}>{getPropertyLabel(property)}</Text>
       <Stats sample1Data={sample1Data} sample2Data={sample2Data} sample1Better={sample1Better} />
-      <BarChart width={width} />
+      <BarChart width={width} colorProfile={colorProfile} />
     </View>
   );
 };

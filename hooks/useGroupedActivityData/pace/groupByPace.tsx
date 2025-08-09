@@ -56,6 +56,7 @@ const parseSampleIntoGroup = ({
   // If the group for this pace doesn't exist, create it
   if (!groups[groupKey]) {
     groups[groupKey] = {
+      type: 'pace',
       title: `${nearestGroup % 1 === 0 ? nearestGroup.toString() : nearestGroup.toFixed(1)} min/mile`,
       rank: 0,
       suffix: "'",

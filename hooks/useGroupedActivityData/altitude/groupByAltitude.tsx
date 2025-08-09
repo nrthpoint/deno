@@ -13,7 +13,10 @@ import {
 } from '@/utils/workout';
 import { Ionicons } from '@expo/vector-icons';
 import { Groups, Group } from '@/types/Groups';
-import { GroupingParameters } from '@/hooks/useGroupedActivityData/interface';
+import {
+  GroupingParameters,
+  GroupingSampleParserParams,
+} from '@/hooks/useGroupedActivityData/interface';
 
 const DEFAULT_TOLERANCE = 50; // 50 meters/feet tolerance
 const DEFAULT_GROUP_SIZE = 100; // 100 meters/feet increments
@@ -76,6 +79,7 @@ const parseSampleIntoGroup = ({
   // If the group for this elevation doesn't exist, create it
   if (!groups[groupKey]) {
     groups[groupKey] = {
+      type: 'altitude',
       title: `${nearestGroup} ${elevation.unit}`,
       suffix: '',
       rank: 0,

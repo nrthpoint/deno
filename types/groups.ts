@@ -13,6 +13,7 @@ export const GROUP_TYPES = {
 export type Group = {
   title: string;
   suffix: string;
+  type: GroupType;
 
   // Rank of the group based on the number of runs
   rank: number;
