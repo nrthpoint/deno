@@ -1,5 +1,5 @@
 import { getLatoFont } from '@/config/fonts';
-import { GroupType } from '@/types/groups';
+import { GroupType } from '@/types/Groups';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import Carousel from 'react-native-reanimated-carousel';

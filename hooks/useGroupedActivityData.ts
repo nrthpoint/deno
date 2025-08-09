@@ -1,6 +1,5 @@
 import { AllSampleTypesInApp } from '@/config/sampleIdentifiers';
-import { GROUP_TYPES, GroupType } from '@/types/groups';
-import { MetaWorkoutData, WorkoutGroupWithHighlightSet } from '@/types/workout';
+import { GroupType, Groups, MetaWorkoutData, GROUP_TYPES } from '@/types/Groups';
 import { groupRunsByAltitude } from '@/utils/grouping/altitude/groupByAltitude';
 import { groupRunsByDistance } from '@/utils/grouping/distance/groupByDistance';
 import { groupRunsByPace } from '@/utils/grouping/pace/groupByPace';
@@ -26,16 +25,16 @@ type UseGroupedActivityDataParams = {
 };
 
 export function useGroupedActivityData({
-  activityType = WorkoutActivityType.running,
-  distanceUnit = 'mi',
-  timeRangeInDays = 365,
-  groupType = GROUP_TYPES.Distance,
+  activityType,
+  distanceUnit,
+  timeRangeInDays,
+  groupType,
   tolerance,
   groupSize,
 }: UseGroupedActivityDataParams) {
   const [authorizationStatus, requestAuthorization] =
     useHealthkitAuthorization(AllSampleTypesInApp);
-  const [groups, setGroups] = useState<WorkoutGroupWithHighlightSet>({});
+  const [groups, setGroups] = useState<Groups>({});
   const [meta, setMeta] = useState<MetaWorkoutData>({
     totalRuns: 0,
     totalDistance: { quantity: 0, unit: distanceUnit },
@@ -63,15 +62,20 @@ export function useGroupedActivityData({
           ascending: false,
           limit: 10000,
           filter: {
+            workoutActivityType: activityType,
             startDate,
             endDate,
           },
         });
 
+        console.log('Fetched workout samples:', originalSamples.length);
+
         // Filter samples by activity type if specified
         const filteredSamples = originalSamples.filter((sample) => {
           return !activityType || sample.workoutActivityType === activityType;
         });
+
+        console.log('Filtered workout samples:', filteredSamples.length);
 
         setMeta({
           totalRuns: filteredSamples.length,
@@ -85,6 +89,9 @@ export function useGroupedActivityData({
         });
 
         const samples = parseWorkoutSamples({ samples: filteredSamples, distanceUnit });
+
+        // log first 5 parsed workouts for debugging
+        console.log('Parsed workouts:', samples.slice(0, 5));
 
         if (samples.length === 0) {
           setGroups({});

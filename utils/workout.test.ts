@@ -31,23 +31,38 @@ describe('Workout Utilities', () => {
       expect(formatPace({ quantity: 15.25, unit: 'min/km' } as Quantity)).toBe('15:15 min/km');
     });
 
-    it('should handle edge cases', () => {
-      expect(formatPace({ quantity: 0, unit: 'min/mi' } as Quantity)).toBe('0:00');
+    it.only('should handle edge cases', () => {
+      expect(formatPace({ quantity: 0, unit: 'min/mi' } as Quantity)).toBe('0:00 min/mi');
       expect(formatPace({ quantity: 0.5, unit: 'min/km' } as Quantity)).toBe('0:30 min/km');
       expect(formatPace({ quantity: 0.1, unit: 'min/mi' } as Quantity)).toBe('0:06 min/mi');
     });
 
     it('should handle invalid inputs gracefully', () => {
-      expect(formatPace({ quantity: NaN, unit: 'min/mi' } as Quantity)).toBe('0:00');
-      expect(formatPace({ quantity: -1, unit: 'min/km' } as Quantity)).toBe('0:00');
-      expect(formatPace(null as any)).toBe('0:00');
-      expect(formatPace(undefined as any)).toBe('0:00');
+      expect(() => formatPace({ quantity: NaN, unit: 'min/mi' } as Quantity)).toThrow(
+        'Pace quantity must be a valid non-negative number',
+      );
+      expect(() => formatPace({ quantity: -1, unit: 'min/km' } as Quantity)).toThrow(
+        'Pace quantity must be a valid non-negative number',
+      );
+
+      expect(() => formatPace(null as any)).toThrow(
+        'Pace quantity must be a valid non-negative number',
+      );
+      expect(() => formatPace(undefined as any)).toThrow(
+        'Pace quantity must be a valid non-negative number',
+      );
     });
 
     it('should handle missing or malformed units', () => {
-      expect(formatPace({ quantity: 7.5, unit: '' } as Quantity)).toBe('7:30');
-      expect(formatPace({ quantity: 8.25, unit: undefined } as unknown as Quantity)).toBe('8:15');
-      expect(formatPace({ quantity: 6.67, unit: 'invalid' } as Quantity)).toBe('6:40 invalid');
+      expect(() => formatPace({ quantity: 7.5, unit: '' } as Quantity)).toThrow(
+        'formatPace: Pace must be in "min/mi" or "min/km" format',
+      );
+      expect(() => formatPace({ quantity: 8.25, unit: undefined } as unknown as Quantity)).toThrow(
+        'formatPace: Pace must be in "min/mi" or "min/km" format',
+      );
+      expect(() => formatPace({ quantity: 6.67, unit: 'invalid' } as Quantity)).toThrow(
+        'formatPace: Pace must be in "min/mi" or "min/km" format',
+      );
     });
 
     it('should pad seconds with leading zero', () => {

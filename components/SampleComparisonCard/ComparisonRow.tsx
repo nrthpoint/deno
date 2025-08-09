@@ -1,11 +1,11 @@
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { ExtendedWorkout } from '@/types/workout';
 import { convertDurationToMinutes, formatPace } from '@/utils/time';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 import { ComparisonRowProps } from './ComparisonRow.types';
 import { ComparisonProperty } from './SampleComparisonCard.types';
+import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 export interface StatDisplayData {
   displayValue: string;

@@ -1,20 +1,19 @@
 import { ColorProfile, colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { MetaWorkoutData, WorkoutGroupWithHighlight } from '@/types/workout';
 import { formatDuration } from '@/utils/time';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { HalfMoonProgress } from '@/components/HalfMoonProgress';
 import { SampleComparisonCard } from '@/components/SampleComparisonCard/SampleComparisonCard';
 import { StatCard } from '@/components/StatCard/StatCard';
 import { VariationBar } from '@/components/VariationBar';
-import { createGroupSizeStat, enhanceStatWithDefaults } from './utils';
+import { Group, MetaWorkoutData } from '@/types/Groups';
 
 export const GroupStats = ({
   group,
   meta,
   tabColor,
 }: {
-  group: WorkoutGroupWithHighlight;
+  group: Group;
   meta: MetaWorkoutData;
   tabColor: ColorProfile;
 }) => {
@@ -78,10 +77,8 @@ export const GroupStats = ({
       </View>
 
       <View style={styles.container}>
-        <StatCard stat={createGroupSizeStat(group)} />
-
         {group.stats.map((stat) => (
-          <StatCard key={stat.label} stat={enhanceStatWithDefaults(stat)} />
+          <StatCard key={stat.label} stat={stat} />
         ))}
       </View>
 

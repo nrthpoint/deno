@@ -8,7 +8,7 @@ import { TabButtons } from '@/components/TabButtons/TabButtons';
 import { tabColors } from '@/config/colors';
 import { useSettings } from '@/context/SettingsContext';
 import { useGroupedActivityData } from '@/hooks/useGroupedActivityData';
-import { GroupType } from '@/types/groups';
+import { GroupType } from '@/types/GroupTypes';
 import { AuthorizationRequestStatus } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -16,7 +16,6 @@ import { ActivityIndicator, Button, IconButton, Text } from 'react-native-paper'
 
 const tabOptions: GroupType[] = ['pace', 'distance', 'altitude'];
 
-// Default configurations for each group type
 const getDefaultConfig = (groupType: GroupType): GroupingConfig => {
   switch (groupType) {
     case 'distance':

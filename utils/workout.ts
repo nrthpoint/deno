@@ -1,6 +1,6 @@
 import { Quantity, WorkoutSample } from '@kingstinct/react-native-healthkit';
 import { convertDurationToMinutes } from './time';
-import { ExtendedWorkout } from '@/types/workout';
+import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 /**
  * Calculates the pace from a workout sample in minutes.
@@ -143,5 +143,25 @@ export const findLowestElevationRun = (runs: ExtendedWorkout[]): ExtendedWorkout
     const currElevation = curr.totalElevationAscended?.quantity || 0;
 
     return prevElevation <= currElevation ? prev : curr;
+  });
+};
+
+/**
+ * Finds the run with the longest duration from an array of runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The run with the longest duration, or undefined if no valid runs
+ */
+export const findLongestDurationRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
+  return runs.reduce((prev, curr) => {
+    if (!prev || !curr) {
+      return prev || curr;
+    }
+
+    // Compare duration values - higher duration is longer
+    if (!prev.duration || !curr.duration) {
+      return prev.duration ? prev : curr;
+    }
+
+    return prev.duration.quantity >= curr.duration.quantity ? prev : curr;
   });
 };

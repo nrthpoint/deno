@@ -1,8 +1,6 @@
-import { WorkoutGroupWithHighlightSet } from '@/types/workout';
+import { Groups } from '@/types/Groups';
 
-export const assignRankToGroups = (
-  groups: WorkoutGroupWithHighlightSet,
-): WorkoutGroupWithHighlightSet => {
+export const assignRankToGroups = (groups: Groups): Groups => {
   // Set ranks based on the number of runs in each group
   const sortedGroups = Object.values(groups).sort((a, b) => b.runs.length - a.runs.length);
 
@@ -25,10 +23,8 @@ export const assignRankToGroups = (
   return groups;
 };
 
-export const sortGroupsByKeyInAscending = (
-  groups: WorkoutGroupWithHighlightSet,
-): WorkoutGroupWithHighlightSet => {
-  const sortedGroups: WorkoutGroupWithHighlightSet = {};
+export const sortGroupsByKeyInAscending = (groups: Groups): Groups => {
+  const sortedGroups: Groups = {};
   const keys = Object.keys(groups);
 
   keys

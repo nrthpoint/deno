@@ -1,8 +1,5 @@
-import {
-  ExtendedWorkout,
-  WorkoutGroupWithHighlight,
-  WorkoutGroupWithHighlightSet,
-} from '@/types/workout';
+import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { Groups, Group } from '@/types/Groups';
 
 export interface GroupingParameters {
   tolerance?: number; // Tolerance for grouping runs by distance/pace
@@ -12,12 +9,12 @@ export interface GroupingParameters {
 
 export interface GroupingSampleParserParams {
   sample: ExtendedWorkout;
-  groups: WorkoutGroupWithHighlightSet;
+  groups: Groups;
   tolerance?: number;
   groupSize?: number;
 }
 
 export interface GroupingStatsParams {
-  group: WorkoutGroupWithHighlight;
+  group: Group;
   samples: readonly ExtendedWorkout[];
 }

@@ -1,4 +1,4 @@
-import { WorkoutGroupWithHighlight, WorkoutGroupWithHighlightSet } from '@/types/workout';
+import React from 'react';
 import {
   GroupingParameters,
   GroupingSampleParserParams,
@@ -12,12 +12,14 @@ import {
   findFastestRun,
   findSlowestRun,
 } from '@/utils/workout';
+import { Ionicons } from '@expo/vector-icons';
+import { Groups, Group } from '@/types/Groups';
 
 const DEFAULT_TOLERANCE = 0.25; // 0.25 of a mile.
 const DEFAULT_GROUP_SIZE = 1.0; // 1 mile increments
 
-export const groupRunsByDistance = (params: GroupingParameters): WorkoutGroupWithHighlightSet => {
-  const groups: WorkoutGroupWithHighlightSet = {} as WorkoutGroupWithHighlightSet;
+export const groupRunsByDistance = (params: GroupingParameters): Groups => {
+  const groups: Groups = {} as Groups;
 
   const { samples, tolerance = DEFAULT_TOLERANCE, groupSize = DEFAULT_GROUP_SIZE } = params;
 
@@ -77,7 +79,7 @@ const parseSampleIntoGroup = ({
       averageHumidity: newQuantity(0, '%'),
       prettyPace: '',
       stats: [],
-    } satisfies WorkoutGroupWithHighlight;
+    } satisfies Group;
   }
 
   const group = groups[groupKey];
@@ -119,34 +121,66 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
 
   group.stats = [
     {
+      type: 'default',
+      label: 'Total Workouts',
+      value: { quantity: group.runs?.length || 0, unit: group.runs?.length === 1 ? 'run' : 'runs' },
+      icon: <Ionicons name="podium-outline" size={40} color="#FFFFFF" />,
+      hasTooltip: true,
+      detailTitle: 'Group Size',
+      detailDescription: 'The total number of workout sessions included in this performance group.',
+      additionalInfo: [
+        { label: 'Average per Week', value: `${((group.runs?.length || 0) / 4).toFixed(1)}` },
+        { label: 'Group Category', value: group.title || 'Performance Group' },
+      ],
+      workout: group.highlight,
+    },
+    {
       type: 'pace',
       label: 'Best Pace',
       value: group.highlight.averagePace,
+      workout: group.highlight,
+      icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
     {
       type: 'pace',
       label: 'Worst Pace',
       value: group.worst.averagePace,
+      workout: group.worst,
+      icon: <Ionicons name="trending-down-outline" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
     {
       type: 'duration',
       label: 'Fastest Time',
       value: group.highlight.duration,
+      workout: group.highlight,
+      icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
     {
       type: 'duration',
       label: 'Slowest Run',
       value: group.worst.duration,
+      workout: group.worst,
+      icon: <Ionicons name="thumbs-down-outline" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
     {
       type: 'distance',
       label: 'Cumulative Distance',
       value: group.totalDistance,
+      workout: group.highlight,
+      icon: <Ionicons name="person-add-outline" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
     {
       type: 'duration',
       label: 'Cumulative Duration',
       value: group.totalDuration,
+      workout: group.highlight,
+      icon: <Ionicons name="timer-outline" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
   ];
 

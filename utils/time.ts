@@ -6,6 +6,15 @@ import { Quantity } from '@kingstinct/react-native-healthkit';
  * @returns Formatted pace string in MM:SS UNIT format (e.g., "6:40 min/mi", "7:30 min/km")
  */
 export const formatPace = (pace: Quantity): string => {
+  if (pace?.quantity === 0) {
+    return `0:00 ${pace.unit}`;
+  }
+
+  if (!pace?.quantity || isNaN(pace.quantity) || pace.quantity < 0) {
+    console.warn('formatPace: Invalid pace quantity:', pace);
+    throw new Error('formatPace: Pace quantity must be a valid non-negative number');
+  }
+
   if (pace.unit !== 'min/mi' && pace.unit !== 'min/km') {
     throw new Error('formatPace: Pace must be in "min/mi" or "min/km" format');
   }
@@ -25,6 +34,10 @@ export const formatPace = (pace: Quantity): string => {
  * @returns Formatted duration string
  */
 export const formatDuration = (duration: Quantity) => {
+  if (isNaN(duration.quantity) || duration.quantity < 0) {
+    throw new Error('formatDuration: Duration quantity must be a valid non-negative number');
+  }
+
   if (duration.unit !== 's') {
     throw new Error('formatDuration: Duration must be in seconds (unit: "s")');
   }

@@ -1,4 +1,4 @@
-import { GroupType } from '@/types/groups';
+import { GroupType } from '@/types/Groups';
 
 export const getConfigLabels = (groupType: GroupType, distanceUnit: string) => {
   switch (groupType) {

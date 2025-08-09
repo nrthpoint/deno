@@ -1,4 +1,4 @@
-import { GroupType } from '@/types/groups';
+import { GroupType } from '@/types/Groups';
 
 export const colors = {
   neutral: '#FFFFFF',

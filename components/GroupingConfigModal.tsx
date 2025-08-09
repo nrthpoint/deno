@@ -2,9 +2,9 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Modal, Portal, Text, Button, IconButton } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
-import { GroupType } from '@/types/groups';
 import { colors, ColorProfile } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { GroupType } from '@/types/Groups';
 
 export interface GroupingConfig {
   tolerance: number;

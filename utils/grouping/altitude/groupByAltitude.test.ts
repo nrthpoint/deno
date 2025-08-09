@@ -1,5 +1,5 @@
+import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { groupRunsByAltitude } from './groupByAltitude';
-import { ExtendedWorkout } from '@/types/workout';
 import { newQuantity } from '@/utils/quantity';
 import { Quantity } from '@kingstinct/react-native-healthkit';
 

@@ -1,4 +1,4 @@
-import { WorkoutGroupWithHighlight, WorkoutGroupWithHighlightSet } from '@/types/workout';
+import React from 'react';
 import {
   GroupingParameters,
   GroupingSampleParserParams,
@@ -12,12 +12,14 @@ import {
   findHighestElevationRun,
   findLowestElevationRun,
 } from '@/utils/workout';
+import { Ionicons } from '@expo/vector-icons';
+import { Groups, Group } from '@/types/Groups';
 
 const DEFAULT_TOLERANCE = 50; // 50 meters/feet tolerance
 const DEFAULT_GROUP_SIZE = 100; // 100 meters/feet increments
 
-export const groupRunsByAltitude = (params: GroupingParameters): WorkoutGroupWithHighlightSet => {
-  const groups: WorkoutGroupWithHighlightSet = {} as WorkoutGroupWithHighlightSet;
+export const groupRunsByAltitude = (params: GroupingParameters): Groups => {
+  const groups: Groups = {} as Groups;
 
   const { samples, tolerance = DEFAULT_TOLERANCE, groupSize = DEFAULT_GROUP_SIZE } = params;
 
@@ -91,7 +93,7 @@ const parseSampleIntoGroup = ({
       averageHumidity: newQuantity(0, '%'),
       prettyPace: '',
       stats: [],
-    } satisfies WorkoutGroupWithHighlight;
+    } satisfies Group;
   }
 
   const group = groups[groupKey];
@@ -145,39 +147,74 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
 
   group.stats = [
     {
+      type: 'default',
+      label: 'Total Workouts',
+      value: { quantity: group.runs?.length || 0, unit: group.runs?.length === 1 ? 'run' : 'runs' },
+      icon: <Ionicons name="podium-outline" size={40} color="#FFFFFF" />,
+      hasTooltip: true,
+      detailTitle: 'Group Size',
+      detailDescription: 'The total number of workout sessions included in this performance group.',
+      additionalInfo: [
+        { label: 'Average per Week', value: `${((group.runs?.length || 0) / 4).toFixed(1)}` },
+        { label: 'Group Category', value: group.title || 'Performance Group' },
+      ],
+      workout: group.highlight,
+    },
+    {
       type: 'altitude',
       label: 'Highest Elevation Gain',
       value: group.highlight.totalElevationAscended || newQuantity(0, elevationUnit),
+      workout: group.highlight,
+      icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
     {
       type: 'altitude',
       label: 'Lowest Elevation Gain',
       value: group.worst.totalElevationAscended || newQuantity(0, elevationUnit),
+      workout: group.worst,
+      icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
     {
       type: 'pace',
       label: 'Best Pace',
       value: group.highlight.averagePace,
+      workout: group.highlight,
+      icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
     {
       type: 'pace',
       label: 'Average Pace',
       value: group.averagePace,
+      workout: group.highlight,
+      icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
     {
       type: 'distance',
       label: 'Total Distance',
       value: group.totalDistance,
+      workout: group.highlight,
+      icon: <Ionicons name="location" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
     {
       label: 'Total Elevation Gain',
       type: 'altitude',
       value: group.totalElevationAscended,
+      workout: group.highlight,
+      icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
     {
       type: 'altitude',
       label: 'Avg Elevation/Distance',
       value: newQuantity(avgElevationPerDistance, `${elevationUnit}/${group.totalDistance.unit}`),
+      workout: group.highlight,
+      icon: <Ionicons name="stats-chart" size={40} color="#FFFFFF" />,
+      hasTooltip: false,
     },
   ];
 

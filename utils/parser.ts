@@ -1,8 +1,14 @@
-import { ExtendedWorkout } from '@/types/workout';
 import { LengthUnit, Quantity, WorkoutSample } from '@kingstinct/react-native-healthkit';
 import { metersToMiles, metersToKilometers } from './distance';
-import { calculatePace } from './workout';
+import {
+  calculatePace,
+  findFastestRun,
+  findLongestRun,
+  findHighestElevationRun,
+  findLongestDurationRun,
+} from './workout';
 import { formatPace } from './time';
+import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 export const parseWorkoutSamples = ({
   samples,
@@ -11,9 +17,16 @@ export const parseWorkoutSamples = ({
   samples: WorkoutSample[];
   distanceUnit: LengthUnit;
 }): ExtendedWorkout[] => {
-  return samples
+  // First pass: Parse all workouts without achievements
+  const parsedWorkouts = samples
     .map((sample) => parseWorkoutSample({ sample, distanceUnit }))
     .filter((run) => run !== null) as ExtendedWorkout[];
+
+  // Second pass: Calculate achievements for each workout
+  return parsedWorkouts.map((workout) => ({
+    ...workout,
+    achievements: calculateAchievements(workout, parsedWorkouts),
+  }));
 };
 
 const parseWorkoutSample = ({
@@ -66,5 +79,34 @@ const parseWorkoutSample = ({
     daysAgo: `${Math.floor(
       (Date.now() - newRun.startDate.getTime()) / (1000 * 60 * 60 * 24),
     )} days ago`,
+    achievements: {
+      isAllTimeFastest: false,
+      isAllTimeLongest: false,
+      isAllTimeFurthest: false,
+      isAllTimeHighestElevation: false,
+      isPersonalBestPace: false,
+    },
   } satisfies ExtendedWorkout;
+};
+
+/**
+ * Calculates achievements for a specific workout compared to all workouts
+ */
+const calculateAchievements = (
+  currentWorkout: ExtendedWorkout,
+  allWorkouts: ExtendedWorkout[],
+): ExtendedWorkout['achievements'] => {
+  // Find the best performers in each category using existing utility functions
+  const fastestWorkout = findFastestRun(allWorkouts);
+  const longestWorkout = findLongestDurationRun(allWorkouts);
+  const furthestWorkout = findLongestRun(allWorkouts);
+  const highestElevationWorkout = findHighestElevationRun(allWorkouts);
+
+  return {
+    isAllTimeFastest: currentWorkout.uuid === fastestWorkout?.uuid,
+    isAllTimeLongest: currentWorkout.uuid === longestWorkout?.uuid,
+    isAllTimeFurthest: currentWorkout.uuid === furthestWorkout?.uuid,
+    isAllTimeHighestElevation: currentWorkout.uuid === highestElevationWorkout?.uuid,
+    isPersonalBestPace: currentWorkout.uuid === fastestWorkout?.uuid, // Same as fastest
+  };
 };

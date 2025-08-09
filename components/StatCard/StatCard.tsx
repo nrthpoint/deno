@@ -1,59 +1,19 @@
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { formatDuration, formatPace } from '@/utils/time';
-import { Quantity } from '@kingstinct/react-native-healthkit';
 import React, { useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { StatCardProps } from './StatCard.types';
+import { formatQuantityValue } from './StatCard.utils';
 
-const formatQuantityValue = (
-  value: Quantity,
-  type?: string,
-): { displayValue: string; unit?: string } => {
-  if (!value || value.quantity === undefined || value.quantity === null) {
-    return { displayValue: '0', unit: value?.unit };
-  }
-
-  switch (type) {
-    case 'pace':
-      const paceFormatted = formatPace(value);
-
-      // Extract the time part and unit part from formatted pace (e.g., "6:30 min/mi")
-      const paceMatch = paceFormatted.match(/^(\d+:\d+)\s*(.*)$/);
-
-      if (paceMatch) {
-        return { displayValue: paceMatch[1], unit: paceMatch[2] || value.unit };
-      }
-
-      return { displayValue: paceFormatted };
-
-    case 'duration':
-      const displayValue = formatDuration(value);
-
-      return { displayValue };
-
-    case 'distance':
-      return {
-        displayValue: value.quantity.toFixed(2),
-        unit: value.unit,
-      };
-
-    default:
-      return {
-        displayValue: value.quantity.toString(),
-        unit: value.unit,
-      };
-  }
-};
-
-export const StatCard: React.FC<StatCardProps> = ({ stat }) => {
+export const StatCard = ({ stat }: StatCardProps) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const {
     icon,
     label,
     value,
+    workout: { achievements },
     type = 'default',
     backgroundColor = colors.surface,
     accentColor = colors.accent,
@@ -64,6 +24,29 @@ export const StatCard: React.FC<StatCardProps> = ({ stat }) => {
   } = stat;
 
   const { displayValue, unit } = formatQuantityValue(value, type);
+
+  // Helper function to get achievement badge data with priority
+  const getAchievementBadge = () => {
+    // Priority order: Fastest > Furthest > Longest > Highest Elevation > Personal Best
+    if (achievements.isAllTimeFastest) {
+      return { label: '🏃‍♂️ FASTEST', color: '#FF6B35' };
+    }
+    if (achievements.isAllTimeFurthest) {
+      return { label: '🏁 FURTHEST', color: '#4ECDC4' };
+    }
+    if (achievements.isAllTimeLongest) {
+      return { label: '⏱️ LONGEST', color: '#45B7D1' };
+    }
+    if (achievements.isAllTimeHighestElevation) {
+      return { label: '⛰️ HIGHEST', color: '#96CEB4' };
+    }
+    if (achievements.isPersonalBestPace && !achievements.isAllTimeFastest) {
+      return { label: '⚡ PB PACE', color: '#FECA57' };
+    }
+    return null;
+  };
+
+  const achievementBadge = getAchievementBadge();
 
   const handlePress = () => {
     if (hasTooltip) {
@@ -83,6 +66,13 @@ export const StatCard: React.FC<StatCardProps> = ({ stat }) => {
           <Text style={styles.value}>{displayValue}</Text>
           {unit && <Text style={styles.unit}>{unit}</Text>}
         </View>
+
+        {/* Achievement Badge */}
+        {achievementBadge && (
+          <View style={[styles.achievementBadge, { backgroundColor: achievementBadge.color }]}>
+            <Text style={styles.achievementText}>{achievementBadge.label}</Text>
+          </View>
+        )}
       </View>
 
       {/* {hasTooltip && (
@@ -121,6 +111,18 @@ export const StatCard: React.FC<StatCardProps> = ({ stat }) => {
                 <Text style={styles.modalValue}>{displayValue}</Text>
                 {unit && <Text style={styles.modalUnit}>{unit}</Text>}
               </View>
+
+              {/* Achievement Badge in Modal */}
+              {achievementBadge && (
+                <View
+                  style={[
+                    styles.modalAchievementBadge,
+                    { backgroundColor: achievementBadge.color },
+                  ]}
+                >
+                  <Text style={styles.modalAchievementText}>{achievementBadge.label}</Text>
+                </View>
+              )}
 
               {detailDescription && (
                 <Text style={styles.modalDescription}>{detailDescription}</Text>
@@ -213,6 +215,34 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     textTransform: 'uppercase',
   },
+  achievementBadge: {
+    marginTop: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  achievementText: {
+    fontSize: 10,
+    color: '#FFFFFF',
+    fontFamily: LatoFonts.bold,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    fontWeight: '800',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
   infoButton: {
     position: 'absolute',
     top: 12,
@@ -287,6 +317,34 @@ const styles = StyleSheet.create({
     color: '#CCCCCC',
     fontFamily: LatoFonts.regular,
     marginBottom: 4,
+  },
+  modalAchievementBadge: {
+    alignSelf: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
+  },
+  modalAchievementText: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    fontFamily: LatoFonts.bold,
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
+    fontWeight: '800',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   modalDescription: {
     fontSize: 14,
