@@ -97,7 +97,7 @@ const BarChart = ({ width, colorProfile }: { width: number; colorProfile: ColorP
   <View style={styles.barContainer}>
     <Svg width="100%" height="20" style={{ borderWidth: 1 }}>
       <Rect x={0} y={0} width={`${width}%`} height="8" fill="#E0E0E0" />
-      <Rect width="100%" height="8" x={0} y={6} fill={colorProfile.primary} />
+      <Rect width="100%" height="8" x={0} y={6} fill={styles.betterValue.color} />
     </Svg>
   </View>
 );
@@ -145,7 +145,7 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({
     ? sample1Data.numericValue < sample2Data.numericValue
     : sample1Data.numericValue > sample2Data.numericValue;
 
-  let width = widthOne > widthTwo ? widthOne : widthTwo;
+  let width = widthOne > widthTwo ? widthTwo : widthOne;
 
   return (
     <View style={styles.comparisonRow}>

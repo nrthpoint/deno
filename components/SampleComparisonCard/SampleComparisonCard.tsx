@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { ComparisonRow } from './ComparisonRow';
 import { SampleComparisonCardProps } from './SampleComparisonCard.types';
+import { SampleDropdown } from './SampleDropdown';
 
 export const SampleComparisonCard = ({
   sample1,
@@ -13,12 +14,47 @@ export const SampleComparisonCard = ({
   sample2Label,
   propertiesToCompare,
   colorProfile,
+  sampleOptions,
+  onSample1Change,
+  onSample2Change,
+  selectedSample1Type,
+  selectedSample2Type,
 }: SampleComparisonCardProps) => {
+  const showDropdowns =
+    sampleOptions &&
+    onSample1Change &&
+    onSample2Change &&
+    selectedSample1Type &&
+    selectedSample2Type;
+
   return (
     <View style={styles.container}>
       <View style={styles.labelContainer}>
-        <Text style={styles.headerLabel}>{sample1Label}</Text>
-        <Text style={styles.headerLabel}>{sample2Label}</Text>
+        {showDropdowns ? (
+          <View style={{ flexDirection: 'row', gap: 8, width: '100%' }}>
+            <View style={{ flex: 1 }}>
+              <SampleDropdown
+                options={sampleOptions}
+                selectedType={selectedSample1Type}
+                onSelect={onSample1Change}
+                placeholder="Select Sample 1"
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <SampleDropdown
+                options={sampleOptions}
+                selectedType={selectedSample2Type}
+                onSelect={onSample2Change}
+                placeholder="Select Sample 2"
+              />
+            </View>
+          </View>
+        ) : (
+          <>
+            <Text style={styles.headerLabel}>{sample1Label}</Text>
+            <Text style={styles.headerLabel}>{sample2Label}</Text>
+          </>
+        )}
       </View>
 
       {propertiesToCompare.map((property) => (
@@ -44,6 +80,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   labelContainer: {
+    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 8,

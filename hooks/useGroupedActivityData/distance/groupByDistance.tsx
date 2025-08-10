@@ -129,7 +129,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
 
   group.stats = [
     {
-      title: 'Group Overview',
+      title: 'Overview',
       items: [
         {
           type: 'default',
@@ -168,7 +168,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
       ],
     },
     {
-      title: 'Performance Records',
+      title: 'Performance',
       items: [
         {
           type: 'pace',

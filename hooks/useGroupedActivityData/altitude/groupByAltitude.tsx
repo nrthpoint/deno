@@ -141,7 +141,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
 
   group.stats = [
     {
-      title: 'Group Overview',
+      title: 'Overview',
       items: [
         {
           type: 'default',
@@ -180,7 +180,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
       ],
     },
     {
-      title: 'Elevation Performance',
+      title: 'Elevation',
       items: [
         {
           type: 'altitude',
@@ -201,7 +201,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
       ],
     },
     {
-      title: 'Pace Performance',
+      title: 'Pace',
       items: [
         {
           type: 'pace',

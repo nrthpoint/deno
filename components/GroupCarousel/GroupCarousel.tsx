@@ -45,19 +45,6 @@ export const GroupCarousel = ({
               {item}
               {itemSuffix}
             </Text>
-            <Text
-              style={{
-                color: colorProfile.primary,
-                fontWeight: 'bold',
-                fontSize: 11,
-                textTransform: 'uppercase',
-                letterSpacing: 2,
-                ...getLatoFont('bold'),
-              }}
-            >
-              ± {tolerance}
-              {groupType === 'altitude' ? 'm' : groupType === 'pace' ? 'min/km' : distanceUnit}
-            </Text>
           </View>
         </View>
       )}

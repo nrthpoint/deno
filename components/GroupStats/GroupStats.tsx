@@ -1,9 +1,14 @@
+import { useState } from 'react';
 import { ColorProfile, colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { formatDuration } from '@/utils/time';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { HalfMoonProgress } from '@/components/HalfMoonProgress';
 import { SampleComparisonCard } from '@/components/SampleComparisonCard/SampleComparisonCard';
+import {
+  SampleOption,
+  SampleType,
+} from '@/components/SampleComparisonCard/SampleComparisonCard.types';
 import { StatCard } from '@/components/StatCard/StatCard';
 import { VariationBar } from '@/components/VariationBar';
 import { Group, MetaWorkoutData } from '@/types/Groups';
@@ -17,6 +22,64 @@ export const GroupStats = ({
   meta: MetaWorkoutData;
   tabColor: ColorProfile;
 }) => {
+  const [selectedSample1Type, setSelectedSample1Type] = useState<SampleType>('highlight');
+  const [selectedSample2Type, setSelectedSample2Type] = useState<SampleType>('mostRecent');
+
+  // Create sample options from the group data
+  const sampleOptions: SampleOption[] = [
+    {
+      type: 'highlight',
+      label: 'All-Time Best',
+      workout: group.highlight,
+    },
+    {
+      type: 'worst',
+      label: 'Worst Performance',
+      workout: group.worst,
+    },
+    {
+      type: 'mostRecent',
+      label: (() => {
+        const today = new Date();
+        const mostRecent = group.mostRecent.endDate;
+        const diffTime = Math.floor(
+          (today.getTime() - mostRecent.getTime()) / (1000 * 60 * 60 * 24),
+        );
+
+        if (diffTime === 0) return 'Today';
+        if (diffTime === 1) return 'Yesterday';
+        if (diffTime < 7) return `Most Recent (${diffTime} days ago)`;
+
+        return mostRecent.toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        });
+      })(),
+      workout: group.mostRecent,
+    },
+  ];
+
+  // Get the selected samples based on the current selection
+  const getSelectedSample = (type: SampleType) => {
+    switch (type) {
+      case 'highlight':
+        return group.highlight;
+      case 'worst':
+        return group.worst;
+      case 'mostRecent':
+        return group.mostRecent;
+      default:
+        return group.highlight;
+    }
+  };
+
+  const selectedSample1 = getSelectedSample(selectedSample1Type);
+  const selectedSample2 = getSelectedSample(selectedSample2Type);
+  const selectedSample1Label =
+    sampleOptions.find((opt) => opt.type === selectedSample1Type)?.label || 'Sample 1';
+  const selectedSample2Label =
+    sampleOptions.find((opt) => opt.type === selectedSample2Type)?.label || 'Sample 2';
   return (
     <ScrollView style={styles.statList}>
       <View
@@ -93,29 +156,18 @@ export const GroupStats = ({
       </View>
 
       <View>
-        <Text style={styles.sectionHeader}>Most Recent Comparison</Text>
+        <Text style={styles.sectionHeader}>Comparison</Text>
         <SampleComparisonCard
           colorProfile={tabColor}
-          sample1={group.highlight}
-          sample2={group.mostRecent}
-          sample1Label="All-Time Best"
-          sample2Label={`${(() => {
-            const today = new Date();
-            const mostRecent = group.mostRecent.endDate;
-            const diffTime = Math.floor(
-              (today.getTime() - mostRecent.getTime()) / (1000 * 60 * 60 * 24),
-            );
-
-            if (diffTime === 0) return 'Today';
-            if (diffTime === 1) return 'Yesterday';
-            if (diffTime < 7) return `${diffTime} days ago`;
-
-            return mostRecent.toLocaleDateString('en-GB', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            });
-          })()}`}
+          sample1={selectedSample1}
+          sample2={selectedSample2}
+          sample1Label={selectedSample1Label}
+          sample2Label={selectedSample2Label}
+          sampleOptions={sampleOptions}
+          onSample1Change={setSelectedSample1Type}
+          onSample2Change={setSelectedSample2Type}
+          selectedSample1Type={selectedSample1Type}
+          selectedSample2Type={selectedSample2Type}
           propertiesToCompare={['duration', 'averagePace', 'distance', 'elevation', 'humidity']}
         />
       </View>
