@@ -4,7 +4,7 @@ import {
   assignRankToGroups,
   sortGroupsByKeyInAscending,
 } from '@/hooks/useGroupedActivityData/sort';
-import { newQuantity, sumQuantities } from '@/utils/quantity';
+import { getAbsoluteDifference, newQuantity, sumQuantities } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
 import {
   calculatePaceFromDistanceAndDuration,
@@ -16,7 +16,9 @@ import { Groups, Group } from '@/types/Groups';
 import {
   GroupingParameters,
   GroupingSampleParserParams,
+  GroupingStatsParams,
 } from '@/hooks/useGroupedActivityData/interface';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const DEFAULT_TOLERANCE = 50; // 50 meters/feet tolerance
 const DEFAULT_GROUP_SIZE = 100; // 100 meters/feet increments
@@ -133,21 +135,10 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   group.percentageOfTotalWorkouts = (group.runs.length / samples.length) * 100;
   group.highlight = findHighestElevationRun(group.runs);
   group.worst = findLowestElevationRun(group.runs);
-
-  // Calculate elevation variation within the group
-  const elevations = group.runs
-    .map((run) => run.totalElevationAscended?.quantity || 0)
-    .filter((elevation) => elevation > 0);
-
-  const maxElevation = Math.max(...elevations);
-  const minElevation = Math.min(...elevations);
-  const elevationUnit = group.runs[0]?.totalElevationAscended?.unit || 'm';
-
-  group.totalVariation = newQuantity(maxElevation - minElevation, elevationUnit);
-
-  // Calculate average elevation gain per distance
-  const avgElevationPerDistance =
-    group.totalElevationAscended.quantity / group.totalDistance.quantity;
+  group.totalVariation = getAbsoluteDifference(
+    group.highlight.totalElevationAscended,
+    group.worst.totalElevationAscended,
+  );
 
   group.stats = [
     {
@@ -167,7 +158,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     {
       type: 'altitude',
       label: 'Highest Elevation Gain',
-      value: group.highlight.totalElevationAscended || newQuantity(0, elevationUnit),
+      value: group.highlight.totalElevationAscended,
       workout: group.highlight,
       icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
       hasTooltip: false,
@@ -175,7 +166,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     {
       type: 'altitude',
       label: 'Lowest Elevation Gain',
-      value: group.worst.totalElevationAscended || newQuantity(0, elevationUnit),
+      value: group.worst.totalElevationAscended,
       workout: group.worst,
       icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
       hasTooltip: false,
@@ -212,14 +203,17 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
       icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
       hasTooltip: false,
     },
-    {
-      type: 'altitude',
-      label: 'Avg Elevation/Distance',
-      value: newQuantity(avgElevationPerDistance, `${elevationUnit}/${group.totalDistance.unit}`),
-      workout: group.highlight,
-      icon: <Ionicons name="stats-chart" size={40} color="#FFFFFF" />,
-      hasTooltip: false,
-    },
+    // {
+    //   type: 'altitude',
+    //   label: 'Avg Elevation/Distance',
+    //   value: newQuantity(
+    //     avgElevationPerDistance,
+    //     `${group.totalElevationAscended.unit}/${group.totalDistance.unit}`,
+    //   ),
+    //   workout: group.highlight,
+    //   icon: <Ionicons name="stats-chart" size={40} color="#FFFFFF" />,
+    //   hasTooltip: false,
+    // },
   ];
 
   return group;

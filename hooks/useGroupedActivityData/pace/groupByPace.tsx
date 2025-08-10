@@ -5,7 +5,13 @@ import {
   GroupingStatsParams,
 } from '@/hooks/useGroupedActivityData/interface';
 import { assignRankToGroups } from '@/hooks/useGroupedActivityData/sort';
-import { newQuantity, subtractQuantities, sumQuantities } from '@/utils/quantity';
+import {
+  calculatePercentage,
+  getAbsoluteDifference,
+  newQuantity,
+  subtractQuantities,
+  sumQuantities,
+} from '@/utils/quantity';
 import { findLongestRun, findShortestRun } from '@/utils/workout';
 import { Ionicons } from '@expo/vector-icons';
 import { Groups, Group } from '@/types/Groups';
@@ -99,10 +105,10 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     group.runs.reduce((sum, run) => sum + (run.humidity?.quantity || 0), 0) / group.runs.length,
     '%',
   );
-  group.percentageOfTotalWorkouts = (group.runs.length / samples.length) * 100;
+  group.percentageOfTotalWorkouts = calculatePercentage(group.runs.length, samples.length);
   group.highlight = findLongestRun(group.runs);
   group.worst = findShortestRun(group.runs);
-  group.totalVariation = subtractQuantities(group.highlight.duration, group.worst.duration);
+  group.totalVariation = getAbsoluteDifference(group.worst.duration, group.highlight.duration);
 
   group.stats = [
     {

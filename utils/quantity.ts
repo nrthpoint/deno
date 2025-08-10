@@ -56,5 +56,51 @@ export function subtractQuantities(a: Quantity, b: Quantity): Quantity {
     throw new Error(`Unit mismatch: ${a.unit} !== ${b.unit}`);
   }
 
-  return newQuantity(a.quantity - b.quantity, a.unit);
+  const diff = a.quantity - b.quantity;
+  console.log('Subtracting quantities:', { a, b, result: diff });
+
+  if (isNaN(diff) || diff < 0) {
+    throw new Error('Resulting quantity must be a valid non-negative number');
+  }
+
+  return newQuantity(diff, a.unit);
+}
+
+export function getAbsoluteDifference(a: Quantity, b: Quantity): Quantity {
+  if (a.unit !== b.unit) {
+    throw new Error(`Unit mismatch: ${a.unit} !== ${b.unit}`);
+  }
+
+  const diff = Math.abs(a.quantity - b.quantity);
+  console.log('Absolute difference:', { a, b, result: diff });
+
+  if (isNaN(diff) || diff < 0) {
+    throw new Error('Resulting quantity must be a valid non-negative number');
+  }
+
+  return newQuantity(diff, a.unit);
+}
+
+export function calculatePercentage(part: number, total: number): number;
+export function calculatePercentage(part: Quantity, total: Quantity): number;
+export function calculatePercentage(part: number | Quantity, total: number | Quantity): number {
+  if (typeof part === 'object' && typeof total === 'object') {
+    if (part.unit !== total.unit) {
+      throw new Error(`Unit mismatch: ${part.unit} !== ${total.unit}`);
+    }
+
+    return calculatePercentage(part.quantity, total.quantity);
+  }
+
+  if (typeof total === 'number' && total === 0) {
+    return 0;
+  }
+
+  const partNum = typeof part === 'number' ? part : part.quantity;
+  const totalNum = typeof total === 'number' ? total : total.quantity;
+
+  const percentage = (partNum / totalNum) * 100;
+  console.log('Calculating percentage:', { part, total, result: percentage });
+
+  return parseFloat(percentage.toFixed(2));
 }

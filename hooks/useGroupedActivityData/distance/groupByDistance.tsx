@@ -9,7 +9,13 @@ import {
   assignRankToGroups,
   sortGroupsByKeyInAscending,
 } from '@/hooks/useGroupedActivityData/sort';
-import { newQuantity, subtractQuantities, sumQuantities } from '@/utils/quantity';
+import { Group, Groups } from '@/types/Groups';
+import {
+  calculatePercentage,
+  getAbsoluteDifference,
+  newQuantity,
+  sumQuantities,
+} from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
 import {
   calculatePaceFromDistanceAndDuration,
@@ -17,7 +23,6 @@ import {
   findSlowestRun,
 } from '@/utils/workout';
 import { Ionicons } from '@expo/vector-icons';
-import { Groups, Group } from '@/types/Groups';
 
 const DEFAULT_TOLERANCE = 0.25; // 0.25 of a mile.
 const DEFAULT_GROUP_SIZE = 1.0; // 1 mile increments
@@ -117,10 +122,10 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     '%',
   );
   group.prettyPace = formatPace(group.averagePace);
-  group.percentageOfTotalWorkouts = (group.runs.length / samples.length) * 100;
+  group.percentageOfTotalWorkouts = calculatePercentage(group.runs.length, samples.length);
   group.highlight = findFastestRun(group.runs);
   group.worst = findSlowestRun(group.runs);
-  group.totalVariation = subtractQuantities(group.worst.duration, group.highlight.duration);
+  group.totalVariation = getAbsoluteDifference(group.worst.duration, group.highlight.duration);
 
   group.stats = [
     {
