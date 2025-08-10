@@ -1,5 +1,8 @@
-import { groupRunsByDistance } from '@/utils/grouping/distance/groupByDistance';
-import { createMockWorkout, createMockWorkoutWithoutPace } from '@/utils/grouping/test-utils';
+import { groupRunsByDistance } from '@/hooks/useGroupedActivityData/distance/groupByDistance';
+import {
+  createMockWorkout,
+  createMockWorkoutWithoutPace,
+} from '@/hooks/useGroupedActivityData/test-utils';
 
 describe('groupRunsByDistance', () => {
   describe('basic functionality', () => {

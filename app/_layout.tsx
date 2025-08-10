@@ -4,6 +4,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -35,29 +36,31 @@ export default function RootLayout() {
   }
 
   return (
-    <PaperProvider>
-      <SettingsProvider>
-        <WorkoutProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: {
-                flexGrow: 1,
-                backgroundColor: '#121212',
-              },
-            }}
-          >
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen
-              name="workout-detail"
-              options={{
-                presentation: 'modal',
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PaperProvider>
+        <SettingsProvider>
+          <WorkoutProvider>
+            <Stack
+              screenOptions={{
                 headerShown: false,
+                contentStyle: {
+                  flexGrow: 1,
+                  backgroundColor: '#121212',
+                },
               }}
-            />
-          </Stack>
-        </WorkoutProvider>
-      </SettingsProvider>
-    </PaperProvider>
+            >
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen
+                name="workout-detail"
+                options={{
+                  presentation: 'modal',
+                  headerShown: false,
+                }}
+              />
+            </Stack>
+          </WorkoutProvider>
+        </SettingsProvider>
+      </PaperProvider>
+    </GestureHandlerRootView>
   );
 }

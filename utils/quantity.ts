@@ -57,7 +57,6 @@ export function subtractQuantities(a: Quantity, b: Quantity): Quantity {
   }
 
   const diff = a.quantity - b.quantity;
-  console.log('Subtracting quantities:', { a, b, result: diff });
 
   if (isNaN(diff) || diff < 0) {
     throw new Error('Resulting quantity must be a valid non-negative number');
@@ -72,7 +71,6 @@ export function getAbsoluteDifference(a: Quantity, b: Quantity): Quantity {
   }
 
   const diff = Math.abs(a.quantity - b.quantity);
-  console.log('Absolute difference:', { a, b, result: diff });
 
   if (isNaN(diff) || diff < 0) {
     throw new Error('Resulting quantity must be a valid non-negative number');
@@ -100,7 +98,6 @@ export function calculatePercentage(part: number | Quantity, total: number | Qua
   const totalNum = typeof total === 'number' ? total : total.quantity;
 
   const percentage = (partNum / totalNum) * 100;
-  console.log('Calculating percentage:', { part, total, result: percentage });
 
   return parseFloat(percentage.toFixed(2));
 }

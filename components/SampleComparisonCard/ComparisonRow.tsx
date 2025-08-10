@@ -1,6 +1,6 @@
 import { ColorProfile, colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { convertDurationToMinutes, formatPace } from '@/utils/time';
+import { convertDurationToMinutes, formatDuration, formatPace } from '@/utils/time';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 import { ComparisonRowProps } from './ComparisonRow.types';
@@ -19,12 +19,12 @@ const formatPropertyValue = (
 ): StatDisplayData => {
   switch (property) {
     case 'duration':
-      const durationInMinutes = convertDurationToMinutes(workout.duration);
+      const formattedValue = formatDuration(workout.duration);
 
       return {
-        displayValue: `${durationInMinutes}`,
+        displayValue: `${formattedValue}`,
         unit: 'min',
-        numericValue: durationInMinutes,
+        numericValue: workout.duration.quantity,
       };
 
     case 'averagePace':
