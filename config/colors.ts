@@ -2,6 +2,7 @@ import { GroupType } from '@/types/Groups';
 
 export const colors = {
   neutral: '#FFFFFF',
+  lightGray: '#F0F0F0',
   background: '#0A0A0A',
   surface: '#121212',
   accent: '#1e1e1eff',

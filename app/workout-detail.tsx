@@ -7,6 +7,7 @@ import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { AchievementBadge } from '@/components/StatCard/AchievementBadge';
 import { useWorkout } from '@/context/WorkoutContext';
+import { formatPace } from '@/utils/time';
 
 export default function WorkoutDetailScreen() {
   const { selectedWorkout } = useWorkout();
@@ -171,6 +172,9 @@ export default function WorkoutDetailScreen() {
     );
   };
 
+  const paceWithoutUnit = formatPace(workout.averagePace, false);
+  const paceUnit = workout.averagePace.unit || 'min/mi';
+
   return (
     <>
       <Stack.Screen
@@ -195,7 +199,7 @@ export default function WorkoutDetailScreen() {
         {/* Header with main stats */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
-            <Ionicons name="fitness" size={48} color={colors.accent} />
+            <Ionicons name="fitness" size={48} color={colors.neutral} />
             <View style={styles.headerText}>
               <Text style={styles.workoutType}>{(workout as any).activityType || 'Workout'}</Text>
               <Text style={styles.workoutDate}>{workout.daysAgo}</Text>
@@ -214,8 +218,8 @@ export default function WorkoutDetailScreen() {
             <Text style={styles.metricLabel}>Duration</Text>
           </View>
           <View style={styles.metricCard}>
-            <Text style={styles.metricValue}>{workout.prettyPace}</Text>
-            <Text style={styles.metricLabel}>Avg Pace</Text>
+            <Text style={styles.metricValue}>{paceWithoutUnit}</Text>
+            <Text style={styles.metricLabel}>{paceUnit}</Text>
           </View>
         </View>
 
@@ -264,7 +268,7 @@ const styles = StyleSheet.create({
   workoutDate: {
     fontSize: 16,
     fontFamily: LatoFonts.regular,
-    color: colors.gray,
+    color: colors.lightGray,
     marginTop: 4,
   },
   keyMetrics: {
@@ -283,13 +287,13 @@ const styles = StyleSheet.create({
   metricValue: {
     fontSize: 20,
     fontFamily: LatoFonts.bold,
-    color: colors.neutral,
+    color: colors.lightGray,
     marginBottom: 4,
   },
   metricLabel: {
     fontSize: 12,
     fontFamily: LatoFonts.regular,
-    color: colors.gray,
+    color: colors.lightGray,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
@@ -332,7 +336,7 @@ const styles = StyleSheet.create({
   statsLabel: {
     fontSize: 14,
     fontFamily: LatoFonts.regular,
-    color: colors.gray,
+    color: colors.lightGray,
     flex: 1,
   },
   statsValue: {
