@@ -8,10 +8,13 @@ import { StatCardProps } from './StatCard.types';
 import { formatQuantityValue, getAchievementBadge } from './StatCard.utils';
 import { AchievementBadge } from './AchievementBadge';
 import { WorkoutListView } from '@/components/WorkoutListView';
+import { router } from 'expo-router';
+import { useWorkout } from '@/context/WorkoutContext';
 
 export const StatCard = ({ stat, groupWorkouts, groupTitle }: StatCardProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [workoutListVisible, setWorkoutListVisible] = useState(false);
+  const { setSelectedWorkout } = useWorkout();
 
   const {
     icon,
@@ -35,6 +38,10 @@ export const StatCard = ({ stat, groupWorkouts, groupTitle }: StatCardProps) => 
       setWorkoutListVisible(true);
     } else if (hasTooltip) {
       setModalVisible(true);
+    } else {
+      // Store workout in context and navigate
+      setSelectedWorkout(stat.workout);
+      router.push('/workout-detail');
     }
   };
 
@@ -65,13 +72,10 @@ export const StatCard = ({ stat, groupWorkouts, groupTitle }: StatCardProps) => 
 
   return (
     <>
-      {hasTooltip || (stat.label === 'Total Workouts' && groupWorkouts) ? (
-        <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>
-          {cardContent}
-        </TouchableOpacity>
-      ) : (
-        cardContent
-      )}
+      {/* Make all StatCards clickable */}
+      <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>
+        {cardContent}
+      </TouchableOpacity>
 
       {hasTooltip && (
         <Modal

@@ -1,4 +1,5 @@
 import { SettingsProvider } from '@/context/SettingsContext';
+import { WorkoutProvider } from '@/context/WorkoutContext';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -36,17 +37,26 @@ export default function RootLayout() {
   return (
     <PaperProvider>
       <SettingsProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: {
-              flexGrow: 1,
-              backgroundColor: '#121212',
-            },
-          }}
-        >
-          <Stack.Screen name="(tabs)" />
-        </Stack>
+        <WorkoutProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: {
+                flexGrow: 1,
+                backgroundColor: '#121212',
+              },
+            }}
+          >
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen
+              name="workout-detail"
+              options={{
+                presentation: 'modal',
+                headerShown: false,
+              }}
+            />
+          </Stack>
+        </WorkoutProvider>
       </SettingsProvider>
     </PaperProvider>
   );
