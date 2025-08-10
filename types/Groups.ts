@@ -33,7 +33,10 @@ export type Group = {
   prettyPace: string;
 
   // Stats for the highlight run
-  stats: Stat[];
+  stats: {
+    title: string;
+    items: Stat[];
+  }[];
   highlight: ExtendedWorkout;
   worst: ExtendedWorkout;
   mostRecent: ExtendedWorkout;

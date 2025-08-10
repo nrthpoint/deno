@@ -77,13 +77,18 @@ export const GroupStats = ({
       </View>
 
       <View style={styles.container}>
-        {group.stats.map((stat) => (
-          <StatCard
-            key={stat.label}
-            stat={stat}
-            groupWorkouts={stat.label === 'Total Workouts' ? group.runs : undefined}
-            groupTitle={stat.label === 'Total Workouts' ? group.title : undefined}
-          />
+        {group.stats.map((section, sectionIndex) => (
+          <View key={section.title}>
+            <Text style={styles.sectionHeader}>{section.title}</Text>
+            {section.items.map((stat) => (
+              <StatCard
+                key={stat.label}
+                stat={stat}
+                groupWorkouts={stat.label === 'Total Workouts' ? group.runs : undefined}
+                groupTitle={stat.label === 'Total Workouts' ? group.title : undefined}
+              />
+            ))}
+          </View>
         ))}
       </View>
 

@@ -178,20 +178,32 @@ describe('groupRunsByAltitude', () => {
       });
 
       const group = result['100'];
-      expect(group.stats).toHaveLength(6);
+      expect(group.stats).toHaveLength(3); // 3 sections
 
-      const statTypes = group.stats.map((stat) => stat.type);
+      // Flatten all stats from all sections to check their content
+      const allStats = group.stats.flatMap((section) => section.items);
+      expect(allStats).toHaveLength(7); // Total stats across all sections
+
+      const statTypes = allStats.map((stat) => stat.type);
       expect(statTypes).toContain('altitude');
       expect(statTypes).toContain('pace');
       expect(statTypes).toContain('distance');
+      expect(statTypes).toContain('default');
 
-      const statLabels = group.stats.map((stat) => stat.label);
+      const statLabels = allStats.map((stat) => stat.label);
       expect(statLabels).toContain('Highest Elevation Gain');
       expect(statLabels).toContain('Lowest Elevation Gain');
       expect(statLabels).toContain('Best Pace');
       expect(statLabels).toContain('Average Pace');
       expect(statLabels).toContain('Total Distance');
-      expect(statLabels).toContain('Avg Elevation/Distance');
+      expect(statLabels).toContain('Total Elevation Gain');
+      expect(statLabels).toContain('Total Workouts');
+
+      // Check section titles
+      const sectionTitles = group.stats.map((section) => section.title);
+      expect(sectionTitles).toContain('Group Overview');
+      expect(sectionTitles).toContain('Elevation Performance');
+      expect(sectionTitles).toContain('Pace Performance');
     });
   });
 

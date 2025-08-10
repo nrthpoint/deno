@@ -18,7 +18,6 @@ import {
   GroupingSampleParserParams,
   GroupingStatsParams,
 } from '@/hooks/useGroupedActivityData/interface';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const DEFAULT_TOLERANCE = 50; // 50 meters/feet tolerance
 const DEFAULT_GROUP_SIZE = 100; // 100 meters/feet increments
@@ -142,78 +141,86 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
 
   group.stats = [
     {
-      type: 'default',
-      label: 'Total Workouts',
-      value: { quantity: group.runs?.length || 0, unit: group.runs?.length === 1 ? 'run' : 'runs' },
-      icon: <Ionicons name="podium-outline" size={40} color="#FFFFFF" />,
-      hasTooltip: true,
-      detailTitle: 'Group Size',
-      detailDescription: 'The total number of workout sessions included in this performance group.',
-      additionalInfo: [
-        { label: 'Average per Week', value: `${((group.runs?.length || 0) / 4).toFixed(1)}` },
-        { label: 'Group Category', value: group.title || 'Performance Group' },
+      title: 'Group Overview',
+      items: [
+        {
+          type: 'default',
+          label: 'Total Workouts',
+          value: {
+            quantity: group.runs?.length || 0,
+            unit: group.runs?.length === 1 ? 'run' : 'runs',
+          },
+          icon: <Ionicons name="podium-outline" size={40} color="#FFFFFF" />,
+          hasTooltip: true,
+          detailTitle: 'Group Size',
+          detailDescription:
+            'The total number of workout sessions included in this performance group.',
+          additionalInfo: [
+            { label: 'Average per Week', value: `${((group.runs?.length || 0) / 4).toFixed(1)}` },
+            { label: 'Group Category', value: group.title || 'Performance Group' },
+          ],
+          workout: group.highlight,
+        },
+        {
+          type: 'distance',
+          label: 'Total Distance',
+          value: group.totalDistance,
+          workout: group.highlight,
+          icon: <Ionicons name="location" size={40} color="#FFFFFF" />,
+          hasTooltip: false,
+        },
+        {
+          label: 'Total Elevation Gain',
+          type: 'altitude',
+          value: group.totalElevationAscended,
+          workout: group.highlight,
+          icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
+          hasTooltip: false,
+        },
       ],
-      workout: group.highlight,
     },
     {
-      type: 'altitude',
-      label: 'Highest Elevation Gain',
-      value: group.highlight.totalElevationAscended,
-      workout: group.highlight,
-      icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
-      hasTooltip: false,
+      title: 'Elevation Performance',
+      items: [
+        {
+          type: 'altitude',
+          label: 'Highest Elevation Gain',
+          value: group.highlight.totalElevationAscended,
+          workout: group.highlight,
+          icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
+          hasTooltip: false,
+        },
+        {
+          type: 'altitude',
+          label: 'Lowest Elevation Gain',
+          value: group.worst.totalElevationAscended,
+          workout: group.worst,
+          icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
+          hasTooltip: false,
+        },
+      ],
     },
     {
-      type: 'altitude',
-      label: 'Lowest Elevation Gain',
-      value: group.worst.totalElevationAscended,
-      workout: group.worst,
-      icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
-      hasTooltip: false,
+      title: 'Pace Performance',
+      items: [
+        {
+          type: 'pace',
+          label: 'Best Pace',
+          value: group.highlight.averagePace,
+          workout: group.highlight,
+          icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
+          hasTooltip: false,
+        },
+        {
+          type: 'pace',
+          label: 'Average Pace',
+          value: group.averagePace,
+          workout: group.highlight,
+          icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
+          hasTooltip: false,
+        },
+      ],
     },
-    {
-      type: 'pace',
-      label: 'Best Pace',
-      value: group.highlight.averagePace,
-      workout: group.highlight,
-      icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
-      hasTooltip: false,
-    },
-    {
-      type: 'pace',
-      label: 'Average Pace',
-      value: group.averagePace,
-      workout: group.highlight,
-      icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
-      hasTooltip: false,
-    },
-    {
-      type: 'distance',
-      label: 'Total Distance',
-      value: group.totalDistance,
-      workout: group.highlight,
-      icon: <Ionicons name="location" size={40} color="#FFFFFF" />,
-      hasTooltip: false,
-    },
-    {
-      label: 'Total Elevation Gain',
-      type: 'altitude',
-      value: group.totalElevationAscended,
-      workout: group.highlight,
-      icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
-      hasTooltip: false,
-    },
-    // {
-    //   type: 'altitude',
-    //   label: 'Avg Elevation/Distance',
-    //   value: newQuantity(
-    //     avgElevationPerDistance,
-    //     `${group.totalElevationAscended.unit}/${group.totalDistance.unit}`,
-    //   ),
-    //   workout: group.highlight,
-    //   icon: <Ionicons name="stats-chart" size={40} color="#FFFFFF" />,
-    //   hasTooltip: false,
-    // },
   ];
 
   return group;
