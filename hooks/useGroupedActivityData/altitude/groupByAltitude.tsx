@@ -94,7 +94,7 @@ const parseSampleIntoGroup = ({
       totalDistance: newQuantity(0, sample.totalDistance.unit),
       totalDuration: newQuantity(0, 's'),
       totalElevationAscended: newQuantity(0, elevation.unit),
-      averagePace: newQuantity(0, 'min/mile'),
+      averagePace: newQuantity(0, 'min/mi'),
       averageHumidity: newQuantity(0, '%'),
       prettyPace: '',
       stats: [],

@@ -10,6 +10,7 @@ import {
   sortGroupsByKeyInAscending,
 } from '@/hooks/useGroupedActivityData/sort';
 import { Group, Groups } from '@/types/Groups';
+import { PredictedWorkout } from '@/types/Prediction';
 import {
   calculatePercentage,
   getAbsoluteDifference,
@@ -22,6 +23,7 @@ import {
   findFastestRun,
   findSlowestRun,
 } from '@/utils/workout';
+import { generateWorkoutPrediction } from '@/utils/prediction';
 import { Ionicons } from '@expo/vector-icons';
 
 const DEFAULT_TOLERANCE = 0.25; // 0.25 of a mile.
@@ -85,7 +87,7 @@ const parseSampleIntoGroup = ({
       totalDistance: newQuantity(0, 'mi'),
       totalDuration: newQuantity(0, 's'),
       totalElevationAscended: newQuantity(0, 'm'),
-      averagePace: newQuantity(0, 'min/mile'),
+      averagePace: newQuantity(0, 'min/mi'),
       averageHumidity: newQuantity(0, '%'),
       prettyPace: '',
       stats: [],
@@ -126,6 +128,17 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   group.highlight = findFastestRun(group.runs);
   group.worst = findSlowestRun(group.runs);
   group.totalVariation = getAbsoluteDifference(group.worst.duration, group.highlight.duration);
+
+  // Generate AI prediction if we have enough data
+  let prediction: PredictedWorkout | null = null;
+
+  if (group.runs.length >= 2) {
+    try {
+      prediction = generateWorkoutPrediction(group, 4);
+    } catch (error) {
+      console.warn(`Failed to generate prediction for group ${group.title}:`, error);
+    }
+  }
 
   group.stats = [
     {
@@ -205,6 +218,100 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
       ],
     },
   ];
+
+  // Add AI prediction section if we have a valid prediction
+  if (prediction && prediction.confidence > 20) {
+    const formatImprovementTime = (currentDuration: number, predictedDuration: number) => {
+      const improvementSeconds = currentDuration - predictedDuration;
+      const minutes = Math.floor(improvementSeconds / 60);
+      const seconds = Math.round(improvementSeconds % 60);
+      return minutes > 0 ? `${minutes}:${seconds.toString().padStart(2, '0')}` : `${seconds}s`;
+    };
+
+    const improvementTime = formatImprovementTime(
+      group.highlight.duration.quantity,
+      prediction.predictedDuration.quantity,
+    );
+
+    const confidenceColor =
+      prediction.confidenceLevel === 'high'
+        ? '#00FF00'
+        : prediction.confidenceLevel === 'medium'
+          ? '#FFA500'
+          : '#FF6B6B';
+
+    group.stats.push({
+      title: 'Prediction',
+      items: [
+        {
+          type: 'pace',
+          label: '1-Month Target',
+          value: prediction.predictedPace,
+          workout: group.highlight,
+          icon: <Ionicons name="trending-up" size={40} color={confidenceColor} />,
+          hasTooltip: true,
+          detailTitle: 'AI Performance Prediction',
+          detailDescription: `Based on your recent ${group.runs.length} workouts, AI predicts you could achieve this pace within 4 weeks with ${prediction.confidence}% confidence.`,
+          additionalInfo: [
+            {
+              label: 'Confidence Level',
+              value: `${prediction.confidenceLevel.toUpperCase()} (${prediction.confidence}%)`,
+            },
+            { label: 'Time Improvement', value: improvementTime },
+            {
+              label: 'Based on Data Points',
+              value: `${prediction.predictionBasis.dataPoints} workouts`,
+            },
+            {
+              label: 'Training Consistency',
+              value: `${prediction.predictionBasis.consistencyScore.toFixed(1)}%`,
+            },
+          ],
+        },
+        {
+          type: 'duration',
+          label: 'Predicted Time',
+          value: prediction.predictedDuration,
+          workout: group.highlight,
+          icon: <Ionicons name="time-outline" size={40} color={confidenceColor} />,
+          hasTooltip: true,
+          detailTitle: 'Predicted Completion Time',
+          detailDescription: `AI estimates you could complete this distance in this time based on your improvement trend.`,
+          additionalInfo: [
+            { label: 'Current Best', value: formatPace(group.highlight.averagePace) },
+            { label: 'Improvement %', value: `${prediction.improvementPercentage.toFixed(1)}%` },
+          ],
+        },
+      ],
+    });
+
+    // Add training recommendations section
+    if (prediction.recommendedTraining.length > 0) {
+      group.stats.push({
+        title: 'Training Recommendations',
+        items: prediction.recommendedTraining.slice(0, 3).map((rec, index) => ({
+          type: 'training',
+          label: rec.workoutType.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+          value: { quantity: rec.frequency, unit: 'per week' },
+          workout: group.highlight,
+          icon: <Ionicons name="fitness-outline" size={40} color="#4A90E2" />,
+          hasTooltip: true,
+          detailTitle: `${rec.workoutType.replace('_', ' ')} Training`,
+          detailDescription: rec.reason,
+          additionalInfo: [
+            { label: 'Intensity', value: rec.intensity.toUpperCase() },
+            { label: 'Frequency', value: `${rec.frequency}x per week` },
+            ...(rec.duration
+              ? [{ label: 'Duration', value: `${rec.duration.quantity} ${rec.duration.unit}` }]
+              : []),
+            ...(rec.targetPace
+              ? [{ label: 'Target Pace', value: formatPace(rec.targetPace) }]
+              : []),
+          ],
+        })),
+      });
+    }
+  }
 
   return group;
 };

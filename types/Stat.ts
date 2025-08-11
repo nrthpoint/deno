@@ -2,7 +2,15 @@ import { Quantity } from '@kingstinct/react-native-healthkit';
 import { ExtendedWorkout } from './ExtendedWorkout';
 
 export interface Stat {
-  type: 'pace' | 'distance' | 'duration' | 'default' | 'altitude' | 'humidity';
+  type:
+    | 'pace'
+    | 'distance'
+    | 'duration'
+    | 'default'
+    | 'altitude'
+    | 'humidity'
+    | 'prediction'
+    | 'training';
   label: string;
   value: Quantity;
   icon: React.ReactNode;
