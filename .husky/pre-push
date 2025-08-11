@@ -1,0 +1,16 @@
+echo "🔍 Running pre-push checks..."
+
+# Run linting
+echo "📝 Running eslint..."
+npm run lint
+
+# Check if linting passed
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "❌ Linting failed. Please fix the issues and try again."
+    echo "💡 You can run 'npm run lint:fix' to auto-fix some issues."
+    echo ""
+    exit 1
+fi
+
+echo "✅ Linting passed! Proceeding with push..."

@@ -1,9 +1,9 @@
-import { groupRunsByPace } from '@/utils/grouping/pace/groupByPace';
+import { groupRunsByPace } from '@/hooks/useGroupedActivityData/pace/groupByPace';
 import {
   createMockWorkout,
   createMockWorkoutWithoutDistance,
   createMockWorkoutWithoutPace,
-} from '@/utils/grouping/test-utils';
+} from '@/hooks/useGroupedActivityData/test-utils';
 
 describe('groupRunsByPace', () => {
   describe('basic functionality', () => {
