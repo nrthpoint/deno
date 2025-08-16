@@ -1,13 +1,14 @@
-import { colors } from '@/config/colors';
-import { DISTANCE_UNIT_OPTIONS } from '@/config/distanceUnits';
-import { LatoFonts } from '@/config/fonts';
-import { TIME_RANGE_LABELS, TIME_RANGE_OPTIONS } from '@/config/timeRanges';
-import { useSettings } from '@/context/SettingsContext';
 import { WorkoutActivityType } from '@kingstinct/react-native-healthkit';
 import Slider from '@react-native-community/slider';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SegmentedButtons, Text } from 'react-native-paper';
+
+import { colors } from '@/config/colors';
+import { DISTANCE_UNIT_OPTIONS } from '@/config/distanceUnits';
+import { LatoFonts } from '@/config/fonts';
+import { TIME_RANGE_LABELS, TIME_RANGE_OPTIONS } from '@/config/timeRanges';
+import { useSettings } from '@/context/SettingsContext';
 
 const SegmentedButtonsTheme = {
   colors: {

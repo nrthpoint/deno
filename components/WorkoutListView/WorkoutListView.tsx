@@ -1,11 +1,12 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { FlatList, Linking, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
+
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { formatDuration } from '@/utils/time';
-import { Ionicons } from '@expo/vector-icons';
 
 interface WorkoutListViewProps {
   visible: boolean;

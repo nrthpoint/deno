@@ -1,5 +1,7 @@
 import { Quantity } from '@kingstinct/react-native-healthkit';
+
 import { ExtendedWorkout } from './ExtendedWorkout';
+import { PredictedWorkout } from './Prediction';
 import { Stat } from './Stat';
 
 export type GroupType = 'distance' | 'pace' | 'altitude';
@@ -8,6 +10,12 @@ export const GROUP_TYPES = {
   Distance: 'distance' as GroupType,
   Pace: 'pace' as GroupType,
   Altitude: 'altitude' as GroupType,
+};
+
+export type GroupPredictions = {
+  prediction4Week: PredictedWorkout | null;
+  prediction12Week: PredictedWorkout | null;
+  recommendations: string[];
 };
 
 export type Group = {
@@ -32,14 +40,23 @@ export type Group = {
   averagePace: Quantity;
   prettyPace: string;
 
-  // Stats for the highlight run
-  stats: {
-    title: string;
-    items: Stat[];
-  }[];
+  // Factual stats for the group (no predictions)
+  stats: Stats;
+  // AI predictions and recommendations
+  predictions: GroupPredictions;
   highlight: ExtendedWorkout;
   worst: ExtendedWorkout;
   mostRecent: ExtendedWorkout;
+
+  // For dot plot/beeswarm time distribution
+  durationDistribution: number[];
+};
+
+export type Stats = StatGroup[];
+
+export type StatGroup = {
+  title: string;
+  items: Stat[];
 };
 
 export type Groups = Record<string, Group>;

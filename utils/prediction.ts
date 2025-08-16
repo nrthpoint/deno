@@ -1,3 +1,5 @@
+import { addWeeks, differenceInDays } from 'date-fns';
+
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 import {
@@ -7,7 +9,6 @@ import {
   PredictionConfidence,
 } from '@/types/Prediction';
 import { newQuantity } from '@/utils/quantity';
-import { addWeeks, differenceInDays } from 'date-fns';
 
 /**
  * Calculate improvement trend based on historical performance data
@@ -343,18 +344,18 @@ export const generateWorkoutPrediction = (
     type: 'predicted',
     groupKey: group.title,
     targetDate: addWeeks(new Date(), weeksAhead),
-    predictedPace: newQuantity(predictedPace, group.highlight.averagePace.unit),
-    predictedDuration: newQuantity(predictedDuration, 's'),
+    predictedPace: newQuantity(Number(predictedPace.toFixed(2)), group.highlight.averagePace.unit),
+    predictedDuration: newQuantity(Number(predictedDuration.toFixed(2)), 's'),
     predictedDistance: group.highlight.totalDistance,
-    confidence: confidence.score,
+    confidence: Number(confidence.score.toFixed(2)),
     confidenceLevel: confidence.level,
-    improvementPercentage: totalImprovement,
+    improvementPercentage: Number(totalImprovement.toFixed(2)),
     recommendedTraining: recommendations,
     predictionBasis: {
       dataPoints: group.runs.length,
       timeSpanDays,
-      trendStrength: trend.consistency,
-      consistencyScore: trend.consistency * 100,
+      trendStrength: Number(trend.consistency.toFixed(2)),
+      consistencyScore: Number((trend.consistency * 100).toFixed(2)),
     },
   };
 };

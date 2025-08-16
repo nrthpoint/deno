@@ -1,6 +1,7 @@
+import { Quantity } from '@kingstinct/react-native-healthkit';
+
 import { WorkoutAchievements } from '@/types/ExtendedWorkout';
 import { formatPace, formatDuration } from '@/utils/time';
-import { Quantity } from '@kingstinct/react-native-healthkit';
 
 export const formatQuantityValue = (
   value: Quantity,

@@ -1,7 +1,8 @@
-import { colors } from '@/config/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { router, Tabs } from 'expo-router';
 import { IconButton } from 'react-native-paper';
+
+import { colors } from '@/config/colors';
 
 export default function TabLayout() {
   return (

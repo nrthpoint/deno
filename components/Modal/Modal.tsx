@@ -1,0 +1,164 @@
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button } from 'react-native-paper';
+
+import { ModalProps } from '@/components/Modal/Modal.types';
+import { getLatoFont } from '@/config/fonts';
+import { useWorkout } from '@/context/WorkoutContext';
+
+export const ModalProvider = ({
+  children,
+  modalIcon,
+  modalTitle,
+  modalDescription,
+  modalInfo,
+  modalChildren,
+  workout,
+  color,
+}: { children: React.ReactNode } & ModalProps) => {
+  const { setSelectedWorkout } = useWorkout();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handlePress = () => {
+    if (workout) {
+      setSelectedWorkout(workout);
+      router.push('/workout-detail');
+    } else {
+      setModalVisible(true);
+    }
+  };
+
+  return (
+    <>
+      <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>
+        {children}
+      </TouchableOpacity>
+
+      {modalVisible && (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                {modalIcon && (
+                  <View style={[styles.modalIcon, { backgroundColor: color }]}>
+                    <Ionicons name={modalIcon} size={40} color="#FFFFFF" />
+                  </View>
+                )}
+                <Text style={styles.modalTitle}>{modalTitle}</Text>
+              </View>
+
+              {modalChildren}
+
+              {modalDescription && <Text style={styles.modalDescription}>{modalDescription}</Text>}
+
+              {modalInfo && modalInfo.length > 0 && (
+                <View style={styles.additionalInfoContainer}>
+                  <Text style={styles.additionalInfoTitle}>Additional Details</Text>
+                  {modalInfo.map((info, index) => (
+                    <View key={index} style={styles.infoRow}>
+                      <Text style={styles.infoLabel}>{info.label}:</Text>
+                      <Text style={styles.infoValue}>{info.value}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              <Button
+                mode="contained"
+                onPress={() => setModalVisible(false)}
+                style={styles.closeButton}
+                buttonColor={color}
+              >
+                Close
+              </Button>
+            </View>
+          </View>
+        </Modal>
+      )}
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#2A2A2A',
+    borderRadius: 16,
+    padding: 24,
+    margin: 20,
+    maxWidth: 320,
+    width: '90%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  modalIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  modalTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    flex: 1,
+    ...getLatoFont('bold'),
+  },
+  modalValue: {
+    color: '#FFFFFF',
+    fontSize: 28,
+    textAlign: 'center',
+    marginBottom: 16,
+    ...getLatoFont('bold'),
+  },
+  modalDescription: {
+    color: '#CCCCCC',
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 16,
+    ...getLatoFont('regular'),
+  },
+  additionalInfoContainer: {
+    marginBottom: 20,
+  },
+  additionalInfoTitle: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    marginBottom: 8,
+    ...getLatoFont('bold'),
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 4,
+  },
+  infoLabel: {
+    color: '#CCCCCC',
+    fontSize: 14,
+    ...getLatoFont('regular'),
+  },
+  infoValue: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    ...getLatoFont('bold'),
+  },
+  closeButton: {
+    marginTop: 8,
+  },
+});

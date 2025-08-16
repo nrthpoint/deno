@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import { Groups } from '@/types/Groups';
 import { PredictedWorkout } from '@/types/Prediction';
 import { generateWorkoutPrediction } from '@/utils/prediction';

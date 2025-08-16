@@ -1,28 +1,14 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Modal, Portal, Text, Button, IconButton } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
-import { colors, ColorProfile } from '@/config/colors';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Button, IconButton, Modal, Portal, Text } from 'react-native-paper';
+
+import { GroupingConfigModalProps } from '@/components/GroupConfigurator/GroupingConfig.types';
+import { getConfigLabels } from '@/components/GroupConfigurator/GroupingConfigModalUtils';
+import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { getConfigLabels } from './utils';
-import { GroupType } from '@/types/Groups';
 
-export interface GroupingConfig {
-  tolerance: number;
-  groupSize: number;
-}
-
-export interface GroupingConfigModalProps {
-  visible: boolean;
-  groupType: GroupType;
-  distanceUnit: string;
-  config: GroupingConfig;
-  colorProfile: ColorProfile;
-  onDismiss: () => void;
-  onConfigChange: (config: GroupingConfig) => void;
-}
-
-export const GroupingConfigModal = ({
+export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
   visible,
   groupType,
   distanceUnit,
@@ -30,7 +16,7 @@ export const GroupingConfigModal = ({
   colorProfile,
   onDismiss,
   onConfigChange,
-}: GroupingConfigModalProps) => {
+}) => {
   const labels = getConfigLabels(groupType, distanceUnit);
 
   const handleToleranceChange = (value: number) => {

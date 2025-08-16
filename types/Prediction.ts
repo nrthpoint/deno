@@ -18,7 +18,7 @@ export type PredictedWorkout = {
   predictedPace: Quantity;
   predictedDuration: Quantity;
   predictedDistance?: Quantity;
-  confidence: number; // 0-100
+  confidence: number;
   confidenceLevel: PredictionConfidence;
   improvementPercentage: number;
   recommendedTraining: TrainingRecommendation[];

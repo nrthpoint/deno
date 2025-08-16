@@ -36,6 +36,23 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string) => {
           step: 0.2,
         },
       };
+    case 'altitude':
+      return {
+        tolerance: {
+          label: 'Elevation Tolerance',
+          unit: 'm',
+          min: 25,
+          max: 200,
+          step: 25,
+        },
+        groupSize: {
+          label: 'Elevation Grouping',
+          unit: 'm',
+          min: 50,
+          max: 500,
+          step: 50,
+        },
+      };
     default:
       return {
         tolerance: {

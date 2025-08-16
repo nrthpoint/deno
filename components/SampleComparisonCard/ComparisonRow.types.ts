@@ -1,6 +1,7 @@
 import { ColorProfile } from '@/config/colors';
-import { ComparisonProperty } from './SampleComparisonCard.types';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+
+import { ComparisonProperty } from './SampleComparisonCard.types';
 
 export interface ComparisonRowProps {
   property: ComparisonProperty;

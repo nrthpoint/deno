@@ -1,5 +1,6 @@
-import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Quantity } from '@kingstinct/react-native-healthkit';
+
+import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 export const createMockWorkout = ({
   distance = 3,

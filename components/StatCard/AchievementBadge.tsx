@@ -1,6 +1,8 @@
+import { View, StyleSheet, Text } from 'react-native';
+
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { View, StyleSheet, Text } from 'react-native';
+
 import { AchievementBadge as AchievementBadgeType } from './StatCard.utils';
 
 export const AchievementBadge = ({ achievement }: { achievement: AchievementBadgeType }) => {
@@ -34,6 +36,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.3)',
+    zIndex: 1,
   },
   achievementText: {
     fontSize: 10,

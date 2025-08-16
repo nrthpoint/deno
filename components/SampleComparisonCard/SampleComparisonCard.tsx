@@ -1,8 +1,10 @@
-import { colors } from '@/config/colors';
-import { LatoFonts } from '@/config/fonts';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
+
+import { colors } from '@/config/colors';
+import { LatoFonts } from '@/config/fonts';
+
 import { ComparisonRow } from './ComparisonRow';
 import { SampleComparisonCardProps } from './SampleComparisonCard.types';
 import { SampleDropdown } from './SampleDropdown';

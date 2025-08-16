@@ -1,8 +1,9 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LengthUnit, WorkoutActivityType } from '@kingstinct/react-native-healthkit';
-import { TimeRange, VALID_TIME_RANGES } from '@/config/timeRanges';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createContext, useContext, useEffect, useState } from 'react';
+
 import { VALID_DISTANCE_UNITS } from '@/config/distanceUnits';
+import { TimeRange, VALID_TIME_RANGES } from '@/config/timeRanges';
 import { validateWorkoutActivityType } from '@/utils/validators';
 
 interface SettingsContextType {

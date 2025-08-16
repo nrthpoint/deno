@@ -1,9 +1,11 @@
-import { colors } from '@/config/colors';
-import { LatoFonts } from '@/config/fonts';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { Pressable, StyleSheet, Text, View, ScrollView } from 'react-native';
 import { Portal } from 'react-native-paper';
+
+import { colors } from '@/config/colors';
+import { LatoFonts } from '@/config/fonts';
+
 import { SampleOption, SampleType } from './SampleComparisonCard.types';
 
 interface SampleDropdownProps {

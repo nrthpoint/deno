@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
+
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 interface WorkoutContextType {

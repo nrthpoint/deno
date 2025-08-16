@@ -1,5 +1,6 @@
-import { metersToMiles, metersToKilometers } from './distance';
 import { Quantity } from '@kingstinct/react-native-healthkit';
+
+import { metersToMiles, metersToKilometers } from './distance';
 
 describe('Distance Utilities', () => {
   describe('metersToMiles', () => {

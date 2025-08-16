@@ -1,19 +1,23 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
+
 import {
   GroupingParameters,
   GroupingSampleParserParams,
   GroupingStatsParams,
 } from '@/hooks/useGroupedActivityData/interface';
 import { assignRankToGroups } from '@/hooks/useGroupedActivityData/sort';
+import { Groups, Group } from '@/types/Groups';
+import { PredictedWorkout } from '@/types/Prediction';
+import { generateWorkoutPrediction } from '@/utils/prediction';
 import {
   calculatePercentage,
   getAbsoluteDifference,
   newQuantity,
   sumQuantities,
 } from '@/utils/quantity';
+import { formatPace } from '@/utils/time';
 import { findLongestRun, findShortestRun } from '@/utils/workout';
-import { Ionicons } from '@expo/vector-icons';
-import { Groups, Group } from '@/types/Groups';
 
 const DEFAULT_TOLERANCE = 0.5; // Half a minute
 const DEFAULT_GROUP_SIZE = 1.0; // 1 minute increments
@@ -77,8 +81,14 @@ const parseSampleIntoGroup = ({
       totalElevationAscended: newQuantity(0, 'm'),
       averagePace: newQuantity(0, 'min/mile'),
       averageHumidity: newQuantity(0, '%'),
+      durationDistribution: [],
       prettyPace: '',
       stats: [],
+      predictions: {
+        prediction4Week: null,
+        prediction12Week: null,
+        recommendations: [],
+      },
     } satisfies Group;
   }
 
@@ -104,40 +114,66 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     group.runs.reduce((sum, run) => sum + (run.humidity?.quantity || 0), 0) / group.runs.length,
     '%',
   );
+  // Add durationDistribution for dot plot
+  group.durationDistribution = group.runs.map((run) => run.duration.quantity);
   group.percentageOfTotalWorkouts = calculatePercentage(group.runs.length, samples.length);
   group.highlight = findLongestRun(group.runs);
   group.worst = findShortestRun(group.runs);
   group.totalVariation = getAbsoluteDifference(group.worst.duration, group.highlight.duration);
+
+  // Generate AI prediction if we have enough data
+  let prediction4Week: PredictedWorkout | null = null;
+  let prediction12Week: PredictedWorkout | null = null;
+  const recommendations: string[] = [];
+
+  if (group.runs.length >= 2) {
+    try {
+      prediction4Week = generateWorkoutPrediction(group, 4);
+      prediction12Week = generateWorkoutPrediction(group, 12);
+
+      // Convert training recommendations to simple bullet points (use 4-week for recommendations)
+      if (prediction4Week && prediction4Week.recommendedTraining.length > 0) {
+        prediction4Week.recommendedTraining.forEach((rec) => {
+          const workoutName = rec.workoutType
+            .replace('_', ' ')
+            .replace(/\b\w/g, (l) => l.toUpperCase());
+          const frequency = `${rec.frequency}x per week`;
+          const intensity = rec.intensity.toUpperCase();
+
+          let bullet = `${workoutName} (${frequency}, ${intensity} intensity)`;
+          if (rec.duration) {
+            bullet += ` - ${rec.duration.quantity} ${rec.duration.unit}`;
+          }
+          if (rec.targetPace) {
+            bullet += ` at ${formatPace(rec.targetPace)}`;
+          }
+          bullet += ` - ${rec.reason}`;
+
+          recommendations.push(bullet);
+        });
+      }
+    } catch (error) {
+      console.warn(`Failed to generate prediction for group ${group.title}:`, error);
+    }
+  }
+
+  // Set predictions separately from stats
+  group.predictions = {
+    prediction4Week,
+    prediction12Week,
+    recommendations,
+  };
 
   group.stats = [
     {
       title: 'Overview',
       items: [
         {
-          type: 'default',
-          label: 'Total Workouts',
-          value: {
-            quantity: group.runs?.length || 0,
-            unit: group.runs?.length === 1 ? 'run' : 'runs',
-          },
-          icon: <Ionicons name="podium-outline" size={40} color="#FFFFFF" />,
-          hasTooltip: true,
-          detailTitle: 'Group Size',
-          detailDescription:
-            'The total number of workout sessions included in this performance group.',
-          additionalInfo: [
-            { label: 'Average per Week', value: `${((group.runs?.length || 0) / 4).toFixed(1)}` },
-            { label: 'Group Category', value: group.title || 'Performance Group' },
-          ],
-          workout: group.highlight,
-        },
-        {
           type: 'distance',
           label: 'Cumulative Distance',
           value: group.totalDistance,
           workout: group.highlight,
           icon: <Ionicons name="person-add-outline" size={40} color="#FFFFFF" />,
-          hasTooltip: false,
         },
         {
           type: 'duration',
@@ -145,7 +181,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           value: group.totalDuration,
           workout: group.highlight,
           icon: <Ionicons name="timer-outline" size={40} color="#FFFFFF" />,
-          hasTooltip: false,
         },
       ],
     },
@@ -158,7 +193,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           value: group.highlight.averagePace,
           workout: group.highlight,
           icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
-          hasTooltip: false,
         },
         {
           type: 'pace',
@@ -166,7 +200,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           value: group.worst.averagePace,
           workout: group.worst,
           icon: <Ionicons name="trending-down-outline" size={40} color="#FFFFFF" />,
-          hasTooltip: false,
         },
       ],
     },
@@ -179,7 +212,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           value: group.highlight.totalDistance,
           workout: group.highlight,
           icon: <Ionicons name="location" size={40} color="#FFFFFF" />,
-          hasTooltip: false,
         },
         {
           type: 'distance',
@@ -187,7 +219,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           value: group.worst.totalDistance,
           workout: group.worst,
           icon: <Ionicons name="location" size={40} color="#FFFFFF" />,
-          hasTooltip: false,
         },
         {
           type: 'duration',
@@ -195,7 +226,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           value: group.highlight.duration,
           workout: group.highlight,
           icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
-          hasTooltip: false,
         },
         {
           type: 'duration',
@@ -203,7 +233,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           value: group.worst.duration,
           workout: group.worst,
           icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
-          hasTooltip: false,
         },
       ],
     },

@@ -1,18 +1,17 @@
+import { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, IconButton, Text } from 'react-native-paper';
+
 import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
 import { GroupCarousel } from '@/components/GroupCarousel/GroupCarousel';
+import { GroupingConfig } from '@/components/GroupConfigurator/GroupingConfig.types';
+import { GroupingConfigModal } from '@/components/GroupConfigurator/GroupingConfigModal';
 import { GroupStats } from '@/components/GroupStats/GroupStats';
-import {
-  GroupingConfig,
-  GroupingConfigModal,
-} from '@/components/GroupingConfigModal/GroupingConfigModal';
 import { TabButtons } from '@/components/TabButtons/TabButtons';
 import { tabColors } from '@/config/colors';
 import { useSettings } from '@/context/SettingsContext';
 import { useGroupedActivityData } from '@/hooks/useGroupedActivityData';
 import { GroupType } from '@/types/Groups';
-import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator, IconButton, Text } from 'react-native-paper';
 
 const tabOptions: GroupType[] = ['pace', 'distance', 'altitude'];
 
@@ -82,6 +81,86 @@ export default function Index() {
 
   return (
     <View style={[styles.container, { backgroundColor: colorProfile.primary }]}>
+      {/* Low-poly Background */}
+      <View
+        style={{
+          ...StyleSheet.absoluteFillObject,
+          zIndex: -1,
+        }}
+        pointerEvents="none"
+      >
+        {/* Background Images - PNG overlays with fallback colors */}
+        {groupType === 'distance' && (
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              backgroundColor: '#1e3a8a',
+              opacity: 0.3,
+            }}
+          >
+            {/* Uncomment when you add distance-background.png to assets/images/
+            <Image
+              source={require('@/assets/images/distance-background.png')}
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+              }}
+              resizeMode="cover"
+            />
+            */}
+          </View>
+        )}
+        {groupType === 'pace' && (
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              backgroundColor: '#065f46',
+              opacity: 0.3,
+            }}
+          >
+            {/* Uncomment when you add pace-background.png to assets/images/
+            <Image
+              source={require('@/assets/images/pace-background.png')}
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+              }}
+              resizeMode="cover"
+            />
+            */}
+          </View>
+        )}
+        {groupType === 'altitude' && (
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              backgroundColor: '#6d28d9',
+              opacity: 0.3,
+            }}
+          >
+            {/* Uncomment when you add altitude-background.png to assets/images/
+            <Image
+              source={require('@/assets/images/altitude-background.png')}
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+              }}
+              resizeMode="cover"
+            />
+            */}
+          </View>
+        )}
+      </View>
+
       {/* Authorization Overlay */}
       <AuthorizationOverlay
         authorizationStatus={authorizationStatus}

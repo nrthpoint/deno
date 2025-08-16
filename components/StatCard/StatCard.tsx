@@ -1,49 +1,26 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Text } from 'react-native-paper';
 
+import { ModalProvider } from '@/components/Modal/Modal';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+
 import { StatCardProps } from './StatCard.types';
-import { formatQuantityValue, getAchievementBadge } from './StatCard.utils';
-import { AchievementBadge } from './AchievementBadge';
-import { WorkoutListView } from '@/components/WorkoutListView';
-import { router } from 'expo-router';
-import { useWorkout } from '@/context/WorkoutContext';
+import { formatQuantityValue } from './StatCard.utils';
 
-export const StatCard = ({ stat, groupWorkouts, groupTitle }: StatCardProps) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [workoutListVisible, setWorkoutListVisible] = useState(false);
-  const { setSelectedWorkout } = useWorkout();
-
-  const {
+export const StatCard = ({
+  stat: {
     icon,
     label,
     value,
-    workout: { achievements },
     type = 'default',
     backgroundColor = colors.surface,
     accentColor = colors.accent,
-    detailTitle,
-    detailDescription,
-    additionalInfo,
-    hasTooltip = false,
-  } = stat;
-
+    ...modalProps
+  },
+}: StatCardProps) => {
   const { displayValue, unit } = formatQuantityValue(value, type);
-  const achievementBadge = getAchievementBadge(achievements);
-
-  const handlePress = () => {
-    if (stat.label === 'Total Workouts' && groupWorkouts && groupTitle) {
-      setWorkoutListVisible(true);
-    } else if (hasTooltip) {
-      setModalVisible(true);
-    } else {
-      // Store workout in context and navigate
-      setSelectedWorkout(stat.workout);
-      router.push('/workout-detail');
-    }
-  };
 
   const cardContent = (
     <View style={[styles.container, { backgroundColor }]}>
@@ -57,98 +34,11 @@ export const StatCard = ({ stat, groupWorkouts, groupTitle }: StatCardProps) => 
           <Text style={styles.value}>{displayValue}</Text>
           {unit && <Text style={styles.unit}>{unit}</Text>}
         </View>
-
-        {/* Achievement Badge */}
-        {achievementBadge && <AchievementBadge achievement={achievementBadge} />}
       </View>
-
-      {/* {hasTooltip && (
-        <View style={styles.infoButton}>
-          <Ionicons name="information-circle" size={20} color="#FFFFFF" />
-        </View>
-      )} */}
     </View>
   );
 
-  return (
-    <>
-      {/* Make all StatCards clickable */}
-      <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>
-        {cardContent}
-      </TouchableOpacity>
-
-      {hasTooltip && (
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <View style={styles.modalHeader}>
-                <View style={[styles.modalIcon, { backgroundColor: accentColor }]}>{icon}</View>
-                <Text style={styles.modalTitle}>{detailTitle || label}</Text>
-              </View>
-
-              <View style={styles.modalValueContainer}>
-                <Text style={styles.modalValue}>{displayValue}</Text>
-                {unit && <Text style={styles.modalUnit}>{unit}</Text>}
-              </View>
-
-              {/* Achievement Badge in Modal */}
-              {achievementBadge && (
-                <View
-                  style={[
-                    styles.modalAchievementBadge,
-                    { backgroundColor: achievementBadge.color },
-                  ]}
-                >
-                  <Text style={styles.modalAchievementText}>{achievementBadge.label}</Text>
-                </View>
-              )}
-
-              {detailDescription && (
-                <Text style={styles.modalDescription}>{detailDescription}</Text>
-              )}
-
-              {additionalInfo && additionalInfo.length > 0 && (
-                <View style={styles.additionalInfoContainer}>
-                  <Text style={styles.additionalInfoTitle}>Additional Details</Text>
-                  {additionalInfo.map((info, index) => (
-                    <View key={index} style={styles.infoRow}>
-                      <Text style={styles.infoLabel}>{info.label}:</Text>
-                      <Text style={styles.infoValue}>{info.value}</Text>
-                    </View>
-                  ))}
-                </View>
-              )}
-
-              <Button
-                mode="contained"
-                onPress={() => setModalVisible(false)}
-                style={styles.closeButton}
-                buttonColor={accentColor}
-              >
-                Close
-              </Button>
-            </View>
-          </View>
-        </Modal>
-      )}
-
-      {/* Workout List Modal */}
-      {stat.label === 'Total Workouts' && groupWorkouts && groupTitle && (
-        <WorkoutListView
-          visible={workoutListVisible}
-          onClose={() => setWorkoutListVisible(false)}
-          workouts={groupWorkouts}
-          groupTitle={groupTitle}
-          accentColor={accentColor}
-        />
-      )}
-    </>
-  );
+  return <ModalProvider {...modalProps}>{cardContent}</ModalProvider>;
 };
 
 const styles = StyleSheet.create({
@@ -156,7 +46,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 4,
     marginVertical: 8,
-    //overflow: 'hidden',
+    overflow: 'hidden',
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: {
@@ -222,137 +112,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  // Modal styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: '#2A2A2A',
-    borderRadius: 16,
-    padding: 24,
-    width: '90%',
-    maxWidth: 400,
-    elevation: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  modalIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  modalTitle: {
-    fontSize: 18,
-    color: '#FFFFFF',
-    fontFamily: LatoFonts.bold,
-    flex: 1,
-    textTransform: 'uppercase',
-    letterSpacing: 1.2,
-  },
-  modalValueContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    gap: 6,
-    marginBottom: 16,
-  },
-  modalValue: {
-    fontSize: 32,
-    color: '#FFFFFF',
-    fontFamily: LatoFonts.bold,
-  },
-  modalUnit: {
-    fontSize: 18,
-    color: '#CCCCCC',
-    fontFamily: LatoFonts.regular,
-    marginBottom: 4,
-  },
-  modalAchievementBadge: {
-    alignSelf: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 16,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 5,
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
-  },
-  modalAchievementText: {
-    fontSize: 12,
-    color: '#FFFFFF',
-    fontFamily: LatoFonts.bold,
-    textTransform: 'uppercase',
-    letterSpacing: 1.2,
-    fontWeight: '800',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  modalDescription: {
-    fontSize: 14,
-    color: '#CCCCCC',
-    fontFamily: LatoFonts.regular,
-    lineHeight: 20,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  additionalInfoContainer: {
-    marginBottom: 24,
-  },
-  additionalInfoTitle: {
-    fontSize: 16,
-    color: '#FFFFFF',
-    fontFamily: LatoFonts.bold,
-    marginBottom: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#404040',
-  },
-  infoLabel: {
-    fontSize: 14,
-    color: '#CCCCCC',
-    fontFamily: LatoFonts.regular,
-    flex: 1,
-  },
-  infoValue: {
-    fontSize: 14,
-    color: '#FFFFFF',
-    fontFamily: LatoFonts.bold,
-    textAlign: 'right',
-  },
-  closeButton: {
-    marginTop: 8,
   },
 });

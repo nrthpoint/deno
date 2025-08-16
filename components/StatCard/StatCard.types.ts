@@ -1,8 +1,6 @@
+import { ModalProps } from '@/components/Modal/Modal.types';
 import { Stat } from '@/types/Stat';
-import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
-export interface StatCardProps {
+export interface StatCardProps extends ModalProps {
   stat: Stat;
-  groupWorkouts?: ExtendedWorkout[];
-  groupTitle?: string;
 }

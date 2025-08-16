@@ -1,7 +1,8 @@
-import { getLatoFont } from '@/config/fonts';
-import { GroupType } from '@/types/Groups';
 import { StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
+
+import { getLatoFont } from '@/config/fonts';
+import { GroupType } from '@/types/Groups';
 
 interface TabButtonsProps {
   tabOptions: GroupType[];

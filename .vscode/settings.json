@@ -1,3 +1,5 @@
 {
-  "cSpell.words": ["healthkit", "kingstinct", "Pressable"]
+  "cSpell.words": ["healthkit", "kingstinct", "Orelega", "Pressable"],
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative"
 }

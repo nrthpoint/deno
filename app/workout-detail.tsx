@@ -1,11 +1,12 @@
+import { Ionicons } from '@expo/vector-icons';
+import { Stack, router } from 'expo-router';
 import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { Stack, router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+
+import { AchievementBadge } from '@/components/StatCard/AchievementBadge';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { AchievementBadge } from '@/components/StatCard/AchievementBadge';
 import { useWorkout } from '@/context/WorkoutContext';
 import { formatPace } from '@/utils/time';
 

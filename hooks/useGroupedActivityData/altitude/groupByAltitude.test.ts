@@ -1,7 +1,9 @@
-import { ExtendedWorkout } from '@/types/ExtendedWorkout';
-import { groupRunsByAltitude } from './groupByAltitude';
-import { newQuantity } from '@/utils/quantity';
 import { Quantity } from '@kingstinct/react-native-healthkit';
+
+import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { newQuantity } from '@/utils/quantity';
+
+import { groupRunsByAltitude } from './groupByAltitude';
 
 // Helper function to create a mock workout with elevation
 const createMockWorkoutWithElevation = ({

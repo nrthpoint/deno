@@ -1,6 +1,6 @@
-import { generateWorkoutPrediction, calculatePerformanceTrend } from '@/utils/prediction';
-import { Group } from '@/types/Groups';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { Group } from '@/types/Groups';
+import { generateWorkoutPrediction, calculatePerformanceTrend } from '@/utils/prediction';
 import { newQuantity } from '@/utils/quantity';
 
 // Helper function to create mock workouts
@@ -101,6 +101,11 @@ describe('AI Prediction System', () => {
         averageHumidity: newQuantity(65, '%'),
         prettyPace: '7:39 min/mile',
         stats: [],
+        predictions: {
+          prediction4Week: null,
+          prediction12Week: null,
+          recommendations: [],
+        },
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
@@ -140,6 +145,11 @@ describe('AI Prediction System', () => {
         averageHumidity: newQuantity(65, '%'),
         prettyPace: '5:03 min/mile',
         stats: [],
+        predictions: {
+          prediction4Week: null,
+          prediction12Week: null,
+          recommendations: [],
+        },
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
@@ -176,6 +186,11 @@ describe('AI Prediction System', () => {
         averageHumidity: newQuantity(65, '%'),
         prettyPace: '6:51 min/mile',
         stats: [],
+        predictions: {
+          prediction4Week: null,
+          prediction12Week: null,
+          recommendations: [],
+        },
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);

@@ -1,8 +1,9 @@
-import { getLatoFont } from '@/config/fonts';
-import { GroupType } from '@/types/Groups';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import Carousel from 'react-native-reanimated-carousel';
+
+import { colors } from '@/config/colors';
+import { GroupType } from '@/types/Groups';
 
 interface GroupCarouselProps {
   options: string[];
@@ -18,9 +19,6 @@ export const GroupCarousel = ({
   options,
   colorProfile,
   itemSuffix,
-  tolerance,
-  groupType,
-  distanceUnit,
   setSelectedOption,
 }: GroupCarouselProps) => {
   return (
@@ -64,7 +62,7 @@ const styles = StyleSheet.create({
     height: 150,
     marginHorizontal: 8,
     borderRadius: 20,
-    backgroundColor: '#FFF',
+    backgroundColor: colors.neutral,
     justifyContent: 'center',
     alignItems: 'center',
   },

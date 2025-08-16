@@ -1,5 +1,6 @@
-import { formatDuration, convertDurationToMinutes } from './time';
 import { Quantity } from '@kingstinct/react-native-healthkit';
+
+import { formatDuration, convertDurationToMinutes } from './time';
 
 describe('Time Utilities', () => {
   describe('formatDuration', () => {

@@ -1,6 +1,8 @@
 import { Quantity, WorkoutSample } from '@kingstinct/react-native-healthkit';
-import { convertDurationToMinutes } from './time';
+
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+
+import { convertDurationToMinutes } from './time';
 
 /**
  * Calculates the pace from a workout sample in minutes.
