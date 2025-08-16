@@ -106,6 +106,7 @@ describe('AI Prediction System', () => {
           recommendations: [],
         },
         variantDistribution: [],
+        skipped: 0,
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
@@ -151,6 +152,7 @@ describe('AI Prediction System', () => {
           recommendations: [],
         },
         variantDistribution: [],
+        skipped: 0,
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
@@ -193,6 +195,7 @@ describe('AI Prediction System', () => {
           recommendations: [],
         },
         variantDistribution: [],
+        skipped: 0,
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
