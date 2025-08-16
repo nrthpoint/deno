@@ -18,10 +18,6 @@
         "NSHealthUpdateUsageDescription": "This app needs to write workout data to HealthKit to keep your fitness information synchronized across devices."
       }
     },
-    "web": {
-      "bundler": "metro",
-      "output": "static"
-    },
     "plugins": [
       "expo-router",
       [
@@ -51,9 +47,6 @@
         "projectId": "9f72da41-06ea-4062-a451-99638abf36cb"
       }
     },
-    "owner": "nrthpoint",
-    "android": {
-      "package": "com.nrthpoint.deno"
-    }
+    "owner": "nrthpoint"
   }
 }
