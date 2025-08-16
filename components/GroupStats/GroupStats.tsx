@@ -42,13 +42,11 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta, tabColor })
 
   return (
     <ScrollView style={styles.statList}>
-      <VisualCards group={group} meta={meta} tabColor={tabColor} />
-      {/* Render Total Workouts Card above the tab navigation */}
       <TotalWorkoutsCard
-        groupRuns={group.runs}
-        groupTitle={group.title}
+        group={group}
         accentColor={typeof tabColor === 'string' ? tabColor : undefined}
       />
+      <VisualCards group={group} meta={meta} tabColor={tabColor} />
       <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       {renderTabContent()}
     </ScrollView>

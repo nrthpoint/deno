@@ -58,6 +58,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
   const content = (
     <View style={styles.container}>
       <Text style={styles.labelText}>{label}</Text>
+
       <Svg width={width} height={60}>
         {/* Bar */}
         <Rect
@@ -68,6 +69,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
           fill="#ffffff25"
           rx={BAR_HEIGHT / 2}
         />
+
         {/* Dots */}
         {positions.map((dot, i) => (
           <Circle
@@ -81,6 +83,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
             opacity={0.95}
           />
         ))}
+
         {/* Min/Max labels */}
         <SvgText
           x={positions[0].x}
@@ -91,6 +94,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
         >
           {formatDuration(newQuantity(Math.round(min), 's'))}
         </SvgText>
+
         <SvgText
           x={positions[positions.length - 1].x}
           y={BAR_Y + BAR_HEIGHT + 18}

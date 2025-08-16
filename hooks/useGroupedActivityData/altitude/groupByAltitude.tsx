@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 
+import { deleteEmptyGroups } from '@/hooks/useGroupedActivityData/distance/groupByDistance';
 import {
   GroupingParameters,
   GroupingSampleParserParams,
@@ -10,7 +11,7 @@ import {
   assignRankToGroups,
   sortGroupsByKeyInAscending,
 } from '@/hooks/useGroupedActivityData/sort';
-import { Groups, Group } from '@/types/Groups';
+import { Group, Groups } from '@/types/Groups';
 import { PredictedWorkout } from '@/types/Prediction';
 import { generateWorkoutPrediction } from '@/utils/prediction';
 import { getAbsoluteDifference, newQuantity, sumQuantities } from '@/utils/quantity';
@@ -26,14 +27,12 @@ const DEFAULT_GROUP_SIZE = 100; // 100 meters/feet increments
 
 export const groupRunsByAltitude = (params: GroupingParameters): Groups => {
   const groups: Groups = {} as Groups;
-
   const { samples, tolerance = DEFAULT_TOLERANCE, groupSize = DEFAULT_GROUP_SIZE } = params;
 
-  // Filter out samples without elevation data
+  // Only consider samples with elevation data
   const samplesWithElevation = samples.filter(
     (sample) => sample.totalElevationAscended && sample.totalElevationAscended.quantity > 0,
   );
-
   if (samplesWithElevation.length === 0) {
     console.warn('No samples with elevation data found');
     return {};
@@ -43,11 +42,14 @@ export const groupRunsByAltitude = (params: GroupingParameters): Groups => {
     parseSampleIntoGroup({ sample, tolerance, groupSize, groups });
   }
 
+  deleteEmptyGroups(groups);
+
   for (const groupKey in groups) {
     calculateGroupStats({ group: groups[groupKey], samples: samplesWithElevation });
   }
 
   assignRankToGroups(groups);
+
   return sortGroupsByKeyInAscending(groups);
 };
 
@@ -56,60 +58,33 @@ const parseSampleIntoGroup = ({
   groups,
   tolerance = DEFAULT_TOLERANCE,
   groupSize = DEFAULT_GROUP_SIZE,
-}: GroupingSampleParserParams) => {
+}: GroupingSampleParserParams): Groups => {
   if (!sample.totalElevationAscended || sample.totalElevationAscended.quantity <= 0) {
     return groups;
   }
-
   const elevation = sample.totalElevationAscended;
 
   // Calculate the nearest group based on groupSize (e.g., 100m increments)
   const nearestGroup = Math.round(elevation.quantity / groupSize) * groupSize;
+
+  // Create a string key for the group (e.g., "200" for 200m, "250.5" for 250.5m)
+  const groupKey = nearestGroup % 1 === 0 ? nearestGroup.toString() : nearestGroup.toFixed(1);
+
+  // Check if the sample is close enough to the group
   const isCloseEnough = Math.abs(elevation.quantity - nearestGroup) <= tolerance;
+
+  // Create or get the group for the current sample
+  const group = groups[groupKey] || (groups[groupKey] = createEmptyGroup(groupKey, sample));
 
   if (!isCloseEnough) {
     console.warn(
       `Run with elevation ${elevation.quantity}${elevation.unit} is not close enough to ${nearestGroup}${elevation.unit}. Skipping.`,
     );
 
-    // Skip and return the groups as is.
+    group.skipped = (group.skipped || 0) + 1;
+
     return groups;
   }
-
-  // Create a string key for the group (e.g., "200" for 200m)
-  const groupKey = nearestGroup.toString();
-
-  // If the group for this elevation doesn't exist, create it
-  if (!groups[groupKey]) {
-    groups[groupKey] = {
-      type: 'altitude',
-      title: `${nearestGroup} ${elevation.unit}`,
-      suffix: '',
-      rank: 0,
-      rankLabel: '',
-      runs: [],
-      highlight: sample,
-      worst: sample,
-      mostRecent: sample,
-      percentageOfTotalWorkouts: 0,
-      totalVariation: newQuantity(0, elevation.unit),
-      totalDistance: newQuantity(0, sample.totalDistance.unit),
-      totalDuration: newQuantity(0, 's'),
-      totalElevationAscended: newQuantity(0, elevation.unit),
-      averagePace: newQuantity(0, 'min/mi'),
-      averageHumidity: newQuantity(0, '%'),
-      prettyPace: '',
-      durationDistribution: [],
-      stats: [],
-      predictions: {
-        prediction4Week: null,
-        prediction12Week: null,
-        recommendations: [],
-      },
-    } satisfies Group;
-  }
-
-  const group = groups[groupKey];
 
   // Add the sample to the group
   group.runs.push(sample);
@@ -129,13 +104,43 @@ const parseSampleIntoGroup = ({
   return groups;
 };
 
+const createEmptyGroup = (key: string, sample: any): Group => {
+  return {
+    type: 'altitude',
+    title: `${key} ${sample.totalElevationAscended?.unit}`,
+    suffix: '',
+    rank: 0,
+    skipped: 0,
+    rankLabel: '',
+    runs: [],
+    highlight: sample,
+    worst: sample,
+    mostRecent: sample,
+    percentageOfTotalWorkouts: 0,
+    totalVariation: newQuantity(0, sample.totalElevationAscended?.unit),
+    totalDistance: newQuantity(0, sample.totalDistance.unit),
+    totalDuration: newQuantity(0, 's'),
+    totalElevationAscended: newQuantity(0, sample.totalElevationAscended?.unit),
+    averagePace: newQuantity(0, 'min/mi'),
+    averageHumidity: newQuantity(0, '%'),
+    prettyPace: '',
+    variantDistribution: [],
+    stats: [],
+    predictions: {
+      prediction4Week: null,
+      prediction12Week: null,
+      recommendations: [],
+    },
+  } satisfies Group;
+};
+
 const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   group.averagePace = calculatePaceFromDistanceAndDuration(
     group.totalDistance,
     group.totalDuration,
   );
   // Add durationDistribution for dot plot
-  group.durationDistribution = group.runs.map((run) => run.duration.quantity);
+  group.variantDistribution = group.runs.map((run) => run.duration.quantity);
   group.averageHumidity = newQuantity(
     group.runs.reduce((sum, run) => sum + (run.humidity?.quantity || 0), 0) / group.runs.length,
     '%',

@@ -1,7 +1,7 @@
 import { View, StyleSheet, Text } from 'react-native';
 
 import { colors } from '@/config/colors';
-import { LatoFonts } from '@/config/fonts';
+import { subheading } from '@/utils/text';
 
 import { AchievementBadge as AchievementBadgeType } from './StatCard.utils';
 
@@ -39,12 +39,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   achievementText: {
-    fontSize: 10,
-    color: '#FFFFFF',
-    fontFamily: LatoFonts.bold,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    fontWeight: '800',
+    ...subheading,
     textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,

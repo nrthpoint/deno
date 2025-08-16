@@ -4,6 +4,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { subheading } from '@/utils/text';
 import { formatDuration } from '@/utils/time';
 
 export const PredictionsTab: React.FC<TabContentProps> = ({ group }) => {
@@ -140,13 +141,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   predictionTitle: {
-    color: colors.neutral,
-    fontSize: 12,
-    fontFamily: LatoFonts.bold,
+    ...subheading,
     textAlign: 'center',
-    marginBottom: 10,
-    textTransform: 'uppercase',
-    letterSpacing: 1.5,
   },
   predictionPace: {
     color: '#4CAF50',

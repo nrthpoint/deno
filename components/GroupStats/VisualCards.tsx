@@ -12,11 +12,11 @@ export const VisualCards: React.FC<TabContentProps> = ({ group, meta, tabColor }
   return (
     <View
       style={[
-        styles.visualCardsRow,
-        //{ backgroundColor: tabColor ? `${tabColor.secondary}` : undefined },
+        styles.row,
+        // { backgroundColor: tabColor ? `${tabColor.secondary}` : undefined },
       ]}
     >
-      <View style={styles.visualCardHalf}>
+      <View style={styles.column}>
         <HalfMoonProgress
           value={group.runs.length}
           total={meta.totalRuns}
@@ -35,24 +35,21 @@ export const VisualCards: React.FC<TabContentProps> = ({ group, meta, tabColor }
         />
       </View>
 
-      <View style={styles.visualCardHalf}>
+      <View style={styles.column}>
         <VariationBar
-          distribution={group.durationDistribution}
+          distribution={group.variantDistribution}
           color="#ffffff"
-          label="Duration Distribution"
+          label="Duration Variation"
           width={170}
           hasModal={true}
-          modalTitle="Performance Variation"
+          modalTitle="Duration Variation"
           modalDescription="The range and distribution of workout durations in this group. Each dot is a workout."
           modalInfo={[
             { label: 'Best Time', value: formatDuration(group.highlight.duration) },
             { label: 'Worst Time', value: formatDuration(group.worst.duration) },
             {
               label: 'Variation Range',
-              value:
-                group.totalVariation.unit === 'mi'
-                  ? group.totalVariation.quantity.toFixed(2)
-                  : formatDuration(group.totalVariation),
+              value: formatDuration(group.totalVariation),
             },
           ]}
         />
@@ -62,17 +59,15 @@ export const VisualCards: React.FC<TabContentProps> = ({ group, meta, tabColor }
 };
 
 const styles = StyleSheet.create({
-  visualCardsRow: {
+  row: {
     flexDirection: 'row',
     gap: 18,
     padding: 10,
-    marginBottom: 10,
     backgroundColor: colors.surface,
   },
-  visualCardHalf: {
-    borderRadius: 12,
-    paddingVertical: 16,
+  column: {
     flex: 1,
+    paddingVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },

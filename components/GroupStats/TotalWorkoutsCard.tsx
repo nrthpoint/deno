@@ -5,23 +5,22 @@ import { Text } from 'react-native-paper';
 
 import { WorkoutListView } from '@/components/WorkoutListView/WorkoutListView';
 import { colors } from '@/config/colors';
+import { Group } from '@/types/Groups';
+import { subheading } from '@/utils/text';
 
 interface TotalWorkoutsCardProps {
-  groupRuns: any[];
-  groupTitle: string;
+  group: Group;
   accentColor?: string;
 }
 
 export const TotalWorkoutsCard: React.FC<TotalWorkoutsCardProps> = ({
-  groupRuns,
-  groupTitle,
+  group: { runs, title, skipped },
   accentColor,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const color = accentColor || colors.accent;
-  const total = groupRuns?.length || 0;
-  const unit = total === 1 ? 'run' : 'runs';
+  const unit = 'runs';
 
   return (
     <>
@@ -30,22 +29,20 @@ export const TotalWorkoutsCard: React.FC<TotalWorkoutsCardProps> = ({
         onPress={() => setModalVisible(true)}
         activeOpacity={0.85}
       >
-        <View style={[styles.iconContainer, { backgroundColor: color }]}>
-          <Ionicons name="fitness-outline" size={32} color="#fff" />
-        </View>
         <View style={styles.textContainer}>
-          <Text style={styles.label}>Total Workouts</Text>
-          <Text style={styles.value}>
-            {total} <Text style={styles.unit}>{unit}</Text>
+          <Ionicons name="fitness-outline" size={32} color="#fff" style={{ marginTop: -4 }} />
+          <Text style={styles.label}>
+            Total {unit}: {runs.length}
           </Text>
+          <Text style={styles.minorLabel}>({skipped} Skipped)</Text>
         </View>
       </TouchableOpacity>
 
       <WorkoutListView
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        workouts={groupRuns}
-        groupTitle={groupTitle}
+        workouts={runs}
+        groupTitle={title}
         accentColor={color}
       />
     </>
@@ -56,33 +53,34 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: 8,
-    borderWidth: 2,
-    marginVertical: 12,
-    marginHorizontal: 10,
+    backgroundColor: colors.surfaceHighlight,
     padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
+    justifyContent: 'space-between',
+    alignSelf: 'center',
   },
   textContainer: {
+    marginTop: 4,
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+    width: '100%',
   },
   label: {
+    ...subheading,
+    marginTop: 0,
     fontSize: 16,
     color: '#fff',
     fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  minorLabel: {
+    ...subheading,
+    marginTop: 0,
+    fontSize: 16,
+    color: '#a1a1a1',
+    fontWeight: 'thin',
     marginBottom: 4,
   },
   value: {

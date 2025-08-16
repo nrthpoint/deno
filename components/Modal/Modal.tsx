@@ -7,6 +7,7 @@ import { Button } from 'react-native-paper';
 import { ModalProps } from '@/components/Modal/Modal.types';
 import { getLatoFont } from '@/config/fonts';
 import { useWorkout } from '@/context/WorkoutContext';
+import { subheading } from '@/utils/text';
 
 export const ModalProvider = ({
   children,
@@ -138,10 +139,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   additionalInfoTitle: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    marginBottom: 8,
-    ...getLatoFont('bold'),
+    ...subheading,
   },
   infoRow: {
     flexDirection: 'row',
@@ -149,9 +147,10 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   infoLabel: {
+    ...subheading,
     color: '#CCCCCC',
-    fontSize: 14,
-    ...getLatoFont('regular'),
+    marginTop: 0,
+    marginBottom: 4,
   },
   infoValue: {
     color: '#FFFFFF',

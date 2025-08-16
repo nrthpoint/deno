@@ -29,6 +29,7 @@ export type Group = {
 
   // Runs in the group
   runs: ExtendedWorkout[];
+  skipped: number;
 
   // Stats for the group
   percentageOfTotalWorkouts: number;
@@ -47,9 +48,7 @@ export type Group = {
   highlight: ExtendedWorkout;
   worst: ExtendedWorkout;
   mostRecent: ExtendedWorkout;
-
-  // For dot plot/beeswarm time distribution
-  durationDistribution: number[];
+  variantDistribution: number[];
 };
 
 export type Stats = StatGroup[];

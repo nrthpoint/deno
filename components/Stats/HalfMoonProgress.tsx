@@ -5,6 +5,7 @@ import Svg, { Path } from 'react-native-svg';
 import { ModalProvider } from '@/components/Modal/Modal';
 import { ModalProps } from '@/components/Modal/Modal.types';
 import { getLatoFont } from '@/config/fonts';
+import { subheading } from '@/utils/text';
 
 interface HalfMoonProgressProps extends ModalProps {
   value: number;
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     alignItems: 'center',
-    marginTop: -10,
+    marginTop: -30,
   },
   valueText: {
     fontSize: 24,
@@ -113,13 +114,9 @@ const styles = StyleSheet.create({
     ...getLatoFont('bold'),
   },
   labelText: {
-    marginTop: 10,
-    fontSize: 12,
-    color: '#ffffff',
+    ...subheading,
     textAlign: 'center',
-    textTransform: 'uppercase',
-    letterSpacing: 2,
-    ...getLatoFont('bold'),
+    marginBottom: 0,
   },
   infoButton: {
     position: 'absolute',

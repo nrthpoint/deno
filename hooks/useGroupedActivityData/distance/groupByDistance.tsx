@@ -10,6 +10,7 @@ import {
   assignRankToGroups,
   sortGroupsByKeyInAscending,
 } from '@/hooks/useGroupedActivityData/sort';
+import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group, Groups } from '@/types/Groups';
 import { PredictedWorkout } from '@/types/Prediction';
 import { generateWorkoutPrediction } from '@/utils/prediction';
@@ -38,12 +39,24 @@ export const groupRunsByDistance = (params: GroupingParameters): Groups => {
     parseSampleIntoGroup({ sample, tolerance, groupSize, groups });
   }
 
+  // delete groups with no runs
+  deleteEmptyGroups(groups);
+
   for (const groupKey in groups) {
     calculateGroupStats({ group: groups[groupKey], samples });
   }
 
   assignRankToGroups(groups);
+
   return sortGroupsByKeyInAscending(groups);
+};
+
+export const deleteEmptyGroups = (groups: Groups) => {
+  for (const groupKey in groups) {
+    if (groups[groupKey].runs.length === 0) {
+      delete groups[groupKey];
+    }
+  }
 };
 
 const parseSampleIntoGroup = ({
@@ -51,56 +64,31 @@ const parseSampleIntoGroup = ({
   groups,
   tolerance = 0.25,
   groupSize = 1.0,
-}: GroupingSampleParserParams) => {
+}: GroupingSampleParserParams): Groups => {
   const distance = sample.totalDistance;
 
   // Calculate the nearest group based on groupSize (e.g., 0.5 mile increments)
   const nearestGroup = Math.round(distance.quantity / groupSize) * groupSize;
+
+  // Create a string key for the group (e.g., "5.0" for 5.0 miles)
+  const groupKey = nearestGroup % 1 === 0 ? nearestGroup.toString() : nearestGroup.toFixed(1);
+
+  // Check if the sample is close enough to the group
   const isCloseEnough = Math.abs(distance.quantity - nearestGroup) <= tolerance;
+
+  // Create or get the group for the current sample
+  const group = groups[groupKey] || (groups[groupKey] = createEmptyGroup(groupKey, sample));
 
   if (!isCloseEnough) {
     console.warn(
       `Run with distance ${distance.quantity} is not close enough to ${nearestGroup}${distance.unit}. Skipping.`,
     );
 
+    group.skipped++;
+
     // Skip and return the groups as is.
     return groups;
   }
-
-  // Create a string key for the group (e.g., "5.0" for 5.0 miles)
-  const groupKey = nearestGroup % 1 === 0 ? nearestGroup.toString() : nearestGroup.toFixed(1);
-
-  // If the group for this distance doesn't exist, create it
-  if (!groups[groupKey]) {
-    groups[groupKey] = {
-      type: 'distance',
-      title: `${nearestGroup.toFixed(1)} ${sample.totalDistance?.unit}`,
-      suffix: '',
-      rank: 0,
-      rankLabel: '',
-      runs: [],
-      highlight: sample,
-      worst: sample,
-      mostRecent: sample,
-      percentageOfTotalWorkouts: 0,
-      totalVariation: newQuantity(0, 's'),
-      totalDistance: newQuantity(0, 'mi'),
-      totalDuration: newQuantity(0, 's'),
-      totalElevationAscended: newQuantity(0, 'm'),
-      averagePace: newQuantity(0, 'min/mi'),
-      averageHumidity: newQuantity(0, '%'),
-      prettyPace: '',
-      durationDistribution: [],
-      stats: [],
-      predictions: {
-        prediction4Week: null,
-        prediction12Week: null,
-        recommendations: [],
-      },
-    } satisfies Group;
-  }
-
-  const group = groups[groupKey];
 
   // Add the sample to the group
   group.runs.push(sample);
@@ -120,27 +108,55 @@ const parseSampleIntoGroup = ({
   return groups;
 };
 
+const createEmptyGroup = (key: string, sample: ExtendedWorkout): Group => {
+  return {
+    type: 'distance',
+    title: `${key} ${sample.totalDistance?.unit}`,
+    suffix: '',
+    rank: 0,
+    skipped: 0,
+    rankLabel: '',
+    runs: [],
+    highlight: sample,
+    worst: sample,
+    mostRecent: sample,
+    percentageOfTotalWorkouts: 0,
+    totalVariation: newQuantity(0, 's'),
+    totalDistance: newQuantity(0, 'mi'),
+    totalDuration: newQuantity(0, 's'),
+    totalElevationAscended: newQuantity(0, 'm'),
+    averagePace: newQuantity(0, 'min/mi'),
+    averageHumidity: newQuantity(0, '%'),
+    prettyPace: '',
+    variantDistribution: [],
+    stats: [],
+    predictions: {
+      prediction4Week: null,
+      prediction12Week: null,
+      recommendations: [],
+    },
+  } satisfies Group;
+};
+
 const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
+  let prediction4Week: PredictedWorkout | null = null;
+  let prediction12Week: PredictedWorkout | null = null;
+
+  const recommendations: string[] = [];
+  const totalHumidity = group.runs.reduce((sum, run) => sum + (run.humidity?.quantity || 0), 0);
+  const averageHumidity = totalHumidity / group.runs.length || 0;
+
   group.averagePace = calculatePaceFromDistanceAndDuration(
     group.totalDistance,
     group.totalDuration,
   );
-  // Add durationDistribution for dot plot
-  group.durationDistribution = group.runs.map((run) => run.duration.quantity);
-  group.averageHumidity = newQuantity(
-    group.runs.reduce((sum, run) => sum + (run.humidity?.quantity || 0), 0) / group.runs.length,
-    '%',
-  );
+  group.variantDistribution = group.runs.map((run) => run.duration.quantity);
+  group.averageHumidity = newQuantity(averageHumidity, '%');
   group.prettyPace = formatPace(group.averagePace);
   group.percentageOfTotalWorkouts = calculatePercentage(group.runs.length, samples.length);
   group.highlight = findFastestRun(group.runs);
   group.worst = findSlowestRun(group.runs);
   group.totalVariation = getAbsoluteDifference(group.worst.duration, group.highlight.duration);
-
-  let prediction4Week: PredictedWorkout | null = null;
-  let prediction12Week: PredictedWorkout | null = null;
-
-  const recommendations: string[] = [];
 
   if (group.runs.length >= 2) {
     try {

@@ -3,7 +3,6 @@ import { Group } from '@/types/Groups';
 import { generateWorkoutPrediction, calculatePerformanceTrend } from '@/utils/prediction';
 import { newQuantity } from '@/utils/quantity';
 
-// Helper function to create mock workouts
 const createMockWorkout = (pace: number, distance: number, daysAgo: number): ExtendedWorkout => {
   const duration = pace * distance * 60; // Convert to seconds
   const startDate = new Date();
@@ -106,7 +105,7 @@ describe('AI Prediction System', () => {
           prediction12Week: null,
           recommendations: [],
         },
-        durationDistribution: [],
+        variantDistribution: [],
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
@@ -151,7 +150,7 @@ describe('AI Prediction System', () => {
           prediction12Week: null,
           recommendations: [],
         },
-        durationDistribution: [],
+        variantDistribution: [],
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
@@ -193,7 +192,7 @@ describe('AI Prediction System', () => {
           prediction12Week: null,
           recommendations: [],
         },
-        durationDistribution: [],
+        variantDistribution: [],
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);

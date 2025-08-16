@@ -81,8 +81,10 @@ export const getAllTrainingRecommendations = (predictions: Record<string, Predic
           sources: [],
         };
       }
+
       acc[rec.workoutType].frequency += rec.frequency;
       acc[rec.workoutType].sources.push(rec.reason);
+
       return acc;
     },
     {} as Record<

@@ -6,6 +6,7 @@ import { Text } from 'react-native-paper';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { subheading } from '@/utils/text';
 import { formatDuration } from '@/utils/time';
 
 interface WorkoutListViewProps {
@@ -237,10 +238,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   achievementText: {
-    fontSize: 10,
-    color: '#FFFFFF',
-    fontFamily: LatoFonts.bold,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
+    ...subheading,
   },
 });

@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { LatoFonts } from '@/config/fonts';
+import { subheading } from '@/utils/text';
 
 import { TabType } from './GroupStats.types';
 
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#1A1A1A',
     margin: 10,
+    marginTop: 20,
     borderRadius: 8,
     padding: 4,
   },
@@ -59,9 +61,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#2A2A2A',
   },
   tabText: {
+    ...subheading,
     color: '#888888',
-    fontSize: 16,
-    fontFamily: LatoFonts.regular,
+    marginTop: 0,
+    marginBottom: 0,
+    padding: 0,
   },
   activeTabText: {
     color: '#FFFFFF',
