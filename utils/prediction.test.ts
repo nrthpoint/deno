@@ -106,6 +106,7 @@ describe('AI Prediction System', () => {
           prediction12Week: null,
           recommendations: [],
         },
+        durationDistribution: [],
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
@@ -150,6 +151,7 @@ describe('AI Prediction System', () => {
           prediction12Week: null,
           recommendations: [],
         },
+        durationDistribution: [],
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
@@ -191,6 +193,7 @@ describe('AI Prediction System', () => {
           prediction12Week: null,
           recommendations: [],
         },
+        durationDistribution: [],
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
