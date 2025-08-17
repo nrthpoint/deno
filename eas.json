@@ -12,14 +12,12 @@
       }
     },
     "preview": {
-      "channel": "staging",
       "distribution": "internal",
       "ios": {
         "simulator": false
       }
     },
     "production": {
-      "channel": "production",
       "ios": {
         "autoIncrement": true,
         "simulator": false
