@@ -12,18 +12,17 @@
       }
     },
     "preview": {
+      "channel": "staging",
       "distribution": "internal",
       "ios": {
         "simulator": false
       }
     },
     "production": {
+      "channel": "production",
       "ios": {
         "autoIncrement": true,
         "simulator": false
-      },
-      "android": {
-        "autoIncrement": true
       }
     }
   },
@@ -33,10 +32,6 @@
         "appleId": "harry@kind.dev",
         "ascAppId": "6749207709",
         "appleTeamId": "NT8LT6F69W"
-      },
-      "android": {
-        "serviceAccountKeyPath": "../google-service-account.json",
-        "track": "internal"
       }
     }
   }
