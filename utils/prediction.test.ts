@@ -98,6 +98,7 @@ describe('AI Prediction System', () => {
         totalElevationAscended: newQuantity(400, 'm'),
         averagePace: newQuantity(7.65, 'min/mile'),
         averageHumidity: newQuantity(65, '%'),
+        averageDuration: newQuantity(2400, 's'),
         prettyPace: '7:39 min/mile',
         stats: [],
         predictions: {
@@ -144,6 +145,7 @@ describe('AI Prediction System', () => {
         totalElevationAscended: newQuantity(400, 'm'),
         averagePace: newQuantity(5.05, 'min/mile'),
         averageHumidity: newQuantity(65, '%'),
+        averageDuration: newQuantity(2400, 's'),
         prettyPace: '5:03 min/mile',
         stats: [],
         predictions: {
@@ -187,6 +189,7 @@ describe('AI Prediction System', () => {
         totalElevationAscended: newQuantity(400, 'm'),
         averagePace: newQuantity(6.85, 'min/mile'),
         averageHumidity: newQuantity(65, '%'),
+        averageDuration: newQuantity(2400, 's'),
         prettyPace: '6:51 min/mile',
         stats: [],
         predictions: {

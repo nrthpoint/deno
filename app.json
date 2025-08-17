@@ -9,6 +9,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "assetBundlePatterns": ["**/*"],
+    "platforms": ["ios"],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.nrthpoint.deno",
