@@ -85,7 +85,7 @@ export function useGroupedActivityData({
           ),
         });
 
-        const samples = parseWorkoutSamples({ samples: filteredSamples, distanceUnit });
+        const samples = await parseWorkoutSamples({ samples: filteredSamples, distanceUnit });
 
         if (samples.length === 0) {
           setGroups({});

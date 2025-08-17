@@ -6,22 +6,35 @@ import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 
 import { ComparisonRow } from './ComparisonRow';
+import { parseRouteLocations } from './parseRouteLocations';
+import { RouteMap } from './RouteMap';
 import { SampleComparisonCardProps } from './SampleComparisonCard.types';
 import { SampleDropdown } from './SampleDropdown';
 
-export const SampleComparisonCard = ({
-  sample1,
-  sample2,
-  sample1Label,
-  sample2Label,
-  propertiesToCompare,
-  colorProfile,
-  sampleOptions,
-  onSample1Change,
-  onSample2Change,
-  selectedSample1Type,
-  selectedSample2Type,
-}: SampleComparisonCardProps) => {
+/**
+ * Card comparing two workout samples, with a map overlay of both routes and a pace heatmap.
+ * @param props SampleComparisonCardProps
+ */
+export const SampleComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
+  const {
+    sample1,
+    sample2,
+    sample1Label,
+    sample2Label,
+    propertiesToCompare,
+    colorProfile,
+    sampleOptions,
+    onSample1Change,
+    onSample2Change,
+    selectedSample1Type,
+    selectedSample2Type,
+  } = props;
+  /**
+   * Parse route locations for both samples. Optionally, you can pass a function to extract pace per point.
+   * For now, we just use the locations as-is; you can enhance this to compute pace per segment.
+   */
+  const route1 = parseRouteLocations(sample1);
+  const route2 = parseRouteLocations(sample2);
   const showDropdowns =
     sampleOptions &&
     onSample1Change &&
@@ -70,6 +83,9 @@ export const SampleComparisonCard = ({
           sample2Label={sample2Label}
         />
       ))}
+
+      {/* Map view overlaying both routes with pace heatmap */}
+      {(route1.length > 1 || route2.length > 1) && <RouteMap route1={route1} route2={route2} />}
     </View>
   );
 };

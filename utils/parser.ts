@@ -1,6 +1,7 @@
-import { LengthUnit, Quantity, WorkoutSample } from '@kingstinct/react-native-healthkit';
+import { LengthUnit, Quantity } from '@kingstinct/react-native-healthkit';
+import { QueryWorkoutSamplesWithAnchorResponse } from '@kingstinct/react-native-healthkit/types';
 
-import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { ExtendedWorkout, WorkoutAchievements } from '@/types/ExtendedWorkout';
 
 import { metersToMiles, metersToKilometers } from './distance';
 import { formatPace } from './time';
@@ -12,17 +13,19 @@ import {
   findLongestDurationRun,
 } from './workout';
 
-export const parseWorkoutSamples = ({
+type WorkoutProxy = QueryWorkoutSamplesWithAnchorResponse['workouts'][number];
+
+export const parseWorkoutSamples = async ({
   samples,
   distanceUnit,
 }: {
-  samples: WorkoutSample[];
+  samples: WorkoutProxy[];
   distanceUnit: LengthUnit;
-}): ExtendedWorkout[] => {
+}): Promise<ExtendedWorkout[]> => {
   // First pass: Parse all workouts without achievements
-  const parsedWorkouts = samples
-    .map((sample) => parseWorkoutSample({ sample, distanceUnit }))
-    .filter((run) => run !== null) as ExtendedWorkout[];
+  const parsedWorkouts = await Promise.all(
+    samples.map((sample) => parseWorkoutSample({ sample, distanceUnit })),
+  ).then((results) => results.filter((run) => run !== null) as ExtendedWorkout[]);
 
   // Second pass: Calculate achievements for each workout
   return parsedWorkouts.map((workout) => ({
@@ -31,17 +34,15 @@ export const parseWorkoutSamples = ({
   }));
 };
 
-const parseWorkoutSample = ({
+const parseWorkoutSample = async ({
   sample,
   distanceUnit,
 }: {
-  sample: WorkoutSample;
+  sample: WorkoutProxy;
   distanceUnit: LengthUnit;
-}): ExtendedWorkout | null => {
-  if (!sample.totalDistance) {
-    console.warn(`Run with ID ${sample.uuid} has no total distance. Skipping.`);
-    return null;
-  }
+}): Promise<ExtendedWorkout | null> => {
+  const route = await sample.getWorkoutRoutes();
+  const plan = await sample.getWorkoutPlan();
 
   // Create deep copy to avoid mutation issues with Proxy
   const plainRun = JSON.parse(JSON.stringify(sample));
@@ -67,6 +68,8 @@ const parseWorkoutSample = ({
     totalDistance,
     startDate,
     endDate,
+    plan,
+    route,
   };
 
   // This has to use newRun to ensure the correct units are used
@@ -86,7 +89,6 @@ const parseWorkoutSample = ({
       isAllTimeLongest: false,
       isAllTimeFurthest: false,
       isAllTimeHighestElevation: false,
-      isPersonalBestPace: false,
     },
   } satisfies ExtendedWorkout;
 };
@@ -97,18 +99,16 @@ const parseWorkoutSample = ({
 const calculateAchievements = (
   currentWorkout: ExtendedWorkout,
   allWorkouts: ExtendedWorkout[],
-): ExtendedWorkout['achievements'] => {
-  // Find the best performers in each category using existing utility functions
+): WorkoutAchievements => {
   const fastestWorkout = findFastestRun(allWorkouts);
   const longestWorkout = findLongestDurationRun(allWorkouts);
   const furthestWorkout = findLongestRun(allWorkouts);
   const highestElevationWorkout = findHighestElevationRun(allWorkouts);
 
   return {
-    isAllTimeFastest: currentWorkout.uuid === fastestWorkout?.uuid,
-    isAllTimeLongest: currentWorkout.uuid === longestWorkout?.uuid,
-    isAllTimeFurthest: currentWorkout.uuid === furthestWorkout?.uuid,
-    isAllTimeHighestElevation: currentWorkout.uuid === highestElevationWorkout?.uuid,
-    isPersonalBestPace: currentWorkout.uuid === fastestWorkout?.uuid, // Same as fastest
-  };
+    isAllTimeFastest: currentWorkout.uuid === fastestWorkout.uuid,
+    isAllTimeLongest: currentWorkout.uuid === longestWorkout.uuid,
+    isAllTimeFurthest: currentWorkout.uuid === furthestWorkout.uuid,
+    isAllTimeHighestElevation: currentWorkout.uuid === highestElevationWorkout.uuid,
+  } satisfies WorkoutAchievements;
 };

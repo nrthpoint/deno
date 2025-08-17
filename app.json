@@ -6,10 +6,11 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "deno",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "assetBundlePatterns": ["**/*"],
     "platforms": ["ios"],
+    "githubUrl": "https://github.com/nrthpoint/deno",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.nrthpoint.deno",
@@ -17,9 +18,18 @@
         "ITSAppUsesNonExemptEncryption": false,
         "NSHealthShareUsageDescription": "This app needs access to HealthKit data to track and analyze your workout activities, including distance, duration, and pace information.",
         "NSHealthUpdateUsageDescription": "This app needs to write workout data to HealthKit to keep your fitness information synchronized across devices."
+      },
+      "config": {
+        "googleMapsApiKey": "AIzaSyAzzSp3FnYRiL9-zOBXEWew8EHG68gCY1I"
       }
     },
     "plugins": [
+      [
+        "react-native-maps",
+        {
+          "iosGoogleMapsApiKey": "AIzaSyAzzSp3FnYRiL9-zOBXEWew8EHG68gCY1I"
+        }
+      ],
       "expo-router",
       [
         "expo-splash-screen",

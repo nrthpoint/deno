@@ -4,7 +4,9 @@ import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-import { AchievementBadge } from '@/components/StatCard/AchievementBadge';
+import { parseRouteLocations } from '@/components/SampleComparisonCard/parseRouteLocations';
+import { RouteMap } from '@/components/SampleComparisonCard/RouteMap';
+import { AchievementListBadge } from '@/components/StatCard/AchievementListBadge';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWorkout } from '@/context/WorkoutContext';
@@ -65,7 +67,7 @@ export default function WorkoutDetailScreen() {
   const renderStatsTable = () => {
     const stats = [
       {
-        category: 'Basic Stats',
+        category: 'Workout Info',
         items: [
           { label: 'Date', value: formatDate(new Date(workout.startDate)) },
           { label: 'Start Time', value: formatTime(new Date(workout.startDate)) },
@@ -143,30 +145,27 @@ export default function WorkoutDetailScreen() {
 
   const renderAchievements = () => {
     const achievements = [];
+
     if (workout.achievements.isAllTimeFastest) {
-      achievements.push({ label: 'All-Time Fastest', color: colors.accent });
+      achievements.push({ label: 'All-Time Fastest' });
     }
     if (workout.achievements.isAllTimeLongest) {
-      achievements.push({ label: 'All-Time Longest', color: colors.primary });
+      achievements.push({ label: 'All-Time Longest' });
     }
     if (workout.achievements.isAllTimeFurthest) {
-      achievements.push({ label: 'All-Time Furthest', color: colors.secondary });
+      achievements.push({ label: 'All-Time Furthest' });
     }
     if (workout.achievements.isAllTimeHighestElevation) {
-      achievements.push({ label: 'Highest Elevation', color: colors.gray });
-    }
-    if (workout.achievements.isPersonalBestPace) {
-      achievements.push({ label: 'Personal Best Pace', color: colors.accent });
+      achievements.push({ label: 'Highest Elevation' });
     }
 
     if (achievements.length === 0) return null;
 
     return (
       <View style={styles.achievementsSection}>
-        <Text style={styles.sectionTitle}>Achievements</Text>
         <View style={styles.achievementsContainer}>
           {achievements.map((achievement, index) => (
-            <AchievementBadge key={index} achievement={achievement} />
+            <AchievementListBadge key={index} label={achievement.label} />
           ))}
         </View>
       </View>
@@ -175,6 +174,16 @@ export default function WorkoutDetailScreen() {
 
   const paceWithoutUnit = formatPace(workout.averagePace, false);
   const paceUnit = workout.averagePace.unit || 'min/mi';
+  const route = parseRouteLocations(workout);
+
+  function getOrdinal(n: number) {
+    const s = ['th', 'st', 'nd', 'rd'],
+      v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  const workoutDay = workout.endDate.getDate();
+  const formattedWorkoutDate = `${workout.endDate.toLocaleDateString('en-US', { weekday: 'long' })} ${getOrdinal(workoutDay)} ${workout.endDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
 
   return (
     <>
@@ -202,10 +211,14 @@ export default function WorkoutDetailScreen() {
           <View style={styles.headerContent}>
             <Ionicons name="fitness" size={48} color={colors.neutral} />
             <View style={styles.headerText}>
-              <Text style={styles.workoutType}>{(workout as any).activityType || 'Workout'}</Text>
+              <Text style={styles.workoutType}>{formattedWorkoutDate}</Text>
               <Text style={styles.workoutDate}>{workout.daysAgo}</Text>
             </View>
           </View>
+        </View>
+
+        <View>
+          <RouteMap route1={route} />
         </View>
 
         {/* Key metrics */}
@@ -250,7 +263,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 20,
-    marginBottom: 20,
   },
   headerContent: {
     flexDirection: 'row',
@@ -275,14 +287,16 @@ const styles = StyleSheet.create({
   keyMetrics: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 16,
     marginBottom: 24,
+    gap: 8,
   },
   metricCard: {
     backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     flex: 1,
-    marginHorizontal: 4,
+    //marginHorizontal: 4,
     alignItems: 'center',
   },
   metricValue: {
@@ -313,6 +327,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
+    justifyContent: 'center',
   },
   achievementBadge: {
     marginBottom: 8,
@@ -324,6 +339,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 12,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.gray,
   },
   statsRow: {
     flexDirection: 'row',
