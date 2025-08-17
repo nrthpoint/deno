@@ -9,24 +9,13 @@ import { GroupingConfigModal } from '@/components/GroupConfigurator/GroupingConf
 import { GroupStats } from '@/components/GroupStats/GroupStats';
 import { TabButtons } from '@/components/TabButtons/TabButtons';
 import { tabColors } from '@/config/colors';
+import { defaultUIConfig, getTabOptionConfig } from '@/config/uiConfig';
 import { useSettings } from '@/context/SettingsContext';
 import { useGroupedActivityData } from '@/hooks/useGroupedActivityData';
 import { GroupType } from '@/types/Groups';
 
-const tabOptions: GroupType[] = ['pace', 'distance', 'altitude'];
-
-const getDefaultConfig = (groupType: GroupType): GroupingConfig => {
-  switch (groupType) {
-    case 'distance':
-      return { tolerance: 0.25, groupSize: 1.0 };
-    case 'pace':
-      return { tolerance: 0.5, groupSize: 1.0 };
-    case 'altitude':
-      return { tolerance: 50, groupSize: 100 };
-    default:
-      return { tolerance: 0.25, groupSize: 1.0 };
-  }
-};
+const enabledTabOptions = defaultUIConfig.tabOptions.filter((opt) => opt.enabled);
+const tabOptions: GroupType[] = enabledTabOptions.map((opt) => opt.key);
 
 export default function Index() {
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
@@ -34,9 +23,18 @@ export default function Index() {
   const [groupType, setGroupingType] = useState<GroupType>('distance');
   const [configModalVisible, setConfigModalVisible] = useState(false);
   const [groupingConfigs, setGroupingConfigs] = useState<Record<GroupType, GroupingConfig>>({
-    distance: getDefaultConfig('distance'),
-    pace: getDefaultConfig('pace'),
-    altitude: getDefaultConfig('altitude'),
+    distance: {
+      tolerance: getTabOptionConfig('distance').tolerance,
+      groupSize: getTabOptionConfig('distance').groupSize,
+    },
+    pace: {
+      tolerance: getTabOptionConfig('pace').tolerance,
+      groupSize: getTabOptionConfig('pace').groupSize,
+    },
+    altitude: {
+      tolerance: getTabOptionConfig('altitude').tolerance,
+      groupSize: getTabOptionConfig('altitude').groupSize,
+    },
   });
 
   const { tolerance, groupSize } = groupingConfigs[groupType];
@@ -52,10 +50,10 @@ export default function Index() {
 
   const options = Object.keys(groups);
   const [selectedOption, setSelectedOption] = useState<string>(options[0] || '');
-  const tabOptionLabels: Record<GroupType, string> = {
-    pace: 'Pace',
-    distance: distanceUnit === 'km' ? 'Kilometers' : 'Miles',
-    altitude: 'Altitude',
+  const tabLabels: Record<GroupType, string> = {
+    pace: getTabOptionConfig('pace').label,
+    distance: getTabOptionConfig('distance').label,
+    altitude: getTabOptionConfig('altitude').label,
   };
 
   const handleConfigChange = (config: GroupingConfig) => {
@@ -81,86 +79,6 @@ export default function Index() {
 
   return (
     <View style={[styles.container, { backgroundColor: colorProfile.primary }]}>
-      {/* Low-poly Background */}
-      <View
-        style={{
-          ...StyleSheet.absoluteFillObject,
-          zIndex: -1,
-        }}
-        pointerEvents="none"
-      >
-        {/* Background Images - PNG overlays with fallback colors */}
-        {groupType === 'distance' && (
-          <View
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              backgroundColor: '#1e3a8a',
-              opacity: 0.3,
-            }}
-          >
-            {/* Uncomment when you add distance-background.png to assets/images/
-            <Image
-              source={require('@/assets/images/distance-background.png')}
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-              }}
-              resizeMode="cover"
-            />
-            */}
-          </View>
-        )}
-        {groupType === 'pace' && (
-          <View
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              backgroundColor: '#065f46',
-              opacity: 0.3,
-            }}
-          >
-            {/* Uncomment when you add pace-background.png to assets/images/
-            <Image
-              source={require('@/assets/images/pace-background.png')}
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-              }}
-              resizeMode="cover"
-            />
-            */}
-          </View>
-        )}
-        {groupType === 'altitude' && (
-          <View
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              backgroundColor: '#6d28d9',
-              opacity: 0.3,
-            }}
-          >
-            {/* Uncomment when you add altitude-background.png to assets/images/
-            <Image
-              source={require('@/assets/images/altitude-background.png')}
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-              }}
-              resizeMode="cover"
-            />
-            */}
-          </View>
-        )}
-      </View>
-
       {/* Authorization Overlay */}
       <AuthorizationOverlay
         authorizationStatus={authorizationStatus}
@@ -217,7 +135,7 @@ export default function Index() {
         tabOptions={tabOptions}
         groupType={groupType}
         colorProfile={colorProfile}
-        tabOptionLabels={tabOptionLabels}
+        tabOptionLabels={tabLabels}
         setGroupingType={setGroupingType}
       />
 
