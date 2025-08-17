@@ -18,7 +18,7 @@ import {
   sumQuantities,
 } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
-import { findLongestRun, findShortestRun } from '@/utils/workout';
+import { calculateAverageDuration, findLongestRun, findShortestRun } from '@/utils/workout';
 
 const DEFAULT_TOLERANCE = 0.5; // Half a minute
 const DEFAULT_GROUP_SIZE = 1.0; // 1 minute increments
@@ -107,6 +107,7 @@ const createEmptyGroup = (key: string, sample: any): Group => {
     totalDuration: newQuantity(0, 's'),
     totalElevationAscended: newQuantity(0, 'm'),
     averagePace: newQuantity(0, 'min/mile'),
+    averageDuration: newQuantity(0, 's'),
     averageHumidity: newQuantity(0, '%'),
     prettyPace: '',
     variantDistribution: [],
@@ -125,6 +126,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
 
   const recommendations: string[] = [];
 
+  group.averageDuration = calculateAverageDuration(group.runs);
   group.averageHumidity = newQuantity(
     group.runs.reduce((sum, run) => sum + (run.humidity?.quantity || 0), 0) / group.runs.length,
     '%',

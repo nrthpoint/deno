@@ -11,6 +11,7 @@ export const StatsTab: React.FC<TabContentProps> = ({ group }) => {
       {group.stats.map((section) => (
         <View key={section.title}>
           <Text style={styles.sectionHeader}>{section.title}</Text>
+          {section.description && <Text style={styles.sectionDesc}>{section.description}</Text>}
 
           {section.items.map((stat) => (
             <StatCard key={stat.label} stat={stat} />
@@ -28,7 +29,6 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   sectionHeader: {
-    textAlign: 'center',
     color: '#FFFFFF',
     fontSize: 18,
     fontFamily: LatoFonts.bold,
@@ -37,5 +37,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     textTransform: 'uppercase',
     letterSpacing: 1.2,
+  },
+  sectionDesc: {
+    color: '#cfcfcf',
+    fontSize: 14,
+    fontFamily: LatoFonts.regular,
+    marginBottom: 10,
+    paddingHorizontal: 5,
   },
 });

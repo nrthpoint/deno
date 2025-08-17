@@ -22,6 +22,7 @@ import {
 } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
 import {
+  calculateAverageDuration,
   calculatePaceFromDistanceAndDuration,
   findFastestRun,
   findSlowestRun,
@@ -127,6 +128,7 @@ const createEmptyGroup = (key: string, sample: ExtendedWorkout): Group => {
     totalElevationAscended: newQuantity(0, 'm'),
     averagePace: newQuantity(0, 'min/mi'),
     averageHumidity: newQuantity(0, '%'),
+    averageDuration: newQuantity(0, 's'),
     prettyPace: '',
     variantDistribution: [],
     stats: [],
@@ -150,6 +152,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     group.totalDistance,
     group.totalDuration,
   );
+  group.averageDuration = calculateAverageDuration(group.runs);
   group.variantDistribution = group.runs.map((run) => run.duration.quantity);
   group.averageHumidity = newQuantity(averageHumidity, '%');
   group.prettyPace = formatPace(group.averagePace);
@@ -201,7 +204,68 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   // Only include factual stats here (no predictions)
   group.stats = [
     {
-      title: 'Overview',
+      title: 'Fastest',
+      description: 'Best performance in this distance group',
+      items: [
+        {
+          type: 'pace',
+          label: 'Best Pace',
+          value: group.highlight.averagePace,
+          workout: group.highlight,
+          icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
+        },
+        {
+          type: 'duration',
+          label: 'Fastest Time',
+          value: group.highlight.duration,
+          workout: group.highlight,
+          icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
+        },
+      ],
+    },
+    {
+      title: 'Slowest',
+      description: 'Worst performance in this distance group',
+      items: [
+        {
+          type: 'pace',
+          label: 'Worst Pace',
+          value: group.highlight.averagePace,
+          workout: group.highlight,
+          icon: <Ionicons name="trending-down-outline" size={40} color="#FFFFFF" />,
+        },
+        {
+          type: 'duration',
+          label: 'Slowest Time',
+          value: group.worst.duration,
+          workout: group.worst,
+          icon: <Ionicons name="thumbs-down-outline" size={40} color="#FFFFFF" />,
+        },
+      ],
+    },
+    {
+      title: 'Averages',
+      description: 'Average performance in this distance group',
+      items: [
+        {
+          type: 'pace',
+          label: 'Average Pace',
+          value: group.averagePace,
+          workout: group.highlight,
+          icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
+        },
+        {
+          type: 'duration',
+          label: 'Average Time',
+          value: group.averageDuration,
+          workout: group.highlight,
+          icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
+        },
+      ],
+    },
+    {
+      title: 'Cumulative',
+      description: 'Overall performance across all runs in this distance group',
       items: [
         {
           type: 'distance',
@@ -216,39 +280,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           value: group.totalDuration,
           workout: group.highlight,
           icon: <Ionicons name="timer-outline" size={40} color="#FFFFFF" />,
-        },
-      ],
-    },
-    {
-      title: 'Performance',
-      items: [
-        {
-          type: 'pace',
-          label: 'Best Pace',
-          value: group.highlight.averagePace,
-          workout: group.highlight,
-          icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
-        },
-        {
-          type: 'pace',
-          label: 'Worst Pace',
-          value: group.worst.averagePace,
-          workout: group.worst,
-          icon: <Ionicons name="trending-down-outline" size={40} color="#FFFFFF" />,
-        },
-        {
-          type: 'duration',
-          label: 'Fastest Time',
-          value: group.highlight.duration,
-          workout: group.highlight,
-          icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
-        },
-        {
-          type: 'duration',
-          label: 'Slowest Time',
-          value: group.worst.duration,
-          workout: group.worst,
-          icon: <Ionicons name="thumbs-down-outline" size={40} color="#FFFFFF" />,
         },
       ],
     },

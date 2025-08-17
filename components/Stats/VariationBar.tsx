@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Svg, { Circle, Rect, Text as SvgText } from 'react-native-svg';
+import Svg, { Line, Rect, Text as SvgText } from 'react-native-svg';
 
 import { ModalProvider } from '@/components/Modal/Modal';
 import { ModalProps } from '@/components/Modal/Modal.types';
@@ -17,9 +17,8 @@ interface VariationBarProps extends ModalProps {
 
 const BAR_HEIGHT = 8;
 const MARGIN = 20;
-const END_DOT_RADIUS = 8;
-const MID_DOT_RADIUS = 6;
 const BAR_Y = 24;
+const LABEL_Y = BAR_Y + BAR_HEIGHT + 25;
 
 export const VariationBar: React.FC<VariationBarProps> = ({
   distribution,
@@ -71,36 +70,38 @@ export const VariationBar: React.FC<VariationBarProps> = ({
         />
 
         {/* Dots */}
-        {positions.map((dot, i) => (
-          <Circle
-            key={i}
-            cx={dot.x}
-            cy={BAR_Y + BAR_HEIGHT / 2}
-            r={i === 0 || i === positions.length - 1 ? END_DOT_RADIUS : MID_DOT_RADIUS}
-            fill={color}
-            stroke="#fff"
-            strokeWidth={2}
-            opacity={0.95}
-          />
-        ))}
+        {positions.map((dot, i) => {
+          const isEnd = i === 0 || i === positions.length - 1;
+          const lineHeight = isEnd ? 24 : 16;
+          const y1 = BAR_Y + BAR_HEIGHT / 2 - lineHeight / 2;
+          const y2 = BAR_Y + BAR_HEIGHT / 2 + lineHeight / 2;
+
+          return (
+            <Line
+              key={i}
+              x1={dot.x}
+              x2={dot.x}
+              y1={y1}
+              y2={y2}
+              stroke={color}
+              strokeWidth={2}
+              opacity={isEnd ? 0.95 : 0.5}
+              strokeLinecap="round"
+            />
+          );
+        })}
 
         {/* Min/Max labels */}
-        <SvgText
-          x={positions[0].x}
-          y={BAR_Y + BAR_HEIGHT + 18}
-          fontSize={10}
-          fill="#fff"
-          textAnchor="middle"
-        >
+        <SvgText x={positions[0].x} y={LABEL_Y} fontSize={10} fill="#fff" textAnchor="start">
           {formatDuration(newQuantity(Math.round(min), 's'))}
         </SvgText>
 
         <SvgText
           x={positions[positions.length - 1].x}
-          y={BAR_Y + BAR_HEIGHT + 18}
+          y={BAR_Y + BAR_HEIGHT + 25}
           fontSize={10}
           fill="#fff"
-          textAnchor="middle"
+          textAnchor="end"
         >
           {formatDuration(newQuantity(Math.round(max), 's'))}
         </SvgText>
@@ -116,6 +117,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+    overflow: 'visible',
   },
   svgContainer: {},
   textContainer: {

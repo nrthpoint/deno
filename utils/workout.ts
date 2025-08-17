@@ -1,6 +1,7 @@
 import { Quantity, WorkoutSample } from '@kingstinct/react-native-healthkit';
 
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { newQuantity } from '@/utils/quantity';
 
 import { convertDurationToMinutes } from './time';
 
@@ -166,4 +167,18 @@ export const findLongestDurationRun = (runs: ExtendedWorkout[]): ExtendedWorkout
 
     return prev.duration.quantity >= curr.duration.quantity ? prev : curr;
   });
+};
+
+/**
+ * Calculates the average duration of an array of runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The average duration as a Quantity object
+ */
+export const calculateAverageDuration = (runs: ExtendedWorkout[]): Quantity => {
+  if (runs.length === 0) {
+    return newQuantity(0, 's');
+  }
+
+  const total = runs.reduce((sum, run) => sum + run.duration.quantity, 0);
+  return newQuantity(total / runs.length, 's');
 };

@@ -33,12 +33,16 @@ export type Group = {
 
   // Stats for the group
   percentageOfTotalWorkouts: number;
+
   totalVariation: Quantity;
   totalDistance: Quantity;
   totalDuration: Quantity;
   totalElevationAscended: Quantity;
+
   averageHumidity: Quantity;
   averagePace: Quantity;
+  averageDuration: Quantity;
+
   prettyPace: string;
 
   // Factual stats for the group (no predictions)
@@ -55,6 +59,7 @@ export type Stats = StatGroup[];
 
 export type StatGroup = {
   title: string;
+  description?: string;
   items: Stat[];
 };
 

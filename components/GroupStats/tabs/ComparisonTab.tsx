@@ -84,6 +84,9 @@ export const ComparisonTab = ({
   return (
     <View style={styles.container}>
       <Text style={styles.sectionHeader}>Workout Comparison</Text>
+      <Text style={styles.sectionDescription}>
+        Compare your workouts side by side to see how they stack up against each other.
+      </Text>
       <SampleComparisonCard
         colorProfile={tabColor}
         sample1={selectedSample1}
@@ -108,7 +111,6 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   sectionHeader: {
-    textAlign: 'center',
     color: '#FFFFFF',
     fontSize: 18,
     fontFamily: LatoFonts.bold,
@@ -117,5 +119,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     textTransform: 'uppercase',
     letterSpacing: 1.2,
+  },
+  sectionDescription: {
+    color: '#CCCCCC',
+    fontSize: 14,
+    fontFamily: LatoFonts.regular,
+    marginBottom: 20,
+    paddingHorizontal: 5,
+    lineHeight: 20,
   },
 });

@@ -12,7 +12,10 @@ export const PredictionsTab: React.FC<TabContentProps> = ({ group }) => {
     <View style={styles.container}>
       {group.predictions.prediction4Week || group.predictions.prediction12Week ? (
         <>
-          <Text style={styles.sectionHeader}>Performance Predictions</Text>
+          <Text style={styles.sectionHeader}>Predictions</Text>
+          <Text style={styles.sectionDescription}>
+            Compare your predicted performance over the next 4 and 12 weeks.
+          </Text>
 
           {/* 4-Week Prediction */}
           {group.predictions.prediction4Week && (
@@ -124,14 +127,22 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   sectionHeader: {
-    textAlign: 'center',
     color: '#FFFFFF',
     fontSize: 18,
     fontFamily: LatoFonts.bold,
-    marginVertical: 20,
+    marginTop: 20,
+    marginBottom: 10,
     paddingHorizontal: 5,
     textTransform: 'uppercase',
     letterSpacing: 1.2,
+  },
+  sectionDescription: {
+    color: '#CCCCCC',
+    fontSize: 14,
+    fontFamily: LatoFonts.regular,
+    marginBottom: 20,
+    paddingHorizontal: 5,
+    lineHeight: 20,
   },
   predictionCard: {
     backgroundColor: colors.surface,

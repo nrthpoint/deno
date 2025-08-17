@@ -17,6 +17,7 @@ import { generateWorkoutPrediction } from '@/utils/prediction';
 import { getAbsoluteDifference, newQuantity, sumQuantities } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
 import {
+  calculateAverageDuration,
   calculatePaceFromDistanceAndDuration,
   findHighestElevationRun,
   findLowestElevationRun,
@@ -122,6 +123,7 @@ const createEmptyGroup = (key: string, sample: any): Group => {
     totalDuration: newQuantity(0, 's'),
     totalElevationAscended: newQuantity(0, sample.totalElevationAscended?.unit),
     averagePace: newQuantity(0, 'min/mi'),
+    averageDuration: newQuantity(0, 's'),
     averageHumidity: newQuantity(0, '%'),
     prettyPace: '',
     variantDistribution: [],
@@ -139,7 +141,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     group.totalDistance,
     group.totalDuration,
   );
-  // Add durationDistribution for dot plot
+  group.averageDuration = calculateAverageDuration(group.runs);
   group.variantDistribution = group.runs.map((run) => run.duration.quantity);
   group.averageHumidity = newQuantity(
     group.runs.reduce((sum, run) => sum + (run.humidity?.quantity || 0), 0) / group.runs.length,
