@@ -50,7 +50,8 @@ export function useGroupedActivityData({
         const authorized = await isProtectedDataAvailable();
 
         if (!authorized) {
-          console.error('Authorization not granted');
+          console.error('useGroupedActivityData: Authorization not granted');
+
           setLoading(false);
           return;
         }

@@ -41,8 +41,19 @@ const parseWorkoutSample = async ({
   sample: WorkoutProxy;
   distanceUnit: LengthUnit;
 }): Promise<ExtendedWorkout | null> => {
-  const route = await sample.getWorkoutRoutes();
-  const plan = await sample.getWorkoutPlan();
+  let route = null;
+  let plan = null;
+
+  try {
+    route = await sample.getWorkoutRoutes();
+  } catch (error) {
+    console.warn('parseWorkoutSample: Error fetching workout route:', error);
+  }
+  try {
+    plan = await sample.getWorkoutPlan();
+  } catch (error) {
+    console.warn('parseWorkoutSample: Error fetching workout plan:', error);
+  }
 
   // Create deep copy to avoid mutation issues with Proxy
   const plainRun = JSON.parse(JSON.stringify(sample));

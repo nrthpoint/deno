@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
-import { SampleComparisonCard } from '@/components/SampleComparisonCard/SampleComparisonCard';
+import { ComparisonCard } from '@/components/SampleComparisonCard/SampleComparisonCard';
 import {
   SampleOption,
   SampleType,
@@ -87,7 +87,7 @@ export const ComparisonTab = ({
       <Text style={styles.sectionDescription}>
         Compare your workouts side by side to see how they stack up against each other.
       </Text>
-      <SampleComparisonCard
+      <ComparisonCard
         colorProfile={tabColor}
         sample1={selectedSample1}
         sample2={selectedSample2}

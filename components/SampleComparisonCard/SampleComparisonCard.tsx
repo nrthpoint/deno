@@ -2,12 +2,12 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
+import { parseRouteLocations } from '@/components/RouteMap/parseRouteLocations';
+import { RouteMap } from '@/components/RouteMap/RouteMap';
+import { ComparisonRow } from '@/components/SampleComparisonCard/ComparisonRow/ComparisonRow';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 
-import { ComparisonRow } from './ComparisonRow';
-import { parseRouteLocations } from './parseRouteLocations';
-import { RouteMap } from './RouteMap';
 import { SampleComparisonCardProps } from './SampleComparisonCard.types';
 import { SampleDropdown } from './SampleDropdown';
 
@@ -15,7 +15,7 @@ import { SampleDropdown } from './SampleDropdown';
  * Card comparing two workout samples, with a map overlay of both routes and a pace heatmap.
  * @param props SampleComparisonCardProps
  */
-export const SampleComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
+export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
   const {
     sample1,
     sample2,
@@ -42,6 +42,8 @@ export const SampleComparisonCard: React.FC<SampleComparisonCardProps> = (props)
     selectedSample1Type &&
     selectedSample2Type;
 
+  const isSameSample = sample1?.uuid && sample2?.uuid && sample1.uuid === sample2.uuid;
+
   return (
     <View style={styles.container}>
       <View style={styles.labelContainer}>
@@ -55,6 +57,7 @@ export const SampleComparisonCard: React.FC<SampleComparisonCardProps> = (props)
                 placeholder="Select Sample 1"
               />
             </View>
+
             <View style={{ flex: 1 }}>
               <SampleDropdown
                 options={sampleOptions}
@@ -67,25 +70,34 @@ export const SampleComparisonCard: React.FC<SampleComparisonCardProps> = (props)
         ) : (
           <>
             <Text style={styles.headerLabel}>{sample1Label}</Text>
-            <Text style={styles.headerLabel}>{sample2Label}</Text>
+            {!isSameSample && <Text style={styles.headerLabel}>{sample2Label}</Text>}
           </>
         )}
       </View>
 
-      {propertiesToCompare.map((property) => (
-        <ComparisonRow
-          colorProfile={colorProfile}
-          key={property}
-          property={property}
-          sample1={sample1}
-          sample2={sample2}
-          sample1Label={sample1Label}
-          sample2Label={sample2Label}
-        />
-      ))}
+      {propertiesToCompare.map((property) =>
+        isSameSample ? (
+          <ComparisonRow
+            colorProfile={colorProfile}
+            key={property}
+            property={property}
+            sample1={sample1}
+            sample1Label={sample1Label}
+          />
+        ) : (
+          <ComparisonRow
+            colorProfile={colorProfile}
+            key={property}
+            property={property}
+            sample1={sample1}
+            sample2={sample2}
+            sample1Label={sample1Label}
+            sample2Label={sample2Label}
+          />
+        ),
+      )}
 
-      {/* Map view overlaying both routes with pace heatmap */}
-      {(route1.length > 1 || route2.length > 1) && <RouteMap route1={route1} route2={route2} />}
+      <RouteMap routes={[route1, route2]} />
     </View>
   );
 };

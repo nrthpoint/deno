@@ -4,18 +4,17 @@ import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-import { parseRouteLocations } from '@/components/SampleComparisonCard/parseRouteLocations';
-import { RouteMap } from '@/components/SampleComparisonCard/RouteMap';
+import { parseRouteLocations } from '@/components/RouteMap/parseRouteLocations';
+import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { AchievementListBadge } from '@/components/StatCard/AchievementListBadge';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWorkout } from '@/context/WorkoutContext';
-import { formatPace } from '@/utils/time';
+import { formatDate, formatPace, formatTime, formatWorkoutDate } from '@/utils/time';
 
 export default function WorkoutDetailScreen() {
   const { selectedWorkout } = useWorkout();
 
-  // Handle case where no workout is selected
   if (!selectedWorkout) {
     return (
       <View style={styles.container}>
@@ -25,23 +24,6 @@ export default function WorkoutDetailScreen() {
   }
 
   const workout = selectedWorkout;
-
-  // Simple formatting functions
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
 
   const formatDurationValue = (duration: any) => {
     if (!duration?.quantity) return '0s';
@@ -175,15 +157,7 @@ export default function WorkoutDetailScreen() {
   const paceWithoutUnit = formatPace(workout.averagePace, false);
   const paceUnit = workout.averagePace.unit || 'min/mi';
   const route = parseRouteLocations(workout);
-
-  function getOrdinal(n: number) {
-    const s = ['th', 'st', 'nd', 'rd'],
-      v = n % 100;
-    return n + (s[(v - 20) % 10] || s[v] || s[0]);
-  }
-
-  const workoutDay = workout.endDate.getDate();
-  const formattedWorkoutDate = `${workout.endDate.toLocaleDateString('en-US', { weekday: 'long' })} ${getOrdinal(workoutDay)} ${workout.endDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+  const formattedWorkoutDate = formatWorkoutDate(workout.endDate);
 
   return (
     <>
@@ -218,7 +192,7 @@ export default function WorkoutDetailScreen() {
         </View>
 
         <View>
-          <RouteMap route1={route} />
+          <RouteMap routes={[route]} />
         </View>
 
         {/* Key metrics */}

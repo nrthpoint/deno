@@ -13,8 +13,8 @@ export interface ExtendedWorkout extends WorkoutSample {
   daysAgo: string;
   prettyPace: string;
   achievements: WorkoutAchievements;
-  plan: WorkoutPlan;
-  route: WorkoutRoute;
+  plan: WorkoutPlan | null;
+  route: WorkoutRoute | null;
 }
 
 export type WorkoutAchievements = {

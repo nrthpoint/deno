@@ -70,6 +70,7 @@ export const SampleDropdown = ({
   const renderOptionItem = useCallback(
     ({ item }: { item: SampleOption }) => (
       <Pressable
+        key={item.type}
         style={[styles.optionItem, selectedType === item.type && styles.selectedOptionItem]}
         onPress={() => handleSelectOption(item.type)}
       >

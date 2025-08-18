@@ -1,4 +1,4 @@
-export type TimeRange = 7 | 30 | 90 | 180 | 365 | 3650; // days
+export type TimeRange = 7 | 30 | 90 | 180 | 365 | 3650;
 
 export interface TimeRangeConfig {
   value: TimeRange;

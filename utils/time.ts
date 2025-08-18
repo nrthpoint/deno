@@ -88,3 +88,45 @@ export const convertDurationToMinutes = (duration: Quantity, decimalPlaces: numb
 
   return Number(result.toFixed(decimalPlaces));
 };
+
+/**
+ * Formats a date into a human-readable string (e.g., "Monday, January 1, 2023")
+ * @param date - The date to format
+ * @returns Formatted date string
+ */
+export const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+/**
+ * Formats a time into a human-readable string (e.g., "12:30 PM")
+ * @param date - The date to format
+ * @returns Formatted time string
+ */
+export const formatTime = (date: Date) =>
+  date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+/**
+ * Returns the ordinal representation of a number (e.g., 1st, 2nd, 3rd, 4th)
+ * @param n - The number to convert
+ * @returns Ordinal string
+ */
+export const getOrdinal = (n: number) => {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+};
+
+export const formatWorkoutDate = (date: Date) => {
+  const workoutDay = date.getDate();
+
+  return `${date.toLocaleDateString('en-US', { weekday: 'long' })} ${getOrdinal(workoutDay)} ${date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+};

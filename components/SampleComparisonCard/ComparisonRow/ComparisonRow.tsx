@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
-import Svg, { Rect } from 'react-native-svg';
 
+import { BarChart } from '@/components/SampleComparisonCard/ComparisonRow/BarChart';
 import {
   formatPropertyValue,
   getPropertyLabel,
-} from '@/components/SampleComparisonCard/ComparisonRowUtils';
-import { colors } from '@/config/colors';
+} from '@/components/SampleComparisonCard/ComparisonRow/ComparisonRowUtils';
+import { colors, SAMPLE1_COLOR, SAMPLE2_COLOR } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 
 import { ComparisonRowProps } from './ComparisonRow.types';
@@ -16,26 +16,12 @@ export interface StatDisplayData {
   numericValue: number;
 }
 
-const BarChart = ({ width1, width2 }: { width1: number; width2: number }) => (
-  <View style={styles.barContainer}>
-    <Svg width="100%" height="20">
-      {/* Sample 1 bar (top) */}
-      <Rect x={0} y={0} width={`${width1}%`} height="7" fill={SAMPLE1_COLOR} rx={3} />
-      {/* Sample 2 bar (bottom) */}
-      <Rect x={0} y={10} width={`${width2}%`} height="7" fill={SAMPLE2_COLOR} rx={3} />
-    </Svg>
-  </View>
-);
-
-export const SAMPLE1_COLOR = '#2196f3'; // blue
-export const SAMPLE2_COLOR = '#e91e63'; // pink
-
 const Stats = ({
   sample1Data,
   sample2Data,
 }: {
   sample1Data: StatDisplayData;
-  sample2Data: StatDisplayData;
+  sample2Data?: StatDisplayData;
 }) => (
   <View style={styles.valuesContainer}>
     <View style={[styles.valueSection, styles.leftValue]}>
@@ -43,21 +29,25 @@ const Stats = ({
       <Text style={styles.unitText}>{sample1Data.unit}</Text>
     </View>
 
-    <View style={[styles.valueSection, styles.rightValue]}>
-      <Text style={[styles.valueText, { color: SAMPLE2_COLOR }]}>{sample2Data.displayValue}</Text>
-      <Text style={styles.unitText}>{sample2Data.unit}</Text>
-    </View>
+    {sample2Data && (
+      <View style={[styles.valueSection, styles.rightValue]}>
+        <Text style={[styles.valueText, { color: SAMPLE2_COLOR }]}>{sample2Data.displayValue}</Text>
+        <Text style={styles.unitText}>{sample2Data.unit}</Text>
+      </View>
+    )}
   </View>
 );
 
 export const ComparisonRow: React.FC<ComparisonRowProps> = ({ property, sample1, sample2 }) => {
   const sample1Data = formatPropertyValue(property, sample1);
-  const sample2Data = formatPropertyValue(property, sample2);
+  const sample2Data = sample2 ? formatPropertyValue(property, sample2) : undefined;
 
-  const maxValue = Math.max(sample1Data.numericValue, sample2Data.numericValue) || 1;
+  const maxValue = sample2Data
+    ? Math.max(sample1Data.numericValue, sample2Data.numericValue) || 1
+    : sample1Data.numericValue || 1;
 
-  const widthOne = (sample1Data.numericValue / maxValue) * 100;
-  const widthTwo = (sample2Data.numericValue / maxValue) * 100;
+  const widthOne = Math.max((sample1Data.numericValue / maxValue) * 100, 1);
+  const widthTwo = sample2Data ? Math.max((sample2Data.numericValue / maxValue) * 100, 1) : 0;
 
   return (
     <View style={styles.comparisonRow}>
@@ -116,8 +106,5 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.regular,
     color: '#666',
     marginTop: 4,
-  },
-  barContainer: {
-    height: 20,
   },
 });
