@@ -5,7 +5,7 @@ export default {
   expo: {
     name: 'Deno',
     slug: 'deno',
-    version: '0.3.0',
+    version: require('./package.json').version,
     orientation: 'portrait',
     icon: './assets/images/icon.png',
     scheme: 'deno',
