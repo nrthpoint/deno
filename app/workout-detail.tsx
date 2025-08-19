@@ -88,7 +88,7 @@ export default function WorkoutDetailScreen() {
         items: [
           {
             label: 'Elevation Gain',
-            value: `${Math.round(workout.totalElevationAscended?.quantity || 0)} ${workout.totalElevationAscended?.unit || 'm'}`,
+            value: `${Math.round(workout.totalElevation?.quantity || 0)} ${workout.totalElevation?.unit || 'm'}`,
           },
           {
             label: 'Humidity',

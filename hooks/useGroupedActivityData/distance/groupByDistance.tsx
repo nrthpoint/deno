@@ -3,7 +3,7 @@ import React from 'react';
 
 import {
   GroupingParameters,
-  GroupingSampleParserParams,
+  IndividualSampleParserParams,
   GroupingStatsParams,
 } from '@/hooks/useGroupedActivityData/interface';
 import {
@@ -28,19 +28,15 @@ import {
   findSlowestRun,
 } from '@/utils/workout';
 
-const DEFAULT_TOLERANCE = 0.25; // 0.25 of a mile.
-const DEFAULT_GROUP_SIZE = 1.0; // 1 mile increments
-
 export const groupRunsByDistance = (params: GroupingParameters): Groups => {
   const groups: Groups = {} as Groups;
 
-  const { samples, tolerance = DEFAULT_TOLERANCE, groupSize = DEFAULT_GROUP_SIZE } = params;
+  const { samples, tolerance, groupSize } = params;
 
   for (const sample of samples) {
     parseSampleIntoGroup({ sample, tolerance, groupSize, groups });
   }
 
-  // delete groups with no runs
   deleteEmptyGroups(groups);
 
   for (const groupKey in groups) {
@@ -65,7 +61,7 @@ const parseSampleIntoGroup = ({
   groups,
   tolerance = 0.25,
   groupSize = 1.0,
-}: GroupingSampleParserParams): Groups => {
+}: IndividualSampleParserParams): Groups => {
   const distance = sample.totalDistance;
 
   // Calculate the nearest group based on groupSize (e.g., 0.5 mile increments)
@@ -97,9 +93,9 @@ const parseSampleIntoGroup = ({
   // Aggregate the total distance, duration, and elevation ascended
   group.totalDistance = sumQuantities([group.totalDistance, sample.totalDistance]);
   group.totalDuration = sumQuantities([group.totalDuration, sample.duration]);
-  group.totalElevationAscended = sumQuantities([
-    group.totalElevationAscended,
-    sample.totalElevationAscended || newQuantity(0, 'm'),
+  group.totalElevation = sumQuantities([
+    group.totalElevation,
+    sample.totalElevation || newQuantity(0, 'm'),
   ]);
 
   if (sample.startDate > group.mostRecent.startDate) {
@@ -125,10 +121,11 @@ const createEmptyGroup = (key: string, sample: ExtendedWorkout): Group => {
     totalVariation: newQuantity(0, 's'),
     totalDistance: newQuantity(0, 'mi'),
     totalDuration: newQuantity(0, 's'),
-    totalElevationAscended: newQuantity(0, 'm'),
+    totalElevation: newQuantity(0, 'm'),
     averagePace: newQuantity(0, 'min/mi'),
     averageHumidity: newQuantity(0, '%'),
     averageDuration: newQuantity(0, 's'),
+    averageElevation: newQuantity(0, 'm'),
     prettyPace: '',
     variantDistribution: [],
     stats: [],
@@ -204,67 +201,88 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   // Only include factual stats here (no predictions)
   group.stats = [
     {
-      title: 'Fastest',
-      description: 'Best performance in this distance group',
+      title: '🏃 Fastest',
+      description: `Your best performance for ${group.title}`,
       items: [
         {
           type: 'pace',
-          label: 'Best Pace',
+          label: 'Pace',
           value: group.highlight.averagePace,
           workout: group.highlight,
           icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
         },
         {
           type: 'duration',
-          label: 'Fastest Time',
+          label: 'Time',
           value: group.highlight.duration,
           workout: group.highlight,
           icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
         },
+        {
+          type: 'elevation',
+          label: 'Elevation',
+          value: group.highlight.totalElevation,
+          workout: group.highlight,
+          icon: <Ionicons name="arrow-up-outline" size={40} color="#FFFFFF" />,
+        },
       ],
     },
     {
-      title: 'Slowest',
-      description: 'Worst performance in this distance group',
+      title: '🐌 Slowest',
+      description: `Your worst performance for ${group.title}`,
       items: [
         {
           type: 'pace',
-          label: 'Worst Pace',
-          value: group.highlight.averagePace,
-          workout: group.highlight,
+          label: 'Pace',
+          value: group.worst.averagePace,
+          workout: group.worst,
           icon: <Ionicons name="trending-down-outline" size={40} color="#FFFFFF" />,
         },
         {
           type: 'duration',
-          label: 'Slowest Time',
+          label: 'Time',
           value: group.worst.duration,
           workout: group.worst,
           icon: <Ionicons name="thumbs-down-outline" size={40} color="#FFFFFF" />,
         },
+        {
+          type: 'elevation',
+          label: 'Elevation',
+          value: group.worst.totalElevation,
+          workout: group.worst,
+          icon: <Ionicons name="arrow-up-outline" size={40} color="#FFFFFF" />,
+        },
       ],
     },
     {
-      title: 'Averages',
-      description: 'Average performance in this distance group',
+      title: '〽️ Average',
+      description: `Averages for ${group.title}`,
       items: [
         {
           type: 'pace',
-          label: 'Average Pace',
+          label: 'Pace',
           value: group.averagePace,
           workout: group.highlight,
           icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
         },
         {
           type: 'duration',
-          label: 'Average Time',
+          label: 'Time',
           value: group.averageDuration,
           workout: group.highlight,
           icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
         },
+        {
+          type: 'elevation',
+          label: 'Elevation',
+          value: group.averageElevation,
+          workout: group.highlight,
+          icon: <Ionicons name="arrow-up-outline" size={40} color="#FFFFFF" />,
+        },
       ],
     },
     {
-      title: 'Cumulative',
+      title: '📈 Cumulative',
       description: 'Overall performance across all runs in this distance group',
       items: [
         {
@@ -280,6 +298,13 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           value: group.totalDuration,
           workout: group.highlight,
           icon: <Ionicons name="timer-outline" size={40} color="#FFFFFF" />,
+        },
+        {
+          type: 'elevation',
+          label: 'Cumulative Elevation',
+          value: group.totalElevation,
+          workout: group.highlight,
+          icon: <Ionicons name="arrow-up-outline" size={40} color="#FFFFFF" />,
         },
       ],
     },

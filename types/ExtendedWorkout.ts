@@ -8,7 +8,7 @@ export type WorkoutProxy = QueryWorkoutSamplesWithAnchorResponse['workouts'][num
 
 export interface ExtendedWorkout extends WorkoutSample {
   totalDistance: Quantity;
-  totalElevationAscended: Quantity;
+  totalElevation: Quantity;
   humidity: Quantity;
   averagePace: Quantity;
   daysAgo: string;

@@ -124,8 +124,8 @@ export const findHighestElevationRun = (runs: ExtendedWorkout[]): ExtendedWorkou
       return prev || curr;
     }
 
-    const prevElevation = prev.totalElevationAscended?.quantity || 0;
-    const currElevation = curr.totalElevationAscended?.quantity || 0;
+    const prevElevation = prev.totalElevation?.quantity || 0;
+    const currElevation = curr.totalElevation?.quantity || 0;
 
     return prevElevation >= currElevation ? prev : curr;
   });
@@ -142,8 +142,8 @@ export const findLowestElevationRun = (runs: ExtendedWorkout[]): ExtendedWorkout
       return prev || curr;
     }
 
-    const prevElevation = prev.totalElevationAscended?.quantity || 0;
-    const currElevation = curr.totalElevationAscended?.quantity || 0;
+    const prevElevation = prev.totalElevation?.quantity || 0;
+    const currElevation = curr.totalElevation?.quantity || 0;
 
     return prevElevation <= currElevation ? prev : curr;
   });

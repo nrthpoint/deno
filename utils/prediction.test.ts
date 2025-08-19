@@ -16,7 +16,7 @@ const createMockWorkout = (pace: number, distance: number, daysAgo: number): Ext
     endDate: new Date(startDate.getTime() + duration * 1000),
     duration: newQuantity(duration, 's'),
     totalDistance: newQuantity(distance, 'mi'),
-    totalElevationAscended: newQuantity(100, 'm'),
+    totalElevation: newQuantity(100, 'm'),
     humidity: newQuantity(65, '%'),
     averagePace: newQuantity(pace, 'min/mile'),
     daysAgo: `${daysAgo} days ago`,
@@ -101,10 +101,11 @@ describe('AI Prediction System', () => {
         totalVariation: newQuantity(1800, 's'), // 30 minutes difference
         totalDistance: newQuantity(20, 'mi'), // 4 runs * 5 miles
         totalDuration: newQuantity(9600, 's'), // Total duration
-        totalElevationAscended: newQuantity(400, 'm'),
+        totalElevation: newQuantity(400, 'm'),
         averagePace: newQuantity(7.65, 'min/mile'),
         averageHumidity: newQuantity(65, '%'),
         averageDuration: newQuantity(2400, 's'),
+        averageElevation: newQuantity(100, 'm'),
         prettyPace: '7:39 min/mile',
         stats: [],
         predictions: {
@@ -148,10 +149,11 @@ describe('AI Prediction System', () => {
         totalVariation: newQuantity(900, 's'),
         totalDistance: newQuantity(20, 'mi'),
         totalDuration: newQuantity(6000, 's'),
-        totalElevationAscended: newQuantity(400, 'm'),
+        totalElevation: newQuantity(400, 'm'),
         averagePace: newQuantity(5.05, 'min/mile'),
         averageHumidity: newQuantity(65, '%'),
         averageDuration: newQuantity(2400, 's'),
+        averageElevation: newQuantity(100, 'm'),
         prettyPace: '5:03 min/mile',
         stats: [],
         predictions: {
@@ -192,10 +194,11 @@ describe('AI Prediction System', () => {
         totalVariation: newQuantity(900, 's'),
         totalDistance: newQuantity(20, 'mi'),
         totalDuration: newQuantity(8040, 's'),
-        totalElevationAscended: newQuantity(400, 'm'),
+        totalElevation: newQuantity(400, 'm'),
         averagePace: newQuantity(6.85, 'min/mile'),
         averageHumidity: newQuantity(65, '%'),
         averageDuration: newQuantity(2400, 's'),
+        averageElevation: newQuantity(100, 'm'),
         prettyPace: '6:51 min/mile',
         stats: [],
         predictions: {

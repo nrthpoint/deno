@@ -4,7 +4,7 @@ import React from 'react';
 import { deleteEmptyGroups } from '@/hooks/useGroupedActivityData/distance/groupByDistance';
 import {
   GroupingParameters,
-  GroupingSampleParserParams,
+  IndividualSampleParserParams,
   GroupingStatsParams,
 } from '@/hooks/useGroupedActivityData/interface';
 import { assignRankToGroups } from '@/hooks/useGroupedActivityData/sort';
@@ -46,7 +46,7 @@ const parseSampleIntoGroup = ({
   groups,
   tolerance = DEFAULT_TOLERANCE,
   groupSize = DEFAULT_GROUP_SIZE,
-}: GroupingSampleParserParams): Groups => {
+}: IndividualSampleParserParams): Groups => {
   const pace = sample.averagePace;
 
   // Calculate the nearest group based on groupSize (e.g., 1 min increments)
@@ -77,9 +77,9 @@ const parseSampleIntoGroup = ({
   // Aggregate the total distance, duration, and elevation ascended
   group.totalDistance = sumQuantities([group.totalDistance, sample.totalDistance]);
   group.totalDuration = sumQuantities([group.totalDuration, sample.duration]);
-  group.totalElevationAscended = sumQuantities([
-    group.totalElevationAscended,
-    sample.totalElevationAscended || newQuantity(0, 'm'),
+  group.totalElevation = sumQuantities([
+    group.totalElevation,
+    sample.totalElevation || newQuantity(0, 'm'),
   ]);
 
   if (sample.startDate > group.mostRecent.startDate) {
@@ -105,7 +105,7 @@ const createEmptyGroup = (key: string, sample: any): Group => {
     totalVariation: newQuantity(0, 's'),
     totalDistance: newQuantity(0, 'mi'),
     totalDuration: newQuantity(0, 's'),
-    totalElevationAscended: newQuantity(0, 'm'),
+    totalElevation: newQuantity(0, 'm'),
     averagePace: newQuantity(0, 'min/mile'),
     averageDuration: newQuantity(0, 's'),
     averageHumidity: newQuantity(0, '%'),

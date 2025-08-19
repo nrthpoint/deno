@@ -75,11 +75,11 @@ describe('groupRunsByAltitude', () => {
       const mockWorkouts: ExtendedWorkout[] = [
         {
           ...createMockWorkoutWithElevation({ elevationAscended: 0 }),
-          totalElevationAscended: undefined,
+          totalElevation: newQuantity(0, 'm'),
         },
         {
           ...createMockWorkoutWithElevation({ elevationAscended: 0 }),
-          totalElevationAscended: newQuantity(0, 'm'),
+          totalElevation: newQuantity(0, 'm'),
         },
       ];
 
@@ -119,7 +119,7 @@ describe('groupRunsByAltitude', () => {
       expect(group.runs).toHaveLength(2);
       expect(group.totalDistance.quantity).toBe(11.0); // 5 + 6
       expect(group.totalDuration.quantity).toBe(66 * 60); // 30 + 36 minutes
-      expect(group.totalElevationAscended.quantity).toBe(200); // 95 + 105
+      expect(group.totalElevation.quantity).toBe(200); // 95 + 105
       expect(group.percentageOfTotalWorkouts).toBe(100); // 2/2 * 100
     });
 
@@ -136,8 +136,8 @@ describe('groupRunsByAltitude', () => {
       });
 
       const group = result['100'];
-      expect(group.highlight.totalElevationAscended?.quantity).toBe(105); // Higher elevation run
-      expect(group.worst.totalElevationAscended?.quantity).toBe(95); // Lower elevation run
+      expect(group.highlight.totalElevation?.quantity).toBe(105); // Higher elevation run
+      expect(group.worst.totalElevation?.quantity).toBe(95); // Lower elevation run
     });
 
     it('should update most recent run correctly', () => {
@@ -252,9 +252,9 @@ describe('groupRunsByAltitude', () => {
 
       expect(Object.keys(result)).toHaveLength(1);
       expect(result['100'].runs).toHaveLength(1);
-      expect(result['100'].highlight.totalElevationAscended?.quantity).toBe(100);
-      expect(result['100'].worst.totalElevationAscended?.quantity).toBe(100);
-      expect(result['100'].mostRecent.totalElevationAscended?.quantity).toBe(100);
+      expect(result['100'].highlight.totalElevation?.quantity).toBe(100);
+      expect(result['100'].worst.totalElevation?.quantity).toBe(100);
+      expect(result['100'].mostRecent.totalElevation?.quantity).toBe(100);
     });
 
     it('should handle zero elevation correctly', () => {

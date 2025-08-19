@@ -34,24 +34,33 @@ export type Group = {
   // Stats for the group
   percentageOfTotalWorkouts: number;
 
+  // Cumulative stats for the group
   totalVariation: Quantity;
   totalDistance: Quantity;
   totalDuration: Quantity;
-  totalElevationAscended: Quantity;
+  totalElevation: Quantity;
 
+  // Averages for the group
   averageHumidity: Quantity;
   averagePace: Quantity;
   averageDuration: Quantity;
+  averageElevation: Quantity;
 
+  // Pretty formatted stats
   prettyPace: string;
 
   // Factual stats for the group (no predictions)
   stats: Stats;
+
   // AI predictions and recommendations
   predictions: GroupPredictions;
+
+  // Key workouts
   highlight: ExtendedWorkout;
   worst: ExtendedWorkout;
   mostRecent: ExtendedWorkout;
+
+  // Variance
   variantDistribution: number[];
 };
 

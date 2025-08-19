@@ -4,7 +4,6 @@ import { ActivityIndicator, IconButton, Text } from 'react-native-paper';
 
 import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
 import { GroupCarousel } from '@/components/GroupCarousel/GroupCarousel';
-import { GroupingConfig } from '@/components/GroupConfigurator/GroupingConfig.types';
 import { GroupingConfigModal } from '@/components/GroupConfigurator/GroupingConfigModal';
 import { GroupStats } from '@/components/GroupStats/GroupStats';
 import { TabButtons } from '@/components/TabButtons/TabButtons';
@@ -12,6 +11,7 @@ import { tabColors } from '@/config/colors';
 import { defaultUIConfig, getTabOptionConfig } from '@/config/uiConfig';
 import { useSettings } from '@/context/SettingsContext';
 import { useGroupedActivityData } from '@/hooks/useGroupedActivityData';
+import { GroupingConfig } from '@/hooks/useGroupedActivityData/interface';
 import { GroupType } from '@/types/Groups';
 
 const enabledTabOptions = defaultUIConfig.tabOptions.filter((opt) => opt.enabled);

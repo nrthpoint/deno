@@ -9,7 +9,7 @@ type StatType =
   | 'distance'
   | 'duration'
   | 'default'
-  | 'altitude'
+  | 'elevation'
   | 'humidity'
   | 'prediction'
   | 'training';

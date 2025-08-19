@@ -1,10 +1,6 @@
 import { ColorProfile } from '@/config/colors';
+import { GroupingConfig } from '@/hooks/useGroupedActivityData/interface';
 import { GroupType } from '@/types/Groups';
-
-export interface GroupingConfig {
-  tolerance: number;
-  groupSize: number;
-}
 
 export interface GroupingConfigModalProps {
   visible: boolean;

@@ -71,7 +71,7 @@ const parseWorkoutSample = async ({
   return {
     ...newRun,
     averagePace,
-    totalElevationAscended,
+    totalElevation: totalElevationAscended,
     humidity: sample.metadata?.['HKWeatherHumidity'] as unknown as Quantity,
     prettyPace: formatPace(averagePace),
     daysAgo: `${Math.floor(

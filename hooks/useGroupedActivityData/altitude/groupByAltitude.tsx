@@ -4,7 +4,7 @@ import React from 'react';
 import { deleteEmptyGroups } from '@/hooks/useGroupedActivityData/distance/groupByDistance';
 import {
   GroupingParameters,
-  GroupingSampleParserParams,
+  IndividualSampleParserParams,
   GroupingStatsParams,
 } from '@/hooks/useGroupedActivityData/interface';
 import {
@@ -32,7 +32,7 @@ export const groupRunsByAltitude = (params: GroupingParameters): Groups => {
 
   // Only consider samples with elevation data
   const samplesWithElevation = samples.filter(
-    (sample) => sample.totalElevationAscended && sample.totalElevationAscended.quantity > 0,
+    (sample) => sample.totalElevation && sample.totalElevation.quantity > 0,
   );
   if (samplesWithElevation.length === 0) {
     console.warn('No samples with elevation data found');
@@ -59,11 +59,11 @@ const parseSampleIntoGroup = ({
   groups,
   tolerance = DEFAULT_TOLERANCE,
   groupSize = DEFAULT_GROUP_SIZE,
-}: GroupingSampleParserParams): Groups => {
-  if (!sample.totalElevationAscended || sample.totalElevationAscended.quantity <= 0) {
+}: IndividualSampleParserParams): Groups => {
+  if (!sample.totalElevation || sample.totalElevation.quantity <= 0) {
     return groups;
   }
-  const elevation = sample.totalElevationAscended;
+  const elevation = sample.totalElevation;
 
   // Calculate the nearest group based on groupSize (e.g., 100m increments)
   const nearestGroup = Math.round(elevation.quantity / groupSize) * groupSize;
@@ -93,9 +93,9 @@ const parseSampleIntoGroup = ({
   // Aggregate the total distance, duration, and elevation ascended
   group.totalDistance = sumQuantities([group.totalDistance, sample.totalDistance]);
   group.totalDuration = sumQuantities([group.totalDuration, sample.duration]);
-  group.totalElevationAscended = sumQuantities([
-    group.totalElevationAscended,
-    sample.totalElevationAscended || newQuantity(0, elevation.unit),
+  group.totalElevation = sumQuantities([
+    group.totalElevation,
+    sample.totalElevation || newQuantity(0, elevation.unit),
   ]);
 
   if (sample.startDate > group.mostRecent.startDate) {
@@ -121,7 +121,7 @@ const createEmptyGroup = (key: string, sample: any): Group => {
     totalVariation: newQuantity(0, sample.totalElevationAscended?.unit),
     totalDistance: newQuantity(0, sample.totalDistance.unit),
     totalDuration: newQuantity(0, 's'),
-    totalElevationAscended: newQuantity(0, sample.totalElevationAscended?.unit),
+    totalElevation: newQuantity(0, sample.totalElevationAscended?.unit),
     averagePace: newQuantity(0, 'min/mi'),
     averageDuration: newQuantity(0, 's'),
     averageHumidity: newQuantity(0, '%'),
@@ -152,8 +152,8 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   group.highlight = findHighestElevationRun(group.runs);
   group.worst = findLowestElevationRun(group.runs);
   group.totalVariation = getAbsoluteDifference(
-    group.highlight.totalElevationAscended,
-    group.worst.totalElevationAscended,
+    group.highlight.totalElevation,
+    group.worst.totalElevation,
   );
 
   // Generate AI prediction if we have enough data
@@ -213,7 +213,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
         {
           label: 'Total Elevation Gain',
           type: 'altitude',
-          value: group.totalElevationAscended,
+          value: group.totalElevation,
           workout: group.highlight,
           icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
         },
@@ -225,14 +225,14 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
         {
           type: 'altitude',
           label: 'Highest Elevation Gain',
-          value: group.highlight.totalElevationAscended,
+          value: group.highlight.totalElevation,
           workout: group.highlight,
           icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
         },
         {
           type: 'altitude',
           label: 'Lowest Elevation Gain',
-          value: group.worst.totalElevationAscended,
+          value: group.worst.totalElevation,
           workout: group.worst,
           icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
         },

@@ -44,7 +44,7 @@ export const formatPropertyValue = (
 
     case 'elevation':
       // Assuming elevation data might be in workout statistics
-      const elevation = workout.totalElevationAscended || { quantity: 0, unit: 'ft' };
+      const elevation = workout.totalElevation || { quantity: 0, unit: 'ft' };
       return {
         displayValue: elevation.quantity.toFixed(0),
         unit: elevation.unit || 'ft',
