@@ -17,13 +17,15 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta, tabColor })
   const [selectedSample2Type, setSelectedSample2Type] = useState<SampleType>('mostRecent');
   const [activeTab, setActiveTab] = useState<TabType>('stats');
 
+  console.log('tabColor:', tabColor);
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'stats':
         return <StatsTab group={group} meta={meta} tabColor={tabColor} />;
       case 'predictions':
         return <PredictionsTab group={group} meta={meta} tabColor={tabColor} />;
-      case 'comparison':
+      case 'compare':
         return (
           <ComparisonTab
             group={group}
@@ -42,10 +44,7 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta, tabColor })
 
   return (
     <ScrollView style={styles.statList}>
-      <TotalWorkoutsCard
-        group={group}
-        accentColor={typeof tabColor === 'string' ? tabColor : undefined}
-      />
+      <TotalWorkoutsCard group={group} />
       <VisualCards group={group} meta={meta} tabColor={tabColor} />
       <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       {renderTabContent()}

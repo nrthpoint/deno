@@ -19,6 +19,8 @@ export type GroupPredictions = {
 };
 
 export type Group = {
+  key: string;
+  unit: string;
   title: string;
   suffix: string;
   type: GroupType;

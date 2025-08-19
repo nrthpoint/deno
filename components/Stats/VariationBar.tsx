@@ -15,10 +15,10 @@ interface VariationBarProps extends ModalProps {
   width: number;
 }
 
-const BAR_HEIGHT = 8;
+const BAR_HEIGHT = 4;
 const MARGIN = 20;
 const BAR_Y = 24;
-const LABEL_Y = BAR_Y + BAR_HEIGHT + 25;
+const LABEL_Y = BAR_Y + BAR_HEIGHT + 35;
 
 export const VariationBar: React.FC<VariationBarProps> = ({
   distribution,
@@ -58,7 +58,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
     <View style={styles.container}>
       <Text style={styles.labelText}>{label}</Text>
 
-      <Svg width={width} height={60}>
+      <Svg width={width} height={70}>
         {/* Bar */}
         <Rect
           x={MARGIN}
@@ -85,23 +85,23 @@ export const VariationBar: React.FC<VariationBarProps> = ({
               y2={y2}
               stroke={color}
               strokeWidth={2}
-              opacity={isEnd ? 0.95 : 0.5}
+              opacity={isEnd ? 1 : 1}
               strokeLinecap="round"
             />
           );
         })}
 
         {/* Min/Max labels */}
-        <SvgText x={positions[0].x} y={LABEL_Y} fontSize={10} fill="#fff" textAnchor="start">
+        <SvgText x={positions[0].x} y={LABEL_Y} fontSize={10} fill="#fff" textAnchor="middle">
           {formatDuration(newQuantity(Math.round(min), 's'))}
         </SvgText>
 
         <SvgText
           x={positions[positions.length - 1].x}
-          y={BAR_Y + BAR_HEIGHT + 25}
+          y={LABEL_Y}
           fontSize={10}
           fill="#fff"
-          textAnchor="end"
+          textAnchor="middle"
         >
           {formatDuration(newQuantity(Math.round(max), 's'))}
         </SvgText>

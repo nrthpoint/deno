@@ -36,6 +36,7 @@ export default {
         },
       ],
       'expo-router',
+      'expo-screen-orientation',
       [
         '@kingstinct/react-native-healthkit',
         {

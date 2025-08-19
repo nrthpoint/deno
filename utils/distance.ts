@@ -21,3 +21,16 @@ export function metersToKilometers(m: Quantity): Quantity {
 
   return newUnit;
 }
+
+export function convertShortUnitToLong(unit: string): string {
+  switch (unit) {
+    case 'm':
+      return 'meters';
+    case 'km':
+      return 'kilometers';
+    case 'mi':
+      return 'miles';
+    default:
+      return unit;
+  }
+}

@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router, Tabs } from 'expo-router';
-import { IconButton } from 'react-native-paper';
+import { Tabs } from 'expo-router';
 
 import { colors } from '@/config/colors';
 
@@ -14,19 +13,37 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Activity',
+          title: 'Metrics',
           headerShown: false,
-          tabBarIcon: ({ color, size }) => <Ionicons name="bar-chart" size={size} color={color} />,
-          headerRight: () => (
-            <IconButton icon="cog" onPress={() => router.push('/settings/modal')} />
-          ),
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="stats-chart" size={size} color={color} />
+          ), // Metrics icon
+        }}
+      />
+      <Tabs.Screen
+        name="trends"
+        options={{
+          title: 'Trends',
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="trending-up" size={size} color={color} />
+          ), // Trends icon
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} />, // Profile icon
         }}
       />
       <Tabs.Screen
         name="config"
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color, size }) => <Ionicons name="settings" size={size} color={color} />,
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => <Ionicons name="settings" size={size} color={color} />, // Settings icon
         }}
       />
     </Tabs>

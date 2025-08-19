@@ -3,8 +3,8 @@ import React from 'react';
 
 import {
   GroupingParameters,
-  IndividualSampleParserParams,
   GroupingStatsParams,
+  IndividualSampleParserParams,
 } from '@/hooks/useGroupedActivityData/interface';
 import {
   assignRankToGroups,
@@ -13,6 +13,7 @@ import {
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group, Groups } from '@/types/Groups';
 import { PredictedWorkout } from '@/types/Prediction';
+import { convertShortUnitToLong } from '@/utils/distance';
 import { generateWorkoutPrediction } from '@/utils/prediction';
 import {
   calculatePercentage,
@@ -107,8 +108,10 @@ const parseSampleIntoGroup = ({
 
 const createEmptyGroup = (key: string, sample: ExtendedWorkout): Group => {
   return {
+    key,
+    unit: convertShortUnitToLong(sample.totalDistance?.unit),
     type: 'distance',
-    title: `${key} ${sample.totalDistance?.unit}`,
+    title: `${key}${sample.totalDistance?.unit}`,
     suffix: '',
     rank: 0,
     skipped: 0,
@@ -198,11 +201,13 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     recommendations,
   };
 
+  const prettyName = `${group.key} ${group.unit}`;
+
   // Only include factual stats here (no predictions)
   group.stats = [
     {
       title: '🏃 Fastest',
-      description: `Your best performance for ${group.title}`,
+      description: `Your best performance for ${prettyName}`,
       items: [
         {
           type: 'pace',
@@ -229,34 +234,34 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     },
     {
       title: '🐌 Slowest',
-      description: `Your worst performance for ${group.title}`,
+      description: `Your worst performance for ${prettyName}`,
       items: [
         {
           type: 'pace',
           label: 'Pace',
           value: group.worst.averagePace,
           workout: group.worst,
-          icon: <Ionicons name="trending-down-outline" size={40} color="#FFFFFF" />,
+          icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
         },
         {
           type: 'duration',
           label: 'Time',
           value: group.worst.duration,
           workout: group.worst,
-          icon: <Ionicons name="thumbs-down-outline" size={40} color="#FFFFFF" />,
+          icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
         },
         {
           type: 'elevation',
           label: 'Elevation',
           value: group.worst.totalElevation,
           workout: group.worst,
-          icon: <Ionicons name="arrow-up-outline" size={40} color="#FFFFFF" />,
+          icon: <Ionicons name="arrow-down-outline" size={40} color="#FFFFFF" />,
         },
       ],
     },
     {
       title: '〽️ Average',
-      description: `Averages for ${group.title}`,
+      description: `Averages for ${prettyName}`,
       items: [
         {
           type: 'pace',
@@ -283,7 +288,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     },
     {
       title: '📈 Cumulative',
-      description: 'Overall performance across all runs in this distance group',
+      description: `Cumulative stats for ${prettyName}`,
       items: [
         {
           type: 'distance',

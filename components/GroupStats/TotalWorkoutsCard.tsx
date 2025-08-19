@@ -1,40 +1,33 @@
-import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { TouchableOpacity, View, StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { WorkoutListView } from '@/components/WorkoutListView/WorkoutListView';
 import { colors } from '@/config/colors';
+import { getLatoFont } from '@/config/fonts';
 import { Group } from '@/types/Groups';
 import { subheading } from '@/utils/text';
 
 interface TotalWorkoutsCardProps {
   group: Group;
-  accentColor?: string;
 }
 
 export const TotalWorkoutsCard: React.FC<TotalWorkoutsCardProps> = ({
   group: { runs, title, skipped },
-  accentColor,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
-
-  const color = accentColor || colors.accent;
-  const unit = 'runs';
 
   return (
     <>
       <TouchableOpacity
-        style={[styles.card, { borderColor: color }]}
+        style={[styles.card]}
         onPress={() => setModalVisible(true)}
         activeOpacity={0.85}
       >
         <View style={styles.textContainer}>
-          <Ionicons name="fitness-outline" size={32} color="#fff" style={{ marginTop: -4 }} />
-          <Text style={styles.label}>
-            Total {unit}: {runs.length}
-          </Text>
-          <Text style={styles.minorLabel}>({skipped} Skipped)</Text>
+          <Text
+            style={styles.label}
+          >{`${runs.length} samples used for ${title}, with ${skipped} skipped.`}</Text>
         </View>
       </TouchableOpacity>
 
@@ -43,7 +36,6 @@ export const TotalWorkoutsCard: React.FC<TotalWorkoutsCardProps> = ({
         onClose={() => setModalVisible(false)}
         workouts={runs}
         groupTitle={title}
-        accentColor={color}
       />
     </>
   );
@@ -54,7 +46,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.surfaceHighlight,
-    padding: 16,
+    padding: 10,
     justifyContent: 'space-between',
     alignSelf: 'center',
   },
@@ -68,12 +60,13 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   label: {
-    ...subheading,
+    // ...subheading,
     marginTop: 0,
-    fontSize: 16,
+    fontSize: 14,
     color: '#fff',
     fontWeight: 'bold',
     marginBottom: 4,
+    ...getLatoFont('regular'),
   },
   minorLabel: {
     ...subheading,
