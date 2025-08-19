@@ -22,20 +22,22 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabCh
           Statistics
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.tab, activeTab === 'predictions' && styles.activeTab]}
-        onPress={() => onTabChange('predictions')}
-      >
-        <Text style={[styles.tabText, activeTab === 'predictions' && styles.activeTabText]}>
-          Predictions
-        </Text>
-      </TouchableOpacity>
+
       <TouchableOpacity
         style={[styles.tab, activeTab === 'comparison' && styles.activeTab]}
         onPress={() => onTabChange('comparison')}
       >
         <Text style={[styles.tabText, activeTab === 'comparison' && styles.activeTabText]}>
           Comparison
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.tab, activeTab === 'predictions' && styles.activeTab]}
+        onPress={() => onTabChange('predictions')}
+      >
+        <Text style={[styles.tabText, activeTab === 'predictions' && styles.activeTabText]}>
+          Predictions
         </Text>
       </TouchableOpacity>
     </View>
