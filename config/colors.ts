@@ -33,3 +33,11 @@ export const tabColors: Record<GroupType, ColorProfile> = {
 
 export const SAMPLE1_COLOR = '#2196f3';
 export const SAMPLE2_COLOR = '#e91e63';
+
+export const PACING = {
+  slow: '#ff1744',
+  medium: '#ffeb3b',
+  fast: '#00e676',
+  veryFast: '#00c853',
+  undefined: '#888888',
+};

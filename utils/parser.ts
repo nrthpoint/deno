@@ -1,7 +1,6 @@
 import { LengthUnit, Quantity } from '@kingstinct/react-native-healthkit';
-import { QueryWorkoutSamplesWithAnchorResponse } from '@kingstinct/react-native-healthkit/types';
 
-import { ExtendedWorkout, WorkoutAchievements } from '@/types/ExtendedWorkout';
+import { ExtendedWorkout, WorkoutAchievements, WorkoutProxy } from '@/types/ExtendedWorkout';
 
 import { metersToMiles, metersToKilometers } from './distance';
 import { formatPace } from './time';
@@ -12,8 +11,6 @@ import {
   findHighestElevationRun,
   findLongestDurationRun,
 } from './workout';
-
-type WorkoutProxy = QueryWorkoutSamplesWithAnchorResponse['workouts'][number];
 
 export const parseWorkoutSamples = async ({
   samples,
@@ -41,20 +38,6 @@ const parseWorkoutSample = async ({
   sample: WorkoutProxy;
   distanceUnit: LengthUnit;
 }): Promise<ExtendedWorkout | null> => {
-  let route = null;
-  let plan = null;
-
-  try {
-    route = await sample.getWorkoutRoutes();
-  } catch (error) {
-    console.warn('parseWorkoutSample: Error fetching workout route:', error);
-  }
-  try {
-    plan = await sample.getWorkoutPlan();
-  } catch (error) {
-    console.warn('parseWorkoutSample: Error fetching workout plan:', error);
-  }
-
   // Create deep copy to avoid mutation issues with Proxy
   const plainRun = JSON.parse(JSON.stringify(sample));
 
@@ -79,8 +62,7 @@ const parseWorkoutSample = async ({
     totalDistance,
     startDate,
     endDate,
-    plan,
-    route,
+    proxy: sample,
   };
 
   // This has to use newRun to ensure the correct units are used

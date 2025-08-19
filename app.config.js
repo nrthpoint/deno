@@ -23,6 +23,8 @@ export default {
           'This app needs access to HealthKit data to track and analyze your workout activities, including distance, duration, and pace information.',
         NSHealthUpdateUsageDescription:
           'This app needs to write workout data to HealthKit to keep your fitness information synchronized across devices.',
+        NSLocationWhenInUseUsageDescription:
+          'This app requires location permission for map functionality.',
       },
     },
     plugins: [

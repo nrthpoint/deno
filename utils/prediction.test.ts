@@ -1,13 +1,14 @@
-import { WorkoutActivityType, WorkoutPlan, WorkoutRoute } from '@kingstinct/react-native-healthkit';
+import { WorkoutActivityType } from '@kingstinct/react-native-healthkit';
 
-import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { ExtendedWorkout, WorkoutProxy } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 import { calculatePerformanceTrend, generateWorkoutPrediction } from '@/utils/prediction';
 import { newQuantity } from '@/utils/quantity';
 
 const createMockWorkout = (pace: number, distance: number, daysAgo: number): ExtendedWorkout => {
-  const duration = pace * distance * 60; // Convert to seconds
+  const duration = pace * distance * 60;
   const startDate = new Date();
+
   startDate.setDate(startDate.getDate() - daysAgo);
 
   return {
@@ -29,8 +30,7 @@ const createMockWorkout = (pace: number, distance: number, daysAgo: number): Ext
       isAllTimeHighestElevation: false,
       isPersonalBestPace: false,
     },
-    plan: {} as WorkoutPlan,
-    route: {} as WorkoutRoute,
+    proxy: {} as WorkoutProxy,
     uuid: `mock-uuid-${pace}-${distance}-${daysAgo}`,
     workoutActivityType: WorkoutActivityType.running,
   } as ExtendedWorkout;

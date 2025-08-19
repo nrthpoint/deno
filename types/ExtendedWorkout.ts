@@ -1,9 +1,10 @@
 import {
   WorkoutSample,
   Quantity,
-  WorkoutPlan,
-  WorkoutRoute,
+  QueryWorkoutSamplesWithAnchorResponse,
 } from '@kingstinct/react-native-healthkit';
+
+export type WorkoutProxy = QueryWorkoutSamplesWithAnchorResponse['workouts'][number];
 
 export interface ExtendedWorkout extends WorkoutSample {
   totalDistance: Quantity;
@@ -13,8 +14,7 @@ export interface ExtendedWorkout extends WorkoutSample {
   daysAgo: string;
   prettyPace: string;
   achievements: WorkoutAchievements;
-  plan: WorkoutPlan | null;
-  route: WorkoutRoute | null;
+  proxy: WorkoutProxy;
 }
 
 export type WorkoutAchievements = {

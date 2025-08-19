@@ -8,7 +8,6 @@ import { PaperProvider } from 'react-native-paper';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { WorkoutProvider } from '@/context/WorkoutContext';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {

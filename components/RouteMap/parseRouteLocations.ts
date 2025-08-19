@@ -1,4 +1,4 @@
-import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { RouteLocationPoints, RouteLocationWithPace } from '@/components/RouteMap/RouteMap.types';
 
 /**
  * Utility to parse a workout sample's route locations into a format suitable for RouteMap.
@@ -51,32 +51,28 @@ function getDistanceMeters(prev: any, curr: any): number {
 
 /**
  * Calculates the pace (seconds per meter) between two points, given their timestamps and distance.
- * Returns undefined for the first point or invalid segments.
  */
-function calculatePaceForIndex(idx: number, locations: any[]): number | undefined {
-  if (idx === 0) return undefined;
+function calculatePaceForIndex(idx: number, locations: RouteLocationPoints): number {
+  if (idx === 0) return 0;
 
   const prev = locations[idx - 1];
   const curr = locations[idx];
 
-  if (!prev || !curr) return undefined;
+  if (!prev || !curr) {
+    return 0;
+  }
 
   const dt = getTimeDifferenceSeconds(prev, curr);
   const d = getDistanceMeters(prev, curr);
 
-  if (d < 0.5 || !dt || dt <= 0) return undefined; // skip zero/invalid segments
+  // skip zero/invalid segments
+  if (d < 0.5 || !dt || dt <= 0) return 0;
 
   return (dt / d) * 1000; // seconds per kilometer
 }
 
-export function parseRouteLocations(sample: ExtendedWorkout): LocationPoint[] {
-  if (!sample.route || !Array.isArray(sample.route) || sample.route.length === 0) {
-    return [];
-  }
-
-  const locations = sample.route[0]?.locations ?? [];
-
-  return locations.map((loc: any, idx: number) => ({
+export function parseRouteLocations(locations: RouteLocationPoints): RouteLocationWithPace {
+  return locations.map((loc, idx) => ({
     latitude: loc.latitude,
     longitude: loc.longitude,
     pace: calculatePaceForIndex(idx, locations),

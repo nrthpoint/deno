@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-import { parseRouteLocations } from '@/components/RouteMap/parseRouteLocations';
 import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { ComparisonRow } from '@/components/SampleComparisonCard/ComparisonRow/ComparisonRow';
 import { colors } from '@/config/colors';
@@ -29,12 +28,7 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
     selectedSample1Type,
     selectedSample2Type,
   } = props;
-  /**
-   * Parse route locations for both samples. Optionally, you can pass a function to extract pace per point.
-   * For now, we just use the locations as-is; you can enhance this to compute pace per segment.
-   */
-  const route1 = parseRouteLocations(sample1);
-  const route2 = parseRouteLocations(sample2);
+
   const showDropdowns =
     sampleOptions &&
     onSample1Change &&
@@ -97,7 +91,7 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
         ),
       )}
 
-      <RouteMap routes={[route1, route2]} />
+      <RouteMap samples={[sample1, sample2]} />
     </View>
   );
 };

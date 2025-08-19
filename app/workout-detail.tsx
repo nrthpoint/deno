@@ -4,7 +4,6 @@ import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-import { parseRouteLocations } from '@/components/RouteMap/parseRouteLocations';
 import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { AchievementListBadge } from '@/components/StatCard/AchievementListBadge';
 import { colors } from '@/config/colors';
@@ -27,6 +26,7 @@ export default function WorkoutDetailScreen() {
 
   const formatDurationValue = (duration: any) => {
     if (!duration?.quantity) return '0s';
+
     const seconds = Math.round(duration.quantity);
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -156,7 +156,6 @@ export default function WorkoutDetailScreen() {
 
   const paceWithoutUnit = formatPace(workout.averagePace, false);
   const paceUnit = workout.averagePace.unit || 'min/mi';
-  const route = parseRouteLocations(workout);
   const formattedWorkoutDate = formatWorkoutDate(workout.endDate);
 
   return (
@@ -192,7 +191,7 @@ export default function WorkoutDetailScreen() {
         </View>
 
         <View>
-          <RouteMap routes={[route]} />
+          <RouteMap samples={[workout]} />
         </View>
 
         {/* Key metrics */}
