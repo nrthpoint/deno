@@ -16,13 +16,11 @@
     "check-format": "prettier --check .",
     "prebuild": "expo prebuild",
     "build": "eas build --platform ios --profile development",
-    "build:preview": "eas build --platform ios --profile preview",
     "build:production": "eas build --platform ios --profile production",
     "build:local": "eas build --local --platform ios --profile development",
     "submit": "eas submit --platform ios",
     "update": "eas update --branch preview",
     "update:dev": "eas update --branch development",
-    "update:preview": "eas update --branch preview",
     "update:production": "eas update --branch production",
     "android": "expo run:android",
     "ios": "expo run:ios"
