@@ -16,7 +16,7 @@ export default {
     githubUrl: 'https://github.com/nrthpoint/deno',
     ios: {
       supportsTablet: false,
-      bundleIdentifier: 'com.nrthpoint.deno',
+      bundleIdentifier: 'com.nrthpoint.deno.fit',
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
         NSHealthShareUsageDescription:
