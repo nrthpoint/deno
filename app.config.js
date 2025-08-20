@@ -48,6 +48,7 @@ export default {
         },
       ],
       'expo-web-browser',
+      'expo-updates',
     ],
     experiments: {
       typedRoutes: true,
@@ -57,6 +58,15 @@ export default {
       eas: {
         projectId: '9f72da41-06ea-4062-a451-99638abf36cb',
       },
+    },
+    updates: {
+      url: 'https://u.expo.dev/9f72da41-06ea-4062-a451-99638abf36cb',
+      requestHeaders: {
+        'expo-channel-name': 'preview',
+      },
+    },
+    runtimeVersion: {
+      policy: 'appVersion',
     },
     owner: 'nrthpoint',
   },

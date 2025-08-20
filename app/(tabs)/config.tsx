@@ -4,6 +4,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SegmentedButtons, Text } from 'react-native-paper';
 
+import AppInfo from '@/components/AppInfo';
 import { colors } from '@/config/colors';
 import { DISTANCE_UNIT_OPTIONS } from '@/config/distanceUnits';
 import { LatoFonts } from '@/config/fonts';
@@ -101,6 +102,8 @@ export default function ConfigurationScreen() {
             </Text>
           </View>
         </View>
+
+        <AppInfo />
       </ScrollView>
     </View>
   );
