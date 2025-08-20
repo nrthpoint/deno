@@ -49,14 +49,6 @@ export default {
       ],
       'expo-web-browser',
       'expo-updates',
-      [
-        'expo-insights',
-        {
-          // Optional: Configure expo-insights
-          enableCrashReporting: true,
-          enablePerformanceMonitoring: true,
-        },
-      ],
     ],
     experiments: {
       typedRoutes: true,
