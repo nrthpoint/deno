@@ -49,7 +49,7 @@ export default function Index() {
     });
 
   const options = Object.keys(groups);
-  const [selectedOption, setSelectedOption] = useState<string>(options[0] || '');
+  const [selectedOption, setSelectedOption] = useState<string>('');
   const tabLabels: Record<GroupType, string> = {
     pace: getTabOptionConfig('pace').label,
     distance: getTabOptionConfig('distance').label,
@@ -63,14 +63,12 @@ export default function Index() {
     }));
   };
 
-  // Auto-select the first group when groups are loaded or groupType changes
+  // Update selectedOption when options change and selectedOption is not valid
   useEffect(() => {
-    const firstKey = Object.keys(groups)[0];
-
-    if (firstKey) {
-      setSelectedOption(firstKey);
+    if (options.length > 0 && !options.includes(selectedOption)) {
+      setSelectedOption(options[0]);
     }
-  }, [groups, groupType]);
+  }, [options, selectedOption]);
 
   const selectedGroup = groups[selectedOption];
   const hasNoData = !loading && !selectedGroup && authorizationStatus === 2;

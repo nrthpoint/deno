@@ -78,9 +78,9 @@ const parseSampleIntoGroup = ({
   const group = groups[groupKey] || (groups[groupKey] = createEmptyGroup(groupKey, sample));
 
   if (!isCloseEnough) {
-    console.warn(
-      `Run with distance ${distance.quantity} is not close enough to ${nearestGroup}${distance.unit}. Skipping.`,
-    );
+    // console.warn(
+    //   `Run with distance ${distance.quantity} is not close enough to ${nearestGroup}${distance.unit}. Skipping.`,
+    // );
 
     group.skipped++;
 

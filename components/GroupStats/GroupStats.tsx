@@ -17,8 +17,6 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta, tabColor })
   const [selectedSample2Type, setSelectedSample2Type] = useState<SampleType>('mostRecent');
   const [activeTab, setActiveTab] = useState<TabType>('stats');
 
-  console.log('tabColor:', tabColor);
-
   const renderTabContent = () => {
     switch (activeTab) {
       case 'stats':

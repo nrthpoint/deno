@@ -28,8 +28,10 @@ export const GroupCarousel = ({
       height={180}
       data={options.length > 0 ? options : ['--']}
       scrollAnimationDuration={300}
-      onSnapToItem={(index) => options.length > 0 && setSelectedOption(options[index])}
-      snapEnabled={options.length > 0}
+      onSnapToItem={(index) => {
+        setSelectedOption(options[index]);
+      }}
+      snapEnabled={true}
       style={styles.carousel}
       mode="parallax"
       modeConfig={{
