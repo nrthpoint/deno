@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 
-import { PaceDistanceGraph } from '@/components/Trends/PaceDistanceGraph';
+import { RotatePhone } from '@/components/RotatePhone';
+import { PaceDistanceGraph } from '@/components/Trends/Graphs/PaceDistanceGraph';
 import { colors } from '@/config/colors';
 import { useSettings } from '@/context/SettingsContext';
 import { useWorkoutData } from '@/hooks/useWorkoutData';
@@ -13,6 +14,19 @@ import { useWorkoutData } from '@/hooks/useWorkoutData';
 export default function PaceByDistanceScreen() {
   const router = useRouter();
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
+  const [screenData, setScreenData] = useState(Dimensions.get('window'));
+
+  useEffect(() => {
+    const onChange = (result: { window: typeof screenData }) => {
+      setScreenData(result.window);
+    };
+
+    const subscription = Dimensions.addEventListener('change', onChange);
+    return () => subscription?.remove();
+  }, []);
+
+  const { width: screenWidth, height: screenHeight } = screenData;
+  const isLandscape = screenWidth > screenHeight;
 
   const { workouts, loading, authorizationStatus } = useWorkoutData({
     activityType,
@@ -33,6 +47,10 @@ export default function PaceByDistanceScreen() {
       ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
     };
   }, []);
+
+  if (!isLandscape) {
+    return <RotatePhone />;
+  }
 
   return (
     <View style={styles.container}>
@@ -80,6 +98,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     textAlign: 'center',
+    marginLeft: -50,
   },
   header: {
     backgroundColor: colors.surface,

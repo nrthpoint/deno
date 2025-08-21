@@ -21,9 +21,11 @@ export const defaultUIConfig: UIConfig = {
 };
 
 export const getTabOptionConfig = (groupType: GroupType): TabOptionConfig => {
-  return (
-    defaultUIConfig.tabOptions.find((opt) => opt.key === groupType) ||
-      // fallback (shouldn't happen)
-      { key: groupType, enabled: false, label: groupType, tolerance: 0.25, groupSize: 1.0 }
-  );
+  const result = defaultUIConfig.tabOptions.find((opt) => opt.key === groupType);
+
+  if (!result) {
+    throw new Error(`getTabOptionConfig: No config found for groupType ${groupType}`);
+  }
+
+  return result;
 };

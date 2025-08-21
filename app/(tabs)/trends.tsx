@@ -15,7 +15,7 @@ export default function TrendsScreen() {
         <TrendCard
           title="Pace by Distance"
           description="See your average pace for different run distances."
-          onPress={() => router.push('/pace-by-distance')}
+          onPress={() => router.push('/trends/pace-by-distance')}
         />
         {/* Add more TrendCard components here for other trends */}
       </ScrollView>

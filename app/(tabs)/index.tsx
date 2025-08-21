@@ -8,7 +8,7 @@ import { GroupingConfigModal } from '@/components/GroupConfigurator/GroupingConf
 import { GroupStats } from '@/components/GroupStats/GroupStats';
 import { TabButtons } from '@/components/TabButtons/TabButtons';
 import { tabColors } from '@/config/colors';
-import { defaultUIConfig, getTabOptionConfig } from '@/config/uiConfig';
+import { defaultUIConfig, getTabOptionConfig } from '@/config/ui';
 import { useSettings } from '@/context/SettingsContext';
 import { useGroupedActivityData } from '@/hooks/useGroupedActivityData';
 import { GroupingConfig } from '@/hooks/useGroupedActivityData/interface';

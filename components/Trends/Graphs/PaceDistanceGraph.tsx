@@ -23,10 +23,9 @@ export const PaceDistanceGraph: React.FC<PaceDistanceGraphProps> = ({ workouts }
   }, []);
 
   const { width: screenWidth, height: screenHeight } = screenData;
-  const isLandscape = screenWidth > screenHeight;
 
-  const chartWidth = isLandscape ? screenWidth - 40 : screenWidth - 40;
-  const chartHeight = isLandscape ? Math.min(screenHeight - 100, 400) : 300;
+  const chartWidth = screenWidth - 40;
+  const chartHeight = Math.min(screenHeight - 180, 400);
 
   const chartData = workouts
     .filter((workout) => workout.totalDistance.quantity > 0 && workout.averagePace.quantity > 0)
@@ -92,15 +91,16 @@ export const PaceDistanceGraph: React.FC<PaceDistanceGraphProps> = ({ workouts }
           chartConfig={chartConfig}
           bezier
           style={styles.chart}
-          fromZero={false}
+          fromZero={true}
           withInnerLines={true}
           withOuterLines={true}
           withVerticalLines={true}
           withHorizontalLines={true}
           withDots={true}
-          withShadow={false}
+          //withShadow={false}
           formatXLabel={(value) => `${value} mi`}
           formatYLabel={(value) => `${value} min/mi`}
+          yLabelsOffset={-10}
         />
 
         <View style={styles.legend}>

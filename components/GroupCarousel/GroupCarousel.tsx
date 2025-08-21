@@ -41,8 +41,8 @@ export const GroupCarousel = ({
       renderItem={({ item }) => (
         <View style={styles.carouselItem}>
           <View style={{ alignItems: 'center' }}>
-            <Text style={[styles.carouselText, { color: colorProfile.primary }]}>
-              {item}
+            <Text style={[styles.carouselText, { color: colorProfile.primary }]}>{item}</Text>
+            <Text style={[styles.carouselSubText, { color: colorProfile.primary }]}>
               {itemSuffix}
             </Text>
           </View>
@@ -74,6 +74,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 80,
     fontWeight: 'bold',
+    fontFamily: 'OrelegaOne',
+  },
+  carouselSubText: {
+    fontSize: 26,
+    textAlign: 'center',
     fontFamily: 'OrelegaOne',
   },
 });

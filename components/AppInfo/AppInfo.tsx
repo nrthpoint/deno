@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   versionLabel: {
-    color: colors.gray,
+    color: colors.lightGray,
     fontFamily: LatoFonts.regular,
   },
   versionValue: {

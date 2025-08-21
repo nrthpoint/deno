@@ -112,7 +112,7 @@ const createEmptyGroup = (key: string, sample: ExtendedWorkout): Group => {
     unit: convertShortUnitToLong(sample.totalDistance?.unit),
     type: 'distance',
     title: `${key}${sample.totalDistance?.unit}`,
-    suffix: '',
+    suffix: 'miles',
     rank: 0,
     skipped: 0,
     rankLabel: '',
