@@ -38,7 +38,7 @@ const Stats = ({
   </View>
 );
 
-export const ComparisonRow: React.FC<ComparisonRowProps> = ({ property, sample1, sample2 }) => {
+export const ComparisonRow = ({ property, sample1, sample2 }: ComparisonRowProps) => {
   const sample1Data = formatPropertyValue(property, sample1);
   const sample2Data = sample2 ? formatPropertyValue(property, sample2) : undefined;
 

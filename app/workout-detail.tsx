@@ -4,11 +4,13 @@ import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
+import { Card } from '@/components/Card/Card';
 import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { AchievementListBadge } from '@/components/StatCard/AchievementListBadge';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWorkout } from '@/context/WorkoutContext';
+import { subheading } from '@/utils/text';
 import { formatDate, formatPace, formatTime, formatWorkoutDate } from '@/utils/time';
 
 export default function WorkoutDetailScreen() {
@@ -66,10 +68,6 @@ export default function WorkoutDetailScreen() {
             value: `${Math.round(workout.totalEnergyBurned?.quantity || 0)} ${workout.totalEnergyBurned?.unit || 'kcal'}`,
           },
           {
-            label: 'Active Energy Burned',
-            value: `${Math.round((workout as any).activeEnergyBurned?.quantity || 0)} ${(workout as any).activeEnergyBurned?.unit || 'kcal'}`,
-          },
-          {
             label: 'Average Heart Rate',
             value: workout.metadata?.HKAverageHeartRate
               ? `${Math.round(Number(workout.metadata.HKAverageHeartRate))} bpm`
@@ -95,13 +93,13 @@ export default function WorkoutDetailScreen() {
             value: `${Math.round(workout.humidity?.quantity || 0)}${workout.humidity?.unit || '%'}`,
           },
           {
-            label: 'Weather Temperature',
+            label: 'Temperature',
             value: workout.metadata?.HKWeatherTemperature
               ? `${Math.round(Number(workout.metadata.HKWeatherTemperature))}°C`
               : 'N/A',
           },
           {
-            label: 'Weather Humidity',
+            label: 'Humidity',
             value: workout.metadata?.HKWeatherHumidity
               ? `${Math.round(Number(workout.metadata.HKWeatherHumidity) * 100)}%`
               : 'N/A',
@@ -111,23 +109,25 @@ export default function WorkoutDetailScreen() {
     ];
 
     return stats.map((section, sectionIndex) => (
-      <View
+      <Card
         key={sectionIndex}
         style={styles.statsSection}
       >
-        <Text style={styles.sectionTitle}>{section.category}</Text>
-        <View style={styles.statsTable}>
-          {section.items.map((item, index) => (
-            <View
-              key={index}
-              style={styles.statsRow}
-            >
-              <Text style={styles.statsLabel}>{item.label}</Text>
-              <Text style={styles.statsValue}>{item.value}</Text>
-            </View>
-          ))}
+        <View style={styles.statsContainer}>
+          <Text style={styles.sectionTitle}>{section.category}</Text>
+          <View style={styles.statsTable}>
+            {section.items.map((item, index) => (
+              <View
+                key={index}
+                style={styles.statsRow}
+              >
+                <Text style={styles.statsLabel}>{item.label}</Text>
+                <Text style={styles.statsValue}>{item.value}</Text>
+              </View>
+            ))}
+          </View>
         </View>
-      </View>
+      </Card>
     ));
   };
 
@@ -199,7 +199,7 @@ export default function WorkoutDetailScreen() {
         contentContainerStyle={styles.contentContainer}
       >
         {/* Header with main stats */}
-        <View style={styles.header}>
+        <Card>
           <View style={styles.headerContent}>
             <Ionicons
               name="fitness"
@@ -211,7 +211,7 @@ export default function WorkoutDetailScreen() {
               <Text style={styles.workoutDate}>{workout.daysAgo}</Text>
             </View>
           </View>
-        </View>
+        </Card>
 
         <View>
           <RouteMap samples={[workout]} />
@@ -219,18 +219,24 @@ export default function WorkoutDetailScreen() {
 
         {/* Key metrics */}
         <View style={styles.keyMetrics}>
-          <View style={styles.metricCard}>
-            <Text style={styles.metricValue}>{formatDistanceValue(workout.totalDistance)}</Text>
-            <Text style={styles.metricLabel}>Distance</Text>
-          </View>
-          <View style={styles.metricCard}>
-            <Text style={styles.metricValue}>{formatDurationValue(workout.duration)}</Text>
-            <Text style={styles.metricLabel}>Duration</Text>
-          </View>
-          <View style={styles.metricCard}>
-            <Text style={styles.metricValue}>{paceWithoutUnit}</Text>
-            <Text style={styles.metricLabel}>{paceUnit}</Text>
-          </View>
+          <Card>
+            <View style={styles.metricCard}>
+              <Text style={styles.metricValue}>{formatDistanceValue(workout.totalDistance)}</Text>
+              <Text style={styles.metricLabel}>Distance</Text>
+            </View>
+          </Card>
+          <Card>
+            <View style={styles.metricCard}>
+              <Text style={styles.metricValue}>{formatDurationValue(workout.duration)}</Text>
+              <Text style={styles.metricLabel}>Duration</Text>
+            </View>
+          </Card>
+          <Card>
+            <View style={styles.metricCard}>
+              <Text style={styles.metricValue}>{paceWithoutUnit}</Text>
+              <Text style={styles.metricLabel}>{paceUnit}</Text>
+            </View>
+          </Card>
         </View>
 
         {/* Achievements */}
@@ -255,14 +261,13 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     padding: 8,
   },
-  header: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 20,
-  },
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
+    margin: 10,
+    backgroundColor: colors.surfaceHighlight,
+    borderRadius: 8,
+    padding: 16,
   },
   headerText: {
     marginLeft: 16,
@@ -275,24 +280,23 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   workoutDate: {
-    fontSize: 16,
-    fontFamily: LatoFonts.regular,
+    ...subheading,
     color: colors.lightGray,
-    marginTop: 4,
+    marginTop: 10,
+    marginBottom: 0,
   },
   keyMetrics: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginTop: 16,
     marginBottom: 24,
-    gap: 8,
   },
   metricCard: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceHighlight,
     borderRadius: 12,
     padding: 16,
     flex: 1,
-    //marginHorizontal: 4,
+    margin: 10,
     alignItems: 'center',
   },
   metricValue: {
@@ -311,11 +315,18 @@ const styles = StyleSheet.create({
   achievementsSection: {
     marginBottom: 24,
   },
+  statsContainer: {
+    margin: 10,
+    backgroundColor: colors.surfaceHighlight,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
   sectionTitle: {
     fontSize: 18,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
-    marginBottom: 12,
+    marginTop: 10,
+    marginBottom: 10,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
@@ -329,20 +340,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   statsSection: {
-    marginBottom: 24,
+    //marginBottom: 24,
   },
   statsTable: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: colors.gray,
   },
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.gray,

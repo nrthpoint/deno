@@ -19,7 +19,6 @@ export interface ComparisonTabProps extends TabContentProps {
 export const ComparisonTab = ({
   group,
   meta,
-  tabColor,
   selectedSample1Type,
   selectedSample2Type,
   onSample1Change,
@@ -88,7 +87,6 @@ export const ComparisonTab = ({
         Compare your workouts side by side to see how they stack up against each other.
       </Text>
       <ComparisonCard
-        colorProfile={tabColor}
         sample1={selectedSample1}
         sample2={selectedSample2}
         sample1Label={selectedSample1Label}

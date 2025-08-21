@@ -2,15 +2,16 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Line, Rect, Text as SvgText } from 'react-native-svg';
 
+import { Card } from '@/components/Card/Card';
 import { ModalProvider } from '@/components/Modal/Modal';
 import { ModalProps } from '@/components/Modal/Modal.types';
+import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
 import { newQuantity } from '@/utils/quantity';
 import { formatDuration } from '@/utils/time';
 
 interface VariationBarProps extends ModalProps {
   distribution: number[];
-  color: string;
   label: string;
   width: number;
 }
@@ -22,9 +23,8 @@ const LABEL_Y = BAR_Y + BAR_HEIGHT + 35;
 
 export const VariationBar: React.FC<VariationBarProps> = ({
   distribution,
-  color,
   label,
-  width = 200,
+  width,
   ...modalProps
 }) => {
   // Always include min and max, and up to 3 evenly spaced in between
@@ -86,7 +86,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
               x2={dot.x}
               y1={y1}
               y2={y2}
-              stroke={color}
+              stroke="#fff"
               strokeWidth={2}
               opacity={isEnd ? 1 : 1}
               strokeLinecap="round"
@@ -118,7 +118,11 @@ export const VariationBar: React.FC<VariationBarProps> = ({
     </View>
   );
 
-  return <ModalProvider {...modalProps}>{content}</ModalProvider>;
+  return (
+    <ModalProvider {...modalProps}>
+      <Card>{content}</Card>
+    </ModalProvider>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -127,6 +131,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
     overflow: 'visible',
+    paddingVertical: 10,
+    backgroundColor: colors.surfaceHighlight,
+    margin: 10,
+    borderRadius: 8,
   },
   svgContainer: {},
   textContainer: {

@@ -65,7 +65,7 @@ export const RouteMap: React.FC<RouteMapProps> = ({ samples }) => {
 const styles = StyleSheet.create({
   mapContainer: {
     width: '100%',
-    height: 350,
+    height: 550,
     borderRadius: 12,
     overflow: 'hidden',
     marginTop: 16,

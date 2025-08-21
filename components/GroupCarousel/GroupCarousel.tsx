@@ -15,12 +15,7 @@ interface GroupCarouselProps {
   setSelectedOption: (option: string) => void;
 }
 
-export const GroupCarousel = ({
-  options,
-  colorProfile,
-  itemSuffix,
-  setSelectedOption,
-}: GroupCarouselProps) => {
+export const GroupCarousel = ({ options, itemSuffix, setSelectedOption }: GroupCarouselProps) => {
   return (
     <Carousel
       loop={false}
@@ -41,10 +36,8 @@ export const GroupCarousel = ({
       renderItem={({ item }) => (
         <View style={styles.carouselItem}>
           <View style={{ alignItems: 'center' }}>
-            <Text style={[styles.carouselText, { color: colorProfile.primary }]}>{item}</Text>
-            <Text style={[styles.carouselSubText, { color: colorProfile.primary }]}>
-              {itemSuffix}
-            </Text>
+            <Text style={[styles.carouselText]}>{item}</Text>
+            <Text style={[styles.carouselSubText]}>{itemSuffix}</Text>
           </View>
         </View>
       )}
@@ -54,7 +47,7 @@ export const GroupCarousel = ({
 
 const styles = StyleSheet.create({
   carousel: {
-    marginTop: 40,
+    marginTop: 20,
     paddingHorizontal: 20,
     justifyContent: 'center',
     width: '100%',
@@ -64,9 +57,9 @@ const styles = StyleSheet.create({
     height: 150,
     marginHorizontal: 8,
     borderRadius: 20,
-    backgroundColor: colors.neutral,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: colors.surfaceHighlight,
   },
   carouselText: {
     verticalAlign: 'middle',
@@ -75,6 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 80,
     fontWeight: 'bold',
     fontFamily: 'OrelegaOne',
+    color: colors.neutral,
   },
   carouselSubText: {
     fontSize: 26,

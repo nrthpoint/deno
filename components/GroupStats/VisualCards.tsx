@@ -3,25 +3,18 @@ import { StyleSheet, View } from 'react-native';
 
 import { HalfMoonProgress } from '@/components/Stats/HalfMoonProgress';
 import { VariationBar } from '@/components/Stats/VariationBar';
-import { colors } from '@/config/colors';
 import { formatDuration } from '@/utils/time';
 
 import { TabContentProps } from './GroupStats.types';
 
-export const VisualCards: React.FC<TabContentProps> = ({ group, meta, tabColor }) => {
+export const VisualCards = ({ group, meta }: TabContentProps) => {
   return (
-    <View
-      style={[
-        styles.row,
-        // { backgroundColor: tabColor ? `${tabColor.secondary}` : undefined },
-      ]}
-    >
+    <View style={[styles.row]}>
       <View style={styles.column}>
         <HalfMoonProgress
           value={group.runs.length}
           total={meta.totalRuns}
-          color={tabColor?.primary || '#4CAF50'}
-          label="of Total Workouts"
+          label="of Workouts"
           size={100}
           hasModal={true}
           modalIcon="moon"
@@ -38,9 +31,8 @@ export const VisualCards: React.FC<TabContentProps> = ({ group, meta, tabColor }
       <View style={styles.column}>
         <VariationBar
           distribution={group.variantDistribution}
-          color="#ffffff"
-          label="Duration Variation"
-          width={200}
+          label="Variation"
+          width={150}
           hasModal={true}
           modalTitle="Duration Variation"
           modalDescription="The range and distribution of workout durations in this group. Each dot is a workout."
@@ -60,15 +52,12 @@ export const VisualCards: React.FC<TabContentProps> = ({ group, meta, tabColor }
 
 const styles = StyleSheet.create({
   row: {
+    display: 'flex',
     flexDirection: 'row',
-    gap: 18,
-    padding: 10,
-    backgroundColor: colors.surface,
+    gap: 20,
   },
   column: {
     flex: 1,
-    paddingVertical: 10,
-    alignItems: 'center',
     justifyContent: 'center',
   },
 });

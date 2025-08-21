@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { subheading } from '@/utils/text';
 
@@ -45,9 +46,9 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabCh
 const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: '#1A1A1A',
+    backgroundColor: colors.surface,
     margin: 10,
-    marginTop: 20,
+    marginTop: 15,
     borderRadius: 8,
     padding: 4,
   },

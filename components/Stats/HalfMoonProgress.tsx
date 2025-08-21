@@ -2,15 +2,16 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
+import { Card } from '@/components/Card/Card';
 import { ModalProvider } from '@/components/Modal/Modal';
 import { ModalProps } from '@/components/Modal/Modal.types';
+import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
 import { subheading } from '@/utils/text';
 
 interface HalfMoonProgressProps extends ModalProps {
   value: number;
   total: number;
-  color: string;
   label: string;
   size: number;
 }
@@ -18,7 +19,6 @@ interface HalfMoonProgressProps extends ModalProps {
 export const HalfMoonProgress = ({
   value,
   total,
-  color,
   label,
   size = 120,
   ...modalProps
@@ -81,7 +81,10 @@ export const HalfMoonProgress = ({
       </View>
 
       <View style={styles.textContainer}>
-        <Text style={[styles.valueText, { color: '#fff' }]}>{percentage.toFixed(0)}%</Text>
+        <View style={styles.valueContainer}>
+          <Text style={[styles.valueText, { color: '#fff' }]}>{percentage.toFixed(0)}</Text>
+          <Text style={styles.valueTextUnit}>{`%`}</Text>
+        </View>
         <Text style={styles.labelText}>{label}</Text>
       </View>
     </View>
@@ -95,7 +98,7 @@ export const HalfMoonProgress = ({
         {...modalProps}
         modalChildren={modalContent}
       >
-        {content}
+        <Card>{content}</Card>
       </ModalProvider>
     </>
   );
@@ -106,6 +109,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+    backgroundColor: colors.surfaceHighlight,
+    margin: 10,
+    paddingVertical: 15,
+    borderRadius: 8,
   },
   svgContainer: {
     overflow: 'hidden',
@@ -114,10 +121,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: -30,
   },
+  valueContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
   valueText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     ...getLatoFont('bold'),
+  },
+  valueTextUnit: {
+    fontSize: 10,
+    paddingLeft: 4,
+    color: '#ffffff',
+    ...getLatoFont('regular'),
   },
   labelText: {
     ...subheading,

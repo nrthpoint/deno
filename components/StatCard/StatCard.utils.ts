@@ -58,9 +58,5 @@ export const getAchievementBadge = (achievements: WorkoutAchievements) => {
     return { label: '⛰️ HIGHEST', color: '#96CEB4' };
   }
 
-  if (achievements.isPersonalBestPace && !achievements.isAllTimeFastest) {
-    return { label: '⚡ PB PACE', color: '#FECA57' };
-  }
-
   return null;
 };

@@ -1,4 +1,3 @@
-import { ColorProfile } from '@/config/colors';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 export type ComparisonProperty = 'duration' | 'averagePace' | 'elevation' | 'distance' | 'humidity';
@@ -17,7 +16,6 @@ export interface SampleComparisonCardProps {
   sample1Label: string;
   sample2Label: string;
   propertiesToCompare: ComparisonProperty[];
-  colorProfile: ColorProfile;
   sampleOptions?: SampleOption[];
   onSample1Change?: (sampleType: SampleType) => void;
   onSample2Change?: (sampleType: SampleType) => void;

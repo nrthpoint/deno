@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { ActivityIndicator, IconButton, Text } from 'react-native-paper';
 
 import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
@@ -7,7 +8,7 @@ import { GroupCarousel } from '@/components/GroupCarousel/GroupCarousel';
 import { GroupingConfigModal } from '@/components/GroupConfigurator/GroupingConfigModal';
 import { GroupStats } from '@/components/GroupStats/GroupStats';
 import { TabButtons } from '@/components/TabButtons/TabButtons';
-import { tabColors } from '@/config/colors';
+import { colors, tabColors } from '@/config/colors';
 import { defaultUIConfig, getTabOptionConfig } from '@/config/ui';
 import { useSettings } from '@/context/SettingsContext';
 import { useGroupedActivityData } from '@/hooks/useGroupedActivityData';
@@ -76,7 +77,7 @@ export default function Index() {
   const colorProfile = tabColors[groupType];
 
   return (
-    <View style={[styles.container, { backgroundColor: colorProfile.primary }]}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.surface }]}>
       {/* Authorization Overlay */}
       <AuthorizationOverlay
         authorizationStatus={authorizationStatus}
@@ -93,6 +94,10 @@ export default function Index() {
           />
         </View>
       )}
+
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Groups</Text>
+      </View>
 
       {/* No Data Overlay */}
       {hasNoData && (
@@ -123,6 +128,14 @@ export default function Index() {
         colorProfile={colorProfile}
       />
 
+      {/* <TabButtons
+        tabOptions={tabOptions}
+        groupType={groupType}
+        colorProfile={colorProfile}
+        tabOptionLabels={tabLabels}
+        setGroupingType={setGroupingType}
+      /> */}
+
       <GroupCarousel
         options={options}
         colorProfile={colorProfile}
@@ -133,26 +146,28 @@ export default function Index() {
         setSelectedOption={setSelectedOption}
       />
 
-      <TabButtons
-        tabOptions={tabOptions}
-        groupType={groupType}
-        colorProfile={colorProfile}
-        tabOptionLabels={tabLabels}
-        setGroupingType={setGroupingType}
-      />
-
       {selectedGroup && (
         <GroupStats
           group={selectedGroup}
           meta={meta}
-          tabColor={colorProfile}
         />
       )}
-    </View>
+    </ScrollView>
   );
 }
 
 export const styles = StyleSheet.create({
+  header: {
+    paddingTop: 80,
+    paddingHorizontal: 20,
+    backgroundColor: colors.surface,
+  },
+  headerTitle: {
+    color: '#fff',
+    fontSize: 40,
+    fontFamily: 'OrelegaOne',
+    textAlign: 'left',
+  },
   spinnerContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -161,7 +176,6 @@ export const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 60,
   },
   loadingOverlay: {
     position: 'absolute',
@@ -187,7 +201,7 @@ export const styles = StyleSheet.create({
   },
   settingsContainer: {
     position: 'absolute',
-    top: 50,
+    top: 75,
     right: 20,
     zIndex: 10,
   },

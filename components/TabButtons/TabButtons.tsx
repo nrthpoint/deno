@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
+import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
 import { GroupType } from '@/types/Groups';
 
@@ -15,7 +16,6 @@ interface TabButtonsProps {
 export const TabButtons = ({
   tabOptions,
   groupType,
-  colorProfile,
   tabOptionLabels,
   setGroupingType,
 }: TabButtonsProps) => {
@@ -29,9 +29,9 @@ export const TabButtons = ({
           style={styles.tabButton}
           labelStyle={[
             styles.tabButtonText,
-            { color: groupType === tab ? colorProfile.primary : '#FFFFFF' },
+            { color: groupType === tab ? '#FFFFFF' : colors.lightGray },
           ]}
-          buttonColor={groupType === tab ? '#FFFFFF' : 'rgba(255, 255, 255, 0.1)'}
+          buttonColor={groupType === tab ? colors.surfaceHighlight : colors.background}
         >
           {tabOptionLabels[tab]}
         </Button>
@@ -44,7 +44,8 @@ const styles = StyleSheet.create({
   tabRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginVertical: 16,
+    marginTop: 30,
+    marginBottom: 16,
     paddingHorizontal: 10,
   },
   tabButton: {

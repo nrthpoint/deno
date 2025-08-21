@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper';
 
+import { colors } from '@/config/colors';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { WorkoutProvider } from '@/context/WorkoutContext';
 
@@ -36,17 +37,13 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
       <PaperProvider>
         <SettingsProvider>
           <WorkoutProvider>
             <Stack
               screenOptions={{
                 headerShown: false,
-                contentStyle: {
-                  flexGrow: 1,
-                  backgroundColor: '#121212',
-                },
               }}
             >
               <Stack.Screen name="(tabs)" />

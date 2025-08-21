@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
+import { Card } from '@/components/Card/Card';
 import { ModalProvider } from '@/components/Modal/Modal';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
@@ -23,47 +24,40 @@ export const StatCard = ({
   const { displayValue, unit } = formatQuantityValue(value, type);
 
   const cardContent = (
-    <View style={[styles.container, { backgroundColor }]}>
-      <View style={[styles.accentStrip, { backgroundColor: accentColor }]}>
-        <View style={styles.iconContainer}>{icon}</View>
-      </View>
+    <Card backgroundColor={backgroundColor}>
+      <View style={styles.innerContainer}>
+        <View style={[styles.accentStrip, { backgroundColor: accentColor }]}>
+          <View style={styles.iconContainer}>{icon}</View>
+        </View>
 
-      <View style={styles.content}>
-        <Text style={styles.label}>{label}</Text>
-        <View style={styles.valueContainer}>
-          <Text style={styles.value}>{displayValue}</Text>
-          {unit && <Text style={styles.unit}>{unit}</Text>}
+        <View style={styles.content}>
+          <Text style={styles.label}>{label}</Text>
+          <View style={styles.valueContainer}>
+            <Text style={styles.value}>{displayValue}</Text>
+            {unit && <Text style={styles.unit}>{unit}</Text>}
+          </View>
         </View>
       </View>
-    </View>
+    </Card>
   );
 
   return <ModalProvider {...modalProps}>{cardContent}</ModalProvider>;
 };
 
 const styles = StyleSheet.create({
-  container: {
+  innerContainer: {
     flexDirection: 'row',
-    borderRadius: 4,
-    marginVertical: 8,
-    overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
   },
   accentStrip: {
     width: 100,
     justifyContent: 'center',
     alignItems: 'center',
+    margin: 10,
+    borderRadius: 8,
   },
   content: {
     flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: 15,
     paddingVertical: 16,
     justifyContent: 'center',
   },

@@ -18,15 +18,17 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
   const {
     sample1,
     sample2,
+
     sample1Label,
     sample2Label,
+
     propertiesToCompare,
-    colorProfile,
     sampleOptions,
-    onSample1Change,
-    onSample2Change,
     selectedSample1Type,
     selectedSample2Type,
+
+    onSample1Change,
+    onSample2Change,
   } = props;
 
   const showDropdowns =
@@ -72,7 +74,6 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
       {propertiesToCompare.map((property) =>
         isSameSample ? (
           <ComparisonRow
-            colorProfile={colorProfile}
             key={property}
             property={property}
             sample1={sample1}
@@ -80,7 +81,6 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
           />
         ) : (
           <ComparisonRow
-            colorProfile={colorProfile}
             key={property}
             property={property}
             sample1={sample1}
