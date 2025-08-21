@@ -1,8 +1,6 @@
-// https://docs.expo.dev/guides/using-eslint/
 const { defineConfig } = require('eslint/config');
 const expoConfig = require('eslint-config-expo/flat');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
-//const pluginImport = require('eslint-plugin-import');
 
 module.exports = defineConfig([
   expoConfig,
@@ -55,6 +53,7 @@ module.exports = defineConfig([
           alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
+      // 'array-bracket-spacing': ['error', 'always'],
     },
   },
 ]);

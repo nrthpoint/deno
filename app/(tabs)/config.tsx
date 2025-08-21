@@ -41,7 +41,10 @@ export default function ConfigurationScreen() {
         <Text style={styles.headerTitle}>Settings</Text>
       </View>
       <ScrollView contentContainerStyle={[styles.container]}>
-        <Text variant="titleLarge" style={styles.heading}>
+        <Text
+          variant="titleLarge"
+          style={styles.heading}
+        >
           Distance Unit
         </Text>
         <SegmentedButtons
@@ -56,7 +59,10 @@ export default function ConfigurationScreen() {
           }))}
         />
 
-        <Text variant="titleLarge" style={styles.heading}>
+        <Text
+          variant="titleLarge"
+          style={styles.heading}
+        >
           Activity
         </Text>
         <SegmentedButtons
@@ -71,12 +77,18 @@ export default function ConfigurationScreen() {
           ]}
         />
 
-        <Text variant="titleLarge" style={styles.heading}>
+        <Text
+          variant="titleLarge"
+          style={styles.heading}
+        >
           Time Range
         </Text>
 
         <View style={styles.rangeContainer}>
-          <Text variant="bodyLarge" style={styles.rangeTitle}>
+          <Text
+            variant="bodyLarge"
+            style={styles.rangeTitle}
+          >
             {TIME_RANGE_LABELS[timeRange]}
           </Text>
           <Slider
@@ -94,10 +106,16 @@ export default function ConfigurationScreen() {
             thumbTintColor={colors.neutral}
           />
           <View style={styles.rangeLabelsContainer}>
-            <Text variant="bodySmall" style={[styles.rangeLabel]}>
+            <Text
+              variant="bodySmall"
+              style={[styles.rangeLabel]}
+            >
               {TIME_RANGE_OPTIONS[0].label}
             </Text>
-            <Text variant="bodySmall" style={[styles.rangeLabel]}>
+            <Text
+              variant="bodySmall"
+              style={[styles.rangeLabel]}
+            >
               {TIME_RANGE_OPTIONS[TIME_RANGE_OPTIONS.length - 1].label}
             </Text>
           </View>

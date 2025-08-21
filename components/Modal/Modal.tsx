@@ -33,7 +33,10 @@ export const ModalProvider = ({
 
   return (
     <>
-      <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>
+      <TouchableOpacity
+        onPress={handlePress}
+        activeOpacity={0.8}
+      >
         {children}
       </TouchableOpacity>
 
@@ -49,7 +52,11 @@ export const ModalProvider = ({
               <View style={styles.modalHeader}>
                 {modalIcon && (
                   <View style={[styles.modalIcon, { backgroundColor: color }]}>
-                    <Ionicons name={modalIcon} size={40} color="#FFFFFF" />
+                    <Ionicons
+                      name={modalIcon}
+                      size={40}
+                      color="#FFFFFF"
+                    />
                   </View>
                 )}
                 <Text style={styles.modalTitle}>{modalTitle}</Text>
@@ -63,7 +70,10 @@ export const ModalProvider = ({
                 <View style={styles.additionalInfoContainer}>
                   <Text style={styles.additionalInfoTitle}>Additional Details</Text>
                   {modalInfo.map((info, index) => (
-                    <View key={index} style={styles.infoRow}>
+                    <View
+                      key={index}
+                      style={styles.infoRow}
+                    >
                       <Text style={styles.infoLabel}>{info.label}:</Text>
                       <Text style={styles.infoValue}>{info.value}</Text>
                     </View>

@@ -55,8 +55,15 @@ export default function PaceByDistanceScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#fff" />
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Ionicons
+            name="chevron-back"
+            size={24}
+            color="#fff"
+          />
           <Text style={styles.backText}>Back</Text>
         </TouchableOpacity>
         <View style={styles.titleContainer}>
@@ -66,7 +73,11 @@ export default function PaceByDistanceScreen() {
 
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator animating color="#fff" size="large" />
+          <ActivityIndicator
+            animating
+            color="#fff"
+            size="large"
+          />
           <Text style={styles.loadingText}>Loading workout data...</Text>
         </View>
       ) : authorizationStatus !== 2 ? (

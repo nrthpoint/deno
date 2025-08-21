@@ -14,7 +14,10 @@ export const StatsTab: React.FC<TabContentProps> = ({ group }) => {
           {section.description && <Text style={styles.sectionDesc}>{section.description}</Text>}
 
           {section.items.map((stat) => (
-            <StatCard key={stat.label} stat={stat} />
+            <StatCard
+              key={stat.label}
+              stat={stat}
+            />
           ))}
         </View>
       ))}

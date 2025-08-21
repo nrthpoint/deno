@@ -58,7 +58,10 @@ export const VariationBar: React.FC<VariationBarProps> = ({
     <View style={styles.container}>
       <Text style={styles.labelText}>{label}</Text>
 
-      <Svg width={width} height={70}>
+      <Svg
+        width={width}
+        height={70}
+      >
         {/* Bar */}
         <Rect
           x={MARGIN}
@@ -92,7 +95,13 @@ export const VariationBar: React.FC<VariationBarProps> = ({
         })}
 
         {/* Min/Max labels */}
-        <SvgText x={positions[0].x} y={LABEL_Y} fontSize={10} fill="#fff" textAnchor="middle">
+        <SvgText
+          x={positions[0].x}
+          y={LABEL_Y}
+          fontSize={10}
+          fill="#fff"
+          textAnchor="middle"
+        >
           {formatDuration(newQuantity(Math.round(min), 's'))}
         </SvgText>
 

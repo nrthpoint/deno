@@ -11,41 +11,68 @@ const packageJson = require('../../package.json');
 export default function AppInfo() {
   return (
     <>
-      <Text variant="titleLarge" style={styles.heading}>
+      <Text
+        variant="titleLarge"
+        style={styles.heading}
+      >
         App Information
       </Text>
       <View style={styles.versionContainer}>
         <View style={styles.versionRow}>
-          <Text variant="bodyMedium" style={styles.versionLabel}>
+          <Text
+            variant="bodyMedium"
+            style={styles.versionLabel}
+          >
             App Version
           </Text>
-          <Text variant="bodyMedium" style={styles.versionValue}>
+          <Text
+            variant="bodyMedium"
+            style={styles.versionValue}
+          >
             {packageJson.version}
           </Text>
         </View>
         <View style={styles.versionRow}>
-          <Text variant="bodyMedium" style={styles.versionLabel}>
+          <Text
+            variant="bodyMedium"
+            style={styles.versionLabel}
+          >
             Build Number
           </Text>
-          <Text variant="bodyMedium" style={styles.versionValue}>
+          <Text
+            variant="bodyMedium"
+            style={styles.versionValue}
+          >
             {Constants.expoConfig?.ios?.buildNumber}
           </Text>
         </View>
         <View style={styles.versionRow}>
-          <Text variant="bodyMedium" style={styles.versionLabel}>
+          <Text
+            variant="bodyMedium"
+            style={styles.versionLabel}
+          >
             Runtime Version
           </Text>
-          <Text variant="bodyMedium" style={styles.versionValue}>
+          <Text
+            variant="bodyMedium"
+            style={styles.versionValue}
+          >
             {typeof Constants.expoConfig?.runtimeVersion === 'string'
               ? Constants.expoConfig.runtimeVersion
               : Constants.expoConfig?.runtimeVersion?.policy || packageJson.version}
           </Text>
         </View>
         <View style={styles.versionRow}>
-          <Text variant="bodyMedium" style={styles.versionLabel}>
+          <Text
+            variant="bodyMedium"
+            style={styles.versionLabel}
+          >
             Update Channel
           </Text>
-          <Text variant="bodyMedium" style={styles.versionValue}>
+          <Text
+            variant="bodyMedium"
+            style={styles.versionValue}
+          >
             {Constants.expoConfig?.updates?.requestHeaders?.['expo-channel-name'] || 'N/A'}
           </Text>
         </View>

@@ -208,14 +208,26 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           label: 'Total Distance',
           value: group.totalDistance,
           workout: group.highlight,
-          icon: <Ionicons name="location" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="location"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
         {
           label: 'Total Elevation Gain',
           type: 'altitude',
           value: group.totalElevation,
           workout: group.highlight,
-          icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="trending-up"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
       ],
     },
@@ -227,14 +239,26 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           label: 'Highest Elevation Gain',
           value: group.highlight.totalElevation,
           workout: group.highlight,
-          icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="trending-up"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
         {
           type: 'altitude',
           label: 'Lowest Elevation Gain',
           value: group.worst.totalElevation,
           workout: group.worst,
-          icon: <Ionicons name="trending-up" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="trending-up"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
       ],
     },
@@ -246,14 +270,26 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           label: 'Best Pace',
           value: group.highlight.averagePace,
           workout: group.highlight,
-          icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="speedometer"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
         {
           type: 'pace',
           label: 'Average Pace',
           value: group.averagePace,
           workout: group.highlight,
-          icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="speedometer"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
       ],
     },

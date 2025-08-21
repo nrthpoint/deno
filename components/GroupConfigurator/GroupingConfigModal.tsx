@@ -31,10 +31,19 @@ export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
 
   return (
     <Portal>
-      <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.modalContainer}>
+      <Modal
+        visible={visible}
+        onDismiss={onDismiss}
+        contentContainerStyle={styles.modalContainer}
+      >
         <View style={[styles.header, { borderBottomColor: colors.gray }]}>
           <Text style={styles.title}>Grouping Settings</Text>
-          <IconButton icon="close" size={24} onPress={onDismiss} iconColor={colors.neutral} />
+          <IconButton
+            icon="close"
+            size={24}
+            onPress={onDismiss}
+            iconColor={colors.neutral}
+          />
         </View>
 
         <View style={styles.content}>

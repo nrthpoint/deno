@@ -98,7 +98,10 @@ export const PredictionsTab: React.FC<TabContentProps> = ({ group }) => {
               <Text style={styles.sectionHeader}>Training Recommendations</Text>
               <View style={styles.recommendationsContainer}>
                 {group.predictions.recommendations.map((recommendation, index) => (
-                  <View key={index} style={styles.recommendationItem}>
+                  <View
+                    key={index}
+                    style={styles.recommendationItem}
+                  >
                     <Text style={styles.bullet}>•</Text>
                     <Text style={styles.recommendationText}>{recommendation}</Text>
                   </View>

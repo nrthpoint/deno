@@ -16,7 +16,11 @@ export default function TabLayout() {
           title: 'Metrics',
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="stats-chart" size={size} color={color} />
+            <Ionicons
+              name="stats-chart"
+              size={size}
+              color={color}
+            />
           ), // Metrics icon
         }}
       />
@@ -26,7 +30,11 @@ export default function TabLayout() {
           title: 'Trends',
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="trending-up" size={size} color={color} />
+            <Ionicons
+              name="trending-up"
+              size={size}
+              color={color}
+            />
           ), // Trends icon
         }}
       />
@@ -35,7 +43,13 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           headerShown: false,
-          tabBarIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} />, // Profile icon
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons
+              name="person"
+              size={size}
+              color={color}
+            />
+          ), // Profile icon
         }}
       />
       <Tabs.Screen
@@ -43,7 +57,13 @@ export default function TabLayout() {
         options={{
           title: 'Settings',
           headerShown: false,
-          tabBarIcon: ({ color, size }) => <Ionicons name="settings" size={size} color={color} />, // Settings icon
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons
+              name="settings"
+              size={size}
+              color={color}
+            />
+          ), // Settings icon
         }}
       />
     </Tabs>

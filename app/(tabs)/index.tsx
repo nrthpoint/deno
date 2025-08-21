@@ -86,7 +86,11 @@ export default function Index() {
       {/* Loading Overlay */}
       {loading && (
         <View style={styles.loadingOverlay}>
-          <ActivityIndicator animating color="#fff" size="large" />
+          <ActivityIndicator
+            animating
+            color="#fff"
+            size="large"
+          />
         </View>
       )}
 
@@ -137,7 +141,13 @@ export default function Index() {
         setGroupingType={setGroupingType}
       />
 
-      {selectedGroup && <GroupStats group={selectedGroup} meta={meta} tabColor={colorProfile} />}
+      {selectedGroup && (
+        <GroupStats
+          group={selectedGroup}
+          meta={meta}
+          tabColor={colorProfile}
+        />
+      )}
     </View>
   );
 }

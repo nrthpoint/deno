@@ -214,21 +214,39 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           label: 'Pace',
           value: group.highlight.averagePace,
           workout: group.highlight,
-          icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="speedometer"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
         {
           type: 'duration',
           label: 'Time',
           value: group.highlight.duration,
           workout: group.highlight,
-          icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="stopwatch-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
         {
           type: 'elevation',
           label: 'Elevation',
           value: group.highlight.totalElevation,
           workout: group.highlight,
-          icon: <Ionicons name="arrow-up-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="arrow-up-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
       ],
     },
@@ -241,21 +259,39 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           label: 'Pace',
           value: group.worst.averagePace,
           workout: group.worst,
-          icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="speedometer"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
         {
           type: 'duration',
           label: 'Time',
           value: group.worst.duration,
           workout: group.worst,
-          icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="stopwatch-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
         {
           type: 'elevation',
           label: 'Elevation',
           value: group.worst.totalElevation,
           workout: group.worst,
-          icon: <Ionicons name="arrow-down-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="arrow-down-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
       ],
     },
@@ -268,21 +304,39 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           label: 'Pace',
           value: group.averagePace,
           workout: group.highlight,
-          icon: <Ionicons name="speedometer" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="speedometer"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
         {
           type: 'duration',
           label: 'Time',
           value: group.averageDuration,
           workout: group.highlight,
-          icon: <Ionicons name="stopwatch-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="stopwatch-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
         {
           type: 'elevation',
           label: 'Elevation',
           value: group.averageElevation,
           workout: group.highlight,
-          icon: <Ionicons name="arrow-up-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="arrow-up-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
       ],
     },
@@ -295,21 +349,39 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           label: 'Cumulative Distance',
           value: group.totalDistance,
           workout: group.highlight,
-          icon: <Ionicons name="person-add-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="person-add-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
         {
           type: 'duration',
           label: 'Cumulative Duration',
           value: group.totalDuration,
           workout: group.highlight,
-          icon: <Ionicons name="timer-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="timer-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
         {
           type: 'elevation',
           label: 'Cumulative Elevation',
           value: group.totalElevation,
           workout: group.highlight,
-          icon: <Ionicons name="arrow-up-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="arrow-up-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
       ],
     },

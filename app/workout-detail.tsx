@@ -111,11 +111,17 @@ export default function WorkoutDetailScreen() {
     ];
 
     return stats.map((section, sectionIndex) => (
-      <View key={sectionIndex} style={styles.statsSection}>
+      <View
+        key={sectionIndex}
+        style={styles.statsSection}
+      >
         <Text style={styles.sectionTitle}>{section.category}</Text>
         <View style={styles.statsTable}>
           {section.items.map((item, index) => (
-            <View key={index} style={styles.statsRow}>
+            <View
+              key={index}
+              style={styles.statsRow}
+            >
               <Text style={styles.statsLabel}>{item.label}</Text>
               <Text style={styles.statsValue}>{item.value}</Text>
             </View>
@@ -147,7 +153,10 @@ export default function WorkoutDetailScreen() {
       <View style={styles.achievementsSection}>
         <View style={styles.achievementsContainer}>
           {achievements.map((achievement, index) => (
-            <AchievementListBadge key={index} label={achievement.label} />
+            <AchievementListBadge
+              key={index}
+              label={achievement.label}
+            />
           ))}
         </View>
       </View>
@@ -171,18 +180,32 @@ export default function WorkoutDetailScreen() {
             fontSize: 18,
           },
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-              <Ionicons name="chevron-back" size={24} color={colors.neutral} />
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={styles.backButton}
+            >
+              <Ionicons
+                name="chevron-back"
+                size={24}
+                color={colors.neutral}
+              />
             </TouchableOpacity>
           ),
         }}
       />
 
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+      >
         {/* Header with main stats */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
-            <Ionicons name="fitness" size={48} color={colors.neutral} />
+            <Ionicons
+              name="fitness"
+              size={48}
+              color={colors.neutral}
+            />
             <View style={styles.headerText}>
               <Text style={styles.workoutType}>{formattedWorkoutDate}</Text>
               <Text style={styles.workoutDate}>{workout.daysAgo}</Text>

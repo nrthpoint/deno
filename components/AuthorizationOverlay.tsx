@@ -20,7 +20,11 @@ export const AuthorizationOverlay = ({
         <Text style={styles.authorizationText}>
           To access your workout data, please grant permission in the Health app.
         </Text>
-        <Button mode="contained" onPress={requestAuthorization} style={styles.authorizationButton}>
+        <Button
+          mode="contained"
+          onPress={requestAuthorization}
+          style={styles.authorizationButton}
+        >
           Grant Permission
         </Button>
       </View>

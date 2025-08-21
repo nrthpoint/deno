@@ -185,7 +185,13 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           label: 'Distance',
           value: group.highlight.averagePace,
           workout: group.highlight,
-          icon: <Ionicons name="map-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="map-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
       ],
     },
@@ -197,7 +203,13 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           label: 'Distance',
           value: group.worst.averagePace,
           workout: group.worst,
-          icon: <Ionicons name="map-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="map-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
       ],
     },
@@ -209,14 +221,26 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           label: 'Distance',
           value: group.totalDistance,
           workout: group.highlight,
-          icon: <Ionicons name="person-add-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="person-add-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
         {
           type: 'duration',
           label: 'Duration',
           value: group.totalDuration,
           workout: group.highlight,
-          icon: <Ionicons name="timer-outline" size={40} color="#FFFFFF" />,
+          icon: (
+            <Ionicons
+              name="timer-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
         },
       ],
     },

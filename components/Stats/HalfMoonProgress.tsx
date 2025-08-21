@@ -56,7 +56,10 @@ export const HalfMoonProgress = ({
   const content = (
     <View style={styles.container}>
       <View style={[styles.svgContainer, { width: size, height: size / 2 + strokeWidth }]}>
-        <Svg width={size} height={size / 2 + strokeWidth}>
+        <Svg
+          width={size}
+          height={size / 2 + strokeWidth}
+        >
           {/* Background half circle */}
           <Path
             d={backgroundPath}
@@ -88,7 +91,10 @@ export const HalfMoonProgress = ({
 
   return (
     <>
-      <ModalProvider {...modalProps} modalChildren={modalContent}>
+      <ModalProvider
+        {...modalProps}
+        modalChildren={modalContent}
+      >
         {content}
       </ModalProvider>
     </>

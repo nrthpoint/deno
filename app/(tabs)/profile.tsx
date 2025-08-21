@@ -10,7 +10,11 @@ export default function ProfileScreen() {
         <Text style={styles.headerTitle}>Profile</Text>
       </View>
       <View style={styles.content}>
-        <Ionicons name="person" size={100} color={colors.neutral} />
+        <Ionicons
+          name="person"
+          size={100}
+          color={colors.neutral}
+        />
       </View>
     </View>
   );

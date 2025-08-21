@@ -57,19 +57,31 @@ const WorkoutItem = ({ workout, index }: WorkoutItemProps) => {
 
         <View style={styles.workoutStats}>
           <View style={styles.statItem}>
-            <Ionicons name="location-outline" size={16} color="#CCCCCC" />
+            <Ionicons
+              name="location-outline"
+              size={16}
+              color="#CCCCCC"
+            />
             <Text style={styles.statLabel}>Distance</Text>
             <Text style={styles.statValue}>{formatDistance(workout.totalDistance)}</Text>
           </View>
 
           <View style={styles.statItem}>
-            <Ionicons name="time-outline" size={16} color="#CCCCCC" />
+            <Ionicons
+              name="time-outline"
+              size={16}
+              color="#CCCCCC"
+            />
             <Text style={styles.statLabel}>Duration</Text>
             <Text style={styles.statValue}>{formatDuration(workout.duration)}</Text>
           </View>
 
           <View style={styles.statItem}>
-            <Ionicons name="speedometer-outline" size={16} color="#CCCCCC" />
+            <Ionicons
+              name="speedometer-outline"
+              size={16}
+              color="#CCCCCC"
+            />
             <Text style={styles.statLabel}>Pace</Text>
             <Text style={styles.statValue}>{workout.prettyPace}</Text>
           </View>
@@ -110,11 +122,23 @@ export const WorkoutListView = ({
   accentColor = colors.accent,
 }: WorkoutListViewProps) => {
   return (
-    <Modal animationType="slide" transparent={false} visible={visible} onRequestClose={onClose}>
+    <Modal
+      animationType="slide"
+      transparent={false}
+      visible={visible}
+      onRequestClose={onClose}
+    >
       <View style={styles.container}>
         <View style={[styles.header, { backgroundColor: accentColor }]}>
-          <TouchableOpacity onPress={onClose} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+          <TouchableOpacity
+            onPress={onClose}
+            style={styles.backButton}
+          >
+            <Ionicons
+              name="arrow-back"
+              size={24}
+              color="#FFFFFF"
+            />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>All {groupTitle} Workouts</Text>
           <View style={styles.headerSpacer} />
@@ -129,7 +153,12 @@ export const WorkoutListView = ({
         <FlatList
           data={workouts}
           keyExtractor={(item, index) => `${item.startDate.getTime()}-${index}`}
-          renderItem={({ item, index }) => <WorkoutItem workout={item} index={index} />}
+          renderItem={({ item, index }) => (
+            <WorkoutItem
+              workout={item}
+              index={index}
+            />
+          )}
           style={styles.list}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}

@@ -52,8 +52,14 @@ export const ComparisonRow: React.FC<ComparisonRowProps> = ({ property, sample1,
   return (
     <View style={styles.comparisonRow}>
       <Text style={styles.propertyLabel}>{getPropertyLabel(property)}</Text>
-      <Stats sample1Data={sample1Data} sample2Data={sample2Data} />
-      <BarChart width1={widthOne} width2={widthTwo} />
+      <Stats
+        sample1Data={sample1Data}
+        sample2Data={sample2Data}
+      />
+      <BarChart
+        width1={widthOne}
+        width2={widthTwo}
+      />
     </View>
   );
 };

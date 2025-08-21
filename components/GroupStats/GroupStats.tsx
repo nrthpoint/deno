@@ -20,9 +20,21 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta, tabColor })
   const renderTabContent = () => {
     switch (activeTab) {
       case 'stats':
-        return <StatsTab group={group} meta={meta} tabColor={tabColor} />;
+        return (
+          <StatsTab
+            group={group}
+            meta={meta}
+            tabColor={tabColor}
+          />
+        );
       case 'predictions':
-        return <PredictionsTab group={group} meta={meta} tabColor={tabColor} />;
+        return (
+          <PredictionsTab
+            group={group}
+            meta={meta}
+            tabColor={tabColor}
+          />
+        );
       case 'compare':
         return (
           <ComparisonTab
@@ -36,15 +48,28 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta, tabColor })
           />
         );
       default:
-        return <StatsTab group={group} meta={meta} tabColor={tabColor} />;
+        return (
+          <StatsTab
+            group={group}
+            meta={meta}
+            tabColor={tabColor}
+          />
+        );
     }
   };
 
   return (
     <ScrollView style={styles.statList}>
       <TotalWorkoutsCard group={group} />
-      <VisualCards group={group} meta={meta} tabColor={tabColor} />
-      <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <VisualCards
+        group={group}
+        meta={meta}
+        tabColor={tabColor}
+      />
+      <TabNavigation
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
       {renderTabContent()}
     </ScrollView>
   );

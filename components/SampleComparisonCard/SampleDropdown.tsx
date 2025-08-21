@@ -61,7 +61,12 @@ export const SampleDropdown = ({
   // Render backdrop
   const renderBackdrop = useCallback(
     (props: any) => (
-      <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} opacity={0.5} />
+      <BottomSheetBackdrop
+        {...props}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        opacity={0.5}
+      />
     ),
     [],
   );
@@ -89,7 +94,10 @@ export const SampleDropdown = ({
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.dropdownButton} onPress={handleOpenPress}>
+      <Pressable
+        style={styles.dropdownButton}
+        onPress={handleOpenPress}
+      >
         <Text style={styles.dropdownText}>{selectedOption?.label || placeholder}</Text>
         <Text style={styles.dropdownArrow}>▼</Text>
       </Pressable>
@@ -108,7 +116,10 @@ export const SampleDropdown = ({
             <View style={styles.bottomSheetHeader}>
               <Text style={styles.bottomSheetTitle}>{placeholder}</Text>
             </View>
-            <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={true}>
+            <ScrollView
+              style={styles.scrollContainer}
+              showsVerticalScrollIndicator={true}
+            >
               {options.map((item) => renderOptionItem({ item }))}
             </ScrollView>
           </BottomSheetView>
