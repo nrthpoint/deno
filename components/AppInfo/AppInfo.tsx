@@ -1,5 +1,6 @@
 import * as Application from 'expo-application';
 import Constants from 'expo-constants';
+import * as Updates from 'expo-updates';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -10,6 +11,10 @@ import { LatoFonts } from '@/config/fonts';
 export default function AppInfo() {
   const version = Application.nativeApplicationVersion ?? 'unknown';
   const buildNumber = Application.nativeBuildVersion ?? 'unknown';
+  const updateId = Updates.updateId ?? 'unknown';
+  const runtimeVId = Updates.manifest?.id ?? 'unknown';
+  const updateChannel =
+    Constants.expoConfig?.updates?.requestHeaders?.['expo-channel-name'] ?? 'N/A';
 
   return (
     <>
@@ -53,15 +58,27 @@ export default function AppInfo() {
             variant="bodyMedium"
             style={styles.versionLabel}
           >
+            Update ID
+          </Text>
+          <Text
+            variant="bodyMedium"
+            style={styles.versionValue}
+          >
+            {updateId}
+          </Text>
+        </View>
+        <View style={styles.versionRow}>
+          <Text
+            variant="bodyMedium"
+            style={styles.versionLabel}
+          >
             Runtime Version
           </Text>
           <Text
             variant="bodyMedium"
             style={styles.versionValue}
           >
-            {typeof Constants.expoConfig?.runtimeVersion === 'string'
-              ? Constants.expoConfig.runtimeVersion
-              : Constants.expoConfig?.runtimeVersion?.policy}
+            {runtimeVId}
           </Text>
         </View>
         <View style={styles.versionRow}>
@@ -75,7 +92,7 @@ export default function AppInfo() {
             variant="bodyMedium"
             style={styles.versionValue}
           >
-            {Constants.expoConfig?.updates?.requestHeaders?.['expo-channel-name'] || 'N/A'}
+            {updateChannel}
           </Text>
         </View>
       </View>
