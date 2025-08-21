@@ -28,7 +28,7 @@ export default function AppInfo() {
             Build Number
           </Text>
           <Text variant="bodyMedium" style={styles.versionValue}>
-            {Constants.expoConfig?.version || packageJson.version}
+            {Constants.expoConfig?.ios?.buildNumber}
           </Text>
         </View>
         <View style={styles.versionRow}>
@@ -47,14 +47,6 @@ export default function AppInfo() {
           </Text>
           <Text variant="bodyMedium" style={styles.versionValue}>
             {Constants.expoConfig?.updates?.requestHeaders?.['expo-channel-name'] || 'N/A'}
-          </Text>
-        </View>
-        <View style={styles.versionRow}>
-          <Text variant="bodyMedium" style={styles.versionLabel}>
-            Platform
-          </Text>
-          <Text variant="bodyMedium" style={styles.versionValue}>
-            {`${Constants.platform?.ios ? 'iOS' : 'Other'} ${Constants.platform?.ios?.buildNumber || ''}`.trim()}
           </Text>
         </View>
       </View>
@@ -83,11 +75,11 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   versionLabel: {
-    color: colors.neutral,
+    color: colors.gray,
     fontFamily: LatoFonts.regular,
   },
   versionValue: {
-    color: colors.surfaceHighlight,
+    color: colors.neutral,
     fontFamily: LatoFonts.bold,
   },
 });
