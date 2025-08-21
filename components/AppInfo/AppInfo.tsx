@@ -1,3 +1,4 @@
+import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -6,9 +7,10 @@ import { Text } from 'react-native-paper';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 
-const packageJson = require('../../package.json');
-
 export default function AppInfo() {
+  const version = Application.nativeApplicationVersion ?? 'unknown';
+  const buildNumber = Application.nativeBuildVersion ?? 'unknown';
+
   return (
     <>
       <Text
@@ -29,7 +31,7 @@ export default function AppInfo() {
             variant="bodyMedium"
             style={styles.versionValue}
           >
-            {packageJson.version}
+            {version}
           </Text>
         </View>
         <View style={styles.versionRow}>
@@ -43,7 +45,7 @@ export default function AppInfo() {
             variant="bodyMedium"
             style={styles.versionValue}
           >
-            {Constants.expoConfig?.ios?.buildNumber}
+            {buildNumber}
           </Text>
         </View>
         <View style={styles.versionRow}>
@@ -59,7 +61,7 @@ export default function AppInfo() {
           >
             {typeof Constants.expoConfig?.runtimeVersion === 'string'
               ? Constants.expoConfig.runtimeVersion
-              : Constants.expoConfig?.runtimeVersion?.policy || packageJson.version}
+              : Constants.expoConfig?.runtimeVersion?.policy}
           </Text>
         </View>
         <View style={styles.versionRow}>
