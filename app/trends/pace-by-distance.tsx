@@ -48,13 +48,9 @@ export default function PaceByDistanceScreen() {
     };
   }, []);
 
-  if (!isLandscape) {
-    return <RotatePhone />;
-  }
-
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, !isLandscape && { paddingTop: 60 }]}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
@@ -70,6 +66,8 @@ export default function PaceByDistanceScreen() {
           <Text style={styles.title}>Pace by Distance</Text>
         </View>
       </View>
+
+      {!isLandscape && <RotatePhone />}
 
       {loading ? (
         <View style={styles.loadingContainer}>
@@ -116,7 +114,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingHorizontal: 20,
     paddingBottom: 20,
-    zIndex: 1,
+    zIndex: 11,
     display: 'flex',
     flexDirection: 'row',
   },

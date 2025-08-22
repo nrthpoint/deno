@@ -17,7 +17,7 @@ export const StatCard = ({
     value,
     type = 'default',
     backgroundColor = colors.surface,
-    accentColor = colors.accent,
+    accentColor = colors.surfaceHighlight,
     ...modalProps
   },
 }: StatCardProps) => {

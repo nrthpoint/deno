@@ -1,10 +1,10 @@
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { ModalProps } from '@/components/Modal/Modal.types';
+import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
 import { useWorkout } from '@/context/WorkoutContext';
 import { subheading } from '@/utils/text';
@@ -45,20 +45,13 @@ export const ModalProvider = ({
           animationType="fade"
           transparent={true}
           visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
         >
-          <View style={styles.modalOverlay}>
+          <View
+            style={styles.modalOverlay}
+            onTouchEnd={() => setModalVisible(false)}
+          >
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
-                {modalIcon && (
-                  <View style={[styles.modalIcon, { backgroundColor: color }]}>
-                    <Ionicons
-                      name={modalIcon}
-                      size={40}
-                      color="#FFFFFF"
-                    />
-                  </View>
-                )}
                 <Text style={styles.modalTitle}>{modalTitle}</Text>
               </View>
 
@@ -105,7 +98,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#2A2A2A',
+    backgroundColor: colors.surfaceHighlight,
     borderRadius: 16,
     padding: 24,
     margin: 20,
@@ -126,9 +119,11 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   modalTitle: {
+    ...subheading,
     color: '#FFFFFF',
     fontSize: 18,
     flex: 1,
+    textAlign: 'center',
     ...getLatoFont('bold'),
   },
   modalValue: {
@@ -169,5 +164,8 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     marginTop: 8,
+    borderRadius: 8,
+    color: '#000',
+    backgroundColor: '#FFFFFF',
   },
 });

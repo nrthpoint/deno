@@ -53,7 +53,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="config"
+        name="settings"
         options={{
           title: 'Settings',
           headerShown: false,

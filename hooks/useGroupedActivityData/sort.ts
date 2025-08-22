@@ -1,4 +1,5 @@
 import { Groups } from '@/types/Groups';
+import { getOrdinal } from '@/utils/time';
 
 export const assignRankToGroups = (groups: Groups): Groups => {
   // Set ranks based on the number of runs in each group
@@ -16,7 +17,7 @@ export const assignRankToGroups = (groups: Groups): Groups => {
     } else if (isMostCommon) {
       group.rankLabel = 'Most Common';
     } else {
-      group.rankLabel = `${index + 1}th Most Common`;
+      group.rankLabel = `${getOrdinal(index + 1)} Most Common`;
     }
   });
 

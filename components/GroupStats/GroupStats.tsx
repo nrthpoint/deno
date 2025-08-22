@@ -56,16 +56,13 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta }) => {
   };
 
   return (
-    // <ScrollView style={styles.statList}>
     <View style={styles.statList}>
-      {/* <TotalWorkoutsCard group={group} /> */}
       <TabNavigation
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />
       {renderTabContent()}
     </View>
-    // </ScrollView>
   );
 };
 

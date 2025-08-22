@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: colors.surface,
     margin: 10,
-    marginTop: 15,
+    marginTop: 20,
     borderRadius: 8,
     padding: 4,
   },
@@ -59,11 +59,11 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   activeTab: {
-    backgroundColor: '#2A2A2A',
+    backgroundColor: colors.surfaceHighlight,
   },
   tabText: {
     ...subheading,
-    color: '#888888',
+    color: colors.gray,
     marginTop: 0,
     marginBottom: 0,
     padding: 0,

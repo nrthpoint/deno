@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
+import { Card } from '@/components/Card/Card';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
@@ -19,78 +20,82 @@ export const PredictionsTab: React.FC<TabContentProps> = ({ group }) => {
 
           {/* 4-Week Prediction */}
           {group.predictions.prediction4Week && (
-            <View style={styles.predictionCard}>
-              <Text style={styles.predictionTitle}>4-Week Target</Text>
-              <Text style={styles.predictionPace}>
-                {group.predictions.prediction4Week.predictedPace.quantity.toFixed(2)}{' '}
-                {group.predictions.prediction4Week.predictedPace.unit}
-              </Text>
-              <Text style={styles.predictionTime}>
-                {formatDuration(group.predictions.prediction4Week.predictedDuration)}
-              </Text>
-              <View
-                style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                  <Text style={{ fontSize: 16, marginRight: 6, color: '#FFD700' }}>★</Text>
-                  <Text style={styles.predictionConfidence}>
-                    {group.predictions.prediction4Week.confidenceLevel.charAt(0).toUpperCase() +
-                      group.predictions.prediction4Week.confidenceLevel.slice(1)}
-                  </Text>
-                </View>
+            <Card>
+              <View style={styles.predictionCard}>
+                <Text style={styles.predictionTitle}>4-Week Target</Text>
+                <Text style={styles.predictionPace}>
+                  {group.predictions.prediction4Week.predictedPace.quantity.toFixed(2)}{' '}
+                  {group.predictions.prediction4Week.predictedPace.unit}
+                </Text>
+                <Text style={styles.predictionTime}>
+                  {formatDuration(group.predictions.prediction4Week.predictedDuration)}
+                </Text>
                 <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    flex: 1,
-                    justifyContent: 'flex-end',
-                  }}
+                  style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}
                 >
-                  <Text style={{ fontSize: 16, marginRight: 6, color: '#4CAF50' }}>⬆️</Text>
-                  <Text style={styles.predictionImprovement}>
-                    +{group.predictions.prediction4Week.improvementPercentage.toFixed(1)}%
-                  </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                    <Text style={{ fontSize: 16, marginRight: 6, color: '#FFD700' }}>★</Text>
+                    <Text style={styles.predictionConfidence}>
+                      {group.predictions.prediction4Week.confidenceLevel.charAt(0).toUpperCase() +
+                        group.predictions.prediction4Week.confidenceLevel.slice(1)}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      flex: 1,
+                      justifyContent: 'flex-end',
+                    }}
+                  >
+                    <Text style={{ fontSize: 16, marginRight: 6, color: '#4CAF50' }}>⬆️</Text>
+                    <Text style={styles.predictionImprovement}>
+                      +{group.predictions.prediction4Week.improvementPercentage.toFixed(1)}%
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            </Card>
           )}
 
           {/* 12-Week Prediction */}
           {group.predictions.prediction12Week && (
-            <View style={styles.predictionCard}>
-              <Text style={styles.predictionTitle}>12-Week Target</Text>
-              <Text style={styles.predictionPace}>
-                {group.predictions.prediction12Week.predictedPace.quantity.toFixed(2)}{' '}
-                {group.predictions.prediction12Week.predictedPace.unit}
-              </Text>
-              <Text style={styles.predictionTime}>
-                {formatDuration(group.predictions.prediction12Week.predictedDuration)}
-              </Text>
-              <View
-                style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                  <Text style={{ fontSize: 16, marginRight: 6, color: '#FFD700' }}>★</Text>
-                  <Text style={styles.predictionConfidence}>
-                    {group.predictions.prediction12Week.confidenceLevel.charAt(0).toUpperCase() +
-                      group.predictions.prediction12Week.confidenceLevel.slice(1)}
-                  </Text>
-                </View>
+            <Card>
+              <View style={styles.predictionCard}>
+                <Text style={styles.predictionTitle}>12-Week Target</Text>
+                <Text style={styles.predictionPace}>
+                  {group.predictions.prediction12Week.predictedPace.quantity.toFixed(2)}{' '}
+                  {group.predictions.prediction12Week.predictedPace.unit}
+                </Text>
+                <Text style={styles.predictionTime}>
+                  {formatDuration(group.predictions.prediction12Week.predictedDuration)}
+                </Text>
                 <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    flex: 1,
-                    justifyContent: 'flex-end',
-                  }}
+                  style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}
                 >
-                  <Text style={{ fontSize: 16, marginRight: 6, color: '#4CAF50' }}>⬆️</Text>
-                  <Text style={styles.predictionImprovement}>
-                    +{group.predictions.prediction12Week.improvementPercentage.toFixed(1)}%
-                  </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                    <Text style={{ fontSize: 16, marginRight: 6, color: '#FFD700' }}>★</Text>
+                    <Text style={styles.predictionConfidence}>
+                      {group.predictions.prediction12Week.confidenceLevel.charAt(0).toUpperCase() +
+                        group.predictions.prediction12Week.confidenceLevel.slice(1)}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      flex: 1,
+                      justifyContent: 'flex-end',
+                    }}
+                  >
+                    <Text style={{ fontSize: 16, marginRight: 6, color: '#4CAF50' }}>⬆️</Text>
+                    <Text style={styles.predictionImprovement}>
+                      +{group.predictions.prediction12Week.improvementPercentage.toFixed(1)}%
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            </Card>
           )}
 
           {group.predictions.recommendations.length > 0 && (
@@ -148,11 +153,10 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   predictionCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
+    margin: 10,
+    backgroundColor: colors.surfaceHighlight,
     padding: 20,
-    marginBottom: 20,
-    marginHorizontal: 5,
+    borderRadius: 8,
   },
   predictionTitle: {
     ...subheading,

@@ -18,12 +18,12 @@ export default function AppInfo() {
 
   return (
     <>
-      <Text
+      {/* <Text
         variant="titleLarge"
         style={styles.heading}
       >
         App Information
-      </Text>
+      </Text> */}
       <View style={styles.versionContainer}>
         <View style={styles.versionRow}>
           <Text
@@ -101,13 +101,13 @@ export default function AppInfo() {
 }
 
 const styles = StyleSheet.create({
-  heading: {
-    fontSize: 24,
-    fontFamily: LatoFonts.bold,
-    marginBottom: 0,
-    marginTop: 16,
-    color: colors.neutral,
-  },
+  // heading: {
+  //   fontSize: 24,
+  //   fontFamily: LatoFonts.bold,
+  //   marginBottom: 0,
+  //   marginTop: 16,
+  //   color: colors.neutral,
+  // },
   versionContainer: {
     backgroundColor: colors.surface,
     borderRadius: 12,
