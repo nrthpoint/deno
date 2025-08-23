@@ -33,6 +33,7 @@ export const GroupCarousel = ({ options, itemSuffix, setSelectedOption }: GroupC
       modeConfig={{
         parallaxScrollingScale: 0.8,
         parallaxScrollingOffset: 90,
+        parallaxAdjacentItemScale: 0.6,
       }}
       renderItem={({ item }) => (
         <View style={styles.carouselItem}>
