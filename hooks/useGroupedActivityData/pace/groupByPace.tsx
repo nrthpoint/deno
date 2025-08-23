@@ -20,7 +20,12 @@ import {
   sumQuantities,
 } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
-import { calculateAverageDuration, findLongestRun, findShortestRun } from '@/utils/workout';
+import {
+  calculateAverageDistance,
+  calculateAverageDuration,
+  findLongestRun,
+  findShortestRun,
+} from '@/utils/workout';
 
 export const groupRunsByPace = (params: GroupingParameters): Groups => {
   const groups: Groups = {} as Groups;
@@ -113,6 +118,7 @@ const createEmptyGroup = (
     averageDuration: newQuantity(0, 's'),
     averageHumidity: newQuantity(0, '%'),
     averageElevation: newQuantity(0, 'm'),
+    averageDistance: newQuantity(0, distanceUnit),
     prettyPace: '',
     variantDistribution: [],
     stats: [],
@@ -133,11 +139,15 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   const recommendations: string[] = [];
 
   group.averageDuration = calculateAverageDuration(group.runs);
+  group.averageDistance = calculateAverageDistance(
+    group.runs,
+    group.totalDistance.unit as LengthUnit,
+  );
   group.averageHumidity = newQuantity(
     group.runs.reduce((sum, run) => sum + (run.humidity?.quantity || 0), 0) / group.runs.length,
     '%',
   );
-  group.variantDistribution = group.runs.map((run) => run.duration.quantity);
+  group.variantDistribution = group.runs.map((run) => run.totalDistance.quantity);
   group.percentageOfTotalWorkouts = calculatePercentage(group.runs.length, samples.length);
   group.highlight = findLongestRun(group.runs);
   group.worst = findShortestRun(group.runs);
@@ -192,6 +202,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   group.stats = [
     {
       title: 'Furthest',
+      description: 'The longest run at this pace',
       items: [
         {
           type: 'distance',
@@ -210,6 +221,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
     },
     {
       title: 'Shortest',
+      description: 'The shortest run at this pace',
       items: [
         {
           type: 'distance',
@@ -227,13 +239,31 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
       ],
     },
     {
+      title: 'Average',
+      description: 'The average run at this pace',
+      items: [
+        {
+          type: 'distance',
+          label: 'Distance',
+          value: group.averageDistance,
+          icon: (
+            <Ionicons
+              name="map-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
+        },
+      ],
+    },
+    {
       title: 'Cumulative',
+      description: 'The total cumulative stats at this pace',
       items: [
         {
           type: 'distance',
           label: 'Distance',
           value: group.totalDistance,
-          workout: group.highlight,
           icon: (
             <Ionicons
               name="person-add-outline"
@@ -246,7 +276,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           type: 'duration',
           label: 'Duration',
           value: group.totalDuration,
-          workout: group.highlight,
           icon: (
             <Ionicons
               name="timer-outline"

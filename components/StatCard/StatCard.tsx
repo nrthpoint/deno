@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     color: '#FFFFFF',
-    fontFamily: LatoFonts.regular,
+    fontFamily: LatoFonts.bold,
     textTransform: 'uppercase',
     letterSpacing: 1.6,
     marginBottom: 8,
@@ -104,7 +104,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#CCCCCC',
     fontFamily: LatoFonts.regular,
-    marginBottom: 2,
+    letterSpacing: 1.6,
     textTransform: 'uppercase',
+    marginBottom: 1,
+    marginLeft: 2,
   },
 });

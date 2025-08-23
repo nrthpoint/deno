@@ -19,7 +19,7 @@ export interface Stat extends ModalProps {
   label: string;
   value: Quantity;
   icon: React.ReactNode;
-  workout: ExtendedWorkout;
+  workout?: ExtendedWorkout;
   backgroundColor?: string;
   accentColor?: string;
 }

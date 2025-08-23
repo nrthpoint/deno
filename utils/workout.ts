@@ -1,4 +1,4 @@
-import { Quantity, WorkoutSample } from '@kingstinct/react-native-healthkit';
+import { LengthUnit, Quantity, WorkoutSample } from '@kingstinct/react-native-healthkit';
 
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { newQuantity } from '@/utils/quantity';
@@ -181,4 +181,16 @@ export const calculateAverageDuration = (runs: ExtendedWorkout[]): Quantity => {
 
   const total = runs.reduce((sum, run) => sum + run.duration.quantity, 0);
   return newQuantity(total / runs.length, 's');
+};
+
+export const calculateAverageDistance = (
+  runs: ExtendedWorkout[],
+  distanceUnit: LengthUnit,
+): Quantity => {
+  if (runs.length === 0) {
+    return newQuantity(0, distanceUnit);
+  }
+
+  const total = runs.reduce((sum, run) => sum + run.totalDistance.quantity, 0);
+  return newQuantity(total / runs.length, distanceUnit);
 };

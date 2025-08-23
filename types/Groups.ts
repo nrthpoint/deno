@@ -47,6 +47,7 @@ export type Group = {
   averagePace: Quantity;
   averageDuration: Quantity;
   averageElevation: Quantity;
+  averageDistance: Quantity;
 
   // Pretty formatted stats
   prettyPace: string;

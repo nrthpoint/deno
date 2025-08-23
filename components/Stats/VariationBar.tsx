@@ -35,8 +35,8 @@ export const VariationBar: React.FC<VariationBarProps> = ({
   // Helper function to format values based on group type
   const formatValue = (value: number): string => {
     if (groupType === 'pace') {
-      // For pace groups, the distribution values are distances
-      return formatDistance(newQuantity(value, 'm'));
+      // TODO: Unit here will be wrong if switching to KM.
+      return formatDistance(newQuantity(value, 'mi'));
     } else {
       // For distance and altitude groups, the distribution values are durations in seconds
       return formatDuration(newQuantity(Math.round(value), 's'));

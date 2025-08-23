@@ -4,7 +4,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
 import { VisualCards } from '@/components/GroupStats/VisualCards';
 import { StatCard } from '@/components/StatCard/StatCard';
-import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 
 export const StatsTab: React.FC<TabContentProps> = ({ group, meta }) => {
@@ -18,7 +17,7 @@ export const StatsTab: React.FC<TabContentProps> = ({ group, meta }) => {
       {group.stats.map((section) => (
         <View key={section.title}>
           <Text style={styles.sectionHeader}>{section.title}</Text>
-          {/* {section.description && <Text style={styles.sectionDesc}>{section.description}</Text>} */}
+          {section.description && <Text style={styles.sectionDesc}>{section.description}</Text>}
 
           {section.items.map((stat) => (
             <StatCard
@@ -40,16 +39,19 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontFamily: LatoFonts.bold,
+    fontSize: 26,
+    fontFamily: 'OrelegaOne',
     marginTop: 20,
     paddingHorizontal: 5,
-    textTransform: 'uppercase',
-    letterSpacing: 1.6,
     textAlign: 'left',
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceHighlight,
-    paddingBottom: 15,
     marginBottom: 10,
+  },
+  sectionDesc: {
+    color: '#CCCCCC',
+    fontSize: 14,
+    fontFamily: LatoFonts.regular,
+    marginBottom: 15,
+    paddingHorizontal: 5,
+    textAlign: 'left',
   },
 });

@@ -208,7 +208,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   // Only include factual stats here (no predictions)
   group.stats = [
     {
-      title: '🏃 Fastest',
+      title: 'Fastest',
       description: `Your best performance for ${prettyName}`,
       items: [
         {
@@ -253,7 +253,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
       ],
     },
     {
-      title: '🐌 Slowest',
+      title: 'Slowest',
       description: `Your worst performance for ${prettyName}`,
       items: [
         {
@@ -298,14 +298,13 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
       ],
     },
     {
-      title: '〽️ Average',
+      title: 'Average',
       description: `Averages for ${prettyName}`,
       items: [
         {
           type: 'pace',
           label: 'Pace',
           value: group.averagePace,
-          workout: group.highlight,
           icon: (
             <Ionicons
               name="speedometer"
@@ -318,7 +317,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           type: 'duration',
           label: 'Time',
           value: group.averageDuration,
-          workout: group.highlight,
           icon: (
             <Ionicons
               name="stopwatch-outline"
@@ -331,7 +329,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           type: 'elevation',
           label: 'Elevation',
           value: group.averageElevation,
-          workout: group.highlight,
           icon: (
             <Ionicons
               name="arrow-up-outline"
@@ -343,14 +340,13 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
       ],
     },
     {
-      title: '📈 Cumulative',
+      title: 'Cumulative',
       description: `Cumulative stats for ${prettyName}`,
       items: [
         {
           type: 'distance',
           label: 'Cumulative Distance',
           value: group.totalDistance,
-          workout: group.highlight,
           icon: (
             <Ionicons
               name="person-add-outline"
@@ -363,7 +359,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           type: 'duration',
           label: 'Cumulative Duration',
           value: group.totalDuration,
-          workout: group.highlight,
           icon: (
             <Ionicons
               name="timer-outline"
@@ -376,7 +371,6 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           type: 'elevation',
           label: 'Cumulative Elevation',
           value: group.totalElevation,
-          workout: group.highlight,
           icon: (
             <Ionicons
               name="arrow-up-outline"
