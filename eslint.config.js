@@ -22,7 +22,7 @@ module.exports = defineConfig([
           vars: 'all',
           args: 'after-used',
           ignoreRestSiblings: false,
-          argsIgnorePattern: '^_', // "argsIgnorePattern": "params"
+          argsIgnorePattern: '^(_)',
         },
       ],
       'react-native/no-unused-styles': 'error',

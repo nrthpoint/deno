@@ -114,11 +114,4 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
   },
-  title: {
-    fontSize: 18,
-    fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-    marginBottom: 16,
-    textAlign: 'center',
-  },
 });
