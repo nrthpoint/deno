@@ -1,6 +1,6 @@
 import { Quantity } from '@kingstinct/react-native-healthkit';
 
-import { formatDuration, convertDurationToMinutes } from './time';
+import { formatDuration, formatDurationSeparate, convertDurationToMinutes } from './time';
 
 describe('Time Utilities', () => {
   describe('formatDuration', () => {
@@ -54,6 +54,71 @@ describe('Time Utilities', () => {
     it('should throw error for NaN duration', () => {
       expect(() => formatDuration({ unit: 's', quantity: NaN })).toThrow(
         'formatDuration: Duration quantity must be a valid non-negative number',
+      );
+    });
+  });
+
+  describe('formatDurationSeparate', () => {
+    it('should format seconds correctly with separate values and units', () => {
+      const result = formatDurationSeparate({ unit: 's', quantity: 125 }); // 2 minutes 5 seconds
+      expect(result).toEqual([
+        { displayValue: '2', unit: 'min' },
+        { displayValue: '5', unit: 's' },
+      ]);
+    });
+
+    it('should format hours, minutes, and seconds correctly', () => {
+      const result = formatDurationSeparate({ unit: 's', quantity: 3665 }); // 1 hour 1 minute 5 seconds
+      expect(result).toEqual([
+        { displayValue: '1', unit: 'hr' },
+        { displayValue: '1', unit: 'min' },
+        { displayValue: '5', unit: 's' },
+      ]);
+    });
+
+    it('should handle zero seconds', () => {
+      const result = formatDurationSeparate({ unit: 's', quantity: 0 });
+      expect(result).toEqual([{ displayValue: '0', unit: 's' }]);
+    });
+
+    it('should handle exactly one minute', () => {
+      const result = formatDurationSeparate({ unit: 's', quantity: 60 });
+      expect(result).toEqual([{ displayValue: '1', unit: 'min' }]);
+    });
+
+    it('should handle exactly one hour', () => {
+      const result = formatDurationSeparate({ unit: 's', quantity: 3600 });
+      expect(result).toEqual([{ displayValue: '1', unit: 'hr' }]);
+    });
+
+    it('should handle only seconds', () => {
+      const result = formatDurationSeparate({ unit: 's', quantity: 45 });
+      expect(result).toEqual([{ displayValue: '45', unit: 's' }]);
+    });
+
+    it('should handle minutes without hours', () => {
+      const result = formatDurationSeparate({ unit: 's', quantity: 150 }); // 2 minutes 30 seconds
+      expect(result).toEqual([
+        { displayValue: '2', unit: 'min' },
+        { displayValue: '30', unit: 's' },
+      ]);
+    });
+
+    it('should throw error for invalid unit', () => {
+      expect(() => formatDurationSeparate({ unit: 'm', quantity: 60 })).toThrow(
+        'formatDurationSeparate: Duration must be in seconds (unit: "s")',
+      );
+    });
+
+    it('should throw error for negative duration', () => {
+      expect(() => formatDurationSeparate({ unit: 's', quantity: -10 })).toThrow(
+        'formatDurationSeparate: Duration quantity must be a valid non-negative number',
+      );
+    });
+
+    it('should throw error for NaN duration', () => {
+      expect(() => formatDurationSeparate({ unit: 's', quantity: NaN })).toThrow(
+        'formatDurationSeparate: Duration quantity must be a valid non-negative number',
       );
     });
   });

@@ -62,6 +62,44 @@ export const formatDuration = (duration: Quantity) => {
 };
 
 /**
+ * Formats a duration in seconds into separate values and units for UI display
+ * @param duration - The duration in seconds
+ * @returns Array of objects with displayValue and unit for each time component
+ */
+export const formatDurationSeparate = (duration: Quantity) => {
+  if (isNaN(duration.quantity) || duration.quantity < 0) {
+    throw new Error(
+      'formatDurationSeparate: Duration quantity must be a valid non-negative number',
+    );
+  }
+
+  if (duration.unit !== 's') {
+    throw new Error('formatDurationSeparate: Duration must be in seconds (unit: "s")');
+  }
+
+  const totalSeconds = Math.round(duration.quantity);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  const components = [];
+
+  if (hours > 0) {
+    components.push({ displayValue: hours.toString(), unit: 'hr' });
+  }
+
+  if (minutes > 0) {
+    components.push({ displayValue: minutes.toString(), unit: 'min' });
+  }
+
+  if (seconds > 0 || (hours === 0 && minutes === 0)) {
+    components.push({ displayValue: seconds.toString(), unit: 's' });
+  }
+
+  return components;
+};
+
+/**
  * Converts a Quantity duration into minutes, handling different units (m, s, h)
  * @param duration - The duration as a Quantity object
  * @param decimalPlaces - Number of decimal places to round the result (default is 2)

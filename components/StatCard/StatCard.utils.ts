@@ -1,14 +1,17 @@
 import { Quantity } from '@kingstinct/react-native-healthkit';
 
 import { WorkoutAchievements } from '@/types/ExtendedWorkout';
-import { formatPace, formatDuration } from '@/utils/time';
+import { formatPace, formatDurationSeparate } from '@/utils/time';
 
-export const formatQuantityValue = (
-  value: Quantity,
-  type?: string,
-): { displayValue: string; unit?: string } => {
+export type DisplayValue = {
+  displayValue: string;
+  unit: string;
+}[];
+
+export const formatQuantityValue = (value: Quantity, type?: string): DisplayValue => {
   if (!value || value.quantity === undefined || value.quantity === null) {
-    return { displayValue: '0', unit: value?.unit };
+    console.warn('formatQuantityValue: Invalid quantity value');
+    return [{ displayValue: '0', unit: value?.unit }];
   }
 
   switch (type) {
@@ -16,22 +19,26 @@ export const formatQuantityValue = (
       const paceFormattedValue = formatPace(value, false);
       const paceFormattedUnit = value.unit || 'min/mi';
 
-      return { displayValue: paceFormattedValue, unit: paceFormattedUnit };
+      return [{ displayValue: paceFormattedValue, unit: paceFormattedUnit }];
 
     case 'duration':
-      return { displayValue: formatDuration(value) };
+      return formatDurationSeparate(value);
 
     case 'distance':
-      return {
-        displayValue: value.quantity.toFixed(2),
-        unit: value.unit,
-      };
+      return [
+        {
+          displayValue: value.quantity.toFixed(2),
+          unit: value.unit,
+        },
+      ];
 
     default:
-      return {
-        displayValue: value.quantity.toString(),
-        unit: value.unit,
-      };
+      return [
+        {
+          displayValue: value.quantity.toString(),
+          unit: value.unit,
+        },
+      ];
   }
 };
 

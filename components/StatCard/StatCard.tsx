@@ -9,7 +9,19 @@ import { LatoFonts } from '@/config/fonts';
 import { useTheme } from '@/context/ThemeContext';
 
 import { StatCardProps } from './StatCard.types';
-import { formatQuantityValue } from './StatCard.utils';
+import { DisplayValue, formatQuantityValue } from './StatCard.utils';
+
+const Value = ({ value }: { value: DisplayValue }) => {
+  return value.map((component, index) => (
+    <View
+      key={index}
+      style={styles.durationComponent}
+    >
+      <Text style={styles.value}>{component.displayValue}</Text>
+      <Text style={styles.unit}>{component.unit}</Text>
+    </View>
+  ));
+};
 
 export const StatCard = ({
   stat: { icon, label, value, type = 'default', backgroundColor = colors.surface, ...modalProps },
@@ -17,7 +29,7 @@ export const StatCard = ({
   const {
     colorProfile: { primary },
   } = useTheme();
-  const { displayValue, unit } = formatQuantityValue(value, type);
+  const formattedValue = formatQuantityValue(value, type);
 
   const cardContent = (
     <Card backgroundColor={backgroundColor}>
@@ -29,8 +41,7 @@ export const StatCard = ({
         <View style={styles.content}>
           <Text style={styles.label}>{label}</Text>
           <View style={styles.valueContainer}>
-            <Text style={styles.value}>{displayValue}</Text>
-            {unit && <Text style={styles.unit}>{unit}</Text>}
+            <Value value={formattedValue} />
           </View>
         </View>
       </View>
@@ -75,6 +86,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     gap: 4,
+  },
+  durationComponent: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 2,
+    marginRight: 8,
   },
   value: {
     fontSize: 24,
