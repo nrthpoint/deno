@@ -98,19 +98,10 @@ const styles = StyleSheet.create({
     color: colors.neutral,
     fontWeight: '600',
   },
-  betterValue: {
-    color: '#4CAF50',
-  },
   unitText: {
     fontSize: 12,
     fontFamily: LatoFonts.regular,
     color: '#888',
     marginTop: 2,
-  },
-  sampleLabel: {
-    fontSize: 12,
-    fontFamily: LatoFonts.regular,
-    color: '#666',
-    marginTop: 4,
   },
 });

@@ -122,19 +122,6 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: colors.background,
   },
-  title: {
-    color: '#fff',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    color: '#bbb',
-    fontSize: 16,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
   chart: {
     marginVertical: 8,
     borderRadius: 16,

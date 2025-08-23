@@ -212,12 +212,6 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     color: '#fff',
   },
-  spinnerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#0A0A0A',
-  },
   container: {
     flex: 1,
   },

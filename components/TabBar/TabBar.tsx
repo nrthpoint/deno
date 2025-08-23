@@ -15,7 +15,6 @@ interface TabBarProps {
   activeTabId: string | number;
   style?: any;
   activeTabColor?: string;
-  inactiveTabColor?: string;
   activeTextColor?: string;
   inactiveTextColor?: string;
   onTabPress: (tabId: string | number) => void;
@@ -23,21 +22,31 @@ interface TabBarProps {
 
 export const TabBar: React.FC<TabBarProps> = ({
   tabs,
-  activeTabId,
   style,
+  activeTabId,
   activeTabColor = '#424bff', // Default blue from your design
-  inactiveTabColor = 'transparent',
   activeTextColor = '#FFFFFF',
   inactiveTextColor = '#999999',
   onTabPress,
 }) => {
-  const animatedValue = useRef(new Animated.Value(0)).current;
-
   // Find the index of the active tab
   const activeTabIndex = tabs.findIndex((tab) => tab.id === activeTabId);
 
+  // Initialize animated value with the correct starting position
+  const animatedValue = useRef(
+    new Animated.Value(activeTabIndex >= 0 ? activeTabIndex : 0),
+  ).current;
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
-    // Animate to the active tab position
+    // Skip animation on first render, just set the position
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      animatedValue.setValue(activeTabIndex >= 0 ? activeTabIndex : 0);
+      return;
+    }
+
+    // Animate to the active tab position for subsequent changes
     Animated.timing(animatedValue, {
       toValue: activeTabIndex,
       duration: 250,
@@ -145,17 +154,6 @@ const styles = StyleSheet.create({
   lastTab: {
     borderTopRightRadius: 8,
     borderBottomRightRadius: 8,
-  },
-  activeTab: {
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
   },
   disabledTab: {
     opacity: 0.5,

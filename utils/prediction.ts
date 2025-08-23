@@ -116,11 +116,7 @@ const calculateRecentTrend = (recentRuns: ExtendedWorkout[]): number => {
 /**
  * Calculate realism factor to prevent unrealistic predictions
  */
-export const calculateRealismFactor = (
-  currentBest: ExtendedWorkout,
-  improvementRate: number,
-  groupType: string,
-): number => {
+export const calculateRealismFactor = (currentBest: ExtendedWorkout): number => {
   const currentPace = currentBest.averagePace.quantity;
 
   // Elite performance benchmarks (min/mi)
@@ -314,7 +310,7 @@ export const generateWorkoutPrediction = (
   const confidence = calculatePredictionConfidence(group, trend);
 
   // Calculate realistic improvement
-  const realismFactor = calculateRealismFactor(group.highlight, trend.improvementRate, group.type);
+  const realismFactor = calculateRealismFactor(group.highlight);
   const adjustedImprovementRate = trend.improvementRate * realismFactor;
 
   // Apply improvement over time with diminishing returns

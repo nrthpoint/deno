@@ -109,10 +109,7 @@ export default function WorkoutDetailScreen() {
     ];
 
     return stats.map((section, sectionIndex) => (
-      <Card
-        key={sectionIndex}
-        style={styles.statsSection}
-      >
+      <Card key={sectionIndex}>
         <View style={styles.statsContainer}>
           <Text style={styles.sectionTitle}>{section.category}</Text>
           <View style={styles.statsTable}>
@@ -335,12 +332,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 8,
     justifyContent: 'center',
-  },
-  achievementBadge: {
-    marginBottom: 8,
-  },
-  statsSection: {
-    //marginBottom: 24,
   },
   statsTable: {
     overflow: 'hidden',

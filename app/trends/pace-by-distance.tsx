@@ -28,7 +28,7 @@ export default function PaceByDistanceScreen() {
   const { width: screenWidth, height: screenHeight } = screenData;
   const isLandscape = screenWidth > screenHeight;
 
-  const { workouts, loading, authorizationStatus } = useWorkoutData({
+  const { samples, loading, authorizationStatus } = useWorkoutData({
     activityType,
     distanceUnit,
     timeRangeInDays,
@@ -84,7 +84,7 @@ export default function PaceByDistanceScreen() {
         </View>
       ) : (
         <ScrollView style={styles.content}>
-          <PaceDistanceGraph workouts={workouts} />
+          <PaceDistanceGraph workouts={samples} />
         </ScrollView>
       )}
     </View>
@@ -141,9 +141,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 16,
     textAlign: 'center',
-  },
-  subtitle: {
-    color: '#bbb',
-    fontSize: 18,
   },
 });

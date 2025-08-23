@@ -11,7 +11,6 @@ import { subheading } from '@/utils/text';
 
 export const ModalProvider = ({
   children,
-  modalIcon,
   modalTitle,
   modalDescription,
   modalInfo,
@@ -110,27 +109,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
-  modalIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
   modalTitle: {
     ...subheading,
     color: '#FFFFFF',
     fontSize: 18,
     flex: 1,
     textAlign: 'center',
-    ...getLatoFont('bold'),
-  },
-  modalValue: {
-    color: '#FFFFFF',
-    fontSize: 28,
-    textAlign: 'center',
-    marginBottom: 16,
     ...getLatoFont('bold'),
   },
   modalDescription: {

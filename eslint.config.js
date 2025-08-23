@@ -1,6 +1,7 @@
 const { defineConfig } = require('eslint/config');
 const expoConfig = require('eslint-config-expo/flat');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
+const reactNativePlugin = require('eslint-plugin-react-native');
 
 module.exports = defineConfig([
   expoConfig,
@@ -9,7 +10,23 @@ module.exports = defineConfig([
     ignores: ['dist/*', '*env.d.ts'],
   },
   {
+    plugins: {
+      'react-native': reactNativePlugin,
+    },
+  },
+  {
     rules: {
+      'no-unused-vars': [
+        'warn',
+        {
+          vars: 'all',
+          args: 'after-used',
+          ignoreRestSiblings: false,
+          argsIgnorePattern: '^_', // "argsIgnorePattern": "params"
+        },
+      ],
+      'react-native/no-unused-styles': 'error',
+
       // Enforce using @/ imports instead of relative imports that go up directories
       'no-restricted-imports': [
         'error',

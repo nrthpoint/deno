@@ -178,10 +178,6 @@ const styles = StyleSheet.create({
     color: colors.neutral,
     textAlign: 'center',
   },
-  bottomSheetContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 20, // Extra bottom padding for better scrolling
-  },
   bottomSheetContainer: {
     flex: 1,
   },

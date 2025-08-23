@@ -12,16 +12,7 @@ import { StatCardProps } from './StatCard.types';
 import { formatQuantityValue } from './StatCard.utils';
 
 export const StatCard = ({
-  stat: {
-    icon,
-    label,
-    value,
-    type = 'default',
-    backgroundColor = colors.surface,
-    // TODO: We don't need props and ThemeProvider context.
-    accentColor = colors.other,
-    ...modalProps
-  },
+  stat: { icon, label, value, type = 'default', backgroundColor = colors.surface, ...modalProps },
 }: StatCardProps) => {
   const {
     colorProfile: { primary },
@@ -98,18 +89,5 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.regular,
     marginBottom: 2,
     textTransform: 'uppercase',
-  },
-  infoButton: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
 });

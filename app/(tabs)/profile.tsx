@@ -42,8 +42,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  comingSoonText: {
-    color: '#fff',
-    fontSize: 24,
-  },
 });

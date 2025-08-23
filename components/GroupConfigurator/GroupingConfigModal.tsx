@@ -62,10 +62,6 @@ export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
         contentContainerStyle={styles.modalContainer}
       >
         <ThemeProvider groupType={groupType}>
-          {/* <View style={[styles.header]}>
-            <Text style={styles.title}>Settings</Text>
-          </View> */}
-
           {/* Tab Bar for Group Type Selection */}
           <View style={styles.tabBarContainer}>
             <TabBar
@@ -140,26 +136,9 @@ const styles = StyleSheet.create({
     minHeight: 480,
     borderRadius: 12,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: 24,
-    paddingRight: 10,
-  },
   tabBarContainer: {
     padding: 16,
     paddingBottom: 0,
-  },
-  title: {
-    fontSize: 14,
-    fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-    textTransform: 'uppercase',
-    fontWeight: '600',
-    marginTop: 20,
-    marginBottom: 20,
-    letterSpacing: 1.5,
   },
   content: {
     padding: 24,

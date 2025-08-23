@@ -146,34 +146,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
   },
-  svgContainer: {},
-  textContainer: {
-    maxWidth: '100%',
-    alignItems: 'center',
-    marginTop: -10,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: 160,
-    marginBottom: 4,
-  },
-  statItem: {
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: 14,
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    ...getLatoFont('bold'),
-  },
-  statLabel: {
-    fontSize: 10,
-    color: '#ffffff',
-    textTransform: 'uppercase',
-    ...getLatoFont('regular'),
-  },
   labelText: {
     fontSize: 12,
     color: '#ffffff',
@@ -182,13 +154,5 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     marginTop: 4,
     ...getLatoFont('bold'),
-  },
-  infoButton: {
-    position: 'absolute',
-    top: -5,
-    right: 5,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 12,
-    padding: 4,
   },
 });

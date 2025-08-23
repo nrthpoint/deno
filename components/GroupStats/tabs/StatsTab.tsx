@@ -52,12 +52,4 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     marginBottom: 10,
   },
-  sectionDesc: {
-    color: '#cfcfcf',
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    marginBottom: 10,
-    paddingHorizontal: 5,
-    textAlign: 'center',
-  },
 });

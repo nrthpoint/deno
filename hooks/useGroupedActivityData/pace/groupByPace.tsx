@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LengthUnit } from '@kingstinct/react-native-healthkit';
 import React from 'react';
 
 import { deleteEmptyGroups } from '@/hooks/useGroupedActivityData/distance/groupByDistance';
@@ -8,6 +9,7 @@ import {
   GroupingStatsParams,
 } from '@/hooks/useGroupedActivityData/interface';
 import { assignRankToGroups } from '@/hooks/useGroupedActivityData/sort';
+import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group, Groups } from '@/types/Groups';
 import { PredictedWorkout } from '@/types/Prediction';
 import { generateWorkoutPrediction } from '@/utils/prediction';
@@ -86,7 +88,11 @@ const parseSampleIntoGroup = ({
   return groups;
 };
 
-const createEmptyGroup = (key: string, sample: any): Group => {
+const createEmptyGroup = (
+  key: string,
+  sample: ExtendedWorkout,
+  distanceUnit: LengthUnit,
+): Group => {
   return {
     type: 'pace',
     title: `${key} min/mile`,
@@ -99,11 +105,11 @@ const createEmptyGroup = (key: string, sample: any): Group => {
     worst: sample,
     mostRecent: sample,
     percentageOfTotalWorkouts: 0,
-    totalVariation: newQuantity(0, 's'),
-    totalDistance: newQuantity(0, 'mi'),
+    totalVariation: newQuantity(0, distanceUnit),
+    totalDistance: newQuantity(0, distanceUnit),
     totalDuration: newQuantity(0, 's'),
     totalElevation: newQuantity(0, 'm'),
-    averagePace: newQuantity(0, 'min/mile'),
+    averagePace: newQuantity(0, `min/${distanceUnit}`),
     averageDuration: newQuantity(0, 's'),
     averageHumidity: newQuantity(0, '%'),
     averageElevation: newQuantity(0, 'm'),
@@ -135,7 +141,12 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   group.percentageOfTotalWorkouts = calculatePercentage(group.runs.length, samples.length);
   group.highlight = findLongestRun(group.runs);
   group.worst = findShortestRun(group.runs);
-  group.totalVariation = getAbsoluteDifference(group.worst.duration, group.highlight.duration);
+
+  // Variation is length of run at this pace.
+  group.totalVariation = getAbsoluteDifference(
+    group.worst.totalDistance,
+    group.highlight.totalDistance,
+  );
 
   if (group.runs.length >= 2) {
     try {
@@ -185,7 +196,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
         {
           type: 'distance',
           label: 'Distance',
-          value: group.highlight.averagePace,
+          value: group.highlight.totalDistance,
           workout: group.highlight,
           icon: (
             <Ionicons
@@ -203,7 +214,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
         {
           type: 'distance',
           label: 'Distance',
-          value: group.worst.averagePace,
+          value: group.worst.totalDistance,
           workout: group.worst,
           icon: (
             <Ionicons

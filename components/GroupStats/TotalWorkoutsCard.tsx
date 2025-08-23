@@ -6,7 +6,6 @@ import { WorkoutListView } from '@/components/WorkoutListView/WorkoutListView';
 import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
 import { Group } from '@/types/Groups';
-import { subheading } from '@/utils/text';
 
 interface TotalWorkoutsCardProps {
   group: Group;
@@ -67,23 +66,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 4,
     ...getLatoFont('regular'),
-  },
-  minorLabel: {
-    ...subheading,
-    marginTop: 0,
-    fontSize: 16,
-    color: '#a1a1a1',
-    fontWeight: 'thin',
-    marginBottom: 4,
-  },
-  value: {
-    fontSize: 22,
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  unit: {
-    fontSize: 14,
-    color: '#ccc',
-    fontWeight: 'normal',
   },
 });
