@@ -63,7 +63,7 @@ export const HalfMoonProgress = ({
           {/* Background half circle */}
           <Path
             d={backgroundPath}
-            stroke="#ffffff20"
+            stroke={colors.surface}
             strokeWidth={strokeWidth}
             fill="none"
             strokeLinecap="round"
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    backgroundColor: colors.surfaceHighlight,
+    backgroundColor: colors.primary,
     margin: 10,
     paddingVertical: 15,
     borderRadius: 8,

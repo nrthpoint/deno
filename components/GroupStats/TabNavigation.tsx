@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
   tabText: {
     ...subheading,
-    color: colors.gray,
+    color: colors.lightGray,
     marginTop: 0,
     marginBottom: 0,
     padding: 0,

@@ -2,9 +2,9 @@ import { GroupType } from '@/types/Groups';
 
 export const colors = {
   neutral: '#FFFFFF',
-  lightGray: '#F0F0F0',
+  lightGray: '#c2c2c2ff',
   background: '#0A0A0A',
-  surfaceHighlight: '#313131ff',
+  surfaceHighlight: '#252525ff',
   surface: '#161616ff',
   accent: '#1e1e1eff',
   gray: '#333333',
@@ -12,6 +12,7 @@ export const colors = {
   // UI Component Colors
   primary: '#282E9A',
   secondary: '#151748',
+  tertiary: '#26c25dff',
 };
 
 export type ColorProfile = { primary: string; secondary: string };

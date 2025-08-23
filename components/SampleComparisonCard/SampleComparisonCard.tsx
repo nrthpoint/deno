@@ -91,7 +91,7 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
         ),
       )}
 
-      <RouteMap samples={[sample1, sample2]} />
+      {/* <RouteMap samples={[sample1, sample2]} /> */}
     </View>
   );
 };

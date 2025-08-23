@@ -14,6 +14,7 @@ import { useSettings } from '@/context/SettingsContext';
 import { useGroupedActivityData } from '@/hooks/useGroupedActivityData';
 import { GroupingConfig } from '@/hooks/useGroupedActivityData/interface';
 import { GroupType } from '@/types/Groups';
+import { subheading } from '@/utils/text';
 
 const enabledTabOptions = defaultUIConfig.tabOptions.filter((opt) => opt.enabled);
 const tabOptions: GroupType[] = enabledTabOptions.map((opt) => opt.key);
@@ -77,7 +78,7 @@ export default function Index() {
   const colorProfile = tabColors[groupType];
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: colors.surface }]}>
+    <ScrollView style={[styles.container, { backgroundColor: '#e6e6e6' }]}>
       {/* Authorization Overlay */}
       <AuthorizationOverlay
         authorizationStatus={authorizationStatus}
@@ -97,6 +98,7 @@ export default function Index() {
 
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Groups</Text>
+        <Text style={styles.headerSubtitle}>{tabLabels[groupType]}</Text>
       </View>
 
       {/* No Data Overlay */}
@@ -113,7 +115,7 @@ export default function Index() {
         <IconButton
           icon="cog"
           size={24}
-          iconColor="#FFFFFF"
+          iconColor="#0b0b0b"
           onPress={() => setConfigModalVisible(true)}
         />
       </View>
@@ -160,13 +162,18 @@ export const styles = StyleSheet.create({
   header: {
     paddingTop: 80,
     paddingHorizontal: 20,
-    backgroundColor: colors.surface,
+    //backgroundColor: colors.surface,
   },
   headerTitle: {
-    color: '#fff',
+    color: '#1f1f1f',
     fontSize: 40,
     fontFamily: 'OrelegaOne',
     textAlign: 'left',
+  },
+  headerSubtitle: {
+    ...subheading,
+    marginTop: 10,
+    color: '#1f1f1f',
   },
   spinnerContainer: {
     flex: 1,

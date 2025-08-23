@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
 import { VisualCards } from '@/components/GroupStats/VisualCards';
 import { StatCard } from '@/components/StatCard/StatCard';
+import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 
 export const StatsTab: React.FC<TabContentProps> = ({ group, meta }) => {
@@ -39,14 +40,17 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: LatoFonts.bold,
     marginTop: 20,
-    marginBottom: 10,
     paddingHorizontal: 5,
     textTransform: 'uppercase',
-    letterSpacing: 1.2,
-    textAlign: 'center',
+    letterSpacing: 1.6,
+    textAlign: 'left',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surfaceHighlight,
+    paddingBottom: 15,
+    marginBottom: 10,
   },
   sectionDesc: {
     color: '#cfcfcf',

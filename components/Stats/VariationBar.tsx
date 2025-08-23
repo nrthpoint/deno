@@ -16,7 +16,7 @@ interface VariationBarProps extends ModalProps {
   width: number;
 }
 
-const BAR_HEIGHT = 4;
+const BAR_HEIGHT = 8;
 const MARGIN = 20;
 const BAR_Y = 24;
 const LABEL_Y = BAR_Y + BAR_HEIGHT + 35;
@@ -68,7 +68,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
           y={BAR_Y}
           width={barWidth}
           height={BAR_HEIGHT}
-          fill="#ffffff25"
+          fill={colors.surface}
           rx={BAR_HEIGHT / 2}
         />
 
@@ -86,8 +86,8 @@ export const VariationBar: React.FC<VariationBarProps> = ({
               x2={dot.x}
               y1={y1}
               y2={y2}
-              stroke="#fff"
-              strokeWidth={2}
+              stroke={colors.surface}
+              strokeWidth={8}
               opacity={isEnd ? 1 : 1}
               strokeLinecap="round"
             />
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'visible',
     paddingVertical: 10,
-    backgroundColor: colors.surfaceHighlight,
+    backgroundColor: colors.tertiary,
     margin: 10,
     borderRadius: 8,
   },
