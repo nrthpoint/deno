@@ -5,6 +5,7 @@ import Svg, { Path } from 'react-native-svg';
 import { Card } from '@/components/Card/Card';
 import { ModalProvider } from '@/components/Modal/Modal';
 import { ModalProps } from '@/components/Modal/Modal.types';
+import { ThemedGradient } from '@/components/ThemedGradient';
 import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
 import { subheading } from '@/utils/text';
@@ -87,6 +88,8 @@ export const HalfMoonProgress = ({
         </View>
         <Text style={styles.labelText}>{label}</Text>
       </View>
+
+      <ThemedGradient style={styles.gradient} />
     </View>
   );
 
@@ -105,11 +108,19 @@ export const HalfMoonProgress = ({
 };
 
 const styles = StyleSheet.create({
+  gradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 500,
+    zIndex: -1,
+  },
   container: {
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    backgroundColor: colors.other,
     paddingVertical: 15,
     borderRadius: 8,
   },
@@ -139,14 +150,6 @@ const styles = StyleSheet.create({
     ...subheading,
     textAlign: 'center',
     marginBottom: 0,
-  },
-  infoButton: {
-    position: 'absolute',
-    top: -10,
-    right: -3,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 12,
-    padding: 4,
   },
   modalValue: {
     color: '#FFFFFF',

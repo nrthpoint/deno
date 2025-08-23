@@ -7,7 +7,7 @@ import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { GROUP_TYPES, GroupType, Groups } from '@/types/Groups';
 
 type UseWorkoutGroupingParams = {
-  workouts: ExtendedWorkout[];
+  samples: ExtendedWorkout[];
   groupType: GroupType;
   tolerance: number;
   groupSize: number;
@@ -15,17 +15,17 @@ type UseWorkoutGroupingParams = {
 };
 
 export function useWorkoutGrouping({
-  workouts,
+  samples,
   groupType,
   tolerance,
   groupSize,
   distanceUnit,
 }: UseWorkoutGroupingParams): Groups {
-  if (workouts.length === 0) {
+  if (samples.length === 0) {
     return {};
   }
 
-  const params = { samples: workouts, tolerance, groupSize, distanceUnit };
+  const params = { samples, tolerance, groupSize, distanceUnit };
 
   switch (groupType) {
     case GROUP_TYPES.Distance:

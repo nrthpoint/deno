@@ -21,14 +21,14 @@ export function useGroupedActivityData({
   tolerance,
   groupSize,
 }: UseGroupedActivityDataParams) {
-  const { workouts, meta, loading, authorizationStatus, requestAuthorization } = useWorkoutData({
+  const { samples, meta, loading, authorizationStatus, requestAuthorization } = useWorkoutData({
     activityType,
     distanceUnit,
     timeRangeInDays,
   });
 
   const groups = useWorkoutGrouping({
-    workouts,
+    samples,
     groupType,
     tolerance,
     groupSize,

@@ -17,14 +17,6 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta }) => {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'stats':
-        return (
-          <StatsTab
-            group={group}
-            meta={meta}
-          />
-        );
-
       case 'predictions':
         return (
           <PredictionsTab

@@ -4,6 +4,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
 import { colors } from '@/config/colors';
+import { useTheme } from '@/context/ThemeContext';
 import { GroupType } from '@/types/Groups';
 import { subheading } from '@/utils/text';
 
@@ -18,6 +19,8 @@ interface GroupCarouselProps {
 }
 
 export const GroupCarousel = ({ options, itemSuffix, setSelectedOption }: GroupCarouselProps) => {
+  const { colorProfile } = useTheme();
+
   return (
     <Carousel
       loop={false}
@@ -90,8 +93,10 @@ export const GroupCarousel = ({ options, itemSuffix, setSelectedOption }: GroupC
             </Svg>
           </View>
           <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-            <Text style={[styles.carouselText]}>{item}</Text>
-            <Text style={[styles.carouselSubText]}>{itemSuffix}</Text>
+            <Text style={[styles.carouselText, { color: colorProfile.primary }]}>{item}</Text>
+            <Text style={[styles.carouselSubText, { color: colorProfile.primary }]}>
+              {itemSuffix}
+            </Text>
           </View>
         </View>
       )}

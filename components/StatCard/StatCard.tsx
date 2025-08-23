@@ -6,6 +6,7 @@ import { Card } from '@/components/Card/Card';
 import { ModalProvider } from '@/components/Modal/Modal';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { useTheme } from '@/context/ThemeContext';
 
 import { StatCardProps } from './StatCard.types';
 import { formatQuantityValue } from './StatCard.utils';
@@ -17,16 +18,20 @@ export const StatCard = ({
     value,
     type = 'default',
     backgroundColor = colors.surface,
+    // TODO: We don't need props and ThemeProvider context.
     accentColor = colors.other,
     ...modalProps
   },
 }: StatCardProps) => {
+  const {
+    colorProfile: { primary },
+  } = useTheme();
   const { displayValue, unit } = formatQuantityValue(value, type);
 
   const cardContent = (
     <Card backgroundColor={backgroundColor}>
       <View style={styles.innerContainer}>
-        <View style={[styles.accentStrip, { backgroundColor: accentColor }]}>
+        <View style={[styles.accentStrip, { backgroundColor: primary }]}>
           <View style={styles.iconContainer}>{icon}</View>
         </View>
 

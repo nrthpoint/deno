@@ -22,5 +22,4 @@ export interface IndividualSampleParserParams extends GroupingConfig {
 export interface GroupingStatsParams {
   group: Group;
   samples: readonly ExtendedWorkout[];
-  distanceUnit: LengthUnit;
 }

@@ -5,6 +5,7 @@ import Svg, { Line, Rect, Text as SvgText } from 'react-native-svg';
 import { Card } from '@/components/Card/Card';
 import { ModalProvider } from '@/components/Modal/Modal';
 import { ModalProps } from '@/components/Modal/Modal.types';
+import { ThemedGradient } from '@/components/ThemedGradient';
 import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
 import { newQuantity } from '@/utils/quantity';
@@ -115,6 +116,8 @@ export const VariationBar: React.FC<VariationBarProps> = ({
           {formatDuration(newQuantity(Math.round(max), 's'))}
         </SvgText>
       </Svg>
+
+      <ThemedGradient style={styles.gradient} />
     </View>
   );
 
@@ -126,13 +129,21 @@ export const VariationBar: React.FC<VariationBarProps> = ({
 };
 
 const styles = StyleSheet.create({
+  gradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: -1,
+    height: 500,
+  },
   container: {
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
     overflow: 'visible',
     paddingVertical: 10,
-    backgroundColor: colors.other,
     borderRadius: 8,
   },
   svgContainer: {},

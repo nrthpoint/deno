@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TabBar, TabOption } from '@/components/TabBar';
+import { TabBar, TabOption } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 
 import { TabType } from './GroupStats.types';

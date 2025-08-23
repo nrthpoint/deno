@@ -22,10 +22,10 @@ import { calculateAverageDuration, findLongestRun, findShortestRun } from '@/uti
 
 export const groupRunsByPace = (params: GroupingParameters): Groups => {
   const groups: Groups = {} as Groups;
-  const { samples, tolerance, groupSize } = params;
+  const { samples } = params;
 
   for (const sample of samples) {
-    parseSampleIntoGroup({ sample, tolerance, groupSize, groups });
+    parseSampleIntoGroup({ ...params, sample, groups });
   }
 
   deleteEmptyGroups(groups);
@@ -90,7 +90,7 @@ const createEmptyGroup = (key: string, sample: any): Group => {
   return {
     type: 'pace',
     title: `${key} min/mile`,
-    suffix: "'",
+    suffix: 'min/mile',
     rank: 0,
     skipped: 0,
     rankLabel: '',
@@ -115,6 +115,8 @@ const createEmptyGroup = (key: string, sample: any): Group => {
       prediction12Week: null,
       recommendations: [],
     },
+    key: '',
+    unit: 'min/mile',
   } satisfies Group;
 };
 

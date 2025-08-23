@@ -33,16 +33,16 @@ import {
 export const groupRunsByDistance = (params: GroupingParameters): Groups => {
   const groups: Groups = {} as Groups;
 
-  const { samples, tolerance, groupSize, distanceUnit } = params;
+  const { samples } = params;
 
   for (const sample of samples) {
-    parseSampleIntoGroup({ sample, tolerance, groupSize, groups, distanceUnit });
+    parseSampleIntoGroup({ sample, groups, ...params });
   }
 
   deleteEmptyGroups(groups);
 
   for (const groupKey in groups) {
-    calculateGroupStats({ group: groups[groupKey], samples, distanceUnit });
+    calculateGroupStats({ group: groups[groupKey], samples });
   }
 
   assignRankToGroups(groups);
@@ -81,17 +81,12 @@ const parseSampleIntoGroup = ({
     groups[groupKey] || (groups[groupKey] = createEmptyGroup(groupKey, sample, distanceUnit));
 
   if (!isCloseEnough) {
-    // console.warn(
-    //   `Run with distance ${distance.quantity} is not close enough to ${nearestGroup}${distance.unit}. Skipping.`,
-    // );
-
     group.skipped++;
 
     // Skip and return the groups as is.
     return groups;
   }
 
-  // Add the sample to the group
   group.runs.push(sample);
 
   // Aggregate the total distance, duration, and elevation ascended
@@ -114,7 +109,6 @@ const createEmptyGroup = (
   sample: ExtendedWorkout,
   distanceUnit: LengthUnit,
 ): Group => {
-  console.log(`Creating empty group for distance unit: ${distanceUnit}`);
   return {
     key,
     unit: convertShortUnitToLong(sample.totalDistance?.unit),
@@ -148,7 +142,7 @@ const createEmptyGroup = (
   } satisfies Group;
 };
 
-const calculateGroupStats = ({ group, samples, distanceUnit }: GroupingStatsParams) => {
+const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   let prediction4Week: PredictedWorkout | null = null;
   let prediction12Week: PredictedWorkout | null = null;
 

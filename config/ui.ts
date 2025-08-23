@@ -14,8 +14,8 @@ export type UIConfig = {
 
 export const defaultUIConfig: UIConfig = {
   tabOptions: [
-    { key: 'pace', enabled: false, label: 'Pace', tolerance: 0.5, groupSize: 1.0 },
     { key: 'distance', enabled: true, label: 'Distance', tolerance: 0.25, groupSize: 1.0 },
+    { key: 'pace', enabled: true, label: 'Pace', tolerance: 0.5, groupSize: 1.0 },
     { key: 'altitude', enabled: false, label: 'Altitude', tolerance: 50, groupSize: 100 },
   ],
 };

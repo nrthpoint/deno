@@ -30,7 +30,7 @@ export function useWorkoutData({
 }: UseWorkoutDataParams) {
   const [authorizationStatus, requestAuthorization] =
     useHealthkitAuthorization(AllSampleTypesInApp);
-  const [workouts, setWorkouts] = useState<ExtendedWorkout[]>([]);
+  const [samples, setSamples] = useState<ExtendedWorkout[]>([]);
   const [meta, setMeta] = useState<MetaWorkoutData>({
     totalRuns: 0,
     totalDistance: { quantity: 0, unit: distanceUnit },
@@ -45,7 +45,7 @@ export function useWorkoutData({
         const authorized = await isProtectedDataAvailable();
 
         if (!authorized) {
-          console.error('useWorkoutData: Authorization not granted');
+          console.error('useWorkoutData: Authorization not granted.');
           setLoading(false);
           return;
         }
@@ -84,7 +84,7 @@ export function useWorkoutData({
           distanceUnit,
         });
 
-        setWorkouts(parsedWorkouts);
+        setSamples(parsedWorkouts);
       } catch (error) {
         console.error('Error fetching workouts:', error);
       } finally {
@@ -97,5 +97,5 @@ export function useWorkoutData({
     }
   }, [distanceUnit, timeRangeInDays, activityType, authorizationStatus]);
 
-  return { workouts, meta, loading, authorizationStatus, requestAuthorization };
+  return { samples, meta, loading, authorizationStatus, requestAuthorization };
 }

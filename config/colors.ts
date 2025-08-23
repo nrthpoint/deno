@@ -6,6 +6,7 @@ export const colors = {
   background: '#0A0A0A',
   surfaceHighlight: '#252525ff',
   surface: '#161616ff',
+  surfaceLow: '#0A0A0A',
   accent: '#1e1e1eff',
   gray: '#333333',
 
@@ -16,20 +17,31 @@ export const colors = {
   other: '#1e3c72',
 };
 
-export type ColorProfile = { primary: string; secondary: string };
+export type ColorProfile = {
+  primary: string;
+  secondary: string;
+  gradientStart: string;
+  gradientEnd: string;
+};
 
 export const tabColors: Record<GroupType, ColorProfile> = {
-  pace: {
-    primary: '#0066B4',
-    secondary: '#004C86',
-  },
   distance: {
+    primary: '#1e3c72',
+    secondary: '#152a50ff',
+    gradientStart: '#1e3c72',
+    gradientEnd: '#2a5298',
+  },
+  pace: {
     primary: '#be31b7ff',
     secondary: '#A0299A',
+    gradientStart: '#8e0a85',
+    gradientEnd: '#be31b7ff',
   },
   altitude: {
     primary: '#6cea12ff',
     secondary: '#184c16ff',
+    gradientStart: '#4ca50c',
+    gradientEnd: '#6cea12ff',
   },
 };
 

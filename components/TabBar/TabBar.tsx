@@ -161,11 +161,11 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   tabText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     textAlign: 'center',
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 1.5,
     ...getLatoFont('bold'),
   },
   activeTabText: {

@@ -31,16 +31,15 @@ export function sumQuantities(quantities: Quantity[]): Quantity {
 
   // Throw an error if units do not match
   const firstUnit = quantities[0].unit;
-  console.log(`sumQuantities: Unit mismatch: ${quantities[0].quantity} ${firstUnit}`);
 
   for (const q of quantities) {
     if (q.unit !== firstUnit) {
-      console.log(`sumQuantities: Unit mismatch: ${q.quantity} ${q.unit} !== ${firstUnit}`);
       throw new Error(`sumQuantities: Unit mismatch: ${q.unit} !== ${firstUnit}`);
     }
   }
 
   const total = quantities.reduce((acc, q) => acc + (q.quantity || 0), 0);
+
   return newQuantity(total, quantities[0].unit);
 }
 
