@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
     overflow: 'visible',
     paddingVertical: 10,
     backgroundColor: colors.other,
-    margin: 10,
     borderRadius: 8,
   },
   svgContainer: {},

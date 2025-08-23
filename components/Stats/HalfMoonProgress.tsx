@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
     backgroundColor: colors.other,
-    margin: 10,
     paddingVertical: 15,
     borderRadius: 8,
   },

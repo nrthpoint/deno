@@ -4,7 +4,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-import AppInfo from '@/components/AppInfo';
+import AppInfo from '@/components/AppInfo/AppInfo';
 import { Card } from '@/components/Card/Card';
 import { TabBar } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';

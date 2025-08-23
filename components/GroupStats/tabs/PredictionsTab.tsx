@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   },
   predictionCard: {
     margin: 10,
-    backgroundColor: colors.surfaceHighlight,
+    backgroundColor: colors.other,
     padding: 20,
     borderRadius: 8,
   },
@@ -163,11 +163,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   predictionPace: {
-    color: '#4CAF50',
+    color: colors.neutral,
     fontSize: 24,
     fontFamily: LatoFonts.bold,
     textAlign: 'center',
-    marginBottom: 5,
+    textTransform: 'uppercase',
+    marginTop: 10,
+    marginBottom: 10,
   },
   predictionTime: {
     color: '#FFFFFF',

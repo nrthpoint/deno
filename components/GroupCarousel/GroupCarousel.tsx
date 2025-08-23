@@ -5,6 +5,7 @@ import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
 import { colors } from '@/config/colors';
 import { GroupType } from '@/types/Groups';
+import { subheading } from '@/utils/text';
 
 interface GroupCarouselProps {
   options: string[];
@@ -132,9 +133,11 @@ const styles = StyleSheet.create({
     color: colors.other,
   },
   carouselSubText: {
-    fontSize: 20,
+    ...subheading,
+    marginTop: 0,
+    //fontSize: 20,
     textAlign: 'center',
-    fontFamily: 'OrelegaOne',
+    //fontFamily: 'OrelegaOne',
     color: colors.other,
   },
 });
