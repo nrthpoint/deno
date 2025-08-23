@@ -8,6 +8,8 @@ import { ModalProps } from '@/components/Modal/Modal.types';
 import { ThemedGradient } from '@/components/ThemedGradient';
 import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
+import { GroupType } from '@/types/Groups';
+import { formatDistance } from '@/utils/distance';
 import { newQuantity } from '@/utils/quantity';
 import { formatDuration } from '@/utils/time';
 
@@ -15,6 +17,7 @@ interface VariationBarProps extends ModalProps {
   distribution: number[];
   label: string;
   width: number;
+  groupType?: GroupType; // Add group type to determine formatting
 }
 
 const BAR_HEIGHT = 8;
@@ -26,8 +29,20 @@ export const VariationBar: React.FC<VariationBarProps> = ({
   distribution,
   label,
   width,
+  groupType = 'distance', // Default to distance for backward compatibility
   ...modalProps
 }) => {
+  // Helper function to format values based on group type
+  const formatValue = (value: number): string => {
+    if (groupType === 'pace') {
+      // For pace groups, the distribution values are distances
+      return formatDistance(newQuantity(value, 'm'));
+    } else {
+      // For distance and altitude groups, the distribution values are durations in seconds
+      return formatDuration(newQuantity(Math.round(value), 's'));
+    }
+  };
+
   // Always include min and max, and up to 3 evenly spaced in between
   let values = Array.from(new Set(distribution)).sort((a, b) => a - b);
   let selected: number[] = [];
@@ -103,7 +118,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
           fill="#fff"
           textAnchor="middle"
         >
-          {formatDuration(newQuantity(Math.round(min), 's'))}
+          {formatValue(min)}
         </SvgText>
 
         <SvgText
@@ -113,7 +128,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
           fill="#fff"
           textAnchor="middle"
         >
-          {formatDuration(newQuantity(Math.round(max), 's'))}
+          {formatValue(max)}
         </SvgText>
       </Svg>
 

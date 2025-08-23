@@ -1,8 +1,36 @@
 import { Quantity } from '@kingstinct/react-native-healthkit';
 
-import { metersToMiles, metersToKilometers } from './distance';
+import { formatDistance, metersToKilometers, metersToMiles } from './distance';
 
 describe('Distance Utilities', () => {
+  describe('formatDistance', () => {
+    it('should format distance with default decimal places', () => {
+      const distance: Quantity = { unit: 'km', quantity: 5.248 };
+      expect(formatDistance(distance)).toBe('5.2 km');
+    });
+
+    it('should format distance with custom decimal places', () => {
+      const distance: Quantity = { unit: 'mi', quantity: 3.14159 };
+      expect(formatDistance(distance, 2)).toBe('3.14 mi');
+    });
+
+    it('should handle zero distance', () => {
+      const distance: Quantity = { unit: 'm', quantity: 0 };
+      expect(formatDistance(distance)).toBe('0 m');
+    });
+
+    it('should handle missing unit', () => {
+      const distance: Quantity = { unit: '', quantity: 1000 };
+      expect(formatDistance(distance)).toBe('1000.0 m');
+    });
+
+    it('should handle invalid input', () => {
+      expect(formatDistance(null as any)).toBe('0 m');
+      expect(formatDistance({ unit: 'km', quantity: NaN })).toBe('0 m');
+      expect(formatDistance({ unit: 'km', quantity: -5 })).toBe('0 m');
+    });
+  });
+
   describe('metersToMiles', () => {
     it('should convert meters to miles correctly', () => {
       const input: Quantity = {

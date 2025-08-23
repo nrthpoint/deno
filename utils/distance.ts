@@ -34,3 +34,20 @@ export function convertShortUnitToLong(unit: string): string {
       return unit;
   }
 }
+
+/**
+ * Formats a distance quantity into a human-readable string (e.g., "5.2 km", "3.1 mi")
+ * @param distance - The distance as a Quantity object
+ * @param decimalPlaces - Number of decimal places to show (default is 1)
+ * @returns Formatted distance string
+ */
+export const formatDistance = (distance: Quantity, decimalPlaces: number = 1): string => {
+  if (!distance || !distance.quantity || isNaN(distance.quantity) || distance.quantity < 0) {
+    return '0 m';
+  }
+
+  const value = distance.quantity.toFixed(decimalPlaces);
+  const unit = distance.unit || 'm';
+
+  return `${value} ${unit}`;
+};

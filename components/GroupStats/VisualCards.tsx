@@ -33,16 +33,17 @@ export const VisualCards = ({ group, meta }: TabContentProps) => {
           distribution={group.variantDistribution}
           label="Variation"
           width={150}
+          groupType={group.type}
           hasModal={true}
-          modalTitle="Duration Variation"
-          modalDescription="The range and distribution of workout durations in this group. Each dot is a workout."
+          modalTitle={group.type === 'pace' ? 'Distance Variation' : 'Duration Variation'}
+          modalDescription={
+            group.type === 'pace'
+              ? 'The range and distribution of workout distances in this group. Each dot is a workout.'
+              : 'The range and distribution of workout durations in this group. Each dot is a workout.'
+          }
           modalInfo={[
             { label: 'Best Time', value: formatDuration(group.highlight.duration) },
             { label: 'Worst Time', value: formatDuration(group.worst.duration) },
-            {
-              label: 'Variation Range',
-              value: formatDuration(group.totalVariation),
-            },
           ]}
         />
       </View>
