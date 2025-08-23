@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LengthUnit } from '@kingstinct/react-native-healthkit';
 import React from 'react';
 
 import {
@@ -32,16 +33,16 @@ import {
 export const groupRunsByDistance = (params: GroupingParameters): Groups => {
   const groups: Groups = {} as Groups;
 
-  const { samples, tolerance, groupSize } = params;
+  const { samples, tolerance, groupSize, distanceUnit } = params;
 
   for (const sample of samples) {
-    parseSampleIntoGroup({ sample, tolerance, groupSize, groups });
+    parseSampleIntoGroup({ sample, tolerance, groupSize, groups, distanceUnit });
   }
 
   deleteEmptyGroups(groups);
 
   for (const groupKey in groups) {
-    calculateGroupStats({ group: groups[groupKey], samples });
+    calculateGroupStats({ group: groups[groupKey], samples, distanceUnit });
   }
 
   assignRankToGroups(groups);
@@ -62,6 +63,7 @@ const parseSampleIntoGroup = ({
   groups,
   tolerance = 0.25,
   groupSize = 1.0,
+  distanceUnit,
 }: IndividualSampleParserParams): Groups => {
   const distance = sample.totalDistance;
 
@@ -75,7 +77,8 @@ const parseSampleIntoGroup = ({
   const isCloseEnough = Math.abs(distance.quantity - nearestGroup) <= tolerance;
 
   // Create or get the group for the current sample
-  const group = groups[groupKey] || (groups[groupKey] = createEmptyGroup(groupKey, sample));
+  const group =
+    groups[groupKey] || (groups[groupKey] = createEmptyGroup(groupKey, sample, distanceUnit));
 
   if (!isCloseEnough) {
     // console.warn(
@@ -106,13 +109,18 @@ const parseSampleIntoGroup = ({
   return groups;
 };
 
-const createEmptyGroup = (key: string, sample: ExtendedWorkout): Group => {
+const createEmptyGroup = (
+  key: string,
+  sample: ExtendedWorkout,
+  distanceUnit: LengthUnit,
+): Group => {
+  console.log(`Creating empty group for distance unit: ${distanceUnit}`);
   return {
     key,
     unit: convertShortUnitToLong(sample.totalDistance?.unit),
     type: 'distance',
     title: `${key}${sample.totalDistance?.unit}`,
-    suffix: 'miles',
+    suffix: convertShortUnitToLong(distanceUnit),
     rank: 0,
     skipped: 0,
     rankLabel: '',
@@ -122,10 +130,10 @@ const createEmptyGroup = (key: string, sample: ExtendedWorkout): Group => {
     mostRecent: sample,
     percentageOfTotalWorkouts: 0,
     totalVariation: newQuantity(0, 's'),
-    totalDistance: newQuantity(0, 'mi'),
+    totalDistance: newQuantity(0, distanceUnit),
     totalDuration: newQuantity(0, 's'),
     totalElevation: newQuantity(0, 'm'),
-    averagePace: newQuantity(0, 'min/mi'),
+    averagePace: newQuantity(0, `min/${distanceUnit}`),
     averageHumidity: newQuantity(0, '%'),
     averageDuration: newQuantity(0, 's'),
     averageElevation: newQuantity(0, 'm'),
@@ -140,7 +148,7 @@ const createEmptyGroup = (key: string, sample: ExtendedWorkout): Group => {
   } satisfies Group;
 };
 
-const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
+const calculateGroupStats = ({ group, samples, distanceUnit }: GroupingStatsParams) => {
   let prediction4Week: PredictedWorkout | null = null;
   let prediction12Week: PredictedWorkout | null = null;
 

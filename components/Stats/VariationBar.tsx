@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'visible',
     paddingVertical: 10,
-    backgroundColor: colors.tertiary,
+    backgroundColor: colors.other,
     margin: 10,
     borderRadius: 8,
   },

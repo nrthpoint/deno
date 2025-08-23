@@ -6,7 +6,7 @@ import { Text } from 'react-native-paper';
 
 import AppInfo from '@/components/AppInfo';
 import { Card } from '@/components/Card/Card';
-import { TabBar } from '@/components/TabBar';
+import { TabBar } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 import { DISTANCE_UNIT_OPTIONS } from '@/config/distanceUnits';
 import { LatoFonts } from '@/config/fonts';

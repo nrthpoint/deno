@@ -1,5 +1,7 @@
+import { LengthUnit } from '@kingstinct/react-native-healthkit';
+
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
-import { Groups, Group } from '@/types/Groups';
+import { Group, Groups } from '@/types/Groups';
 
 export interface GroupingConfig {
   tolerance: number;
@@ -8,14 +10,17 @@ export interface GroupingConfig {
 
 export interface GroupingParameters extends GroupingConfig {
   samples: readonly ExtendedWorkout[];
+  distanceUnit: LengthUnit;
 }
 
 export interface IndividualSampleParserParams extends GroupingConfig {
   sample: ExtendedWorkout;
   groups: Groups;
+  distanceUnit: LengthUnit;
 }
 
 export interface GroupingStatsParams {
   group: Group;
   samples: readonly ExtendedWorkout[];
+  distanceUnit: LengthUnit;
 }

@@ -13,6 +13,7 @@ export const colors = {
   primary: '#282E9A',
   secondary: '#151748',
   tertiary: '#26c25dff',
+  other: '#1e3c72',
 };
 
 export type ColorProfile = { primary: string; secondary: string };

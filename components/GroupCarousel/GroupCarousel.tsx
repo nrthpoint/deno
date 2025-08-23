@@ -128,12 +128,12 @@ const styles = StyleSheet.create({
     fontSize: 80,
     fontWeight: 'bold',
     fontFamily: 'OrelegaOne',
-    color: colors.surface,
+    color: colors.other,
   },
   carouselSubText: {
-    fontSize: 26,
+    fontSize: 20,
     textAlign: 'center',
     fontFamily: 'OrelegaOne',
-    color: colors.surface,
+    color: colors.other,
   },
 });

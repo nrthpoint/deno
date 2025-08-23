@@ -32,6 +32,7 @@ export function useGroupedActivityData({
     groupType,
     tolerance,
     groupSize,
+    distanceUnit,
   });
 
   return { groups, meta, loading, authorizationStatus, requestAuthorization };

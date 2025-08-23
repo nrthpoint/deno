@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
@@ -24,16 +24,49 @@ interface TabBarProps {
 export const TabBar: React.FC<TabBarProps> = ({
   tabs,
   activeTabId,
-  onTabPress,
   style,
   activeTabColor = '#424bff', // Default blue from your design
   inactiveTabColor = 'transparent',
   activeTextColor = '#FFFFFF',
   inactiveTextColor = '#999999',
+  onTabPress,
 }) => {
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  // Find the index of the active tab
+  const activeTabIndex = tabs.findIndex((tab) => tab.id === activeTabId);
+
+  useEffect(() => {
+    // Animate to the active tab position
+    Animated.timing(animatedValue, {
+      toValue: activeTabIndex,
+      duration: 250,
+      useNativeDriver: false,
+    }).start();
+  }, [activeTabIndex, animatedValue]);
+
   return (
     <View style={[styles.container, style]}>
       <View style={styles.tabContainer}>
+        {/* Sliding background indicator */}
+        <Animated.View
+          style={[
+            styles.slidingIndicator,
+            {
+              backgroundColor: activeTabColor,
+              width: `${100 / tabs.length}%`,
+              transform: [
+                {
+                  translateX: animatedValue.interpolate({
+                    inputRange: [0, tabs.length - 1],
+                    outputRange: ['0%', `${(tabs.length - 1) * 100}%`],
+                  }),
+                },
+              ],
+            },
+          ]}
+        />
+
         {tabs.map((tab, index) => {
           const isActive = tab.id === activeTabId;
           const isDisabled = tab.disabled;
@@ -45,7 +78,6 @@ export const TabBar: React.FC<TabBarProps> = ({
                 styles.tab,
                 index === 0 && styles.firstTab,
                 index === tabs.length - 1 && styles.lastTab,
-                isActive && [styles.activeTab, { backgroundColor: activeTabColor }],
                 isDisabled && styles.disabledTab,
               ]}
               onPress={() => !isDisabled && onTabPress(tab.id)}
@@ -79,6 +111,22 @@ const styles = StyleSheet.create({
     padding: 4,
     borderWidth: 1,
     borderColor: colors.gray,
+    position: 'relative',
+  },
+  slidingIndicator: {
+    position: 'absolute',
+    top: 4,
+    bottom: 4,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+    zIndex: 0,
   },
   tab: {
     flex: 1,
@@ -87,6 +135,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
+    zIndex: 1,
   },
   firstTab: {
     borderTopLeftRadius: 8,

@@ -31,10 +31,12 @@ export function sumQuantities(quantities: Quantity[]): Quantity {
 
   // Throw an error if units do not match
   const firstUnit = quantities[0].unit;
+  console.log(`sumQuantities: Unit mismatch: ${quantities[0].quantity} ${firstUnit}`);
 
   for (const q of quantities) {
     if (q.unit !== firstUnit) {
-      throw new Error(`Unit mismatch: ${q.unit} !== ${firstUnit}`);
+      console.log(`sumQuantities: Unit mismatch: ${q.quantity} ${q.unit} !== ${firstUnit}`);
+      throw new Error(`sumQuantities: Unit mismatch: ${q.unit} !== ${firstUnit}`);
     }
   }
 
@@ -53,7 +55,7 @@ export function averageQuantity(quantities: Quantity[]): Quantity {
 
 export function subtractQuantities(a: Quantity, b: Quantity): Quantity {
   if (a.unit !== b.unit) {
-    throw new Error(`Unit mismatch: ${a.unit} !== ${b.unit}`);
+    throw new Error(`subtractQuantities: Unit mismatch: ${a.unit} !== ${b.unit}`);
   }
 
   const diff = a.quantity - b.quantity;
@@ -67,7 +69,7 @@ export function subtractQuantities(a: Quantity, b: Quantity): Quantity {
 
 export function getAbsoluteDifference(a: Quantity, b: Quantity): Quantity {
   if (a.unit !== b.unit) {
-    throw new Error(`Unit mismatch: ${a.unit} !== ${b.unit}`);
+    throw new Error(`getAbsoluteDifference: Unit mismatch: ${a.unit} !== ${b.unit}`);
   }
 
   const diff = Math.abs(a.quantity - b.quantity);
@@ -84,7 +86,7 @@ export function calculatePercentage(part: Quantity, total: Quantity): number;
 export function calculatePercentage(part: number | Quantity, total: number | Quantity): number {
   if (typeof part === 'object' && typeof total === 'object') {
     if (part.unit !== total.unit) {
-      throw new Error(`Unit mismatch: ${part.unit} !== ${total.unit}`);
+      throw new Error(`calculatePercentage: Unit mismatch: ${part.unit} !== ${total.unit}`);
     }
 
     return calculatePercentage(part.quantity, total.quantity);

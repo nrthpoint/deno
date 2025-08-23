@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -7,7 +8,6 @@ import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
 import { GroupCarousel } from '@/components/GroupCarousel/GroupCarousel';
 import { GroupingConfigModal } from '@/components/GroupConfigurator/GroupingConfigModal';
 import { GroupStats } from '@/components/GroupStats/GroupStats';
-import { TabButtons } from '@/components/TabButtons/TabButtons';
 import { colors, tabColors } from '@/config/colors';
 import { defaultUIConfig, getTabOptionConfig } from '@/config/ui';
 import { useSettings } from '@/context/SettingsContext';
@@ -78,7 +78,7 @@ export default function Index() {
   const colorProfile = tabColors[groupType];
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: '#e6e6e6' }]}>
+    <ScrollView style={[styles.container, { backgroundColor: '#000' }]}>
       {/* Authorization Overlay */}
       <AuthorizationOverlay
         authorizationStatus={authorizationStatus}
@@ -96,30 +96,6 @@ export default function Index() {
         </View>
       )}
 
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Groups</Text>
-        <Text style={styles.headerSubtitle}>{tabLabels[groupType]}</Text>
-      </View>
-
-      {/* No Data Overlay */}
-      {hasNoData && (
-        <View style={styles.noDataOverlay}>
-          <Text style={{ color: '#fff', textAlign: 'center', paddingHorizontal: 20 }}>
-            No data available for the selected group.
-          </Text>
-        </View>
-      )}
-
-      {/* Settings Icon */}
-      <View style={styles.settingsContainer}>
-        <IconButton
-          icon="cog"
-          size={24}
-          iconColor="#0b0b0b"
-          onPress={() => setConfigModalVisible(true)}
-        />
-      </View>
-
       <GroupingConfigModal
         visible={configModalVisible}
         onDismiss={() => setConfigModalVisible(false)}
@@ -130,23 +106,82 @@ export default function Index() {
         colorProfile={colorProfile}
       />
 
-      {/* <TabButtons
-        tabOptions={tabOptions}
-        groupType={groupType}
-        colorProfile={colorProfile}
-        tabOptionLabels={tabLabels}
-        setGroupingType={setGroupingType}
-      /> */}
+      {/* No Data Overlay */}
+      {hasNoData && (
+        <View style={styles.noDataOverlay}>
+          <Text style={{ color: '#fff', textAlign: 'center', paddingHorizontal: 20 }}>
+            No data available for the selected group.
+          </Text>
+        </View>
+      )}
 
-      <GroupCarousel
-        options={options}
-        colorProfile={colorProfile}
-        itemSuffix={itemSuffix}
-        tolerance={tolerance}
-        groupType={groupType}
-        distanceUnit={distanceUnit}
-        setSelectedOption={setSelectedOption}
-      />
+      <View style={{ borderRadius: 20, overflow: 'hidden' }}>
+        <View
+          style={{
+            ...styles.topContainer,
+            paddingBottom: 20,
+            paddingTop: 0,
+            backgroundColor: undefined,
+          }}
+        >
+          <View
+            style={{
+              ...StyleSheet.absoluteFillObject,
+              zIndex: -1,
+            }}
+          >
+            {/* Gradient background */}
+            <View
+              style={{
+                flex: 1,
+                height: '100%',
+                width: '100%',
+                backgroundColor: 'transparent',
+              }}
+            >
+              <LinearGradient
+                colors={['#1e3c72', '#2a5298']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ flex: 1, height: '100%', width: '100%' }}
+              />
+            </View>
+          </View>
+
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Groups</Text>
+            <Text style={styles.headerSubtitle}>{tabLabels[groupType]}</Text>
+          </View>
+
+          {/* Settings Icon */}
+          <View style={styles.settingsContainer}>
+            <IconButton
+              icon="cog"
+              size={32}
+              iconColor={colors.other}
+              onPress={() => setConfigModalVisible(true)}
+            />
+          </View>
+
+          {/* <TabButtons
+          tabOptions={tabOptions}
+          groupType={groupType}
+          colorProfile={colorProfile}
+          tabOptionLabels={tabLabels}
+          setGroupingType={setGroupingType}
+        /> */}
+
+          <GroupCarousel
+            options={options}
+            colorProfile={colorProfile}
+            itemSuffix={itemSuffix}
+            tolerance={tolerance}
+            groupType={groupType}
+            distanceUnit={distanceUnit}
+            setSelectedOption={setSelectedOption}
+          />
+        </View>
+      </View>
 
       {selectedGroup && (
         <GroupStats
@@ -159,13 +194,16 @@ export default function Index() {
 }
 
 export const styles = StyleSheet.create({
+  topContainer: {
+    backgroundColor: 'red',
+  },
   header: {
     paddingTop: 80,
     paddingHorizontal: 20,
     //backgroundColor: colors.surface,
   },
   headerTitle: {
-    color: '#1f1f1f',
+    color: '#fff',
     fontSize: 40,
     fontFamily: 'OrelegaOne',
     textAlign: 'left',
@@ -173,7 +211,7 @@ export const styles = StyleSheet.create({
   headerSubtitle: {
     ...subheading,
     marginTop: 10,
-    color: '#1f1f1f',
+    color: '#fff',
   },
   spinnerContainer: {
     flex: 1,

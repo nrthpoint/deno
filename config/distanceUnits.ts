@@ -9,7 +9,7 @@ export interface DistanceUnitConfig {
 
 export const DISTANCE_UNIT_OPTIONS: DistanceUnitConfig[] = [
   { value: 'mi', label: 'Miles', shortLabel: 'mi', enabled: true },
-  { value: 'km', label: 'Kilometers', shortLabel: 'km', enabled: false },
+  { value: 'km', label: 'Kilometers', shortLabel: 'km', enabled: true },
   { value: 'm', label: 'Meters', shortLabel: 'm', enabled: false },
 ];
 
