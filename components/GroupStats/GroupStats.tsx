@@ -48,19 +48,34 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta }) => {
   };
 
   return (
-    <View style={styles.statList}>
-      <TabNavigation
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
-      {renderTabContent()}
+    <View style={styles.shadowContainer}>
+      <View style={styles.statList}>
+        <TabNavigation
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+        {renderTabContent()}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  shadowContainer: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.9,
+    shadowRadius: 8,
+    elevation: 8,
+    borderRadius: 20,
+  },
   statList: {
     flex: 1,
     backgroundColor: colors.background,
+    borderRadius: 20,
+    overflow: 'hidden',
   },
 });

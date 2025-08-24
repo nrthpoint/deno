@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, IconButton, Text } from 'react-native-paper';
 
 import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
@@ -22,6 +21,8 @@ const tabOptions: GroupType[] = enabledTabOptions.map((opt) => opt.key);
 
 export default function Index() {
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
+
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   const [groupType, setGroupingType] = useState<GroupType>('distance');
   const [configModalVisible, setConfigModalVisible] = useState(false);
@@ -80,7 +81,12 @@ export default function Index() {
 
   return (
     <ThemeProvider groupType={groupType}>
-      <ScrollView style={[styles.container, { backgroundColor: '#000' }]}>
+      <Animated.ScrollView
+        style={[styles.container, { backgroundColor: '#000' }]}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+          useNativeDriver: true,
+        })}
+      >
         {/* Authorization Overlay */}
         <AuthorizationOverlay
           authorizationStatus={authorizationStatus}
@@ -119,18 +125,18 @@ export default function Index() {
           onGroupTypeChange={setGroupingType}
         />
 
-        <View style={{ borderRadius: 20, overflow: 'hidden' }}>
-          <View
+        <View>
+          <Animated.View
             style={{
               ...styles.topContainer,
-              paddingBottom: 20,
-              paddingTop: 0,
-              backgroundColor: undefined,
+              transform: [{ translateY: scrollY }],
             }}
           >
             <View
               style={{
                 ...StyleSheet.absoluteFillObject,
+                // Extends the background underneath the GroupStats so it says underneath the curved corners.
+                bottom: -200,
                 zIndex: -1,
               }}
             >
@@ -162,14 +168,6 @@ export default function Index() {
               />
             </View>
 
-            {/* <TabButtons
-          tabOptions={tabOptions}
-          groupType={groupType}
-          colorProfile={colorProfile}
-          tabOptionLabels={tabLabels}
-          setGroupingType={setGroupingType}
-        /> */}
-
             <GroupCarousel
               options={options}
               colorProfile={colorProfile}
@@ -179,7 +177,7 @@ export default function Index() {
               distanceUnit={distanceUnit}
               setSelectedOption={setSelectedOption}
             />
-          </View>
+          </Animated.View>
         </View>
 
         {selectedGroup && (
@@ -188,7 +186,7 @@ export default function Index() {
             meta={meta}
           />
         )}
-      </ScrollView>
+      </Animated.ScrollView>
     </ThemeProvider>
   );
 }

@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import MapView, { Polyline, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 
 import { parseRouteLocations } from '@/components/RouteMap/parseRouteLocations';
 import { RouteMapProps, RouteSegments } from '@/components/RouteMap/RouteMap.types';
 import { calculateInitialRegion, getSegments } from '@/components/RouteMap/RouteMap.utils';
+import { colors } from '@/config/colors';
 
 const routeStyles = [
   { strokeWidth: 4, lineDashPattern: undefined },
@@ -13,26 +14,47 @@ const routeStyles = [
   { strokeWidth: 4, lineDashPattern: [1, 2] },
 ];
 
-export const RouteMap: React.FC<RouteMapProps> = ({ samples }) => {
-  const [routes, setRouteSegments] = React.useState<RouteSegments>([]);
-  const [initialRegion, setInitialRegion] = React.useState<Region | undefined>();
+export const RouteMap = ({ samples }: RouteMapProps) => {
+  const [routes, setRouteSegments] = useState<RouteSegments>([]);
+  const [initialRegion, setInitialRegion] = useState<Region | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchRoutes = async () => {
-      const allRoutes = await Promise.all(
-        samples.map(async (sample) => await sample.proxy.getWorkoutRoutes()),
-      );
+      setIsLoading(true);
 
-      const allRoutesLocations = allRoutes.map((route) => parseRouteLocations(route[0].locations));
-      const allRouteSegments = allRoutesLocations.map(getSegments);
-      const initialRegion = calculateInitialRegion(allRoutesLocations);
+      try {
+        const allRoutes = await Promise.all(
+          samples.map(async (sample) => await sample.proxy.getWorkoutRoutes()),
+        );
 
-      setRouteSegments(allRouteSegments);
-      setInitialRegion(initialRegion);
+        const allRoutesLocations = allRoutes.map((route) =>
+          parseRouteLocations(route[0].locations),
+        );
+        const allRouteSegments = allRoutesLocations.map(getSegments);
+        const initialRegion = calculateInitialRegion(allRoutesLocations);
+
+        setRouteSegments(allRouteSegments);
+        setInitialRegion(initialRegion);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchRoutes();
   }, [samples]);
+
+  if (isLoading) {
+    return (
+      <View style={[styles.mapContainer, styles.loadingContainer]}>
+        {/* Add your loading component here, e.g., ActivityIndicator */}
+        <ActivityIndicator
+          size="large"
+          color="#ffffff"
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.mapContainer}>
@@ -69,6 +91,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     marginTop: 16,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.surfaceHighlight,
   },
   map: {
     ...StyleSheet.absoluteFillObject,

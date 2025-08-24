@@ -31,7 +31,6 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabCh
       inactiveTextColor={colors.lightGray}
       style={{
         margin: 10,
-        marginTop: 20,
       }}
     />
   );

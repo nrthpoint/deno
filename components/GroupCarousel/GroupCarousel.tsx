@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import Carousel from 'react-native-reanimated-carousel';
@@ -15,14 +16,31 @@ interface GroupCarouselProps {
   tolerance: number;
   groupType: GroupType;
   distanceUnit: string;
-  setSelectedOption: (option: string) => void;
+  setSelectedOption: (_option: string) => void;
 }
 
-export const GroupCarousel = ({ options, itemSuffix, setSelectedOption }: GroupCarouselProps) => {
+export const GroupCarousel = ({
+  options,
+  itemSuffix,
+  groupType,
+  setSelectedOption,
+}: GroupCarouselProps) => {
   const { colorProfile } = useTheme();
+  const carouselRef = useRef<any>(null);
+
+  // Reset carousel to index 0 when group type changes.
+  // TODO: Fix this, wrong use of useEffect, Ali would hate me.
+  useEffect(() => {
+    if (carouselRef.current && options.length > 0) {
+      carouselRef.current.scrollTo({ index: 0, animated: true });
+      setSelectedOption(options[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groupType]);
 
   return (
     <Carousel
+      ref={carouselRef}
       loop={false}
       width={180}
       height={180}
@@ -140,9 +158,7 @@ const styles = StyleSheet.create({
   carouselSubText: {
     ...subheading,
     marginTop: 0,
-    //fontSize: 20,
     textAlign: 'center',
-    //fontFamily: 'OrelegaOne',
     color: colors.other,
   },
 });
