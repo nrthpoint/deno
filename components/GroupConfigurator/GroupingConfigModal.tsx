@@ -1,10 +1,11 @@
 import Slider from '@react-native-community/slider';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Button, Modal, Portal, Text } from 'react-native-paper';
+import { Modal, StyleSheet, Text, View } from 'react-native';
+import { Button } from 'react-native-paper';
 
 import { GroupingConfigModalProps } from '@/components/GroupConfigurator/GroupingConfig.types';
 import { getConfigLabels } from '@/components/GroupConfigurator/GroupingConfigModalUtils';
+import { styles as modalStyles } from '@/components/Modal/Modal';
 import { TabBar, TabOption } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
@@ -40,13 +41,11 @@ export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
     onGroupTypeChange(tabId as GroupType);
   };
 
-  // Convert tab options to TabOption format
   const tabs: TabOption[] = tabOptions.map((option) => ({
     id: option,
     label: tabLabels[option],
   }));
 
-  // Shared slider style properties using theme colors
   const baseSliderProps = {
     style: styles.slider,
     maximumTrackTintColor: '#272727',
@@ -55,86 +54,89 @@ export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
   };
 
   return (
-    <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={onDismiss}
-        contentContainerStyle={styles.modalContainer}
-      >
-        <ThemeProvider groupType={groupType}>
-          {/* Tab Bar for Group Type Selection */}
-          <View style={styles.tabBarContainer}>
-            <TabBar
-              tabs={tabs}
-              activeTabId={groupType}
-              onTabPress={handleTabPress}
-              activeTabColor={colorProfile.primary}
-              activeTextColor="#FFFFFF"
-              inactiveTextColor={colors.lightGray}
-            />
-          </View>
-
-          <View style={styles.content}>
-            <View style={styles.sliderSection}>
-              <Text style={styles.sliderLabel}>{labels.tolerance.label}</Text>
-              <Text style={styles.sliderValue}>
-                {config.tolerance.toFixed(1)} {labels.tolerance.unit}
-              </Text>
-              <Slider
-                {...baseSliderProps}
-                minimumValue={labels.tolerance.min}
-                maximumValue={labels.tolerance.max}
-                step={labels.tolerance.step}
-                value={config.tolerance}
-                onValueChange={handleToleranceChange}
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={visible}
+    >
+      <View style={modalStyles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <ThemeProvider groupType={groupType}>
+            {/* Tab Bar for Group Type Selection */}
+            <View style={styles.tabBarContainer}>
+              <TabBar
+                tabs={tabs}
+                activeTabId={groupType}
+                onTabPress={handleTabPress}
+                activeTabColor={colorProfile.primary}
+                activeTextColor="#FFFFFF"
+                inactiveTextColor={colors.lightGray}
               />
-              <View style={styles.sliderLabels}>
-                <Text style={styles.sliderLabelText}>{labels.tolerance.min}</Text>
-                <Text style={styles.sliderLabelText}>{labels.tolerance.max}</Text>
+            </View>
+
+            <View style={styles.content}>
+              <View style={styles.sliderSection}>
+                <Text style={styles.sliderLabel}>{labels.tolerance.label}</Text>
+                <Text style={styles.sliderValue}>
+                  {config.tolerance.toFixed(1)} {labels.tolerance.unit}
+                </Text>
+                <Slider
+                  {...baseSliderProps}
+                  minimumValue={labels.tolerance.min}
+                  maximumValue={labels.tolerance.max}
+                  step={labels.tolerance.step}
+                  value={config.tolerance}
+                  onValueChange={handleToleranceChange}
+                />
+                <View style={styles.sliderLabels}>
+                  <Text style={styles.sliderLabelText}>{labels.tolerance.min}</Text>
+                  <Text style={styles.sliderLabelText}>{labels.tolerance.max}</Text>
+                </View>
+              </View>
+
+              <View style={styles.sliderSection}>
+                <Text style={styles.sliderLabel}>{labels.groupSize.label}</Text>
+                <Text style={styles.sliderValue}>
+                  {config.groupSize.toFixed(1)} {labels.groupSize.unit}
+                </Text>
+                <Slider
+                  {...baseSliderProps}
+                  minimumValue={labels.groupSize.min}
+                  maximumValue={labels.groupSize.max}
+                  step={labels.groupSize.step}
+                  value={config.groupSize}
+                  onValueChange={handleGroupSizeChange}
+                />
+                <View style={styles.sliderLabels}>
+                  <Text style={styles.sliderLabelText}>{labels.groupSize.min}</Text>
+                  <Text style={styles.sliderLabelText}>{labels.groupSize.max}</Text>
+                </View>
               </View>
             </View>
 
-            <View style={styles.sliderSection}>
-              <Text style={styles.sliderLabel}>{labels.groupSize.label}</Text>
-              <Text style={styles.sliderValue}>
-                {config.groupSize.toFixed(1)} {labels.groupSize.unit}
-              </Text>
-              <Slider
-                {...baseSliderProps}
-                minimumValue={labels.groupSize.min}
-                maximumValue={labels.groupSize.max}
-                step={labels.groupSize.step}
-                value={config.groupSize}
-                onValueChange={handleGroupSizeChange}
-              />
-              <View style={styles.sliderLabels}>
-                <Text style={styles.sliderLabelText}>{labels.groupSize.min}</Text>
-                <Text style={styles.sliderLabelText}>{labels.groupSize.max}</Text>
-              </View>
+            <View style={[styles.actions]}>
+              <Button
+                mode="contained"
+                onPress={onDismiss}
+                style={[styles.button]}
+              >
+                Apply
+              </Button>
             </View>
-          </View>
-
-          <View style={[styles.actions]}>
-            <Button
-              mode="contained"
-              onPress={onDismiss}
-              style={[styles.button]}
-            >
-              Apply
-            </Button>
-          </View>
-        </ThemeProvider>
-      </Modal>
-    </Portal>
+          </ThemeProvider>
+        </View>
+      </View>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
+  modalContent: {
     backgroundColor: colors.surface,
     margin: 20,
     minHeight: 480,
     borderRadius: 12,
+    width: '90%',
   },
   tabBarContainer: {
     padding: 16,
@@ -155,6 +157,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   sliderValue: {
+    color: '#FFFFFF',
     marginBottom: 16,
     textAlign: 'center',
   },

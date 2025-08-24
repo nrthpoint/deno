@@ -2,12 +2,12 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
+import { ComparisonRow } from '@/components/ComparisonCard/ComparisonRow/ComparisonRow';
 import { RouteMap } from '@/components/RouteMap/RouteMap';
-import { ComparisonRow } from '@/components/SampleComparisonCard/ComparisonRow/ComparisonRow';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 
-import { SampleComparisonCardProps } from './SampleComparisonCard.types';
+import { SampleComparisonCardProps } from './ComparisonCard.types';
 import { SampleDropdown } from './SampleDropdown';
 
 /**
@@ -18,15 +18,12 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
   const {
     sample1,
     sample2,
-
     sample1Label,
     sample2Label,
-
     propertiesToCompare,
     sampleOptions,
     selectedSample1Type,
     selectedSample2Type,
-
     onSample1Change,
     onSample2Change,
   } = props;

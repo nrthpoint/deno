@@ -1,12 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { ComparisonCard } from '@/components/ComparisonCard/ComparisonCard';
+import { SampleOption, SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
-import { ComparisonCard } from '@/components/SampleComparisonCard/SampleComparisonCard';
-import {
-  SampleOption,
-  SampleType,
-} from '@/components/SampleComparisonCard/SampleComparisonCard.types';
 import { LatoFonts } from '@/config/fonts';
 
 export interface ComparisonTabProps extends TabContentProps {
@@ -86,6 +83,7 @@ export const ComparisonTab = ({
       <Text style={styles.sectionDescription}>
         Compare your workouts side by side to see how they stack up against each other.
       </Text>
+
       <ComparisonCard
         sample1={selectedSample1}
         sample2={selectedSample2}

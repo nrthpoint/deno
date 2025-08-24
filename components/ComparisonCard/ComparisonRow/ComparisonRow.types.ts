@@ -1,4 +1,4 @@
-import { ComparisonProperty } from '@/components/SampleComparisonCard/SampleComparisonCard.types';
+import { ComparisonProperty } from '@/components/ComparisonCard/ComparisonCard.types';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 export interface ComparisonRowProps {

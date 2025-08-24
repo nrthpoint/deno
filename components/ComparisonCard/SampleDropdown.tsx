@@ -6,7 +6,7 @@ import { Portal } from 'react-native-paper';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 
-import { SampleOption, SampleType } from './SampleComparisonCard.types';
+import { SampleOption, SampleType } from './ComparisonCard.types';
 
 interface SampleDropdownProps {
   options: SampleOption[];
@@ -22,7 +22,6 @@ export const SampleDropdown = ({
   onSelect,
 }: SampleDropdownProps) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-
   const selectedOption = options.find((option) => option.type === selectedType);
 
   // Define snap points for the bottom sheet
@@ -71,7 +70,6 @@ export const SampleDropdown = ({
     [],
   );
 
-  // Render each option item
   const renderOptionItem = useCallback(
     ({ item }: { item: SampleOption }) => (
       <Pressable

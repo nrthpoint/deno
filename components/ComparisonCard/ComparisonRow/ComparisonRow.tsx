@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { BarChart } from '@/components/SampleComparisonCard/ComparisonRow/BarChart';
+import { BarChart } from '@/components/ComparisonCard/ComparisonRow/BarChart';
 import {
   formatPropertyValue,
   getPropertyLabel,
-} from '@/components/SampleComparisonCard/ComparisonRow/ComparisonRowUtils';
+} from '@/components/ComparisonCard/ComparisonRow/ComparisonRowUtils';
 import { colors, SAMPLE1_COLOR, SAMPLE2_COLOR } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 

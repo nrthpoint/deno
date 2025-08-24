@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { SampleType } from '@/components/SampleComparisonCard/SampleComparisonCard.types';
+import { SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
 import { colors } from '@/config/colors';
 
 import { GroupStatsProps, TabType } from './GroupStats.types';

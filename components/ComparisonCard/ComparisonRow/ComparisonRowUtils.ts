@@ -1,5 +1,5 @@
-import { StatDisplayData } from '@/components/SampleComparisonCard/ComparisonRow/ComparisonRow';
-import { ComparisonProperty } from '@/components/SampleComparisonCard/SampleComparisonCard.types';
+import { ComparisonProperty } from '@/components/ComparisonCard/ComparisonCard.types';
+import { StatDisplayData } from '@/components/ComparisonCard/ComparisonRow/ComparisonRow';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { formatDuration, formatPace } from '@/utils/time';
 
