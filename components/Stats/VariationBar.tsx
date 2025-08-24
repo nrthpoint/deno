@@ -20,10 +20,12 @@ interface VariationBarProps extends ModalProps {
   groupType?: GroupType; // Add group type to determine formatting
 }
 
-const BAR_HEIGHT = 8;
+const BAR_HEIGHT = 4;
 const MARGIN = 20;
 const BAR_Y = 24;
 const LABEL_Y = BAR_Y + BAR_HEIGHT + 35;
+const END_BAR_WIDTH = 4;
+const INTERVAL_BAR_WIDTH = 4;
 
 export const VariationBar: React.FC<VariationBarProps> = ({
   distribution,
@@ -103,7 +105,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
               y1={y1}
               y2={y2}
               stroke={colors.surface}
-              strokeWidth={8}
+              strokeWidth={isEnd ? END_BAR_WIDTH : INTERVAL_BAR_WIDTH}
               opacity={isEnd ? 1 : 1}
               strokeLinecap="round"
             />
@@ -115,20 +117,22 @@ export const VariationBar: React.FC<VariationBarProps> = ({
           x={positions[0].x}
           y={LABEL_Y}
           fontSize={10}
+          fontWeight={'bold'}
           fill="#fff"
           textAnchor="middle"
         >
-          {formatValue(min)}
+          {formatValue(min).toUpperCase()}
         </SvgText>
 
         <SvgText
           x={positions[positions.length - 1].x}
           y={LABEL_Y}
           fontSize={10}
+          fontWeight={'bold'}
           fill="#fff"
           textAnchor="middle"
         >
-          {formatValue(max)}
+          {formatValue(max).toUpperCase()}
         </SvgText>
       </Svg>
 

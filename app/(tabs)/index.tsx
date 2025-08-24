@@ -98,6 +98,15 @@ export default function Index() {
           </View>
         )}
 
+        {/* No Data Overlay */}
+        {hasNoData && (
+          <View style={styles.noDataOverlay}>
+            <Text style={{ color: '#fff', textAlign: 'center', paddingHorizontal: 20 }}>
+              No data available for the selected group.
+            </Text>
+          </View>
+        )}
+
         <GroupingConfigModal
           visible={configModalVisible}
           onDismiss={() => setConfigModalVisible(false)}
@@ -109,15 +118,6 @@ export default function Index() {
           tabLabels={tabLabels}
           onGroupTypeChange={setGroupingType}
         />
-
-        {/* No Data Overlay */}
-        {hasNoData && (
-          <View style={styles.noDataOverlay}>
-            <Text style={{ color: '#fff', textAlign: 'center', paddingHorizontal: 20 }}>
-              No data available for the selected group.
-            </Text>
-          </View>
-        )}
 
         <View style={{ borderRadius: 20, overflow: 'hidden' }}>
           <View
