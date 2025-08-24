@@ -194,3 +194,119 @@ export const calculateAverageDistance = (
   const total = runs.reduce((sum, run) => sum + run.totalDistance.quantity, 0);
   return newQuantity(total / runs.length, distanceUnit);
 };
+
+/**
+ * Finds the most frequently occurring pace among runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The most frequent pace as a Quantity object
+ */
+export const getMostFrequentPace = (runs: ExtendedWorkout[]): Quantity => {
+  if (runs.length === 0) {
+    return newQuantity(0, 'min/mi');
+  }
+
+  // Count frequency of pace values (rounded to nearest second for grouping)
+  const paceFrequency = new Map<number, number>();
+  let mostFrequentPace = runs[0].averagePace;
+
+  runs.forEach((run) => {
+    const roundedPace = Math.round(run.averagePace.quantity);
+    const count = (paceFrequency.get(roundedPace) || 0) + 1;
+    paceFrequency.set(roundedPace, count);
+  });
+
+  // Find the pace with highest frequency
+  let maxCount = 0;
+  for (const [pace, count] of paceFrequency.entries()) {
+    if (count > maxCount) {
+      maxCount = count;
+      const matchingRun = runs.find((run) => Math.round(run.averagePace.quantity) === pace);
+      if (matchingRun) {
+        mostFrequentPace = matchingRun.averagePace;
+      }
+    }
+  }
+
+  return mostFrequentPace;
+};
+
+/**
+ * Finds the most frequently occurring duration among runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The most frequent duration as a Quantity object
+ */
+export const getMostFrequentDuration = (runs: ExtendedWorkout[]): Quantity => {
+  if (runs.length === 0) {
+    return newQuantity(0, 's');
+  }
+
+  // Count frequency of duration values (rounded to nearest minute for grouping)
+  const durationFrequency = new Map<number, number>();
+  let mostFrequentDuration = runs[0].duration;
+
+  runs.forEach((run) => {
+    const roundedDuration = Math.round(run.duration.quantity / 60) * 60; // Round to nearest minute
+    const count = (durationFrequency.get(roundedDuration) || 0) + 1;
+    durationFrequency.set(roundedDuration, count);
+  });
+
+  // Find the duration with highest frequency
+  let maxCount = 0;
+  for (const [duration, count] of durationFrequency.entries()) {
+    if (count > maxCount) {
+      maxCount = count;
+      const matchingRun = runs.find(
+        (run) => Math.round(run.duration.quantity / 60) * 60 === duration,
+      );
+      if (matchingRun) {
+        mostFrequentDuration = matchingRun.duration;
+      }
+    }
+  }
+
+  return mostFrequentDuration;
+};
+
+/**
+ * Finds the most frequently occurring humidity among runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The most frequent humidity as a Quantity object
+ */
+export const getMostFrequentHumidity = (runs: ExtendedWorkout[]): Quantity => {
+  if (runs.length === 0) {
+    return newQuantity(0, '%');
+  }
+
+  // Filter out runs without humidity data
+  const runsWithHumidity = runs.filter((run) => run.humidity && run.humidity.quantity > 0);
+
+  if (runsWithHumidity.length === 0) {
+    return newQuantity(0, '%');
+  }
+
+  // Count frequency of humidity values (rounded to nearest 5% for grouping)
+  const humidityFrequency = new Map<number, number>();
+  let mostFrequentHumidity = runsWithHumidity[0].humidity;
+
+  runsWithHumidity.forEach((run) => {
+    const roundedHumidity = Math.round(run.humidity.quantity / 5) * 5; // Round to nearest 5%
+    const count = (humidityFrequency.get(roundedHumidity) || 0) + 1;
+    humidityFrequency.set(roundedHumidity, count);
+  });
+
+  // Find the humidity with highest frequency
+  let maxCount = 0;
+  for (const [humidity, count] of humidityFrequency.entries()) {
+    if (count > maxCount) {
+      maxCount = count;
+      const matchingRun = runsWithHumidity.find(
+        (run) => Math.round(run.humidity.quantity / 5) * 5 === humidity,
+      );
+      if (matchingRun) {
+        mostFrequentHumidity = matchingRun.humidity;
+      }
+    }
+  }
+
+  return mostFrequentHumidity;
+};

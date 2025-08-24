@@ -125,7 +125,7 @@ export default function Index() {
           onGroupTypeChange={setGroupingType}
         />
 
-        <View>
+        <View style={{ borderRadius: 20, overflow: 'hidden' }}>
           <Animated.View
             style={{
               ...styles.topContainer,

@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   row: {
     display: 'flex',
     flexDirection: 'row',
-    gap: 20,
+    gap: 15,
   },
   column: {
     flex: 1,

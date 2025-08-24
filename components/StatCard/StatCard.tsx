@@ -25,6 +25,7 @@ const Value = ({ value }: { value: DisplayValue }) => {
 
 export const StatCard = ({
   stat: { icon, label, value, type = 'default', backgroundColor = colors.surface, ...modalProps },
+  accentColor,
 }: StatCardProps) => {
   const {
     colorProfile: { primary },
@@ -34,7 +35,7 @@ export const StatCard = ({
   const cardContent = (
     <Card backgroundColor={backgroundColor}>
       <View style={styles.innerContainer}>
-        <View style={[styles.accentStrip, { backgroundColor: primary }]}>
+        <View style={[styles.accentStrip, { backgroundColor: accentColor || primary }]}>
           <View style={styles.iconContainer}>{icon}</View>
         </View>
 

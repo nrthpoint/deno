@@ -11,6 +11,7 @@ export type DisplayValue = {
 export const formatQuantityValue = (value: Quantity, type?: string): DisplayValue => {
   if (!value || value.quantity === undefined || value.quantity === null) {
     console.warn('formatQuantityValue: Invalid quantity value');
+
     return [{ displayValue: '0', unit: value?.unit }];
   }
 
@@ -25,6 +26,7 @@ export const formatQuantityValue = (value: Quantity, type?: string): DisplayValu
       return formatDurationSeparate(value);
 
     case 'distance':
+    case 'elevation':
       return [
         {
           displayValue: value.quantity.toFixed(2),

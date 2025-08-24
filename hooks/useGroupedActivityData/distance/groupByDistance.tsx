@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { LengthUnit } from '@kingstinct/react-native-healthkit';
 import React from 'react';
 
@@ -24,10 +24,11 @@ import {
 } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
 import {
-  calculateAverageDuration,
-  calculatePaceFromDistanceAndDuration,
   findFastestRun,
   findSlowestRun,
+  getMostFrequentDuration,
+  getMostFrequentHumidity,
+  getMostFrequentPace,
 } from '@/utils/workout';
 
 export const groupRunsByDistance = (params: GroupingParameters): Groups => {
@@ -130,6 +131,7 @@ const createEmptyGroup = (
     averagePace: newQuantity(0, `min/${distanceUnit}`),
     averageHumidity: newQuantity(0, '%'),
     averageDuration: newQuantity(0, 's'),
+    averageDistance: newQuantity(0, distanceUnit),
     averageElevation: newQuantity(0, 'm'),
     prettyPace: '',
     variantDistribution: [],
@@ -147,21 +149,20 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
   let prediction12Week: PredictedWorkout | null = null;
 
   const recommendations: string[] = [];
-  const totalHumidity = group.runs.reduce((sum, run) => sum + (run.humidity?.quantity || 0), 0);
-  const averageHumidity = totalHumidity / group.runs.length || 0;
 
-  group.averagePace = calculatePaceFromDistanceAndDuration(
-    group.totalDistance,
-    group.totalDuration,
-  );
-  group.averageDuration = calculateAverageDuration(group.runs);
-  group.variantDistribution = group.runs.map((run) => run.duration.quantity);
-  group.averageHumidity = newQuantity(averageHumidity, '%');
+  // Averages - Most frequent
+  group.averagePace = getMostFrequentPace(group.runs);
+  group.averageDuration = getMostFrequentDuration(group.runs);
+  group.averageHumidity = getMostFrequentHumidity(group.runs);
+
   group.prettyPace = formatPace(group.averagePace);
   group.percentageOfTotalWorkouts = calculatePercentage(group.runs.length, samples.length);
+
   group.highlight = findFastestRun(group.runs);
   group.worst = findSlowestRun(group.runs);
+
   group.totalVariation = getAbsoluteDifference(group.worst.duration, group.highlight.duration);
+  group.variantDistribution = group.runs.map((run) => run.duration.quantity);
 
   if (group.runs.length >= 2) {
     try {
@@ -244,7 +245,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           workout: group.highlight,
           icon: (
             <Ionicons
-              name="arrow-up-outline"
+              name="triangle-outline"
               size={40}
               color="#FFFFFF"
             />
@@ -289,7 +290,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           workout: group.worst,
           icon: (
             <Ionicons
-              name="arrow-down-outline"
+              name="triangle-outline"
               size={40}
               color="#FFFFFF"
             />
@@ -298,8 +299,8 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
       ],
     },
     {
-      title: 'Average',
-      description: `Averages for ${prettyName}`,
+      title: 'Most Common',
+      description: `These are the most common stats for ${prettyName}`,
       items: [
         {
           type: 'pace',
@@ -331,7 +332,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           value: group.averageElevation,
           icon: (
             <Ionicons
-              name="arrow-up-outline"
+              name="triangle-outline"
               size={40}
               color="#FFFFFF"
             />
@@ -373,7 +374,7 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           value: group.totalElevation,
           icon: (
             <Ionicons
-              name="arrow-up-outline"
+              name="triangle-outline"
               size={40}
               color="#FFFFFF"
             />

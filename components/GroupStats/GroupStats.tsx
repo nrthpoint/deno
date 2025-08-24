@@ -75,7 +75,8 @@ const styles = StyleSheet.create({
   statList: {
     flex: 1,
     backgroundColor: colors.background,
-    borderRadius: 20,
+    //borderRadius: 20,
     overflow: 'hidden',
+    marginTop: 10,
   },
 });

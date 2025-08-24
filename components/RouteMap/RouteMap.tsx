@@ -23,22 +23,22 @@ export const RouteMap = ({ samples }: RouteMapProps) => {
     const fetchRoutes = async () => {
       setIsLoading(true);
 
-      try {
-        const allRoutes = await Promise.all(
-          samples.map(async (sample) => await sample.proxy.getWorkoutRoutes()),
-        );
+      const routePromises = samples.map((sample) => sample.proxy.getWorkoutRoutes());
 
-        const allRoutesLocations = allRoutes.map((route) =>
-          parseRouteLocations(route[0].locations),
-        );
-        const allRouteSegments = allRoutesLocations.map(getSegments);
-        const initialRegion = calculateInitialRegion(allRoutesLocations);
+      Promise.all(routePromises)
+        .then((allRoutes) => {
+          const allRoutesLocations = allRoutes.map((route) =>
+            parseRouteLocations(route[0].locations),
+          );
+          const allRouteSegments = allRoutesLocations.map(getSegments);
+          const initialRegion = calculateInitialRegion(allRoutesLocations);
 
-        setRouteSegments(allRouteSegments);
-        setInitialRegion(initialRegion);
-      } finally {
-        setIsLoading(false);
-      }
+          setRouteSegments(allRouteSegments);
+          setInitialRegion(initialRegion);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     };
 
     fetchRoutes();

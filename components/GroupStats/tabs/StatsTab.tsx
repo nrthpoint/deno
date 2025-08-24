@@ -6,6 +6,19 @@ import { VisualCards } from '@/components/GroupStats/VisualCards';
 import { StatCard } from '@/components/StatCard/StatCard';
 import { LatoFonts } from '@/config/fonts';
 
+const getTabColor = (label: string) => {
+  switch (label.toLowerCase()) {
+    case 'fastest':
+    case 'furthest':
+      return '#4CAF50';
+    case 'slowest':
+    case 'shortest':
+      return '#f32121';
+    case 'most common':
+      return '#FF9800';
+  }
+};
+
 export const StatsTab: React.FC<TabContentProps> = ({ group, meta }) => {
   return (
     <View style={styles.container}>
@@ -23,6 +36,7 @@ export const StatsTab: React.FC<TabContentProps> = ({ group, meta }) => {
             <StatCard
               key={stat.label}
               stat={stat}
+              accentColor={getTabColor(section.title)}
             />
           ))}
         </View>

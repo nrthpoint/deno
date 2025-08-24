@@ -32,7 +32,7 @@ export const formatPace = (pace: Quantity, includeUnit: boolean = true): string 
  * @param duration - The duration in seconds
  * @returns Formatted duration string
  */
-export const formatDuration = (duration: Quantity) => {
+export const formatDuration = (duration: Quantity, limit?: number) => {
   if (isNaN(duration.quantity) || duration.quantity < 0) {
     throw new Error('formatDuration: Duration quantity must be a valid non-negative number');
   }
@@ -56,6 +56,10 @@ export const formatDuration = (duration: Quantity) => {
 
   if (!result) {
     return '0sec';
+  }
+
+  if (limit && result.split(' ').length > limit) {
+    return result.split(' ').slice(0, limit).join(' ') + '';
   }
 
   return result;
