@@ -310,3 +310,35 @@ export const getMostFrequentHumidity = (runs: ExtendedWorkout[]): Quantity => {
 
   return mostFrequentHumidity;
 };
+
+export const getMostFrequentDistance = (runs: ExtendedWorkout[]): Quantity => {
+  if (runs.length === 0) {
+    return newQuantity(0, 'mi');
+  }
+
+  // Count frequency of distance values (rounded to nearest 0.1 mile for grouping)
+  const distanceFrequency = new Map<number, number>();
+  let mostFrequentDistance = runs[0].totalDistance;
+
+  runs.forEach((run) => {
+    const roundedDistance = Math.round(run.totalDistance.quantity * 10) / 10; // Round to nearest 0.1
+    const count = (distanceFrequency.get(roundedDistance) || 0) + 1;
+    distanceFrequency.set(roundedDistance, count);
+  });
+
+  // Find the distance with highest frequency
+  let maxCount = 0;
+  for (const [distance, count] of distanceFrequency.entries()) {
+    if (count > maxCount) {
+      maxCount = count;
+      const matchingRun = runs.find(
+        (run) => Math.round(run.totalDistance.quantity * 10) / 10 === distance,
+      );
+      if (matchingRun) {
+        mostFrequentDistance = matchingRun.totalDistance;
+      }
+    }
+  }
+
+  return mostFrequentDistance;
+};

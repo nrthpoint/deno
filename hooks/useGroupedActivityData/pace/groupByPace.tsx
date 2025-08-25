@@ -25,6 +25,9 @@ import {
   calculateAverageDuration,
   findLongestRun,
   findShortestRun,
+  getMostFrequentDistance,
+  getMostFrequentDuration,
+  getMostFrequentHumidity,
 } from '@/utils/workout';
 
 export const groupRunsByPace = (params: GroupingParameters): Groups => {
@@ -138,21 +141,17 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
 
   const recommendations: string[] = [];
 
-  group.averageDuration = calculateAverageDuration(group.runs);
-  group.averageDistance = calculateAverageDistance(
-    group.runs,
-    group.totalDistance.unit as LengthUnit,
-  );
-  group.averageHumidity = newQuantity(
-    group.runs.reduce((sum, run) => sum + (run.humidity?.quantity || 0), 0) / group.runs.length,
-    '%',
-  );
-  group.variantDistribution = group.runs.map((run) => run.totalDistance.quantity);
+  group.averageDuration = getMostFrequentDuration(group.runs);
+  group.averageDistance = getMostFrequentDistance(group.runs);
+  group.averageHumidity = getMostFrequentHumidity(group.runs);
+
   group.percentageOfTotalWorkouts = calculatePercentage(group.runs.length, samples.length);
+
   group.highlight = findLongestRun(group.runs);
   group.worst = findShortestRun(group.runs);
 
   // Variation is length of run at this pace.
+  group.variantDistribution = group.runs.map((run) => run.totalDistance.quantity);
   group.totalVariation = getAbsoluteDifference(
     group.worst.totalDistance,
     group.highlight.totalDistance,
@@ -239,8 +238,8 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
       ],
     },
     {
-      title: 'Average',
-      description: 'The average run at this pace',
+      title: 'Most Common',
+      description: 'The most common stats at this pace',
       items: [
         {
           type: 'distance',
@@ -249,6 +248,18 @@ const calculateGroupStats = ({ group, samples }: GroupingStatsParams) => {
           icon: (
             <Ionicons
               name="map-outline"
+              size={40}
+              color="#FFFFFF"
+            />
+          ),
+        },
+        {
+          type: 'humidity',
+          label: 'Humidity',
+          value: group.averageHumidity,
+          icon: (
+            <Ionicons
+              name="water-outline"
               size={40}
               color="#FFFFFF"
             />
