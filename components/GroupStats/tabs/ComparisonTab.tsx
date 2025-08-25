@@ -25,7 +25,7 @@ export const ComparisonTab = ({
   const sampleOptions: SampleOption[] = [
     {
       type: 'highlight',
-      label: 'All-Time Best',
+      label: 'Best Performance',
       workout: group.highlight,
     },
     {
@@ -44,13 +44,13 @@ export const ComparisonTab = ({
 
         if (diffTime === 0) return 'Today';
         if (diffTime === 1) return 'Yesterday';
-        if (diffTime < 7) return `Most Recent (${diffTime} days ago)`;
+        return `Most Recent (${diffTime}d)`;
 
-        return mostRecent.toLocaleDateString('en-GB', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-        });
+        // return mostRecent.toLocaleDateString('en-GB', {
+        //   day: 'numeric',
+        //   month: 'long',
+        //   year: 'numeric',
+        // });
       })(),
       workout: group.mostRecent,
     },

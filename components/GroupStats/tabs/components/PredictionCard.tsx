@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
-import { LatoFonts } from '@/config/fonts';
+import { useTheme } from '@/context/ThemeContext';
 import { PredictedWorkout } from '@/types/Prediction';
 import { subheading } from '@/utils/text';
 import { formatDuration } from '@/utils/time';
@@ -11,21 +11,31 @@ import { formatDuration } from '@/utils/time';
 interface PredictionCardProps {
   prediction: PredictedWorkout;
   title: string;
+  subtitle: string;
 }
 
-export const PredictionCard: React.FC<PredictionCardProps> = ({ prediction, title }) => {
+export const PredictionCard: React.FC<PredictionCardProps> = ({ prediction, title, subtitle }) => {
+  const { colorProfile } = useTheme();
+
   return (
     <Card>
-      <View style={styles.predictionCard}>
-        <Text style={styles.predictionTitle}>{title}</Text>
+      <View style={styles.container}>
+        <View style={[styles.predictionHeader, { backgroundColor: colorProfile.primary }]}>
+          <Text style={styles.predictionTitle}>{title}</Text>
+          <Text style={styles.predictionSubtitle}>{subtitle}</Text>
+        </View>
 
-        <Text style={styles.predictionPace}>
-          {prediction.predictedPace.quantity.toFixed(2)} {prediction.predictedPace.unit}
-        </Text>
+        <View style={styles.predictionDetails}>
+          <Text style={styles.predictionLabel}>Expected Pace</Text>
+          <Text style={styles.predictionPace}>
+            {prediction.predictedPace.quantity.toFixed(2)} {prediction.predictedPace.unit}
+          </Text>
 
-        <Text style={styles.predictionTime}>{formatDuration(prediction.predictedDuration)}</Text>
+          <Text style={styles.predictionLabel}>Expected Duration</Text>
+          <Text style={styles.predictionTime}>{formatDuration(prediction.predictedDuration)}</Text>
+        </View>
 
-        <View style={styles.metricsContainer}>
+        {/* <View style={styles.metricsContainer}>
           <View style={styles.metricGroup}>
             <Text style={[styles.metricIcon, { color: '#FFD700' }]}>★</Text>
             <Text style={styles.predictionConfidence}>
@@ -40,60 +50,87 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({ prediction, titl
               +{prediction.improvementPercentage.toFixed(1)}%
             </Text>
           </View>
-        </View>
+        </View> */}
       </View>
     </Card>
   );
 };
 
 const styles = StyleSheet.create({
-  predictionCard: {
-    margin: 10,
-    padding: 20,
+  container: {
     borderRadius: 8,
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 20,
+    alignItems: 'center',
+  },
+  predictionHeader: {
+    borderRadius: 8,
+    overflow: 'hidden',
+    width: 150,
+    justifyContent: 'center',
+    alignContent: 'center',
+    textAlign: 'center',
+    paddingVertical: 10,
+    height: '100%',
+  },
+  predictionDetails: {
+    flex: 1,
+    marginBottom: 10,
   },
   predictionTitle: {
-    ...subheading,
+    marginTop: 5,
+    fontFamily: 'OrelegaOne',
+    fontSize: 34,
     textAlign: 'center',
+    color: '#FFFFFF',
+  },
+  predictionSubtitle: {
+    ...subheading,
+    marginTop: 5,
+    textAlign: 'center',
+    color: '#FFFFFF',
   },
   predictionPace: {
+    //...subheading,
     color: colors.neutral,
-    fontSize: 24,
-    fontFamily: LatoFonts.bold,
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    marginTop: 10,
+    marginTop: 0,
     marginBottom: 10,
   },
   predictionTime: {
+    // ...subheading,
     color: '#FFFFFF',
-    fontSize: 18,
-    fontFamily: LatoFonts.regular,
-    textAlign: 'center',
+    marginTop: 0,
     marginBottom: 10,
   },
-  metricsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
+  predictionLabel: {
+    ...subheading,
+    color: colors.lightGray,
+    //marginTop: 10,
+    marginBottom: 10,
   },
-  metricGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  metricIcon: {
-    fontSize: 16,
-    marginRight: 6,
-  },
-  predictionConfidence: {
-    color: '#CCCCCC',
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-  },
-  predictionImprovement: {
-    color: '#4CAF50',
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-  },
+  // metricsContainer: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   marginTop: 10,
+  // },
+  // metricGroup: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   flex: 1,
+  // },
+  // metricIcon: {
+  //   fontSize: 16,
+  //   marginRight: 6,
+  // },
+  // predictionConfidence: {
+  //   color: '#CCCCCC',
+  //   fontSize: 14,
+  //   fontFamily: LatoFonts.regular,
+  // },
+  // predictionImprovement: {
+  //   color: '#4CAF50',
+  //   fontSize: 14,
+  //   fontFamily: LatoFonts.regular,
+  // },
 });

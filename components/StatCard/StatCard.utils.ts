@@ -29,7 +29,8 @@ export const formatQuantityValue = (value: Quantity, type?: string): DisplayValu
     case 'elevation':
       return [
         {
-          displayValue: value.quantity.toFixed(2),
+          displayValue:
+            value.quantity % 1 === 0 ? value.quantity.toString() : value.quantity.toFixed(2),
           unit: value.unit,
         },
       ];

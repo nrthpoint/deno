@@ -93,7 +93,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   valueText: {
-    fontSize: 20,
+    fontSize: 16,
+    textTransform: 'uppercase',
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
     fontWeight: '600',
