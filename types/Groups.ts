@@ -63,7 +63,12 @@ export type Group = {
   // Key workouts
   highlight: ExtendedWorkout;
   worst: ExtendedWorkout;
+
+  greatestElevation: ExtendedWorkout;
+  lowestElevation: ExtendedWorkout;
+
   mostRecent: ExtendedWorkout;
+  oldest: ExtendedWorkout;
 
   // Variance
   variantDistribution: number[];

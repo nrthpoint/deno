@@ -1,6 +1,6 @@
 import { LengthUnit } from '@kingstinct/react-native-healthkit';
 
-import { GroupConfig } from '@/grouping-engine/GroupingConfig';
+import { GroupConfig } from '@/grouping-engine/types/GroupConfig';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group, GroupType } from '@/types/Groups';
 import { newQuantity } from '@/utils/quantity';
@@ -26,7 +26,10 @@ export function createEmptyGroup(
     runs: [],
     highlight: sample,
     worst: sample,
+    greatestElevation: sample,
+    lowestElevation: sample,
     mostRecent: sample,
+    oldest: sample,
     percentageOfTotalWorkouts: 0,
     totalVariation: newQuantity(0, getVariationUnit(config.type, distanceUnit)),
     totalDistance: newQuantity(0, distanceUnit),
@@ -38,6 +41,7 @@ export function createEmptyGroup(
     averageDistance: newQuantity(0, distanceUnit),
     averageElevation: newQuantity(0, 'm'),
     prettyPace: '',
+    prettyName: ``,
     variantDistribution: [],
     stats: [],
     predictions: {

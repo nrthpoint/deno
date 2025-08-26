@@ -3,28 +3,31 @@ import React from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
-import { GroupingConfigModalProps } from '@/components/GroupConfigurator/GroupingConfig.types';
-import { getConfigLabels } from '@/components/GroupConfigurator/GroupingConfigModalUtils';
+import { GroupingConfigModalProps } from '@/components/GroupConfigurator/GroupConfigurator.types';
+import { getConfigLabels } from '@/components/GroupConfigurator/GroupConfigurator.utils';
 import { styles as modalStyles } from '@/components/Modal/Modal';
 import { TabBar, TabOption } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { defaultUIConfig, tabLabels } from '@/config/ui';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { GroupType } from '@/types/Groups';
 import { subheading } from '@/utils/text';
+
+const enabledTabOptions = defaultUIConfig.tabOptions.filter((opt) => opt.enabled);
+const tabOptions: GroupType[] = enabledTabOptions.map((opt) => opt.key);
 
 export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
   visible,
   groupType,
   distanceUnit,
   config,
-  tabOptions,
-  tabLabels,
   onDismiss,
   onConfigChange,
   onGroupTypeChange,
 }) => {
   const { colorProfile } = useTheme();
+
   const labels = getConfigLabels(groupType, distanceUnit);
 
   const handleToleranceChange = (value: number) => {

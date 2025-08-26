@@ -111,7 +111,17 @@ export const GroupCarousel = ({
             </Svg>
           </View>
           <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-            <Text style={[styles.carouselText, { color: colorProfile.primary }]}>{item}</Text>
+            <Text
+              style={[
+                styles.carouselText,
+                {
+                  color: colorProfile.primary,
+                  fontSize: item.length > 3 ? 60 : item.length > 2 ? 70 : 80,
+                },
+              ]}
+            >
+              {item}
+            </Text>
             <Text style={[styles.carouselSubText, { color: colorProfile.primary }]}>
               {itemSuffix}
             </Text>

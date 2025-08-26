@@ -67,6 +67,25 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
         ],
       },
       {
+        title: 'Highest',
+        description: `Your highest elevation gain at ${prettyName}`,
+        items: [
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.greatestElevation.totalElevation,
+            workout: group.greatestElevation,
+            icon: (
+              <Ionicons
+                name="arrow-up-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+        ],
+      },
+      {
         title: 'Shortest',
         description: `Your shortest distance at ${prettyName}`,
         items: [
@@ -98,6 +117,26 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
           },
         ],
       },
+      {
+        title: 'Lowest',
+        description: `Your lowest elevation gain at ${prettyName}`,
+        items: [
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.lowestElevation.totalElevation,
+            workout: group.lowestElevation,
+            icon: (
+              <Ionicons
+                name="arrow-down-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+        ],
+      },
+      ...group.stats,
     ];
   }
 }

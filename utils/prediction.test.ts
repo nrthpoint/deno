@@ -97,6 +97,9 @@ describe('AI Prediction System', () => {
         highlight: runs[3], // fastest run
         worst: runs[0], // slowest run
         mostRecent: runs[3],
+        oldest: runs[0],
+        greatestElevation: runs[0],
+        lowestElevation: runs[3],
         percentageOfTotalWorkouts: 100,
         totalVariation: newQuantity(1800, 's'), // 30 minutes difference
         totalDistance: newQuantity(20, 'mi'), // 4 runs * 5 miles
@@ -107,6 +110,7 @@ describe('AI Prediction System', () => {
         averageDuration: newQuantity(2400, 's'),
         averageElevation: newQuantity(100, 'm'),
         prettyPace: '7:39 min/mile',
+        prettyName: '5.0 miles',
         stats: [],
         predictions: {
           prediction4Week: null,
@@ -148,6 +152,9 @@ describe('AI Prediction System', () => {
         highlight: runs[3], // fastest run
         worst: runs[0], // slowest run
         mostRecent: runs[3],
+        oldest: runs[0],
+        greatestElevation: runs[0],
+        lowestElevation: runs[3],
         percentageOfTotalWorkouts: 100,
         totalVariation: newQuantity(900, 's'),
         totalDistance: newQuantity(20, 'mi'),
@@ -158,6 +165,7 @@ describe('AI Prediction System', () => {
         averageDuration: newQuantity(2400, 's'),
         averageElevation: newQuantity(100, 'm'),
         prettyPace: '5:03 min/mile',
+        prettyName: '5.0 miles',
         stats: [],
         predictions: {
           prediction4Week: null,
@@ -196,6 +204,9 @@ describe('AI Prediction System', () => {
         highlight: runs[3],
         worst: runs[0],
         mostRecent: runs[3],
+        oldest: runs[0],
+        greatestElevation: runs[0],
+        lowestElevation: runs[3],
         percentageOfTotalWorkouts: 100,
         totalVariation: newQuantity(900, 's'),
         totalDistance: newQuantity(20, 'mi'),
@@ -206,6 +217,7 @@ describe('AI Prediction System', () => {
         averageDuration: newQuantity(2400, 's'),
         averageElevation: newQuantity(100, 'm'),
         prettyPace: '6:51 min/mile',
+        prettyName: '5.0 miles',
         stats: [],
         predictions: {
           prediction4Week: null,

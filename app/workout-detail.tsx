@@ -197,7 +197,7 @@ export default function WorkoutDetailScreen() {
       >
         {/* Header with main stats */}
         <Card>
-          <View style={styles.headerContent}>
+          <View style={[styles.headerContent, { backgroundColor: colors.primary }]}>
             <Ionicons
               name="fitness"
               size={48}
@@ -216,23 +216,17 @@ export default function WorkoutDetailScreen() {
 
         {/* Key metrics */}
         <View style={styles.keyMetrics}>
-          <Card>
-            <View style={styles.metricCard}>
-              <Text style={styles.metricValue}>{formatDistanceValue(workout.totalDistance)}</Text>
-              <Text style={styles.metricLabel}>Distance</Text>
-            </View>
+          <Card style={styles.metricCard}>
+            <Text style={styles.metricValue}>{formatDistanceValue(workout.totalDistance)}</Text>
+            <Text style={styles.metricLabel}>Distance</Text>
           </Card>
-          <Card>
-            <View style={styles.metricCard}>
-              <Text style={styles.metricValue}>{formatDurationValue(workout.duration)}</Text>
-              <Text style={styles.metricLabel}>Duration</Text>
-            </View>
+          <Card style={styles.metricCard}>
+            <Text style={styles.metricValue}>{formatDurationValue(workout.duration)}</Text>
+            <Text style={styles.metricLabel}>Duration</Text>
           </Card>
-          <Card>
-            <View style={styles.metricCard}>
-              <Text style={styles.metricValue}>{paceWithoutUnit}</Text>
-              <Text style={styles.metricLabel}>{paceUnit}</Text>
-            </View>
+          <Card style={styles.metricCard}>
+            <Text style={styles.metricValue}>{paceWithoutUnit}</Text>
+            <Text style={styles.metricLabel}>{paceUnit}</Text>
           </Card>
         </View>
 
@@ -261,8 +255,6 @@ const styles = StyleSheet.create({
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    margin: 10,
-    backgroundColor: colors.surfaceHighlight,
     borderRadius: 8,
     padding: 16,
   },
@@ -284,16 +276,16 @@ const styles = StyleSheet.create({
   },
   keyMetrics: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
     marginTop: 16,
-    marginBottom: 24,
+    marginBottom: 10,
+    gap: 12,
   },
   metricCard: {
-    backgroundColor: colors.surfaceHighlight,
+    flex: 1,
+    flexGrow: 1,
+    backgroundColor: colors.primary,
     borderRadius: 12,
     padding: 16,
-    flex: 1,
-    margin: 10,
     alignItems: 'center',
   },
   metricValue: {

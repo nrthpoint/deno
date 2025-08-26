@@ -96,6 +96,25 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
         ],
       },
       {
+        title: 'Highest Elevation',
+        description: 'The highest elevation gain at this pace',
+        items: [
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.greatestElevation.totalElevation,
+            workout: group.greatestElevation,
+            icon: (
+              <Ionicons
+                name="arrow-up-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+        ],
+      },
+      {
         title: 'Shortest',
         description: 'The shortest run at this pace',
         items: [
@@ -114,6 +133,26 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
           },
         ],
       },
+      {
+        title: 'Lowest Elevation',
+        description: 'The lowest elevation gain at this pace',
+        items: [
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.lowestElevation.totalElevation,
+            workout: group.lowestElevation,
+            icon: (
+              <Ionicons
+                name="arrow-down-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+        ],
+      },
+      ...group.stats,
       {
         title: 'Cumulative',
         description: 'The total cumulative stats at this pace',

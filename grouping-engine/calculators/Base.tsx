@@ -9,6 +9,10 @@ import {
   getMostFrequentDuration,
   getMostFrequentHumidity,
   getMostFrequentPace,
+  getMostRecentWorkout,
+  getOldestWorkout,
+  getGreatestElevationWorkout,
+  getLowestElevationWorkout,
 } from '@/utils/workout';
 
 /**
@@ -27,9 +31,10 @@ export class BaseGroupStatCalculator implements GroupStatCalculator {
     group.averageDuration = getMostFrequentDuration(group.runs);
     group.averageHumidity = getMostFrequentHumidity(group.runs);
 
-    group.mostRecent = group.runs.reduce((latest, run) =>
-      run.startDate > latest.startDate ? run : latest,
-    );
+    group.mostRecent = getMostRecentWorkout(group.runs);
+    group.oldest = getOldestWorkout(group.runs);
+    group.greatestElevation = getGreatestElevationWorkout(group.runs);
+    group.lowestElevation = getLowestElevationWorkout(group.runs);
 
     // Initialize empty stats array
     group.stats = [
@@ -56,6 +61,18 @@ export class BaseGroupStatCalculator implements GroupStatCalculator {
             icon: (
               <Ionicons
                 name="stopwatch-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'distance',
+            label: 'Distance',
+            value: group.averageDistance,
+            icon: (
+              <Ionicons
+                name="map-outline"
                 size={40}
                 color="#FFFFFF"
               />

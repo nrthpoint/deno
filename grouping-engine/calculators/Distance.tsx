@@ -164,6 +164,7 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
           },
         ],
       },
+      ...group.stats,
       {
         title: 'Cumulative',
         description: `Cumulative stats for ${prettyName}`,
@@ -206,7 +207,6 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
           },
         ],
       },
-      ...group.stats,
     ];
   }
 }

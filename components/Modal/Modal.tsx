@@ -11,6 +11,7 @@ import { subheading } from '@/utils/text';
 
 export const ModalProvider = ({
   children,
+  hasModal,
   modalTitle,
   modalDescription,
   modalInfo,
@@ -25,10 +26,14 @@ export const ModalProvider = ({
     if (workout) {
       setSelectedWorkout(workout);
       router.push('/workout-detail');
-    } else {
+    } else if (hasModal) {
       setModalVisible(true);
     }
   };
+
+  if (!hasModal && !workout) {
+    return children;
+  }
 
   return (
     <>

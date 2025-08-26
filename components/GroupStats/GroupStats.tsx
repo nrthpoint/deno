@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
+import { TabBar } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
+import { groupStatsTabs } from '@/config/ui';
 
 import { GroupStatsProps, TabType } from './GroupStats.types';
-import { TabNavigation } from './TabNavigation';
 import { ComparisonTab } from './tabs/ComparisonTab';
 import { PredictionsTab } from './tabs/PredictionsTab';
 import { StatsTab } from './tabs/StatsTab';
@@ -47,13 +48,25 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta }) => {
     }
   };
 
+  const handleTabPress = (tabId: string | number) => {
+    setActiveTab(tabId as TabType);
+  };
+
   return (
     <View style={styles.shadowContainer}>
       <View style={styles.statList}>
-        <TabNavigation
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
+        <TabBar
+          tabs={groupStatsTabs}
+          activeTabId={activeTab}
+          onTabPress={handleTabPress}
+          activeTabColor={colors.surfaceHighlight}
+          activeTextColor="#FFFFFF"
+          inactiveTextColor={colors.lightGray}
+          style={{
+            margin: 10,
+          }}
         />
+
         {renderTabContent()}
       </View>
     </View>
@@ -75,7 +88,6 @@ const styles = StyleSheet.create({
   statList: {
     flex: 1,
     backgroundColor: colors.background,
-    //borderRadius: 20,
     overflow: 'hidden',
     marginTop: 10,
   },

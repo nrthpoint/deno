@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { VisualCards } from '@/components/GroupStats/GroupHighlights';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
-import { VisualCards } from '@/components/GroupStats/VisualCards';
 import { StatCard } from '@/components/StatCard/StatCard';
 import { LatoFonts } from '@/config/fonts';
 
@@ -37,6 +37,7 @@ export const StatsTab: React.FC<TabContentProps> = ({ group, meta }) => {
               key={stat.label}
               stat={stat}
               accentColor={getTabColor(section.title)}
+              hasModal={!!stat.workout}
             />
           ))}
         </View>

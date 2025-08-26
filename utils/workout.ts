@@ -342,3 +342,43 @@ export const getMostFrequentDistance = (runs: ExtendedWorkout[]): Quantity => {
 
   return mostFrequentDistance;
 };
+
+/**
+ * Finds the most recent workout from an array of runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The workout with the latest start date
+ */
+export const getMostRecentWorkout = (runs: ExtendedWorkout[]): ExtendedWorkout => {
+  return runs.reduce((latest, run) => (run.startDate > latest.startDate ? run : latest));
+};
+
+/**
+ * Finds the oldest workout from an array of runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The workout with the earliest start date
+ */
+export const getOldestWorkout = (runs: ExtendedWorkout[]): ExtendedWorkout => {
+  return runs.reduce((earliest, run) => (run.startDate < earliest.startDate ? run : earliest));
+};
+
+/**
+ * Finds the workout with the greatest elevation from an array of runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The workout with the highest elevation
+ */
+export const getGreatestElevationWorkout = (runs: ExtendedWorkout[]): ExtendedWorkout => {
+  return runs.reduce((max, run) =>
+    run.totalElevation.quantity > max.totalElevation.quantity ? run : max,
+  );
+};
+
+/**
+ * Finds the workout with the lowest elevation from an array of runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The workout with the lowest elevation
+ */
+export const getLowestElevationWorkout = (runs: ExtendedWorkout[]): ExtendedWorkout => {
+  return runs.reduce((min, run) =>
+    run.totalElevation.quantity < min.totalElevation.quantity ? run : min,
+  );
+};

@@ -4,20 +4,17 @@ import { ActivityIndicator, IconButton, Text } from 'react-native-paper';
 
 import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
 import { GroupCarousel } from '@/components/GroupCarousel/GroupCarousel';
-import { GroupingConfigModal } from '@/components/GroupConfigurator/GroupingConfigModal';
+import { GroupingConfigModal } from '@/components/GroupConfigurator/GroupConfigurator';
 import { GroupStats } from '@/components/GroupStats/GroupStats';
 import { ThemedGradient } from '@/components/ThemedGradient';
 import { colors, tabColors } from '@/config/colors';
-import { defaultUIConfig, getTabOptionConfig } from '@/config/ui';
+import { getTabOptionConfig, tabLabels } from '@/config/ui';
 import { useSettings } from '@/context/SettingsContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { GroupingConfig } from '@/grouping-engine/types/Grouping';
 import { useWorkoutGroups } from '@/hooks/useWorkoutGroups';
 import { GroupType } from '@/types/Groups';
 import { subheading } from '@/utils/text';
-
-const enabledTabOptions = defaultUIConfig.tabOptions.filter((opt) => opt.enabled);
-const tabOptions: GroupType[] = enabledTabOptions.map((opt) => opt.key);
 
 export default function Index() {
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
@@ -26,6 +23,10 @@ export default function Index() {
 
   const [groupType, setGroupingType] = useState<GroupType>('distance');
   const [configModalVisible, setConfigModalVisible] = useState(false);
+
+  /*
+   * 1. Define state for grouping configurations
+   */
   const [groupingConfigs, setGroupingConfigs] = useState<Record<GroupType, GroupingConfig>>({
     distance: {
       tolerance: getTabOptionConfig('distance').tolerance,
@@ -45,7 +46,14 @@ export default function Index() {
     },
   });
 
+  /*
+   * 2. Destructure the grouping configuration for the selected group type
+   */
   const { tolerance, groupSize } = groupingConfigs[groupType];
+
+  /*
+   * 3. Fetch workout groups based on the current configuration
+   */
   const { groups, meta, loading, authorizationStatus, requestAuthorization } = useWorkoutGroups({
     activityType,
     distanceUnit,
@@ -55,14 +63,11 @@ export default function Index() {
     groupSize,
   });
 
+  /*
+   * 4. Get all options for the carousel
+   */
   const options = Object.keys(groups);
   const [selectedOption, setSelectedOption] = useState<string>('');
-  const tabLabels: Record<GroupType, string> = {
-    pace: getTabOptionConfig('pace').label,
-    distance: getTabOptionConfig('distance').label,
-    altitude: getTabOptionConfig('altitude').label,
-    duration: getTabOptionConfig('duration').label,
-  };
 
   const handleConfigChange = (config: GroupingConfig) => {
     setGroupingConfigs((prev) => ({
@@ -124,8 +129,6 @@ export default function Index() {
           distanceUnit={distanceUnit}
           config={{ tolerance, groupSize }}
           onConfigChange={handleConfigChange}
-          tabOptions={tabOptions}
-          tabLabels={tabLabels}
           onGroupTypeChange={setGroupingType}
         />
 
