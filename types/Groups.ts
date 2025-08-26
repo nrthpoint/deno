@@ -4,12 +4,12 @@ import { ExtendedWorkout } from './ExtendedWorkout';
 import { PredictedWorkout } from './Prediction';
 import { Stat } from './Stat';
 
-export type GroupType = 'distance' | 'pace' | 'altitude' | 'duration';
+export type GroupType = 'distance' | 'pace' | 'elevation' | 'duration';
 
 export const GROUP_TYPES = {
   Distance: 'distance' as GroupType,
   Pace: 'pace' as GroupType,
-  Altitude: 'altitude' as GroupType,
+  Elevation: 'elevation' as GroupType,
   Duration: 'duration' as GroupType,
 };
 

@@ -25,8 +25,8 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     suffixFormatter: () => 'min/mile',
     valueExtractor: (sample) => sample.averagePace,
   },
-  altitude: {
-    type: 'altitude',
+  elevation: {
+    type: 'elevation',
     property: 'totalElevation',
     defaultTolerance: 50,
     defaultGroupSize: 100,

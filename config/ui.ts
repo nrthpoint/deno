@@ -20,7 +20,7 @@ export const defaultUIConfig: UIConfig = {
   tabOptions: [
     { key: 'distance', enabled: true, label: 'Distance', tolerance: 0.25, groupSize: 1.0 },
     { key: 'pace', enabled: true, label: 'Pace', tolerance: 0.5, groupSize: 1.0 },
-    { key: 'altitude', enabled: true, label: 'Altitude', tolerance: 50, groupSize: 100 },
+    { key: 'elevation', enabled: true, label: 'Elevation', tolerance: 50, groupSize: 100 },
     { key: 'duration', enabled: true, label: 'Duration', tolerance: 5, groupSize: 10 },
   ],
 };
