@@ -17,6 +17,7 @@ export const defaultUIConfig: UIConfig = {
     { key: 'distance', enabled: true, label: 'Distance', tolerance: 0.25, groupSize: 1.0 },
     { key: 'pace', enabled: true, label: 'Pace', tolerance: 0.5, groupSize: 1.0 },
     { key: 'altitude', enabled: false, label: 'Altitude', tolerance: 50, groupSize: 100 },
+    { key: 'duration', enabled: true, label: 'Duration', tolerance: 5, groupSize: 10 },
   ],
 };
 

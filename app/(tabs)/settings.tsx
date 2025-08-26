@@ -46,7 +46,6 @@ export default function ConfigurationScreen() {
           activeTabId={distanceUnit}
           onTabPress={(id) => setDistanceUnit(id as unknown as LengthUnit)}
           activeTabColor={colors.primary}
-          inactiveTabColor="transparent"
           activeTextColor="#FFFFFF"
           inactiveTextColor="#999999"
         />
@@ -67,7 +66,6 @@ export default function ConfigurationScreen() {
           activeTabId={String(activityType)}
           onTabPress={(value) => setActivityType(value as unknown as WorkoutActivityType)}
           activeTabColor={colors.primary}
-          inactiveTabColor="transparent"
           activeTextColor="#FFFFFF"
           inactiveTextColor="#999999"
         />

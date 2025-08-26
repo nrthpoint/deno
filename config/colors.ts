@@ -43,6 +43,12 @@ export const tabColors: Record<GroupType, ColorProfile> = {
     gradientStart: '#4ca50c',
     gradientEnd: '#6cea12ff',
   },
+  duration: {
+    primary: '#ff9800',
+    secondary: '#e65100',
+    gradientStart: '#f57c00',
+    gradientEnd: '#ff9800',
+  },
 };
 
 export const SAMPLE1_COLOR = '#2196f3';

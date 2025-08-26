@@ -1,4 +1,4 @@
-import { GroupingConfig } from '@/hooks/useGroupedActivityData/interface';
+import { GroupingConfig } from '@/grouping-engine/types/Grouping';
 import { GroupType } from '@/types/Groups';
 
 export interface GroupingConfigModalProps {

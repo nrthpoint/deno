@@ -4,12 +4,13 @@ import { ExtendedWorkout } from './ExtendedWorkout';
 import { PredictedWorkout } from './Prediction';
 import { Stat } from './Stat';
 
-export type GroupType = 'distance' | 'pace' | 'altitude';
+export type GroupType = 'distance' | 'pace' | 'altitude' | 'duration';
 
 export const GROUP_TYPES = {
   Distance: 'distance' as GroupType,
   Pace: 'pace' as GroupType,
   Altitude: 'altitude' as GroupType,
+  Duration: 'duration' as GroupType,
 };
 
 export type GroupPredictions = {
@@ -51,6 +52,7 @@ export type Group = {
 
   // Pretty formatted stats
   prettyPace: string;
+  prettyName: string;
 
   // Factual stats for the group (no predictions)
   stats: Stats;

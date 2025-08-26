@@ -11,8 +11,8 @@ import { colors, tabColors } from '@/config/colors';
 import { defaultUIConfig, getTabOptionConfig } from '@/config/ui';
 import { useSettings } from '@/context/SettingsContext';
 import { ThemeProvider } from '@/context/ThemeContext';
-import { useGroupedActivityData } from '@/hooks/useGroupedActivityData';
-import { GroupingConfig } from '@/hooks/useGroupedActivityData/interface';
+import { GroupingConfig } from '@/grouping-engine/types/Grouping';
+import { useWorkoutGroups } from '@/hooks/useWorkoutGroups';
 import { GroupType } from '@/types/Groups';
 import { subheading } from '@/utils/text';
 
@@ -39,18 +39,21 @@ export default function Index() {
       tolerance: getTabOptionConfig('altitude').tolerance,
       groupSize: getTabOptionConfig('altitude').groupSize,
     },
+    duration: {
+      tolerance: getTabOptionConfig('duration').tolerance,
+      groupSize: getTabOptionConfig('duration').groupSize,
+    },
   });
 
   const { tolerance, groupSize } = groupingConfigs[groupType];
-  const { groups, meta, loading, authorizationStatus, requestAuthorization } =
-    useGroupedActivityData({
-      activityType,
-      distanceUnit,
-      timeRangeInDays,
-      groupType,
-      tolerance,
-      groupSize,
-    });
+  const { groups, meta, loading, authorizationStatus, requestAuthorization } = useWorkoutGroups({
+    activityType,
+    distanceUnit,
+    timeRangeInDays,
+    groupType,
+    tolerance,
+    groupSize,
+  });
 
   const options = Object.keys(groups);
   const [selectedOption, setSelectedOption] = useState<string>('');
@@ -58,6 +61,7 @@ export default function Index() {
     pace: getTabOptionConfig('pace').label,
     distance: getTabOptionConfig('distance').label,
     altitude: getTabOptionConfig('altitude').label,
+    duration: getTabOptionConfig('duration').label,
   };
 
   const handleConfigChange = (config: GroupingConfig) => {
