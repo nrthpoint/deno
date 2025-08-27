@@ -15,7 +15,7 @@ export const ThemedGradient: React.FC<ThemedGradientProps> = ({ style }) => {
     <LinearGradient
       colors={gradientColors}
       start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
+      end={{ x: 0, y: 1 }}
       style={[styles.gradient, style]}
     />
   );

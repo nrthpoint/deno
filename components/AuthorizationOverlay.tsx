@@ -1,6 +1,9 @@
 import { AuthorizationRequestStatus } from '@kingstinct/react-native-healthkit';
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
+
+import { colors } from '@/config/colors';
+import { subheading } from '@/utils/text';
 
 export const AuthorizationOverlay = ({
   authorizationStatus,
@@ -13,6 +16,8 @@ export const AuthorizationOverlay = ({
     return null;
   }
 
+  console.log('Rendering AuthorizationOverlay');
+
   return (
     <View style={styles.authorizationOverlay}>
       <View style={styles.authorizationCard}>
@@ -24,6 +29,13 @@ export const AuthorizationOverlay = ({
           mode="contained"
           onPress={requestAuthorization}
           style={styles.authorizationButton}
+          labelStyle={{
+            color: '#fff',
+            ...subheading,
+            marginTop: 0,
+            marginBottom: 0,
+            paddingVertical: 10,
+          }}
         >
           Grant Permission
         </Button>
@@ -45,7 +57,7 @@ const styles = StyleSheet.create({
     zIndex: 200,
   },
   authorizationCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.surface,
     borderRadius: 20,
     padding: 30,
     marginHorizontal: 20,
@@ -62,18 +74,20 @@ const styles = StyleSheet.create({
   authorizationTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: colors.neutral,
     marginBottom: 15,
     textAlign: 'center',
   },
   authorizationText: {
     fontSize: 16,
-    color: '#666',
+    color: colors.lightGray,
     textAlign: 'center',
     marginBottom: 25,
     lineHeight: 24,
   },
   authorizationButton: {
     paddingHorizontal: 30,
+    backgroundColor: colors.primary,
+    color: '#fff',
   },
 });

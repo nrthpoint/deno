@@ -61,8 +61,8 @@ function getVariationUnit(groupType: GroupType, distanceUnit: LengthUnit): strin
       return 's'; // duration variation for distance groups
     case 'pace':
       return distanceUnit; // distance variation for pace groups
-    case 'altitude':
-      return 'm'; // elevation variation for altitude groups
+    case 'elevation':
+      return 'm'; // elevation variation for elevation groups
     default:
       return 's';
   }

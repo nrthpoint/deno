@@ -1,7 +1,7 @@
 import { BaseGroupStatCalculator } from '@/grouping-engine/calculators/Base';
 import { DistanceGroupStatCalculator } from '@/grouping-engine/calculators/Distance';
 import { DurationGroupStatCalculator } from '@/grouping-engine/calculators/Duration';
-import { AltitudeGroupStatCalculator } from '@/grouping-engine/calculators/Elevation';
+import { ElevationGroupStatCalculator } from '@/grouping-engine/calculators/Elevation';
 import { PaceGroupStatCalculator } from '@/grouping-engine/calculators/Pace';
 import { GroupConfig } from '@/grouping-engine/types/GroupConfig';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
@@ -17,8 +17,8 @@ export function createStatCalculator(config: GroupConfig): GroupStatCalculator {
       return new DistanceGroupStatCalculator();
     case 'pace':
       return new PaceGroupStatCalculator();
-    case 'altitude':
-      return new AltitudeGroupStatCalculator();
+    case 'elevation':
+      return new ElevationGroupStatCalculator();
     case 'duration':
       return new DurationGroupStatCalculator();
     default:

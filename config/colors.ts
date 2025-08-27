@@ -37,7 +37,7 @@ export const tabColors: Record<GroupType, ColorProfile> = {
     gradientStart: '#8e0a85',
     gradientEnd: '#be31b7ff',
   },
-  altitude: {
+  elevation: {
     primary: '#6cea12ff',
     secondary: '#184c16ff',
     gradientStart: '#4ca50c',

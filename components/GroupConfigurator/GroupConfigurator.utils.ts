@@ -36,7 +36,7 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string) => {
           step: 0.2,
         },
       };
-    case 'altitude':
+    case 'elevation':
       return {
         tolerance: {
           label: 'Elevation Tolerance',

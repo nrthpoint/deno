@@ -9,9 +9,9 @@ import { formatPace } from '@/utils/time';
 import { findHighestElevationRun, findLowestElevationRun } from '@/utils/workout';
 
 /**
- * Altitude-based group statistics calculator
+ * Elevation-based group statistics calculator
  */
-export class AltitudeGroupStatCalculator extends BaseGroupStatCalculator {
+export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
   calculateStats(group: Group, samples: readonly ExtendedWorkout[]): void {
     super.calculateStats(group, samples);
 

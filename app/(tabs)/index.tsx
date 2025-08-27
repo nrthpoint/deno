@@ -36,9 +36,9 @@ export default function Index() {
       tolerance: getTabOptionConfig('pace').tolerance,
       groupSize: getTabOptionConfig('pace').groupSize,
     },
-    altitude: {
-      tolerance: getTabOptionConfig('altitude').tolerance,
-      groupSize: getTabOptionConfig('altitude').groupSize,
+    elevation: {
+      tolerance: getTabOptionConfig('elevation').tolerance,
+      groupSize: getTabOptionConfig('elevation').groupSize,
     },
     duration: {
       tolerance: getTabOptionConfig('duration').tolerance,
@@ -90,38 +90,38 @@ export default function Index() {
 
   return (
     <ThemeProvider groupType={groupType}>
+      {/* Authorization Overlay - moved outside ScrollView to cover entire viewport */}
+      <AuthorizationOverlay
+        authorizationStatus={authorizationStatus}
+        requestAuthorization={requestAuthorization}
+      />
+
+      {/* Loading Overlay */}
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator
+            animating
+            color="#fff"
+            size="large"
+          />
+        </View>
+      )}
+
+      {/* No Data Overlay */}
+      {hasNoData && (
+        <View style={styles.noDataOverlay}>
+          <Text style={{ color: '#fff', textAlign: 'center', paddingHorizontal: 20 }}>
+            No data available for the selected group.
+          </Text>
+        </View>
+      )}
+
       <Animated.ScrollView
-        style={[styles.container, { backgroundColor: '#000' }]}
+        style={styles.container}
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
         })}
       >
-        {/* Authorization Overlay */}
-        <AuthorizationOverlay
-          authorizationStatus={authorizationStatus}
-          requestAuthorization={requestAuthorization}
-        />
-
-        {/* Loading Overlay */}
-        {loading && (
-          <View style={styles.loadingOverlay}>
-            <ActivityIndicator
-              animating
-              color="#fff"
-              size="large"
-            />
-          </View>
-        )}
-
-        {/* No Data Overlay */}
-        {hasNoData && (
-          <View style={styles.noDataOverlay}>
-            <Text style={{ color: '#fff', textAlign: 'center', paddingHorizontal: 20 }}>
-              No data available for the selected group.
-            </Text>
-          </View>
-        )}
-
         <GroupingConfigModal
           visible={configModalVisible}
           onDismiss={() => setConfigModalVisible(false)}
@@ -135,7 +135,6 @@ export default function Index() {
         <View style={{ borderRadius: 20, overflow: 'hidden' }}>
           <Animated.View
             style={{
-              ...styles.topContainer,
               transform: [{ translateY: scrollY }],
             }}
           >
@@ -199,8 +198,8 @@ export default function Index() {
 }
 
 export const styles = StyleSheet.create({
-  topContainer: {
-    backgroundColor: 'red',
+  container: {
+    backgroundColor: colors.background,
   },
   header: {
     paddingTop: 80,
@@ -216,9 +215,6 @@ export const styles = StyleSheet.create({
     ...subheading,
     marginTop: 10,
     color: '#fff',
-  },
-  container: {
-    flex: 1,
   },
   loadingOverlay: {
     position: 'absolute',

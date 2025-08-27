@@ -40,7 +40,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({
       // TODO: Unit here will be wrong if switching to KM.
       return formatDistance(newQuantity(value, 'mi'));
     } else {
-      // For distance and altitude groups, the distribution values are durations in seconds
+      // For distance and elevation groups, the distribution values are durations in seconds
       return formatDuration(newQuantity(Math.round(value), 's'), 1);
     }
   };
