@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, IconButton, Text } from 'react-native-paper';
@@ -164,8 +165,14 @@ export default function Index() {
               <Text style={styles.headerSubtitle}>{tabLabels[groupType]}</Text>
             </View>
 
-            {/* Settings Icon */}
+            {/* Settings and Add Workout Icons */}
             <View style={styles.settingsContainer}>
+              <IconButton
+                icon="plus"
+                size={32}
+                iconColor={colors.neutral}
+                onPress={() => router.push('/add-workout')}
+              />
               <IconButton
                 icon="cog"
                 size={32}
@@ -243,5 +250,7 @@ export const styles = StyleSheet.create({
     top: 75,
     right: 20,
     zIndex: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

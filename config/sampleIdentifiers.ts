@@ -89,3 +89,15 @@ export const AllSampleTypesInApp: SampleTypeIdentifierWriteable[] = [
   ...AllCategorySampleTypeIdentifierInApp,
   ...AllQuantityTypeIdentifierInApp,
 ];
+
+// Sample types that need write permissions
+export const SampleTypesToWrite: SampleTypeIdentifierWriteable[] = [
+  'HKWorkoutTypeIdentifier',
+  'HKQuantityTypeIdentifierDistanceWalkingRunning',
+  'HKQuantityTypeIdentifierDistanceCycling',
+  'HKQuantityTypeIdentifierActiveEnergyBurned',
+  'HKQuantityTypeIdentifierStepCount',
+];
+
+// Sample types that need read permissions
+export const SampleTypesToRead: SampleTypeIdentifierWriteable[] = [...AllSampleTypesInApp];

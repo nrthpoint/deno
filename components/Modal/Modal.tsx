@@ -25,7 +25,7 @@ export const ModalProvider = ({
   const handlePress = () => {
     if (workout) {
       setSelectedWorkout(workout);
-      router.push('/workout-detail');
+      router.push('/view-workout');
     } else if (hasModal) {
       setModalVisible(true);
     }

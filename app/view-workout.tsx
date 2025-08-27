@@ -13,7 +13,7 @@ import { useWorkout } from '@/context/WorkoutContext';
 import { subheading } from '@/utils/text';
 import { formatDate, formatPace, formatTime, formatWorkoutDate } from '@/utils/time';
 
-export default function WorkoutDetailScreen() {
+export default function ViewWorkoutScreen() {
   const { selectedWorkout } = useWorkout();
 
   if (!selectedWorkout) {

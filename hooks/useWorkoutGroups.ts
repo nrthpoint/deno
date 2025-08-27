@@ -22,11 +22,12 @@ export function useWorkoutGroups({
   tolerance,
   groupSize,
 }: UseGroupedActivityDataParams) {
-  const { samples, meta, loading, authorizationStatus, requestAuthorization } = useWorkoutData({
-    activityType,
-    distanceUnit,
-    timeRangeInDays,
-  });
+  const { samples, meta, loading, authorizationStatus, requestAuthorization, refresh } =
+    useWorkoutData({
+      activityType,
+      distanceUnit,
+      timeRangeInDays,
+    });
 
   const config = GROUPING_CONFIGS[groupType];
 
@@ -40,5 +41,5 @@ export function useWorkoutGroups({
     config,
   );
 
-  return { groups, meta, loading, authorizationStatus, requestAuthorization };
+  return { groups, meta, loading, authorizationStatus, requestAuthorization, refresh };
 }
