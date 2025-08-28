@@ -102,7 +102,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: colors.surfaceHighlight,
+    backgroundColor: colors.surface,
     borderRadius: 16,
     padding: 24,
     margin: 20,
@@ -116,11 +116,11 @@ export const styles = StyleSheet.create({
   },
   modalTitle: {
     ...subheading,
+    ...getLatoFont('bold'),
     color: '#FFFFFF',
     fontSize: 18,
     flex: 1,
     textAlign: 'center',
-    ...getLatoFont('bold'),
   },
   modalDescription: {
     color: '#CCCCCC',

@@ -14,3 +14,11 @@ export const LatoFonts = {
 export const getLatoFont = (weight: keyof typeof LatoFonts = 'regular') => ({
   fontFamily: LatoFonts[weight],
 });
+
+export const OrelegaOneFonts = {
+  regular: 'OrelegaOne',
+} as const;
+
+export const getOrelegaOneFont = (weight: keyof typeof OrelegaOneFonts = 'regular') => ({
+  fontFamily: OrelegaOneFonts[weight],
+});
