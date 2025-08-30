@@ -8,10 +8,12 @@
 import * as Notifications from 'expo-notifications';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Card, IconButton } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
 
+import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
-import { getNotificationSettings } from '@/utils/notificationService';
+import { getNotificationSettings } from '@/utils/notifications';
+import { subheading } from '@/utils/text';
 
 interface NotificationStatus {
   permissionGranted: boolean;
@@ -66,9 +68,7 @@ export const NotificationStatusCard = () => {
   if (loading) {
     return (
       <Card style={styles.card}>
-        <Card.Content>
-          <Text>Loading notification status...</Text>
-        </Card.Content>
+        <Text>Loading notification status...</Text>
       </Card>
     );
   }
@@ -78,118 +78,118 @@ export const NotificationStatusCard = () => {
 
   return (
     <Card style={styles.card}>
-      <Card.Content>
-        <View style={styles.header}>
-          <Text style={styles.title}>📱 Notification Status</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>📱 Notification Status</Text>
+        <IconButton
+          icon={getStatusIcon(allEnabled)}
+          iconColor={getStatusColor(allEnabled)}
+          size={24}
+          onPress={loadStatus}
+        />
+      </View>
+
+      <View style={styles.statusList}>
+        <View style={styles.statusItem}>
           <IconButton
-            icon={getStatusIcon(allEnabled)}
-            iconColor={getStatusColor(allEnabled)}
-            size={24}
-            onPress={loadStatus}
+            icon={getStatusIcon(status.permissionGranted)}
+            iconColor={getStatusColor(status.permissionGranted)}
+            size={20}
+            style={styles.statusIcon}
           />
-        </View>
-
-        <View style={styles.statusList}>
-          <View style={styles.statusItem}>
-            <IconButton
-              icon={getStatusIcon(status.permissionGranted)}
-              iconColor={getStatusColor(status.permissionGranted)}
-              size={20}
-              style={styles.statusIcon}
-            />
-            <View style={styles.statusText}>
-              <Text style={styles.statusTitle}>System Permission</Text>
-              <Text style={styles.statusDescription}>
-                {status.permissionGranted
-                  ? 'Notifications are allowed by the system'
-                  : 'Grant permission in device settings'}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.statusItem}>
-            <IconButton
-              icon={getStatusIcon(status.settingsEnabled)}
-              iconColor={getStatusColor(status.settingsEnabled)}
-              size={20}
-              style={styles.statusIcon}
-            />
-            <View style={styles.statusText}>
-              <Text style={styles.statusTitle}>App Notifications</Text>
-              <Text style={styles.statusDescription}>
-                {status.settingsEnabled
-                  ? 'Notifications are enabled in app'
-                  : 'Enable notifications in settings below'}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.statusItem}>
-            <IconButton
-              icon={getStatusIcon(status.achievementsEnabled)}
-              iconColor={getStatusColor(status.achievementsEnabled)}
-              size={20}
-              style={styles.statusIcon}
-            />
-            <View style={styles.statusText}>
-              <Text style={styles.statusTitle}>Achievement Alerts</Text>
-              <Text style={styles.statusDescription}>
-                {status.achievementsEnabled
-                  ? 'Achievement notifications are active'
-                  : 'Achievement notifications are disabled'}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.statusItem}>
-            <IconButton
-              icon={status.soundEnabled ? 'volume-high' : 'volume-off'}
-              iconColor={getStatusColor(status.soundEnabled)}
-              size={20}
-              style={styles.statusIcon}
-            />
-            <View style={styles.statusText}>
-              <Text style={styles.statusTitle}>Sound Alerts</Text>
-              <Text style={styles.statusDescription}>
-                {status.soundEnabled
-                  ? 'Notifications will play sound'
-                  : 'Notifications will be silent'}
-              </Text>
-            </View>
+          <View style={styles.statusText}>
+            <Text style={styles.statusTitle}>System Permission</Text>
+            <Text style={styles.statusDescription}>
+              {status.permissionGranted
+                ? 'Notifications are allowed by the system'
+                : 'Grant permission in device settings'}
+            </Text>
           </View>
         </View>
 
-        {allEnabled && (
-          <View style={styles.successMessage}>
-            <Text style={styles.successText}>
-              ✅ Everything is set up! You&apos;ll receive notifications for new achievements.
+        <View style={styles.statusItem}>
+          <IconButton
+            icon={getStatusIcon(status.settingsEnabled)}
+            iconColor={getStatusColor(status.settingsEnabled)}
+            size={20}
+            style={styles.statusIcon}
+          />
+          <View style={styles.statusText}>
+            <Text style={styles.statusTitle}>App Notifications</Text>
+            <Text style={styles.statusDescription}>
+              {status.settingsEnabled
+                ? 'Notifications are enabled in app'
+                : 'Enable notifications in settings below'}
             </Text>
           </View>
-        )}
+        </View>
 
-        {!allEnabled && (
-          <View style={styles.warningMessage}>
-            <Text style={styles.warningText}>
-              ⚠️ Complete the setup above to receive achievement notifications when the app is
-              closed.
+        <View style={styles.statusItem}>
+          <IconButton
+            icon={getStatusIcon(status.achievementsEnabled)}
+            iconColor={getStatusColor(status.achievementsEnabled)}
+            size={20}
+            style={styles.statusIcon}
+          />
+          <View style={styles.statusText}>
+            <Text style={styles.statusTitle}>Achievement Alerts</Text>
+            <Text style={styles.statusDescription}>
+              {status.achievementsEnabled
+                ? 'Achievement notifications are active'
+                : 'Achievement notifications are disabled'}
             </Text>
           </View>
-        )}
-      </Card.Content>
+        </View>
+
+        <View style={styles.statusItem}>
+          <IconButton
+            icon={status.soundEnabled ? 'volume-high' : 'volume-off'}
+            iconColor={getStatusColor(status.soundEnabled)}
+            size={20}
+            style={styles.statusIcon}
+          />
+          <View style={styles.statusText}>
+            <Text style={styles.statusTitle}>Sound Alerts</Text>
+            <Text style={styles.statusDescription}>
+              {status.soundEnabled
+                ? 'Notifications will play sound'
+                : 'Notifications will be silent'}
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {allEnabled && (
+        <View style={styles.successMessage}>
+          <Text style={styles.successText}>
+            ✅ Everything is set up! You&apos;ll receive notifications for new achievements.
+          </Text>
+        </View>
+      )}
+
+      {!allEnabled && (
+        <View style={styles.warningMessage}>
+          <Text style={styles.warningText}>
+            ⚠️ Complete the setup above to receive achievement notifications when the app is closed.
+          </Text>
+        </View>
+      )}
     </Card>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    margin: 16,
     backgroundColor: colors.surface,
   },
   header: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surfaceHighlight,
   },
   title: {
     fontSize: 18,
@@ -197,7 +197,9 @@ const styles = StyleSheet.create({
     color: colors.neutral,
   },
   statusList: {
-    gap: 12,
+    gap: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   statusItem: {
     flexDirection: 'row',
@@ -211,8 +213,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   statusTitle: {
-    fontSize: 14,
-    fontWeight: '600',
+    ...subheading,
+    marginTop: 0,
     color: colors.neutral,
     marginBottom: 2,
   },
@@ -220,6 +222,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.lightGray,
     lineHeight: 16,
+    marginTop: 4,
   },
   successMessage: {
     backgroundColor: '#1a4a3a',
@@ -235,6 +238,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   warningMessage: {
+    margin: 12,
     backgroundColor: '#4a3a1a',
     padding: 12,
     borderRadius: 8,
@@ -245,6 +249,6 @@ const styles = StyleSheet.create({
   warningText: {
     color: '#ffaa00',
     fontSize: 12,
-    lineHeight: 16,
+    lineHeight: 20,
   },
 });

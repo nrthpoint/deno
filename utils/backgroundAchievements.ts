@@ -21,7 +21,7 @@ import {
 } from '@/utils/achievements';
 import { parseWorkoutSamples } from '@/utils/parser';
 
-import { showAchievementNotification } from './notificationService';
+import { showAchievementNotification } from './notifications';
 
 const LAST_BACKGROUND_CHECK_KEY = 'lastBackgroundAchievementCheck';
 const BACKGROUND_CHECK_INTERVAL = 30 * 60 * 1000; // 30 minutes

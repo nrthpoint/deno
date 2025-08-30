@@ -191,7 +191,7 @@ const showAchievementToast = (
   type: 'success' | 'info' | 'error' = 'success',
 ) => {
   // Import the notification service dynamically to avoid circular dependencies
-  import('./notificationService').then(({ showAchievementNotification, isAppActive }) => {
+  import('./notifications').then(({ showAchievementNotification, isAppActive }) => {
     isAppActive().then((appActive) => {
       showAchievementNotification(title, message, workout, appActive);
     });

@@ -1,3 +1,4 @@
+import { WorkoutActivityType } from '@kingstinct/react-native-healthkit';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
@@ -181,6 +182,15 @@ export default function Index() {
               />
             </View>
 
+            {/* add a dynamic small white icon here that is centered above the carousel and represented the activity type in a visual way */}
+            <View style={styles.activityIconContainer}>
+              <IconButton
+                icon={getActivityIcon(activityType)}
+                size={24}
+                iconColor="#fff"
+              />
+            </View>
+
             <GroupCarousel
               options={options}
               colorProfile={colorProfile}
@@ -204,9 +214,34 @@ export default function Index() {
   );
 }
 
+const getActivityIcon = (activityType: WorkoutActivityType) => {
+  switch (activityType) {
+    case WorkoutActivityType.running:
+      return 'run';
+    case WorkoutActivityType.walking:
+      return 'walk';
+    case WorkoutActivityType.cycling:
+      return 'bike';
+    default:
+      return 'run';
+  }
+};
+
 export const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.background,
+  },
+  activityIconContainer: {
+    position: 'absolute',
+    top: 130,
+    left: '50%',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    transform: [{ translateX: -24 }],
+    zIndex: 10,
   },
   header: {
     paddingTop: 80,

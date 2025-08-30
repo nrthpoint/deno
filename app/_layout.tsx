@@ -17,7 +17,7 @@ import {
   initializeNotifications,
   registerBackgroundTask,
   setAppActive,
-} from '@/utils/notificationService';
+} from '@/utils/notifications';
 
 SplashScreen.preventAutoHideAsync();
 

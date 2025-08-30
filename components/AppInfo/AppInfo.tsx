@@ -7,6 +7,7 @@ import { Button, Text } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { subheading } from '@/utils/text';
 
 export default function AppInfo() {
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
@@ -16,11 +17,8 @@ export default function AppInfo() {
   const version = Application.nativeApplicationVersion ?? 'unknown';
   const buildNumber = Application.nativeBuildVersion ?? 'unknown';
   const updateId = Updates.updateId ?? 'unknown';
-  const runtimeVId = Updates.manifest?.id ?? 'unknown';
   const updateChannel =
     Constants.expoConfig?.updates?.requestHeaders?.['expo-channel-name'] ?? 'N/A';
-
-  // Check if we're running in development mode
   const isDevelopment = __DEV__ || !Updates.isEnabled;
 
   const handleCheckForUpdates = async () => {
@@ -93,6 +91,7 @@ export default function AppInfo() {
       }
     } catch (error) {
       console.error('Error forcing update:', error);
+
       Alert.alert(
         'Update Failed',
         'Failed to download the update. Please check your internet connection and try again.',
@@ -105,7 +104,7 @@ export default function AppInfo() {
 
   const formatUpdateId = (id: string) => {
     if (id === 'unknown' || !id) return 'unknown';
-    // Show first 8 characters for readability, with option to expand
+
     return showFullUpdateId || id.length <= 8 ? id : `${id.substring(0, 8)}...`;
   };
 
@@ -125,17 +124,12 @@ export default function AppInfo() {
 
   const formatTimestamp = (date: Date | null) => {
     if (!date) return 'Never';
+
     return date.toLocaleTimeString();
   };
 
   return (
     <>
-      {/* <Text
-        variant="titleLarge"
-        style={styles.heading}
-      >
-        App Information
-      </Text> */}
       <View style={styles.versionContainer}>
         <View style={styles.versionRow}>
           <Text
@@ -151,6 +145,7 @@ export default function AppInfo() {
             {version}
           </Text>
         </View>
+
         <View style={styles.versionRow}>
           <Text
             variant="bodyMedium"
@@ -165,6 +160,7 @@ export default function AppInfo() {
             {buildNumber}
           </Text>
         </View>
+
         <Pressable
           style={styles.versionRow}
           onPress={handleUpdateIdPress}
@@ -191,20 +187,7 @@ export default function AppInfo() {
             {formatUpdateId(updateId)}
           </Text>
         </Pressable>
-        <View style={styles.versionRow}>
-          <Text
-            variant="bodyMedium"
-            style={styles.versionLabel}
-          >
-            Runtime Version
-          </Text>
-          <Text
-            variant="bodyMedium"
-            style={styles.versionValue}
-          >
-            {runtimeVId}
-          </Text>
-        </View>
+
         <View style={styles.versionRow}>
           <Text
             variant="bodyMedium"
@@ -219,6 +202,7 @@ export default function AppInfo() {
             {updateChannel}
           </Text>
         </View>
+
         {!isDevelopment && (
           <View style={styles.versionRow}>
             <Text
@@ -282,13 +266,6 @@ export default function AppInfo() {
 }
 
 const styles = StyleSheet.create({
-  // heading: {
-  //   fontSize: 24,
-  //   fontFamily: LatoFonts.bold,
-  //   marginBottom: 0,
-  //   marginTop: 16,
-  //   color: colors.neutral,
-  // },
   versionContainer: {
     backgroundColor: colors.surface,
     borderRadius: 12,
@@ -302,12 +279,14 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   versionLabel: {
+    ...subheading,
+    marginTop: 0,
     color: colors.lightGray,
     fontFamily: LatoFonts.regular,
   },
   versionValue: {
     color: colors.neutral,
-    fontFamily: LatoFonts.bold,
+    fontFamily: LatoFonts.regular,
   },
   updateContainer: {
     backgroundColor: colors.surface,

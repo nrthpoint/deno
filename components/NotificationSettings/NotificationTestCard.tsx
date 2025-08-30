@@ -7,11 +7,12 @@
 
 import { useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
-import { Button, Card } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 
+import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
 // import { forceBackgroundCheck, getTimeUntilNextCheck } from '@/utils/backgroundAchievements';
-import { cancelAllNotifications, sendTestNotification } from '@/utils/notificationService';
+import { cancelAllNotifications, sendTestNotification } from '@/utils/notifications';
 
 export const NotificationTestCard = () => {
   const [loading, setLoading] = useState(false);
@@ -69,63 +70,62 @@ export const NotificationTestCard = () => {
 
   return (
     <Card style={styles.card}>
-      <Card.Content>
-        <Text style={styles.title}>🧪 Notification Testing</Text>
-        <Text style={styles.subtitle}>Test notification features and background processes</Text>
+      <Text style={styles.title}>🧪 Notification Testing</Text>
+      <Text style={styles.subtitle}>Test notification features and background processes</Text>
 
-        <View style={styles.buttonGrid}>
-          <Button
-            mode="contained"
-            onPress={handleTestNotification}
-            disabled={loading}
-            style={styles.button}
-          >
-            Send Test Notification
-          </Button>
+      <View style={styles.buttonGrid}>
+        <Button
+          mode="contained"
+          onPress={handleTestNotification}
+          disabled={loading}
+          style={[styles.button, { backgroundColor: colors.primary }]}
+          labelStyle={{ color: colors.neutral }}
+        >
+          Send Test Notification
+        </Button>
 
-          <Button
-            mode="outlined"
-            onPress={handleForceBackgroundCheck}
-            disabled={loading}
-            style={styles.button}
-          >
-            Force Background Check
-          </Button>
+        <Button
+          mode="outlined"
+          onPress={handleForceBackgroundCheck}
+          disabled={loading}
+          style={styles.button}
+        >
+          Force Background Check
+        </Button>
 
-          <Button
-            mode="outlined"
-            onPress={handleCheckNextCheckTime}
-            disabled={loading}
-            style={styles.button}
-          >
-            Check Next Check Time
-          </Button>
+        <Button
+          mode="outlined"
+          onPress={handleCheckNextCheckTime}
+          disabled={loading}
+          style={styles.button}
+        >
+          Check Next Check Time
+        </Button>
 
-          <Button
-            mode="outlined"
-            onPress={handleCancelNotifications}
-            disabled={loading}
-            style={[styles.button, styles.dangerButton]}
-          >
-            Cancel All Notifications
-          </Button>
-        </View>
+        <Button
+          mode="outlined"
+          onPress={handleCancelNotifications}
+          disabled={loading}
+          labelStyle={{ color: colors.neutral }}
+          style={[styles.button, styles.dangerButton]}
+        >
+          Cancel All Notifications
+        </Button>
+      </View>
 
-        <View style={styles.infoBox}>
-          <Text style={styles.infoText}>
-            🛠️ These controls are for development and testing purposes. Use them to verify that
-            notifications are working properly and to test background achievement detection.
-          </Text>
-        </View>
-      </Card.Content>
+      <View style={styles.infoBox}>
+        <Text style={styles.infoText}>
+          🛠️ These controls are for development and testing purposes. Use them to verify that
+          notifications are working properly and to test background achievement detection.
+        </Text>
+      </View>
     </Card>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    margin: 16,
-    backgroundColor: colors.surface,
+    padding: 16,
   },
   title: {
     fontSize: 20,
@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   dangerButton: {
+    backgroundColor: '#ff4444',
     borderColor: '#ff4444',
   },
   infoBox: {

@@ -6,7 +6,7 @@ export const colors = {
   background: '#0A0A0A',
   surfaceHighlight: '#252525ff',
   surface: '#161616ff',
-  surfaceLow: '#0A0A0A',
+  surfaceLow: '#161616ff',
   accent: '#1e1e1eff',
   gray: '#333333',
 

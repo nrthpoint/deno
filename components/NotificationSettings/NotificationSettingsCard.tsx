@@ -6,15 +6,17 @@
 
 import { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
-import { Button, Card, Switch } from 'react-native-paper';
+import { Button, Switch } from 'react-native-paper';
 
+import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
 import {
   getNotificationSettings,
   NotificationSettings,
   sendTestNotification,
   updateNotificationSettings,
-} from '@/utils/notificationService';
+} from '@/utils/notifications';
+import { subheading } from '@/utils/text';
 
 export const NotificationSettingsCard = () => {
   const [settings, setSettings] = useState<NotificationSettings>({
@@ -63,95 +65,98 @@ export const NotificationSettingsCard = () => {
   if (loading) {
     return (
       <Card style={styles.card}>
-        <Card.Content>
-          <Text>Loading notification settings...</Text>
-        </Card.Content>
+        <Text>Loading notification settings...</Text>
       </Card>
     );
   }
 
   return (
     <Card style={styles.card}>
-      <Card.Content>
+      <View style={styles.header}>
         <Text style={styles.title}>🔔 Notification Settings</Text>
         <Text style={styles.subtitle}>
           Configure when you want to receive achievement notifications
         </Text>
+      </View>
 
-        <View style={styles.settingRow}>
-          <View style={styles.settingInfo}>
-            <Text style={styles.settingTitle}>Enable Notifications</Text>
-            <Text style={styles.settingDescription}>
-              Receive notifications for new achievements
-            </Text>
-          </View>
-          <Switch
-            value={settings.enabled}
-            onValueChange={(value) => handleSettingChange('enabled', value)}
-            style={styles.switch}
-          />
+      <View style={styles.settingRow}>
+        <View style={styles.settingInfo}>
+          <Text style={styles.settingTitle}>Enable Notifications</Text>
+          <Text style={styles.settingDescription}>Receive notifications for new achievements</Text>
         </View>
+        <Switch
+          value={settings.enabled}
+          onValueChange={(value) => handleSettingChange('enabled', value)}
+          style={styles.switch}
+        />
+      </View>
 
-        <View style={[styles.settingRow, !settings.enabled && styles.disabledRow]}>
-          <View style={styles.settingInfo}>
-            <Text style={[styles.settingTitle, !settings.enabled && styles.disabledText]}>
-              Achievement Alerts
-            </Text>
-            <Text style={[styles.settingDescription, !settings.enabled && styles.disabledText]}>
-              Get notified when you achieve new personal bests
-            </Text>
-          </View>
-          <Switch
-            value={settings.achievementsEnabled}
-            onValueChange={(value) => handleSettingChange('achievementsEnabled', value)}
-            disabled={!settings.enabled}
-            style={styles.switch}
-          />
-        </View>
-
-        <View style={[styles.settingRow, !settings.enabled && styles.disabledRow]}>
-          <View style={styles.settingInfo}>
-            <Text style={[styles.settingTitle, !settings.enabled && styles.disabledText]}>
-              Sound Alerts
-            </Text>
-            <Text style={[styles.settingDescription, !settings.enabled && styles.disabledText]}>
-              Play sound with achievement notifications
-            </Text>
-          </View>
-          <Switch
-            value={settings.soundEnabled}
-            onValueChange={(value) => handleSettingChange('soundEnabled', value)}
-            disabled={!settings.enabled}
-            style={styles.switch}
-          />
-        </View>
-
-        <View style={styles.buttonRow}>
-          <Button
-            mode="outlined"
-            onPress={handleTestNotification}
-            disabled={!settings.enabled}
-            style={styles.testButton}
-          >
-            Send Test Notification
-          </Button>
-        </View>
-
-        <View style={styles.infoBox}>
-          <Text style={styles.infoText}>
-            💡 Achievement notifications will be sent when the app detects new personal bests, even
-            when the app is closed. Make sure notifications are enabled in your device settings.
+      <View style={[styles.settingRow, !settings.enabled && styles.disabledRow]}>
+        <View style={styles.settingInfo}>
+          <Text style={[styles.settingTitle, !settings.enabled && styles.disabledText]}>
+            Achievement Alerts
+          </Text>
+          <Text style={[styles.settingDescription, !settings.enabled && styles.disabledText]}>
+            Get notified when you achieve new personal bests
           </Text>
         </View>
-      </Card.Content>
+        <Switch
+          value={settings.achievementsEnabled}
+          onValueChange={(value) => handleSettingChange('achievementsEnabled', value)}
+          disabled={!settings.enabled}
+          style={styles.switch}
+        />
+      </View>
+
+      <View style={[styles.settingRow, !settings.enabled && styles.disabledRow]}>
+        <View style={styles.settingInfo}>
+          <Text style={[styles.settingTitle, !settings.enabled && styles.disabledText]}>
+            Sound Alerts
+          </Text>
+          <Text style={[styles.settingDescription, !settings.enabled && styles.disabledText]}>
+            Play sound with achievement notifications
+          </Text>
+        </View>
+        <Switch
+          value={settings.soundEnabled}
+          onValueChange={(value) => handleSettingChange('soundEnabled', value)}
+          disabled={!settings.enabled}
+          style={styles.switch}
+        />
+      </View>
+
+      <View style={styles.buttonRow}>
+        <Button
+          mode="outlined"
+          onPress={handleTestNotification}
+          disabled={!settings.enabled}
+          style={styles.testButton}
+          labelStyle={{ color: colors.neutral }}
+        >
+          Send Test Notification
+        </Button>
+      </View>
+
+      <View style={styles.infoBox}>
+        <Text style={styles.infoText}>
+          💡 Achievement notifications will be sent when the app detects new personal bests, even
+          when the app is closed. Make sure notifications are enabled in your device settings.
+        </Text>
+      </View>
     </Card>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    margin: 16,
     backgroundColor: colors.surface,
+  },
+  header: {
+    paddingVertical: 22,
+    paddingHorizontal: 16,
+    paddingBottom: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.gray,
   },
   title: {
     fontSize: 20,
@@ -163,12 +168,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.lightGray,
     marginBottom: 24,
+    lineHeight: 20,
   },
   settingRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: colors.gray,
   },
@@ -180,13 +186,14 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   settingTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...subheading,
+    marginTop: 0,
     color: colors.neutral,
     marginBottom: 4,
   },
   settingDescription: {
-    fontSize: 14,
+    fontSize: 12,
+    marginTop: 4,
     color: colors.lightGray,
   },
   disabledText: {
@@ -202,9 +209,13 @@ const styles = StyleSheet.create({
   },
   testButton: {
     borderColor: colors.primary,
+    backgroundColor: colors.primary,
+    margin: 10,
   },
   infoBox: {
-    backgroundColor: colors.background,
+    margin: 12,
+    marginTop: 0,
+    backgroundColor: '#1e1a57',
     padding: 12,
     borderRadius: 8,
     borderLeftWidth: 4,
@@ -213,6 +224,6 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 12,
     color: colors.lightGray,
-    lineHeight: 16,
+    lineHeight: 20,
   },
 });

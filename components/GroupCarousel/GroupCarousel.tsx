@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import Carousel from 'react-native-reanimated-carousel';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
@@ -38,23 +38,27 @@ export const GroupCarousel = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupType]);
 
+  const deviceWidth = Dimensions.get('window').width;
+
   return (
     <Carousel
       ref={carouselRef}
       loop={false}
-      width={180}
+      width={deviceWidth}
       height={180}
       data={options.length > 0 ? options : ['--']}
       scrollAnimationDuration={300}
       onSnapToItem={(index) => {
         setSelectedOption(options[index]);
       }}
-      snapEnabled={true}
-      style={styles.carousel}
+      style={{
+        ...styles.carousel,
+        width: deviceWidth,
+      }}
       mode="parallax"
       modeConfig={{
-        parallaxScrollingScale: 0.8,
-        parallaxScrollingOffset: 90,
+        parallaxScrollingScale: 0.9,
+        parallaxScrollingOffset: 50,
         parallaxAdjacentItemScale: 0.6,
       }}
       renderItem={({ item }) => (
@@ -138,6 +142,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     justifyContent: 'center',
     width: '100%',
+    overflow: 'visible',
   },
   carouselItem: {
     width: 140,
