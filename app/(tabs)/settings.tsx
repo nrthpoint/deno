@@ -2,7 +2,7 @@ import { LengthUnit, WorkoutActivityType } from '@kingstinct/react-native-health
 import Slider from '@react-native-community/slider';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Button, Text } from 'react-native-paper';
 
 import AppInfo from '@/components/AppInfo/AppInfo';
 import { Card } from '@/components/Card/Card';
@@ -12,6 +12,7 @@ import { DISTANCE_UNIT_OPTIONS } from '@/config/distanceUnits';
 import { LatoFonts } from '@/config/fonts';
 import { TIME_RANGE_LABELS, TIME_RANGE_OPTIONS } from '@/config/timeRanges';
 import { useSettings } from '@/context/SettingsContext';
+import { showTestAchievementNotification, clearPreviousAchievements } from '@/utils/achievements';
 import { subheading } from '@/utils/text';
 
 export default function ConfigurationScreen() {
@@ -121,6 +122,41 @@ export default function ConfigurationScreen() {
           </View>
         </Card>
 
+        {/* Developer Testing Section */}
+        <Card>
+          <View style={styles.cardContent}>
+            <Text
+              variant="titleLarge"
+              style={[styles.heading, { marginTop: 0 }]}
+            >
+              Developer Testing
+            </Text>
+            <Text style={styles.subheading}>
+              Test achievement notifications and reset stored data.
+            </Text>
+
+            <View style={styles.buttonContainer}>
+              <Button
+                mode="contained"
+                onPress={showTestAchievementNotification}
+                style={styles.testButton}
+                labelStyle={styles.buttonText}
+              >
+                Test Achievement Notification
+              </Button>
+
+              <Button
+                mode="outlined"
+                onPress={clearPreviousAchievements}
+                style={styles.clearButton}
+                labelStyle={styles.buttonText}
+              >
+                Clear Achievement History
+              </Button>
+            </View>
+          </View>
+        </Card>
+
         <AppInfo />
       </ScrollView>
     </View>
@@ -190,5 +226,22 @@ const styles = StyleSheet.create({
   },
   rangeLabel: {
     ...subheading,
+  },
+  buttonContainer: {
+    marginTop: 16,
+    gap: 12,
+  },
+  testButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+  },
+  clearButton: {
+    borderColor: colors.gray,
+    borderRadius: 8,
+  },
+  buttonText: {
+    fontSize: 14,
+    fontFamily: LatoFonts.bold,
+    color: colors.neutral,
   },
 });

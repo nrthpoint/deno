@@ -1,16 +1,11 @@
 import { LengthUnit, Quantity } from '@kingstinct/react-native-healthkit';
 
-import { ExtendedWorkout, WorkoutAchievements, WorkoutProxy } from '@/types/ExtendedWorkout';
+import { ExtendedWorkout, WorkoutProxy } from '@/types/ExtendedWorkout';
+import { calculateAchievements } from '@/utils/achievements';
 
 import { metersToMiles, metersToKilometers } from './distance';
 import { formatPace } from './time';
-import {
-  calculatePace,
-  findFastestRun,
-  findLongestRun,
-  findHighestElevationRun,
-  findLongestDurationRun,
-} from './workout';
+import { calculatePace } from './workout';
 
 export const parseWorkoutSamples = async ({
   samples,
@@ -84,24 +79,4 @@ const parseWorkoutSample = async ({
       isAllTimeHighestElevation: false,
     },
   } satisfies ExtendedWorkout;
-};
-
-/**
- * Calculates achievements for a specific workout compared to all workouts
- */
-const calculateAchievements = (
-  currentWorkout: ExtendedWorkout,
-  allWorkouts: ExtendedWorkout[],
-): WorkoutAchievements => {
-  const fastestWorkout = findFastestRun(allWorkouts);
-  const longestWorkout = findLongestDurationRun(allWorkouts);
-  const furthestWorkout = findLongestRun(allWorkouts);
-  const highestElevationWorkout = findHighestElevationRun(allWorkouts);
-
-  return {
-    isAllTimeFastest: currentWorkout.uuid === fastestWorkout.uuid,
-    isAllTimeLongest: currentWorkout.uuid === longestWorkout.uuid,
-    isAllTimeFurthest: currentWorkout.uuid === furthestWorkout.uuid,
-    isAllTimeHighestElevation: currentWorkout.uuid === highestElevationWorkout.uuid,
-  } satisfies WorkoutAchievements;
 };

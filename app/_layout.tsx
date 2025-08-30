@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper';
+import Toast from 'react-native-toast-message';
 
 import { colors } from '@/config/colors';
 import { SettingsProvider } from '@/context/SettingsContext';
@@ -62,6 +63,7 @@ export default function RootLayout() {
                 }}
               />
             </Stack>
+            <Toast />
           </WorkoutProvider>
         </SettingsProvider>
       </PaperProvider>

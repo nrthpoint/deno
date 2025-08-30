@@ -12,6 +12,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { SampleTypesToRead, SampleTypesToWrite } from '@/config/sampleIdentifiers';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { handleAchievementNotifications } from '@/utils/achievements';
 import { parseWorkoutSamples } from '@/utils/parser';
 
 type UseWorkoutDataParams = {
@@ -92,6 +93,9 @@ export function useWorkoutData({
       });
 
       setSamples(parsedWorkouts);
+
+      // Check for new achievements and show notifications
+      await handleAchievementNotifications(parsedWorkouts);
     } catch (error) {
       console.error('Error fetching workouts:', error);
     } finally {
