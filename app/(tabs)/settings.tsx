@@ -6,6 +6,9 @@ import { Button, Text } from 'react-native-paper';
 
 import AppInfo from '@/components/AppInfo/AppInfo';
 import { Card } from '@/components/Card/Card';
+import { NotificationSettingsCard } from '@/components/NotificationSettings/NotificationSettingsCard';
+import { NotificationStatusCard } from '@/components/NotificationSettings/NotificationStatusCard';
+import { NotificationTestCard } from '@/components/NotificationSettings/NotificationTestCard';
 import { TabBar } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 import { DISTANCE_UNIT_OPTIONS } from '@/config/distanceUnits';
@@ -31,6 +34,12 @@ export default function ConfigurationScreen() {
         <Text style={styles.headerTitle}>Settings</Text>
       </View>
       <ScrollView contentContainerStyle={[styles.container]}>
+        {/* Notification Status */}
+        <NotificationStatusCard />
+
+        {/* Notification Settings */}
+        <NotificationSettingsCard />
+
         <Text
           variant="titleLarge"
           style={styles.heading}
@@ -123,6 +132,8 @@ export default function ConfigurationScreen() {
         </Card>
 
         {/* Developer Testing Section */}
+        <NotificationTestCard />
+
         <Card>
           <View style={styles.cardContent}>
             <Text

@@ -25,6 +25,8 @@ export default {
           'This app needs to write workout data to HealthKit to keep your fitness information synchronized across devices.',
         NSLocationWhenInUseUsageDescription:
           'This app requires location permission for map functionality.',
+        NSUserNotificationsUsageDescription:
+          'This app sends notifications to alert you about new personal achievements and fitness milestones.',
       },
     },
     plugins: [
@@ -45,6 +47,14 @@ export default {
           NSHealthUpdateUsageDescription:
             'This app needs to write workout data to HealthKit to keep your fitness information synchronized across devices.',
           background: true,
+        },
+      ],
+      [
+        'expo-notifications',
+        {
+          icon: './assets/images/icon.png',
+          color: '#ffffff',
+          defaultChannel: 'default',
         },
       ],
       'expo-web-browser',

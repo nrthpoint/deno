@@ -187,9 +187,17 @@ export const checkAndNotifyNewAchievements = async (
 const showAchievementToast = (
   title: string,
   message: string,
-  _workout: ExtendedWorkout,
+  workout: ExtendedWorkout,
   type: 'success' | 'info' | 'error' = 'success',
 ) => {
+  // Import the notification service dynamically to avoid circular dependencies
+  import('./notificationService').then(({ showAchievementNotification, isAppActive }) => {
+    isAppActive().then((appActive) => {
+      showAchievementNotification(title, message, workout, appActive);
+    });
+  });
+
+  // Also show the original toast as fallback
   Toast.show({
     type,
     text1: title,
