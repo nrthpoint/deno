@@ -179,71 +179,101 @@ export default function AddWorkoutScreen() {
           <Text style={styles.sectionTitle}>Add Workout</Text>
 
           <Text style={styles.label}>Activity Type</Text>
-          <TextInput
-            mode="outlined"
-            value={getActivityTypeLabel(activityType)}
-            editable={false}
-            style={[styles.input, styles.disabledInput]}
-            outlineStyle={{ borderColor: '#161616' }}
-            // right={<TextInput.Icon icon="settings" />}
-          />
-
-          <Text style={styles.label}>Date</Text>
           <TouchableRipple
             style={styles.dateTimeButton}
-            onPress={() => setShowDatePicker(true)}
+            onPress={() => router.push('/(tabs)/settings')}
           >
             <View style={styles.dateTimeButtonContent}>
-              <Text style={styles.dateTimeButtonText}>{formatDate(startDate)}</Text>
+              <Text style={styles.disabledText}>{getActivityTypeLabel(activityType)}</Text>
               <Ionicons
-                name="calendar-outline"
+                name="settings-outline"
                 size={20}
-                color={colors.neutral}
+                color={colors.gray}
               />
             </View>
           </TouchableRipple>
+          <Text style={{ marginBottom: 16, color: colors.lightGray }}>
+            This is linked to the activity type set in settings. Tap to change.
+          </Text>
 
-          <Text style={styles.label}>Time</Text>
-          <TouchableRipple
-            style={styles.dateTimeButton}
-            onPress={() => setShowTimePicker(true)}
-          >
-            <View style={styles.dateTimeButtonContent}>
-              <Text style={styles.dateTimeButtonText}>{formatTime(startDate)}</Text>
-              <Ionicons
-                name="time-outline"
-                size={20}
-                color={colors.neutral}
+          {/* First Row: Date and Time */}
+          <View style={styles.gridRow}>
+            <View style={styles.gridItem}>
+              <Text style={styles.label}>Date</Text>
+              <TouchableRipple
+                style={styles.gridButton}
+                onPress={() => setShowDatePicker(true)}
+              >
+                <View style={styles.dateTimeButtonContent}>
+                  <Text style={styles.dateTimeButtonText}>{formatDate(startDate)}</Text>
+                  <Ionicons
+                    name="calendar-outline"
+                    size={20}
+                    color={colors.gray}
+                  />
+                </View>
+              </TouchableRipple>
+            </View>
+
+            <View style={styles.gridItem}>
+              <Text style={styles.label}>Time</Text>
+              <TouchableRipple
+                style={styles.gridButton}
+                onPress={() => setShowTimePicker(true)}
+              >
+                <View style={styles.dateTimeButtonContent}>
+                  <Text style={styles.dateTimeButtonText}>{formatTime(startDate)}</Text>
+                  <Ionicons
+                    name="time-outline"
+                    size={20}
+                    color={colors.gray}
+                  />
+                </View>
+              </TouchableRipple>
+            </View>
+          </View>
+
+          {/* Second Row: Duration and Distance */}
+          <View style={styles.gridRow}>
+            <View style={styles.gridItem}>
+              <Text style={styles.label}>Duration</Text>
+              <TouchableRipple
+                style={styles.gridButton}
+                onPress={() => setShowDurationPicker(true)}
+              >
+                <View style={styles.dateTimeButtonContent}>
+                  <Text style={styles.dateTimeButtonText}>
+                    {duration || 'Select duration (MM:SS)'}
+                  </Text>
+                  <Ionicons
+                    name="time-outline"
+                    size={20}
+                    color={colors.gray}
+                  />
+                </View>
+              </TouchableRipple>
+            </View>
+
+            <View style={styles.gridItem}>
+              <Text style={styles.label}>Distance ({distanceUnit})</Text>
+              <TextInput
+                mode="outlined"
+                value={distance}
+                onChangeText={setDistance}
+                placeholder={`Enter distance in ${distanceUnit === 'mi' ? 'miles' : 'kilometers'}`}
+                keyboardType="decimal-pad"
+                style={styles.gridInput}
+                placeholderTextColor={colors.gray}
+                outlineStyle={{ borderColor: '#161616' }}
+                right={
+                  <TextInput.Icon
+                    icon="map-marker-distance"
+                    color={colors.gray}
+                  />
+                }
               />
             </View>
-          </TouchableRipple>
-
-          <Text style={styles.label}>Distance ({distanceUnit})</Text>
-          <TextInput
-            mode="outlined"
-            value={distance}
-            onChangeText={setDistance}
-            placeholder={`Enter distance in ${distanceUnit === 'mi' ? 'miles' : 'kilometers'}`}
-            keyboardType="decimal-pad"
-            style={styles.input}
-            outlineStyle={{ borderColor: '#161616' }}
-            right={<TextInput.Affix text={distanceUnit} />}
-          />
-
-          <Text style={styles.label}>Duration</Text>
-          <TouchableRipple
-            style={styles.dateTimeButton}
-            onPress={() => setShowDurationPicker(true)}
-          >
-            <View style={styles.dateTimeButtonContent}>
-              <Text style={styles.dateTimeButtonText}>{duration || 'Select duration (MM:SS)'}</Text>
-              <Ionicons
-                name="time-outline"
-                size={20}
-                color={colors.neutral}
-              />
-            </View>
-          </TouchableRipple>
+          </View>
         </View>
 
         {/* Date Picker */}
@@ -296,7 +326,7 @@ export default function AddWorkoutScreen() {
             disabled={isLoading}
             labelStyle={{ color: colors.neutral }}
           >
-            Save Workout
+            Save
           </Button>
         </View>
       </ScrollView>
@@ -326,7 +356,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sectionTitle: {
-    fontSize: 32,
+    fontSize: 42,
     fontFamily: OrelegaOneFonts.regular,
     color: colors.neutral,
     marginTop: 10,
@@ -335,18 +365,32 @@ const styles = StyleSheet.create({
   label: {
     ...subheading,
   },
-  input: {
+  gridRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+    gap: 12,
+  },
+  gridItem: {
+    flex: 1,
+  },
+  gridButton: {
+    borderWidth: 1,
+    borderColor: '#161616',
+    borderRadius: 4,
+    padding: 16,
+    marginBottom: 8,
+    backgroundColor: colors.surface,
+  },
+  gridInput: {
     marginBottom: 8,
     backgroundColor: colors.surface,
     borderColor: '#161616',
     borderWidth: 1,
     borderRadius: 4,
   },
-  disabledInput: {
-    borderWidth: 0,
-    outlineWidth: 0,
-    backgroundColor: colors.surfaceHighlight,
-    opacity: 0.7,
+  disabledText: {
+    color: colors.gray,
   },
   dateTimeButton: {
     borderWidth: 1,
