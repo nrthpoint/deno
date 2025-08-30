@@ -15,7 +15,6 @@ export interface ComparisonTabProps extends TabContentProps {
 
 export const ComparisonTab = ({
   group,
-  meta,
   selectedSample1Type,
   selectedSample2Type,
   onSample1Change,
@@ -38,19 +37,15 @@ export const ComparisonTab = ({
       label: (() => {
         const today = new Date();
         const mostRecent = group.mostRecent.endDate;
+
         const diffTime = Math.floor(
           (today.getTime() - mostRecent.getTime()) / (1000 * 60 * 60 * 24),
         );
 
         if (diffTime === 0) return 'Today';
         if (diffTime === 1) return 'Yesterday';
-        return `Most Recent (${diffTime}d)`;
 
-        // return mostRecent.toLocaleDateString('en-GB', {
-        //   day: 'numeric',
-        //   month: 'long',
-        //   year: 'numeric',
-        // });
+        return `Most Recent (${diffTime}d)`;
       })(),
       workout: group.mostRecent,
     },

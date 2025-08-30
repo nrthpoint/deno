@@ -122,7 +122,7 @@ export default function AddWorkoutScreen() {
     }
   };
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
+  const handleDateChange = (_event: any, selectedDate?: Date) => {
     if (selectedDate) {
       // Preserve the time part when changing date
       const newDate = new Date(startDate);
@@ -133,7 +133,7 @@ export default function AddWorkoutScreen() {
     }
   };
 
-  const handleTimeChange = (event: any, selectedTime?: Date) => {
+  const handleTimeChange = (_event: any, selectedTime?: Date) => {
     if (selectedTime) {
       // Preserve the date part when changing time
       const newDate = new Date(startDate);

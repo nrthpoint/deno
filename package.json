@@ -77,6 +77,8 @@
     "@react-native-community/datetimepicker": "^8.4.3",
     "@types/jest": "^30.0.0",
     "@types/react": "~19.0.10",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/parser": "^8.41.0",
     "babel-loader": "^8.4.1",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",

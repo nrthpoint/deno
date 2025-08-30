@@ -1,3 +1,4 @@
+const eslintTypescript = require('@typescript-eslint/eslint-plugin');
 const { defineConfig } = require('eslint/config');
 const expoConfig = require('eslint-config-expo/flat');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
@@ -12,17 +13,30 @@ module.exports = defineConfig([
   {
     plugins: {
       'react-native': reactNativePlugin,
+      '@typescript-eslint': eslintTypescript,
     },
   },
   {
     rules: {
       'no-unused-vars': [
-        'warn',
+        'off',
         {
           vars: 'all',
           args: 'after-used',
           ignoreRestSiblings: false,
           argsIgnorePattern: '^(_)',
+        },
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'all',
+          argsIgnorePattern: '^_',
+          caughtErrors: 'all',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
         },
       ],
       'react-native/no-unused-styles': 'error',
