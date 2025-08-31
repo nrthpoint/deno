@@ -55,6 +55,7 @@ export const calculatePerformanceTrend = (runs: ExtendedWorkout[]): PerformanceT
   const recentSlope = calculateRecentTrend(recentRuns);
 
   let momentum: PerformanceTrend['momentum'] = 'plateauing';
+
   if (recentSlope < -0.01) {
     momentum = 'improving'; // Getting faster
   } else if (recentSlope > 0.01) {
@@ -74,25 +75,53 @@ export const calculatePerformanceTrend = (runs: ExtendedWorkout[]): PerformanceT
  */
 const calculateLinearRegression = (data: { daysSinceFirst: number; pace: number }[]) => {
   const n = data.length;
+
+  // Handle edge case: insufficient data
+  if (n < 2) {
+    console.log('Linear Regression: Insufficient data points');
+    const meanY = n > 0 ? data[0].pace : 0;
+    return { slope: 0, intercept: meanY, r2: 0 };
+  }
+
   const sumX = data.reduce((sum, d) => sum + d.daysSinceFirst, 0);
   const sumY = data.reduce((sum, d) => sum + d.pace, 0);
   const sumXY = data.reduce((sum, d) => sum + d.daysSinceFirst * d.pace, 0);
   const sumX2 = data.reduce((sum, d) => sum + d.daysSinceFirst * d.daysSinceFirst, 0);
 
-  const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+  // Check for division by zero (all points have same x-value)
+  const denominator = n * sumX2 - sumX * sumX;
+
+  if (denominator === 0) {
+    // All data points have the same daysSinceFirst value (same day)
+    // Return zero slope (no trend) and mean pace as intercept
+    console.log('Linear Regression: No x-variation detected, returning zero slope');
+    const meanY = sumY / n;
+    return { slope: 0, intercept: meanY, r2: 0 };
+  }
+
+  const slope = (n * sumXY - sumX * sumY) / denominator;
   const intercept = (sumY - slope * sumX) / n;
 
-  // Calculate R-squared
+  // Calculate R-squared with safety checks
   const yMean = sumY / n;
   const ssTotal = data.reduce((sum, d) => sum + Math.pow(d.pace - yMean, 2), 0);
   const ssResidual = data.reduce((sum, d) => {
     const predicted = slope * d.daysSinceFirst + intercept;
+    console.log('predicted:', predicted, 'actual:', d, slope, intercept);
     return sum + Math.pow(d.pace - predicted, 2);
   }, 0);
 
-  const r2 = ssTotal === 0 ? 0 : 1 - ssResidual / ssTotal;
+  console.log('ssTotal:', ssTotal, 'ssResidual:', ssResidual);
 
-  return { slope, intercept, r2: Math.max(0, r2) };
+  // Prevent NaN in R² calculation
+  let r2 = 0;
+  if (ssTotal > 0 && !isNaN(ssResidual)) {
+    r2 = 1 - ssResidual / ssTotal;
+    // Ensure R² is between 0 and 1
+    r2 = Math.max(0, Math.min(1, r2));
+  }
+
+  return { slope, intercept, r2 };
 };
 
 /**
@@ -312,17 +341,26 @@ export const generateWorkoutPrediction = (
   // Calculate realistic improvement
   const realismFactor = calculateRealismFactor(group.highlight);
   const adjustedImprovementRate = trend.improvementRate * realismFactor;
-
+  console.log(
+    'adjustedImprovementRate:',
+    adjustedImprovementRate,
+    'realismFactor:',
+    realismFactor,
+    ' trend:',
+    trend,
+  );
   // Apply improvement over time with diminishing returns
   const totalImprovementWeeks = weeksAhead;
   const totalImprovement =
     adjustedImprovementRate * totalImprovementWeeks * (confidence.score / 100);
-
+  console.log('totalImprovement:', totalImprovement);
   // Calculate predicted pace (improvement means lower pace value)
   const currentPace = group.highlight.averagePace.quantity;
+  console.log('current pace:', currentPace);
   const predictedPaceReduction = currentPace * (totalImprovement / 100);
+  console.log('predictedPaceReduction:', predictedPaceReduction);
   const predictedPace = Math.max(currentPace - predictedPaceReduction, currentPace * 0.85); // Cap at 15% improvement
-
+  console.log('predictedPace:', predictedPace);
   // Calculate predicted duration for the same distance
   const distance = group.highlight.totalDistance.quantity;
   const predictedDurationMinutes = predictedPace * distance;
@@ -335,6 +373,12 @@ export const generateWorkoutPrediction = (
     group.runs.length > 1
       ? differenceInDays(group.mostRecent.startDate, group.runs[0].startDate)
       : 0;
+
+  console.log(`Predicted workout for group ${group.title}:`, {
+    predictedPace,
+    predictedDuration,
+    recommendations,
+  });
 
   return {
     type: 'predicted',

@@ -20,7 +20,10 @@ export const usePredictivePersonalBest = (
         try {
           predictions[groupKey] = generateWorkoutPrediction(group, targetWeeksAhead);
         } catch (error) {
-          console.warn(`Failed to generate prediction for group ${groupKey}:`, error);
+          console.warn(
+            `usePredictivePersonalBest: Failed to generate prediction for group ${groupKey}:`,
+            error,
+          );
         }
       }
     });

@@ -14,17 +14,11 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
-import {
-  extractCurrentAchievements,
-  getPreviousAchievements,
-  storePreviousAchievements,
-} from '@/utils/achievements';
+import { getPreviousAchievements } from '@/utils/achievements';
 import { parseWorkoutSamples } from '@/utils/parser';
 
-import { showAchievementNotification } from './notifications';
-
 const LAST_BACKGROUND_CHECK_KEY = 'lastBackgroundAchievementCheck';
-const BACKGROUND_CHECK_INTERVAL = 30 * 60 * 1000; // 30 minutes
+const BACKGROUND_CHECK_INTERVAL = 1 * 60 * 1000; // 1 minute for testing (was 30 minutes)
 
 /**
  * Check for new achievements in background
@@ -89,93 +83,15 @@ export const checkForNewAchievementsInBackground = async (): Promise<void> => {
 
 /**
  * Check for new achievements and send push notifications
+ * Uses the main achievement checking function but forces background mode
  */
 const checkAndNotifyBackgroundAchievements = async (workouts: ExtendedWorkout[]): Promise<void> => {
-  if (workouts.length === 0) return;
-
   try {
-    const previousAchievements = await getPreviousAchievements();
-    const currentAchievements = extractCurrentAchievements(workouts);
+    // Import the main achievement checking function
+    const { checkAndNotifyNewAchievements } = await import('@/utils/achievements');
 
-    // Track if any new achievements were found
-    let hasNewAchievements = false;
-
-    // Check for new fastest workout
-    if (
-      currentAchievements.fastest &&
-      currentAchievements.fastest !== previousAchievements.fastest
-    ) {
-      const fastestWorkout = workouts.find((w) => w.uuid === currentAchievements.fastest);
-      if (fastestWorkout) {
-        await showAchievementNotification(
-          '🏃‍♂️ New Personal Best!',
-          `Fastest pace: ${fastestWorkout.prettyPace}`,
-          fastestWorkout,
-          false, // App is not active
-        );
-        hasNewAchievements = true;
-      }
-    }
-
-    // Check for new longest workout
-    if (
-      currentAchievements.longest &&
-      currentAchievements.longest !== previousAchievements.longest
-    ) {
-      const longestWorkout = workouts.find((w) => w.uuid === currentAchievements.longest);
-      if (longestWorkout) {
-        const duration = Math.round(longestWorkout.duration.quantity / 60);
-        await showAchievementNotification(
-          '⏱️ New Personal Best!',
-          `Longest duration: ${duration} minutes`,
-          longestWorkout,
-          false,
-        );
-        hasNewAchievements = true;
-      }
-    }
-
-    // Check for new furthest workout
-    if (
-      currentAchievements.furthest &&
-      currentAchievements.furthest !== previousAchievements.furthest
-    ) {
-      const furthestWorkout = workouts.find((w) => w.uuid === currentAchievements.furthest);
-      if (furthestWorkout) {
-        await showAchievementNotification(
-          '🏁 New Personal Best!',
-          `Furthest distance: ${furthestWorkout.totalDistance.quantity.toFixed(2)} ${furthestWorkout.totalDistance.unit}`,
-          furthestWorkout,
-          false,
-        );
-        hasNewAchievements = true;
-      }
-    }
-
-    // Check for new highest elevation workout
-    if (
-      currentAchievements.highestElevation &&
-      currentAchievements.highestElevation !== previousAchievements.highestElevation
-    ) {
-      const highestElevationWorkout = workouts.find(
-        (w) => w.uuid === currentAchievements.highestElevation,
-      );
-      if (highestElevationWorkout) {
-        await showAchievementNotification(
-          '🏔️ New Personal Best!',
-          `Highest elevation: ${Math.round(highestElevationWorkout.totalElevation.quantity)} ${highestElevationWorkout.totalElevation.unit}`,
-          highestElevationWorkout,
-          false,
-        );
-        hasNewAchievements = true;
-      }
-    }
-
-    // Store current achievements for next comparison
-    if (hasNewAchievements) {
-      await storePreviousAchievements(currentAchievements);
-      console.log('New achievements found and notifications sent');
-    }
+    // Call the main function but force background mode (no in-app notifications)
+    await checkAndNotifyNewAchievements(workouts, false);
   } catch (error) {
     console.error('Error checking background achievements:', error);
   }
@@ -208,6 +124,66 @@ export const getTimeUntilNextCheck = async (): Promise<number> => {
   } catch (error) {
     console.error('Error getting time until next check:', error);
     return 0;
+  }
+};
+
+/**
+ * Debug function to check current vs previous achievements
+ */
+export const debugAchievements = async (): Promise<void> => {
+  try {
+    console.log('=== DEBUG ACHIEVEMENTS ===');
+
+    // Check if HealthKit data is available
+    const isAvailable = await isProtectedDataAvailable();
+    console.log('HealthKit data available:', isAvailable);
+
+    if (!isAvailable) {
+      console.log('HealthKit data not available, skipping check');
+      return;
+    }
+
+    // Get recent workouts (last 30 days)
+    const endDate = new Date();
+    const startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    console.log('Querying workouts from', startDate, 'to', endDate);
+
+    const workouts = await queryWorkoutSamples({
+      ascending: false,
+      limit: 100,
+      filter: {
+        workoutActivityType: WorkoutActivityType.running,
+        startDate,
+        endDate,
+      },
+    });
+
+    console.log('Raw HealthKit workouts:', workouts?.length || 0);
+
+    const parsedWorkouts = await parseWorkoutSamples({
+      samples: workouts || [],
+      distanceUnit: 'mi', // Default to miles
+    });
+
+    console.log('Parsed workouts:', parsedWorkouts.length);
+
+    // Get current and previous achievements for debugging
+    const { extractCurrentAchievements } = await import('@/utils/achievements');
+    const previousAchievements = await getPreviousAchievements();
+    const currentAchievements = extractCurrentAchievements(parsedWorkouts);
+
+    console.log('Previous achievements:', previousAchievements);
+    console.log('Current achievements:', currentAchievements);
+
+    // Use the existing function to check and potentially notify
+    // This will show the same logic that runs in background
+    console.log('=== RUNNING BACKGROUND ACHIEVEMENT CHECK ===');
+    await checkAndNotifyBackgroundAchievements(parsedWorkouts);
+
+    console.log('=== END DEBUG ===');
+  } catch (error) {
+    console.error('Error in debug achievements:', error);
   }
 };
 

@@ -17,6 +17,7 @@ export default {
     ios: {
       supportsTablet: false,
       bundleIdentifier: 'com.nrthpoint.deno.fit',
+      backgroundModes: ['background-fetch', 'background-processing'],
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
         NSHealthShareUsageDescription:

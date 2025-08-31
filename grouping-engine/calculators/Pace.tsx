@@ -41,7 +41,10 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
           recommendations: this.generateRecommendations(prediction4Week),
         };
       } catch (error) {
-        console.warn(`Failed to generate prediction for group ${group.title}:`, error);
+        console.warn(
+          `Pace - generatePredictions: Failed to generate prediction for group ${group.title}:`,
+          error,
+        );
       }
     }
   }

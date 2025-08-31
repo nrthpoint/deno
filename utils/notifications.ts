@@ -20,7 +20,6 @@ const NOTIFICATION_SETTINGS_KEY = 'notificationSettings';
 // Configure how notifications should be handled when app is in foreground
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
     shouldShowBanner: true,
@@ -193,10 +192,15 @@ export const registerBackgroundTask = async (): Promise<void> => {
   try {
     await TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async () => {
       try {
-        // TODO: Import achievement checking function
-        // const { checkForNewAchievementsInBackground } = await import('@/utils/backgroundAchievements');
-        // await checkForNewAchievementsInBackground();
-        console.log('Background task would run achievement check here');
+        console.log('Background task running - checking for achievements');
+
+        // Import and run background achievement check
+        const { checkForNewAchievementsInBackground } = await import(
+          '@/utils/backgroundAchievements'
+        );
+        await checkForNewAchievementsInBackground();
+
+        console.log('Background achievement check completed');
         return { success: true };
       } catch (error) {
         console.error('Background task error:', error);
@@ -204,10 +208,16 @@ export const registerBackgroundTask = async (): Promise<void> => {
       }
     });
 
-    // Check if task is already registered
+    console.log('Background task defined successfully');
+
+    // Note: In iOS simulator and development mode, background tasks won't execute reliably
+    // They require a production build and actual device for proper testing
     const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK);
-    if (!isRegistered) {
-      console.log('Registering background notification task');
+    if (isRegistered) {
+      console.log('Background task already registered with system');
+    } else {
+      console.log('Background task defined but not yet registered with system');
+      console.log('Background execution requires production build on physical device');
     }
   } catch (error) {
     console.error('Error registering background task:', error);
@@ -236,6 +246,42 @@ export const sendTestNotification = async (): Promise<void> => {
 };
 
 /**
+ * Check background task status (for debugging)
+ */
+export const getBackgroundTaskStatus = async (): Promise<{
+  isTaskDefined: boolean;
+  isTaskRegistered: boolean;
+  backgroundFetchStatus?: string;
+}> => {
+  try {
+    const isTaskDefined = await TaskManager.isTaskDefined(BACKGROUND_NOTIFICATION_TASK);
+    const isTaskRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK);
+
+    let backgroundFetchStatus = 'unknown';
+    try {
+      await import('expo-background-fetch');
+      // Instead of getStatusAsync (which is deprecated), just check if module loads
+      backgroundFetchStatus = 'available';
+    } catch {
+      backgroundFetchStatus = 'not available';
+    }
+
+    return {
+      isTaskDefined,
+      isTaskRegistered,
+      backgroundFetchStatus,
+    };
+  } catch (error) {
+    console.error('Error getting background task status:', error);
+    return {
+      isTaskDefined: false,
+      isTaskRegistered: false,
+      backgroundFetchStatus: 'error',
+    };
+  }
+};
+
+/**
  * Cancel all pending notifications
  */
 export const cancelAllNotifications = async (): Promise<void> => {
@@ -251,6 +297,7 @@ export const cancelAllNotifications = async (): Promise<void> => {
  */
 export const handleNotificationReceived = (notification: Notifications.Notification) => {
   const { data } = notification.request.content;
+
   console.log('Notification received:', notification);
 
   if (data?.type === 'achievement') {
@@ -264,6 +311,7 @@ export const handleNotificationReceived = (notification: Notifications.Notificat
  */
 export const handleNotificationResponse = (response: Notifications.NotificationResponse) => {
   const { data } = response.notification.request.content;
+
   console.log('Notification tapped:', response);
 
   if (data?.type === 'achievement' && data?.workoutId) {

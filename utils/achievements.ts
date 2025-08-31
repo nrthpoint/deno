@@ -21,11 +21,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 
 import { ExtendedWorkout, WorkoutAchievements } from '@/types/ExtendedWorkout';
+import { isAppActive, showAchievementNotification } from '@/utils/notifications';
 import {
   findFastestRun,
-  findLongestRun,
   findHighestElevationRun,
   findLongestDurationRun,
+  findLongestRun,
 } from '@/utils/workout';
 
 const PREVIOUS_ACHIEVEMENTS_KEY = 'previousAchievements';
@@ -124,7 +125,6 @@ export const checkAndNotifyNewAchievements = async (
         '🏃‍♂️ New Personal Best!',
         `Fastest pace: ${fastestWorkout.prettyPace}`,
         fastestWorkout,
-        'success',
       );
     }
   }
@@ -138,7 +138,6 @@ export const checkAndNotifyNewAchievements = async (
         '⏱️ New Personal Best!',
         `Longest duration: ${duration} minutes`,
         longestWorkout,
-        'success',
       );
     }
   }
@@ -154,7 +153,6 @@ export const checkAndNotifyNewAchievements = async (
         '🏁 New Personal Best!',
         `Furthest distance: ${furthestWorkout.totalDistance.quantity.toFixed(2)} ${furthestWorkout.totalDistance.unit}`,
         furthestWorkout,
-        'success',
       );
     }
   }
@@ -172,7 +170,6 @@ export const checkAndNotifyNewAchievements = async (
         '🏔️ New Personal Best!',
         `Highest elevation: ${Math.round(highestElevationWorkout.totalElevation.quantity)} ${highestElevationWorkout.totalElevation.unit}`,
         highestElevationWorkout,
-        'success',
       );
     }
   }
@@ -184,30 +181,10 @@ export const checkAndNotifyNewAchievements = async (
 /**
  * Show a toast notification for an achievement
  */
-const showAchievementToast = (
-  title: string,
-  message: string,
-  workout: ExtendedWorkout,
-  type: 'success' | 'info' | 'error' = 'success',
-) => {
-  // Import the notification service dynamically to avoid circular dependencies
-  import('./notifications').then(({ showAchievementNotification, isAppActive }) => {
-    isAppActive().then((appActive) => {
-      showAchievementNotification(title, message, workout, appActive);
-    });
-  });
+const showAchievementToast = async (title: string, message: string, workout: ExtendedWorkout) => {
+  const appActive = await isAppActive();
 
-  // Also show the original toast as fallback
-  Toast.show({
-    type,
-    text1: title,
-    text2: message,
-    position: 'top',
-    visibilityTime: 5000,
-    autoHide: true,
-    topOffset: 60,
-    bottomOffset: 40,
-  });
+  showAchievementNotification(title, message, workout, appActive);
 };
 
 /**
