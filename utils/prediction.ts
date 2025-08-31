@@ -95,6 +95,7 @@ const calculateLinearRegression = (data: { daysSinceFirst: number; pace: number 
     // All data points have the same daysSinceFirst value (same day)
     // Return zero slope (no trend) and mean pace as intercept
     console.log('Linear Regression: No x-variation detected, returning zero slope');
+
     const meanY = sumY / n;
     return { slope: 0, intercept: meanY, r2: 0 };
   }
@@ -107,11 +108,9 @@ const calculateLinearRegression = (data: { daysSinceFirst: number; pace: number 
   const ssTotal = data.reduce((sum, d) => sum + Math.pow(d.pace - yMean, 2), 0);
   const ssResidual = data.reduce((sum, d) => {
     const predicted = slope * d.daysSinceFirst + intercept;
-    console.log('predicted:', predicted, 'actual:', d, slope, intercept);
+
     return sum + Math.pow(d.pace - predicted, 2);
   }, 0);
-
-  console.log('ssTotal:', ssTotal, 'ssResidual:', ssResidual);
 
   // Prevent NaN in R² calculation
   let r2 = 0;
@@ -341,26 +340,17 @@ export const generateWorkoutPrediction = (
   // Calculate realistic improvement
   const realismFactor = calculateRealismFactor(group.highlight);
   const adjustedImprovementRate = trend.improvementRate * realismFactor;
-  console.log(
-    'adjustedImprovementRate:',
-    adjustedImprovementRate,
-    'realismFactor:',
-    realismFactor,
-    ' trend:',
-    trend,
-  );
+
   // Apply improvement over time with diminishing returns
   const totalImprovementWeeks = weeksAhead;
   const totalImprovement =
     adjustedImprovementRate * totalImprovementWeeks * (confidence.score / 100);
-  console.log('totalImprovement:', totalImprovement);
+
   // Calculate predicted pace (improvement means lower pace value)
   const currentPace = group.highlight.averagePace.quantity;
-  console.log('current pace:', currentPace);
   const predictedPaceReduction = currentPace * (totalImprovement / 100);
-  console.log('predictedPaceReduction:', predictedPaceReduction);
   const predictedPace = Math.max(currentPace - predictedPaceReduction, currentPace * 0.85); // Cap at 15% improvement
-  console.log('predictedPace:', predictedPace);
+
   // Calculate predicted duration for the same distance
   const distance = group.highlight.totalDistance.quantity;
   const predictedDurationMinutes = predictedPace * distance;
@@ -373,12 +363,6 @@ export const generateWorkoutPrediction = (
     group.runs.length > 1
       ? differenceInDays(group.mostRecent.startDate, group.runs[0].startDate)
       : 0;
-
-  console.log(`Predicted workout for group ${group.title}:`, {
-    predictedPace,
-    predictedDuration,
-    recommendations,
-  });
 
   return {
     type: 'predicted',

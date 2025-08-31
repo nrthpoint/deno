@@ -14,7 +14,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
-import { getPreviousAchievements } from '@/utils/achievements';
+import { checkAndNotifyNewAchievements, getPreviousAchievements } from '@/utils/achievements';
 import { parseWorkoutSamples } from '@/utils/parser';
 
 const LAST_BACKGROUND_CHECK_KEY = 'lastBackgroundAchievementCheck';
@@ -47,15 +47,19 @@ export const checkForNewAchievementsInBackground = async (): Promise<void> => {
     const endDate = new Date();
     const startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-    const workouts = await queryWorkoutSamples({
+    let workouts = await queryWorkoutSamples({
       ascending: false,
       limit: 100,
       filter: {
-        workoutActivityType: WorkoutActivityType.running,
         startDate,
         endDate,
       },
     });
+
+    // filter out by         workoutActivityType: WorkoutActivityType.running,
+    workouts = workouts.filter(
+      (workout) => workout.workoutActivityType === WorkoutActivityType.running,
+    );
 
     if (!workouts || workouts.length === 0) {
       console.log('No workouts found in background check');
@@ -64,11 +68,19 @@ export const checkForNewAchievementsInBackground = async (): Promise<void> => {
     }
 
     // Parse workouts to get achievements
-    const parsedWorkouts = await parseWorkoutSamples({
-      samples: workouts,
-      distanceUnit: 'mi', // Default to miles, could be made configurable
-    });
+    let parsedWorkouts: ExtendedWorkout[] = [];
+    try {
+      parsedWorkouts = await parseWorkoutSamples({
+        samples: workouts,
+        distanceUnit: 'mi', // Default to miles, could be made configurable
+      });
+    } catch (error) {
+      console.error('Error parsing workout samples:', error);
+      await AsyncStorage.setItem(LAST_BACKGROUND_CHECK_KEY, now.toString());
+      return;
+    }
 
+    console.log(`Parsed ${parsedWorkouts.length} workouts in background check`);
     // Check for new achievements
     await checkAndNotifyBackgroundAchievements(parsedWorkouts);
 
@@ -87,11 +99,8 @@ export const checkForNewAchievementsInBackground = async (): Promise<void> => {
  */
 const checkAndNotifyBackgroundAchievements = async (workouts: ExtendedWorkout[]): Promise<void> => {
   try {
-    // Import the main achievement checking function
-    const { checkAndNotifyNewAchievements } = await import('@/utils/achievements');
-
     // Call the main function but force background mode (no in-app notifications)
-    await checkAndNotifyNewAchievements(workouts, false);
+    await checkAndNotifyNewAchievements(workouts);
   } catch (error) {
     console.error('Error checking background achievements:', error);
   }

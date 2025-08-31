@@ -134,6 +134,7 @@ export const checkAndNotifyNewAchievements = async (
     const longestWorkout = workouts.find((w) => w.uuid === currentAchievements.longest);
     if (longestWorkout && showNotifications) {
       const duration = Math.round(longestWorkout.duration.quantity / 60);
+
       showAchievementToast(
         '⏱️ New Personal Best!',
         `Longest duration: ${duration} minutes`,

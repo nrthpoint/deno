@@ -7,12 +7,14 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as BackgroundTask from 'expo-background-task';
 import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
 import { Platform } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { checkForNewAchievementsInBackground } from '@/utils/backgroundAchievements';
 
 const BACKGROUND_NOTIFICATION_TASK = 'background-notification-task';
 const NOTIFICATION_SETTINGS_KEY = 'notificationSettings';
@@ -117,9 +119,13 @@ export const showAchievementNotification = async (
 ): Promise<void> => {
   const settings = await getNotificationSettings();
 
+  console.log('Current notification settings:', settings);
+
   if (!settings.enabled || !settings.achievementsEnabled) {
     return;
   }
+
+  console.log('Showing achievement notification:', { title, message, workout });
 
   try {
     if (isAppActive) {
@@ -136,6 +142,7 @@ export const showAchievementNotification = async (
       });
     } else {
       // Show push notification
+      console.log('Scheduling push notification:', { title, message, workout });
       await Notifications.scheduleNotificationAsync({
         content: {
           title,
@@ -190,35 +197,44 @@ export const setAppActive = async (): Promise<void> => {
  */
 export const registerBackgroundTask = async (): Promise<void> => {
   try {
+    // Define the background task using TaskManager
     await TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async () => {
       try {
         console.log('Background task running - checking for achievements');
 
-        // Import and run background achievement check
-        const { checkForNewAchievementsInBackground } = await import(
-          '@/utils/backgroundAchievements'
-        );
         await checkForNewAchievementsInBackground();
 
         console.log('Background achievement check completed');
+
         return { success: true };
       } catch (error) {
         console.error('Background task error:', error);
+
         return { success: false };
       }
     });
 
     console.log('Background task defined successfully');
 
-    // Note: In iOS simulator and development mode, background tasks won't execute reliably
-    // They require a production build and actual device for proper testing
-    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK);
-    if (isRegistered) {
-      console.log('Background task already registered with system');
-    } else {
-      console.log('Background task defined but not yet registered with system');
-      console.log('Background execution requires production build on physical device');
+    // Register the background task with expo-background-task
+    try {
+      await BackgroundTask.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK, {
+        minimumInterval: 15000, // 15 seconds minimum interval
+      });
+      console.log('Background task registered with system successfully');
+    } catch (registrationError) {
+      console.error('Error registering background task with system:', registrationError);
+      console.log('Background task defined but system registration failed');
     }
+
+    // Check if task is registered
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK);
+    console.log('Task registration status:', isRegistered);
+
+    // Note: Background tasks require proper permissions and work better on physical devices
+    console.log(
+      'Note: Background execution requires production build on physical device for optimal performance',
+    );
   } catch (error) {
     console.error('Error registering background task:', error);
   }
@@ -251,33 +267,52 @@ export const sendTestNotification = async (): Promise<void> => {
 export const getBackgroundTaskStatus = async (): Promise<{
   isTaskDefined: boolean;
   isTaskRegistered: boolean;
-  backgroundFetchStatus?: string;
+  backgroundTaskStatus?: string;
 }> => {
   try {
     const isTaskDefined = await TaskManager.isTaskDefined(BACKGROUND_NOTIFICATION_TASK);
     const isTaskRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK);
 
-    let backgroundFetchStatus = 'unknown';
+    let backgroundTaskStatus = 'unknown';
+
     try {
-      await import('expo-background-fetch');
-      // Instead of getStatusAsync (which is deprecated), just check if module loads
-      backgroundFetchStatus = 'available';
+      // Check if expo-background-task is available
+      const status = await BackgroundTask.getStatusAsync();
+      backgroundTaskStatus = status ? `available (${status})` : 'available';
     } catch {
-      backgroundFetchStatus = 'not available';
+      backgroundTaskStatus = 'not available';
     }
 
     return {
       isTaskDefined,
       isTaskRegistered,
-      backgroundFetchStatus,
+      backgroundTaskStatus,
     };
   } catch (error) {
     console.error('Error getting background task status:', error);
     return {
       isTaskDefined: false,
       isTaskRegistered: false,
-      backgroundFetchStatus: 'error',
+      backgroundTaskStatus: 'error',
     };
+  }
+};
+
+/**
+ * Unregister background task
+ */
+export const unregisterBackgroundTask = async (): Promise<void> => {
+  try {
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK);
+
+    if (isRegistered) {
+      await BackgroundTask.unregisterTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+      console.log('Background task unregistered successfully');
+    } else {
+      console.log('Background task was not registered');
+    }
+  } catch (error) {
+    console.error('Error unregistering background task:', error);
   }
 };
 

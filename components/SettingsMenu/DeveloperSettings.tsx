@@ -8,7 +8,7 @@ import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { clearPreviousAchievements, showTestAchievementNotification } from '@/utils/achievements';
 import { debugAchievements, forceBackgroundCheck } from '@/utils/backgroundAchievements';
-import { getBackgroundTaskStatus } from '@/utils/notifications';
+import { getBackgroundTaskStatus, unregisterBackgroundTask } from '@/utils/notifications';
 
 export const DeveloperSettings: React.FC = () => {
   const handleDebugAchievements = async () => {
@@ -42,13 +42,23 @@ export const DeveloperSettings: React.FC = () => {
   const handleCheckBackgroundTaskStatus = async () => {
     try {
       const status = await getBackgroundTaskStatus();
-      const message = `Task Defined: ${status.isTaskDefined}\nTask Registered: ${status.isTaskRegistered}\nBackground Fetch: ${status.backgroundFetchStatus}`;
+      const message = `Task Defined: ${status.isTaskDefined}\nTask Registered: ${status.isTaskRegistered}\nBackground Task: ${status.backgroundTaskStatus}`;
 
       Alert.alert('Background Task Status', message);
       console.log('Background task status:', status);
     } catch (error) {
       console.error('Status check error:', error);
       Alert.alert('Status Error', 'Failed to check background task status.');
+    }
+  };
+
+  const handleUnregisterBackgroundTask = async () => {
+    try {
+      await unregisterBackgroundTask();
+      Alert.alert('Success', 'Background task unregistered successfully');
+    } catch (error) {
+      console.error('Unregister error:', error);
+      Alert.alert('Error', 'Failed to unregister background task.');
     }
   };
 
@@ -126,6 +136,15 @@ export const DeveloperSettings: React.FC = () => {
               labelStyle={styles.buttonText}
             >
               Check Background Task Status
+            </Button>
+
+            <Button
+              mode="outlined"
+              onPress={handleUnregisterBackgroundTask}
+              style={styles.statusButton}
+              labelStyle={styles.buttonText}
+            >
+              Unregister Background Task
             </Button>
           </View>
         </View>
