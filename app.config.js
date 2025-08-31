@@ -17,7 +17,7 @@ export default {
     ios: {
       supportsTablet: false,
       bundleIdentifier: 'com.nrthpoint.deno.fit',
-      backgroundModes: ['background-fetch', 'background-processing'],
+      backgroundModes: ['fetch', 'processing'],
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
         NSHealthShareUsageDescription:
@@ -29,6 +29,9 @@ export default {
         NSUserNotificationsUsageDescription:
           'This app sends notifications to alert you about new personal achievements and fitness milestones.',
       },
+    },
+    android: {
+      package: 'com.nrthpoint.deno.fit',
     },
     plugins: [
       [
@@ -60,6 +63,7 @@ export default {
       ],
       'expo-web-browser',
       'expo-updates',
+      'expo-background-task',
     ],
     experiments: {
       typedRoutes: true,

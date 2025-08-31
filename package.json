@@ -23,7 +23,8 @@
     "update:dev": "eas update --branch development",
     "update:production": "eas update --branch production",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "clean": "expo prebuild --clean"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
