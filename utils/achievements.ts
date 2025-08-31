@@ -18,7 +18,6 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
 
 import { ExtendedWorkout, WorkoutAchievements } from '@/types/ExtendedWorkout';
 import { isAppActive, showAchievementNotification } from '@/utils/notifications';
@@ -108,10 +107,7 @@ export const extractCurrentAchievements = (workouts: ExtendedWorkout[]): Previou
  * Compare current achievements with previous ones and show notifications for new achievements
  * Only shows notifications if this is called during an "active" state (not background refresh)
  */
-export const checkAndNotifyNewAchievements = async (
-  workouts: ExtendedWorkout[],
-  showNotifications: boolean = true,
-): Promise<void> => {
+export const checkAndNotifyNewAchievements = async (workouts: ExtendedWorkout[]): Promise<void> => {
   if (workouts.length === 0) return;
 
   const previousAchievements = await getPreviousAchievements();
@@ -120,7 +116,7 @@ export const checkAndNotifyNewAchievements = async (
   // Check for new fastest workout
   if (currentAchievements.fastest && currentAchievements.fastest !== previousAchievements.fastest) {
     const fastestWorkout = workouts.find((w) => w.uuid === currentAchievements.fastest);
-    if (fastestWorkout && showNotifications) {
+    if (fastestWorkout) {
       showAchievementToast(
         '🏃‍♂️ New Personal Best!',
         `Fastest pace: ${fastestWorkout.prettyPace}`,
@@ -132,12 +128,16 @@ export const checkAndNotifyNewAchievements = async (
   // Check for new longest workout
   if (currentAchievements.longest && currentAchievements.longest !== previousAchievements.longest) {
     const longestWorkout = workouts.find((w) => w.uuid === currentAchievements.longest);
-    if (longestWorkout && showNotifications) {
+    if (longestWorkout) {
       const duration = Math.round(longestWorkout.duration.quantity / 60);
+
+      const hours = Math.floor(duration / 60);
+      const minutes = duration % 60;
+      const durationText = hours > 0 ? `${hours} hr ${minutes} mins` : `${duration} minutes`;
 
       showAchievementToast(
         '⏱️ New Personal Best!',
-        `Longest duration: ${duration} minutes`,
+        `Longest duration: ${durationText}`,
         longestWorkout,
       );
     }
@@ -149,7 +149,7 @@ export const checkAndNotifyNewAchievements = async (
     currentAchievements.furthest !== previousAchievements.furthest
   ) {
     const furthestWorkout = workouts.find((w) => w.uuid === currentAchievements.furthest);
-    if (furthestWorkout && showNotifications) {
+    if (furthestWorkout) {
       showAchievementToast(
         '🏁 New Personal Best!',
         `Furthest distance: ${furthestWorkout.totalDistance.quantity.toFixed(2)} ${furthestWorkout.totalDistance.unit}`,
@@ -166,7 +166,7 @@ export const checkAndNotifyNewAchievements = async (
     const highestElevationWorkout = workouts.find(
       (w) => w.uuid === currentAchievements.highestElevation,
     );
-    if (highestElevationWorkout && showNotifications) {
+    if (highestElevationWorkout) {
       showAchievementToast(
         '🏔️ New Personal Best!',
         `Highest elevation: ${Math.round(highestElevationWorkout.totalElevation.quantity)} ${highestElevationWorkout.totalElevation.unit}`,
@@ -185,6 +185,8 @@ export const checkAndNotifyNewAchievements = async (
 const showAchievementToast = async (title: string, message: string, workout: ExtendedWorkout) => {
   const appActive = await isAppActive();
 
+  console.log('***App active status:', appActive);
+
   showAchievementNotification(title, message, workout, appActive);
 };
 
@@ -202,16 +204,19 @@ export const handleAchievementNotifications = async (workouts: ExtendedWorkout[]
 /**
  * Test function to show sample achievement notifications
  */
-export const showTestAchievementNotification = () => {
-  Toast.show({
-    type: 'success',
-    text1: '🏃‍♂️ Test Achievement!',
-    text2: 'This is how notifications will look',
-    position: 'top',
-    visibilityTime: 5000,
-    autoHide: true,
-    topOffset: 60,
-  });
+export const showTestAchievementNotification = async () => {
+  // Create a mock workout for testing
+  const testWorkout = {
+    uuid: 'test-uuid',
+  } as ExtendedWorkout;
+
+  const appActive = await isAppActive();
+  await showAchievementNotification(
+    '🏃‍♂️ Test Achievement!',
+    'This is how notifications will look',
+    testWorkout,
+    appActive,
+  );
 };
 
 /**

@@ -14,7 +14,11 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
-import { checkAndNotifyNewAchievements, getPreviousAchievements } from '@/utils/achievements';
+import {
+  checkAndNotifyNewAchievements,
+  getPreviousAchievements,
+  handleAchievementNotifications,
+} from '@/utils/achievements';
 import { parseWorkoutSamples } from '@/utils/parser';
 
 const LAST_BACKGROUND_CHECK_KEY = 'lastBackgroundAchievementCheck';
@@ -56,7 +60,6 @@ export const checkForNewAchievementsInBackground = async (): Promise<void> => {
       },
     });
 
-    // filter out by         workoutActivityType: WorkoutActivityType.running,
     workouts = workouts.filter(
       (workout) => workout.workoutActivityType === WorkoutActivityType.running,
     );
@@ -82,7 +85,7 @@ export const checkForNewAchievementsInBackground = async (): Promise<void> => {
 
     console.log(`Parsed ${parsedWorkouts.length} workouts in background check`);
     // Check for new achievements
-    await checkAndNotifyBackgroundAchievements(parsedWorkouts);
+    await handleAchievementNotifications(parsedWorkouts);
 
     // Update last check time
     await AsyncStorage.setItem(LAST_BACKGROUND_CHECK_KEY, now.toString());
@@ -90,19 +93,6 @@ export const checkForNewAchievementsInBackground = async (): Promise<void> => {
     console.log('Background achievement check completed');
   } catch (error) {
     console.error('Error in background achievement check:', error);
-  }
-};
-
-/**
- * Check for new achievements and send push notifications
- * Uses the main achievement checking function but forces background mode
- */
-const checkAndNotifyBackgroundAchievements = async (workouts: ExtendedWorkout[]): Promise<void> => {
-  try {
-    // Call the main function but force background mode (no in-app notifications)
-    await checkAndNotifyNewAchievements(workouts);
-  } catch (error) {
-    console.error('Error checking background achievements:', error);
   }
 };
 
@@ -185,10 +175,8 @@ export const debugAchievements = async (): Promise<void> => {
     console.log('Previous achievements:', previousAchievements);
     console.log('Current achievements:', currentAchievements);
 
-    // Use the existing function to check and potentially notify
-    // This will show the same logic that runs in background
     console.log('=== RUNNING BACKGROUND ACHIEVEMENT CHECK ===');
-    await checkAndNotifyBackgroundAchievements(parsedWorkouts);
+    await checkAndNotifyNewAchievements(parsedWorkouts);
 
     console.log('=== END DEBUG ===');
   } catch (error) {

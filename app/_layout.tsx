@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper';
-import Toast from 'react-native-toast-message';
+import { ToastProvider, useToast } from 'react-native-toast-notifications';
 
 import { colors } from '@/config/colors';
 import { SettingsProvider } from '@/context/SettingsContext';
@@ -15,11 +15,90 @@ import {
   handleNotificationReceived,
   handleNotificationResponse,
   initializeNotifications,
+  initializeToastService,
   registerBackgroundTask,
   setAppActive,
 } from '@/utils/notifications';
 
 SplashScreen.preventAutoHideAsync();
+
+function AppContent() {
+  const toast = useToast();
+  const notificationListener = useRef<Notifications.EventSubscription | null>(null);
+  const responseListener = useRef<Notifications.EventSubscription | null>(null);
+
+  useEffect(() => {
+    // Initialize toast service
+    initializeToastService(toast);
+  }, [toast]);
+
+  useEffect(() => {
+    let appStateSubscription: any;
+
+    const setupNotifications = async () => {
+      await initializeNotifications();
+      await registerBackgroundTask();
+
+      notificationListener.current = Notifications.addNotificationReceivedListener(
+        handleNotificationReceived,
+      );
+
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(
+        handleNotificationResponse,
+      );
+
+      const handleAppStateChange = (nextAppState: string) => {
+        if (nextAppState === 'active') {
+          setAppActive();
+        }
+      };
+
+      appStateSubscription = AppState.addEventListener('change', handleAppStateChange);
+
+      await setAppActive();
+    };
+
+    setupNotifications();
+
+    return () => {
+      if (notificationListener.current) {
+        notificationListener.current.remove();
+      }
+
+      if (responseListener.current) {
+        responseListener.current.remove();
+      }
+
+      if (appStateSubscription) {
+        appStateSubscription.remove();
+      }
+    };
+  }, []);
+
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen
+        name="add-workout"
+        options={{
+          presentation: 'modal',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="view-workout"
+        options={{
+          presentation: 'modal',
+          headerShown: false,
+        }}
+      />
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -36,61 +115,11 @@ export default function RootLayout() {
     'Lato-ThinItalic': require('../assets/fonts/Lato/Lato-ThinItalic.ttf'),
   });
 
-  const notificationListener = useRef<Notifications.EventSubscription | null>(null);
-  const responseListener = useRef<Notifications.EventSubscription | null>(null);
-
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
-
-  // Initialize notifications and set up listeners
-  useEffect(() => {
-    let appStateSubscription: any;
-
-    const setupNotifications = async () => {
-      // Initialize notification service
-      await initializeNotifications();
-      await registerBackgroundTask();
-
-      // Set up notification listeners
-      notificationListener.current = Notifications.addNotificationReceivedListener(
-        handleNotificationReceived,
-      );
-
-      responseListener.current = Notifications.addNotificationResponseReceivedListener(
-        handleNotificationResponse,
-      );
-
-      // Track app state changes
-      const handleAppStateChange = (nextAppState: string) => {
-        if (nextAppState === 'active') {
-          setAppActive();
-        }
-      };
-
-      appStateSubscription = AppState.addEventListener('change', handleAppStateChange);
-
-      // Set initial active state
-      await setAppActive();
-    };
-
-    setupNotifications();
-
-    return () => {
-      // Clean up listeners
-      if (notificationListener.current) {
-        Notifications.removeNotificationSubscription(notificationListener.current);
-      }
-      if (responseListener.current) {
-        Notifications.removeNotificationSubscription(responseListener.current);
-      }
-      if (appStateSubscription) {
-        appStateSubscription.remove();
-      }
-    };
-  }, []);
 
   if (!loaded) {
     return null;
@@ -99,32 +128,13 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
       <PaperProvider>
-        <SettingsProvider>
-          <WorkoutProvider>
-            <Stack
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen name="(tabs)" />
-              <Stack.Screen
-                name="add-workout"
-                options={{
-                  presentation: 'modal',
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="view-workout"
-                options={{
-                  presentation: 'modal',
-                  headerShown: false,
-                }}
-              />
-            </Stack>
-            <Toast />
-          </WorkoutProvider>
-        </SettingsProvider>
+        <ToastProvider>
+          <SettingsProvider>
+            <WorkoutProvider>
+              <AppContent />
+            </WorkoutProvider>
+          </SettingsProvider>
+        </ToastProvider>
       </PaperProvider>
     </GestureHandlerRootView>
   );

@@ -10,31 +10,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as BackgroundTask from 'expo-background-task';
 import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
-import { Platform } from 'react-native';
-import Toast from 'react-native-toast-message';
 
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { checkForNewAchievementsInBackground } from '@/utils/backgroundAchievements';
+import { NotificationSettings } from '@/utils/notifications.types';
 
 const BACKGROUND_NOTIFICATION_TASK = 'background-notification-task';
 const NOTIFICATION_SETTINGS_KEY = 'notificationSettings';
 
-// Configure how notifications should be handled when app is in foreground
+// Toast service to be initialized from a component with access to useToast hook
+let toastService: {
+  show: (message: string, options?: any) => void;
+} | null = null;
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldPlaySound: true,
-    shouldSetBadge: false,
+    shouldSetBadge: true,
     shouldShowBanner: true,
     shouldShowList: true,
   }),
 });
-
-// Types for notification settings
-export interface NotificationSettings {
-  enabled: boolean;
-  achievementsEnabled: boolean;
-  soundEnabled: boolean;
-}
 
 const defaultSettings: NotificationSettings = {
   enabled: true,
@@ -61,23 +57,23 @@ export const initializeNotifications = async (): Promise<boolean> => {
       return false;
     }
 
-    // Set up notification channel for Android
-    if (Platform.OS === 'android') {
-      await Notifications.setNotificationChannelAsync('achievements', {
-        name: 'Achievement Notifications',
-        importance: Notifications.AndroidImportance.HIGH,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-        sound: 'default',
-      });
-    }
-
     console.log('Notifications initialized successfully');
+
     return true;
   } catch (error) {
     console.error('Error initializing notifications:', error);
+
     return false;
   }
+};
+
+/**
+ * Initialize toast service with useToast hook
+ */
+export const initializeToastService = (toast: {
+  show: (message: string, options?: any) => void;
+}): void => {
+  toastService = toast;
 };
 
 /**
@@ -86,9 +82,11 @@ export const initializeNotifications = async (): Promise<boolean> => {
 export const getNotificationSettings = async (): Promise<NotificationSettings> => {
   try {
     const stored = await AsyncStorage.getItem(NOTIFICATION_SETTINGS_KEY);
+
     return stored ? JSON.parse(stored) : defaultSettings;
   } catch (error) {
     console.error('Error getting notification settings:', error);
+
     return defaultSettings;
   }
 };
@@ -102,6 +100,7 @@ export const updateNotificationSettings = async (
   try {
     const currentSettings = await getNotificationSettings();
     const updatedSettings = { ...currentSettings, ...settings };
+
     await AsyncStorage.setItem(NOTIFICATION_SETTINGS_KEY, JSON.stringify(updatedSettings));
   } catch (error) {
     console.error('Error updating notification settings:', error);
@@ -119,27 +118,22 @@ export const showAchievementNotification = async (
 ): Promise<void> => {
   const settings = await getNotificationSettings();
 
-  console.log('Current notification settings:', settings);
-
   if (!settings.enabled || !settings.achievementsEnabled) {
     return;
   }
 
-  console.log('Showing achievement notification:', { title, message, workout });
-
   try {
     if (isAppActive) {
-      // Show in-app toast notification
-      Toast.show({
-        type: 'success',
-        text1: title,
-        text2: message,
-        position: 'top',
-        visibilityTime: 5000,
-        autoHide: true,
-        topOffset: 60,
-        bottomOffset: 40,
-      });
+      console.log('Showing in-app achievement toast:', { title, message, workout });
+
+      // Use the new toast service (supports multiple toasts automatically)
+      if (toastService) {
+        toastService.show(`${title}: ${message}`, { type: 'success' });
+      } else {
+        console.warn(
+          'Toast service not initialized. Call initializeToastService from a component.',
+        );
+      }
     } else {
       // Show push notification
       console.log('Scheduling push notification:', { title, message, workout });
@@ -167,12 +161,12 @@ export const showAchievementNotification = async (
  */
 export const isAppActive = async (): Promise<boolean> => {
   try {
-    // This is a simple check - in a real implementation you might want to
-    // track app state more precisely
     const lastActiveTime = await AsyncStorage.getItem('lastActiveTime');
+
     if (!lastActiveTime) return false;
 
     const timeDiff = Date.now() - parseInt(lastActiveTime);
+
     // Consider app active if it was active in the last 30 seconds
     return timeDiff < 30000;
   } catch (error) {
@@ -216,10 +210,9 @@ export const registerBackgroundTask = async (): Promise<void> => {
 
     console.log('Background task defined successfully');
 
-    // Register the background task with expo-background-task
     try {
       await BackgroundTask.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK, {
-        minimumInterval: 15000, // 15 seconds minimum interval
+        minimumInterval: 15000,
       });
       console.log('Background task registered with system successfully');
     } catch (registrationError) {
