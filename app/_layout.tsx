@@ -6,16 +6,16 @@ import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper';
-import { ToastProvider, useToast } from 'react-native-toast-notifications';
+import Toast from 'react-native-toast-message';
 
 import { colors } from '@/config/colors';
+import { toastConfig } from '@/config/toast';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { WorkoutProvider } from '@/context/WorkoutContext';
 import {
   handleNotificationReceived,
   handleNotificationResponse,
   initializeNotifications,
-  initializeToastService,
   registerBackgroundTask,
   setAppActive,
 } from '@/utils/notifications';
@@ -23,14 +23,8 @@ import {
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
-  const toast = useToast();
   const notificationListener = useRef<Notifications.EventSubscription | null>(null);
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
-
-  useEffect(() => {
-    // Initialize toast service
-    initializeToastService(toast);
-  }, [toast]);
 
   useEffect(() => {
     let appStateSubscription: any;
@@ -128,13 +122,12 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
       <PaperProvider>
-        <ToastProvider>
-          <SettingsProvider>
-            <WorkoutProvider>
-              <AppContent />
-            </WorkoutProvider>
-          </SettingsProvider>
-        </ToastProvider>
+        <SettingsProvider>
+          <WorkoutProvider>
+            <AppContent />
+          </WorkoutProvider>
+        </SettingsProvider>
+        <Toast config={toastConfig} />
       </PaperProvider>
     </GestureHandlerRootView>
   );

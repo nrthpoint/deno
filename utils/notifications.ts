@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as BackgroundTask from 'expo-background-task';
 import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
+import Toast from 'react-native-toast-message';
 
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { checkForNewAchievementsInBackground } from '@/utils/backgroundAchievements';
@@ -18,10 +19,55 @@ import { NotificationSettings } from '@/utils/notifications.types';
 const BACKGROUND_NOTIFICATION_TASK = 'background-notification-task';
 const NOTIFICATION_SETTINGS_KEY = 'notificationSettings';
 
-// Toast service to be initialized from a component with access to useToast hook
-let toastService: {
-  show: (message: string, options?: any) => void;
-} | null = null;
+interface QueuedToast {
+  message: string;
+  type: 'success' | 'error' | 'info';
+  duration?: number;
+}
+
+let toastQueue: QueuedToast[] = [];
+let isProcessingQueue = false;
+
+/**
+ * Process the toast queue with slide down animations
+ */
+const processToastQueue = async (): Promise<void> => {
+  if (isProcessingQueue || toastQueue.length === 0) {
+    return;
+  }
+
+  isProcessingQueue = true;
+
+  while (toastQueue.length > 0) {
+    const toast = toastQueue.shift();
+    if (!toast) continue;
+
+    Toast.show({
+      type: toast.type,
+      text1: toast.message,
+      visibilityTime: toast.duration || 3000,
+      autoHide: true,
+      topOffset: 60,
+    });
+
+    // Wait for the toast to show and hide before showing the next one
+    await new Promise((resolve) => setTimeout(resolve, (toast.duration || 3000) + 500));
+  }
+
+  isProcessingQueue = false;
+};
+
+/**
+ * Add toast to queue
+ */
+const queueToast = (
+  message: string,
+  type: 'success' | 'error' | 'info' = 'success',
+  duration?: number,
+): void => {
+  toastQueue.push({ message, type, duration });
+  processToastQueue();
+};
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -65,15 +111,6 @@ export const initializeNotifications = async (): Promise<boolean> => {
 
     return false;
   }
-};
-
-/**
- * Initialize toast service with useToast hook
- */
-export const initializeToastService = (toast: {
-  show: (message: string, options?: any) => void;
-}): void => {
-  toastService = toast;
 };
 
 /**
@@ -124,16 +161,8 @@ export const showAchievementNotification = async (
 
   try {
     if (isAppActive) {
-      console.log('Showing in-app achievement toast:', { title, message, workout });
-
-      // Use the new toast service (supports multiple toasts automatically)
-      if (toastService) {
-        toastService.show(`${title}: ${message}`, { type: 'success' });
-      } else {
-        console.warn(
-          'Toast service not initialized. Call initializeToastService from a component.',
-        );
-      }
+      console.log('Queuing achievement toast:', { title, message, workout });
+      queueToast(`${title}: ${message}`, 'success', 4000);
     } else {
       // Show push notification
       console.log('Scheduling push notification:', { title, message, workout });
@@ -167,10 +196,11 @@ export const isAppActive = async (): Promise<boolean> => {
 
     const timeDiff = Date.now() - parseInt(lastActiveTime);
 
-    // Consider app active if it was active in the last 30 seconds
-    return timeDiff < 30000;
+    // Consider app active if last activity was within 5 minutes
+    return timeDiff < 5 * 60 * 1000;
   } catch (error) {
-    console.error('Error checking app active state:', error);
+    console.error('Error checking app active status:', error);
+
     return false;
   }
 };
@@ -191,160 +221,125 @@ export const setAppActive = async (): Promise<void> => {
  */
 export const registerBackgroundTask = async (): Promise<void> => {
   try {
-    // Define the background task using TaskManager
-    await TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async () => {
+    console.log('Registering background task...');
+
+    // Define the background task
+    TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async () => {
+      console.log('Background task executing...');
+
       try {
-        console.log('Background task running - checking for achievements');
-
         await checkForNewAchievementsInBackground();
+        console.log('Background task completed successfully');
 
-        console.log('Background achievement check completed');
-
-        return { success: true };
+        return BackgroundTask.BackgroundTaskResult.Success;
       } catch (error) {
         console.error('Background task error:', error);
 
-        return { success: false };
+        return BackgroundTask.BackgroundTaskResult.Failed;
       }
     });
 
-    console.log('Background task defined successfully');
-
-    try {
-      await BackgroundTask.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK, {
-        minimumInterval: 15000,
-      });
-      console.log('Background task registered with system successfully');
-    } catch (registrationError) {
-      console.error('Error registering background task with system:', registrationError);
-      console.log('Background task defined but system registration failed');
-    }
-
-    // Check if task is registered
+    // Register the background task
     const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK);
-    console.log('Task registration status:', isRegistered);
 
-    // Note: Background tasks require proper permissions and work better on physical devices
-    console.log(
-      'Note: Background execution requires production build on physical device for optimal performance',
-    );
+    if (!isRegistered) {
+      await BackgroundTask.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+      console.log('Background task registered successfully');
+    } else {
+      console.log('Background task already registered');
+    }
   } catch (error) {
     console.error('Error registering background task:', error);
   }
 };
 
-/**
- * Test notification (for development/debugging)
- */
 export const sendTestNotification = async (): Promise<void> => {
   try {
+    const settings = await getNotificationSettings();
+
+    if (!settings.enabled) {
+      console.log('Notifications are disabled');
+
+      return;
+    }
+
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: '🏃‍♂️ Test Achievement!',
-        body: 'This is a test notification for achievements',
-        sound: true,
+        title: 'Test Notification',
+        body: 'This is a test notification from your workout app!',
+        sound: settings.soundEnabled,
+        priority: Notifications.AndroidNotificationPriority.HIGH,
         data: {
           type: 'test',
         },
       },
-      trigger: null,
+      trigger: null, // Show immediately
     });
+
+    console.log('Test notification sent');
   } catch (error) {
     console.error('Error sending test notification:', error);
   }
 };
 
-/**
- * Check background task status (for debugging)
- */
 export const getBackgroundTaskStatus = async (): Promise<{
   isTaskDefined: boolean;
   isTaskRegistered: boolean;
   backgroundTaskStatus?: string;
 }> => {
   try {
-    const isTaskDefined = await TaskManager.isTaskDefined(BACKGROUND_NOTIFICATION_TASK);
+    const isTaskDefined = TaskManager.isTaskDefined(BACKGROUND_NOTIFICATION_TASK);
     const isTaskRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK);
-
-    let backgroundTaskStatus = 'unknown';
-
-    try {
-      // Check if expo-background-task is available
-      const status = await BackgroundTask.getStatusAsync();
-      backgroundTaskStatus = status ? `available (${status})` : 'available';
-    } catch {
-      backgroundTaskStatus = 'not available';
-    }
 
     return {
       isTaskDefined,
       isTaskRegistered,
-      backgroundTaskStatus,
     };
   } catch (error) {
     console.error('Error getting background task status:', error);
+
     return {
       isTaskDefined: false,
       isTaskRegistered: false,
-      backgroundTaskStatus: 'error',
+      backgroundTaskStatus: `Error: ${error}`,
     };
   }
 };
 
-/**
- * Unregister background task
- */
 export const unregisterBackgroundTask = async (): Promise<void> => {
   try {
     const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK);
 
     if (isRegistered) {
-      await BackgroundTask.unregisterTaskAsync(BACKGROUND_NOTIFICATION_TASK);
-      console.log('Background task unregistered successfully');
-    } else {
-      console.log('Background task was not registered');
+      await TaskManager.unregisterTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+      console.log('Background task unregistered');
     }
   } catch (error) {
     console.error('Error unregistering background task:', error);
   }
 };
 
-/**
- * Cancel all pending notifications
- */
 export const cancelAllNotifications = async (): Promise<void> => {
   try {
     await Notifications.cancelAllScheduledNotificationsAsync();
+    console.log('All notifications cancelled');
   } catch (error) {
-    console.error('Error canceling notifications:', error);
+    console.error('Error cancelling notifications:', error);
   }
 };
 
-/**
- * Handle notification received while app is in foreground
- */
 export const handleNotificationReceived = (notification: Notifications.Notification) => {
-  const { data } = notification.request.content;
-
   console.log('Notification received:', notification);
-
-  if (data?.type === 'achievement') {
-    // Handle achievement notification
-    console.log('Achievement notification received for workout:', data.workoutId);
-  }
 };
 
-/**
- * Handle notification tap (when user taps on notification)
- */
 export const handleNotificationResponse = (response: Notifications.NotificationResponse) => {
-  const { data } = response.notification.request.content;
+  console.log('Notification response:', response);
 
-  console.log('Notification tapped:', response);
+  // Handle notification tap
+  const data = response.notification.request.content.data;
 
-  if (data?.type === 'achievement' && data?.workoutId) {
-    // Navigate to workout detail or achievement screen
-    console.log('Opening achievement for workout:', data.workoutId);
-    // You can add navigation logic here
+  if (data?.workoutId) {
+    // Navigate to workout details
+    console.log('Navigate to workout:', data.workoutId);
   }
 };
