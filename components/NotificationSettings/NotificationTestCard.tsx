@@ -11,8 +11,7 @@ import { Button } from 'react-native-paper';
 
 import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
-// import { forceBackgroundCheck, getTimeUntilNextCheck } from '@/utils/backgroundAchievements';
-import { cancelAllNotifications, sendTestNotification } from '@/utils/notifications';
+import { cancelAllNotifications, sendTestNotification } from '@/services/notifications';
 
 export const NotificationTestCard = () => {
   const [loading, setLoading] = useState(false);

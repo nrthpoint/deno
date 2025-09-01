@@ -12,7 +12,7 @@ import { IconButton } from 'react-native-paper';
 
 import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
-import { getNotificationSettings } from '@/utils/notifications';
+import { getNotificationSettings } from '@/services/notifications';
 import { subheading } from '@/utils/text';
 
 interface NotificationStatus {

@@ -12,10 +12,10 @@ import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
 import {
   getNotificationSettings,
-  NotificationSettings,
   sendTestNotification,
   updateNotificationSettings,
-} from '@/utils/notifications';
+} from '@/services/notifications';
+import { NotificationSettings } from '@/services/notifications.types';
 import { subheading } from '@/utils/text';
 
 export const NotificationSettingsCard = () => {
