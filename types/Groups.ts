@@ -72,6 +72,8 @@ export type Group = {
 
   // Variance
   variantDistribution: number[];
+
+  isIndoor?: boolean;
 };
 
 export type Stats = StatGroup[];

@@ -199,6 +199,7 @@ export default function Index() {
               groupType={groupType}
               distanceUnit={distanceUnit}
               setSelectedOption={setSelectedOption}
+              groups={groups}
             />
           </Animated.View>
         </View>

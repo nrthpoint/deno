@@ -96,6 +96,7 @@ const parseWorkoutSample = async ({
       daysAgo: `${Math.floor(
         (Date.now() - newRun.startDate.getTime()) / (1000 * 60 * 60 * 24),
       )} days ago`,
+      isIndoor: plainRun.metadata?.['HKIndoorWorkout'] === true,
       achievements: {
         isAllTimeFastest: false,
         isAllTimeLongest: false,

@@ -15,6 +15,7 @@ export interface ExtendedWorkout extends WorkoutSample {
   prettyPace: string;
   achievements: WorkoutAchievements;
   proxy: WorkoutProxy;
+  isIndoor: boolean;
 }
 
 export type WorkoutAchievements = {

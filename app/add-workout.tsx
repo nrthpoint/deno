@@ -55,6 +55,7 @@ export default function AddWorkoutScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showDurationPicker, setShowDurationPicker] = useState(false);
+  const [isIndoor, setIsIndoor] = useState(false); // Add this line
 
   const resetForm = () => {
     setDistance('');
@@ -63,6 +64,7 @@ export default function AddWorkoutScreen() {
     setShowDatePicker(false);
     setShowTimePicker(false);
     setShowDurationPicker(false);
+    setIsIndoor(false); // Add this line
   };
 
   const handleSaveWorkout = async () => {
@@ -98,7 +100,9 @@ export default function AddWorkoutScreen() {
           distance: distanceInMeters,
           energyBurned: undefined,
         },
-        {}, // No metadata
+        {
+          HKIndoorWorkout: isIndoor, // Add this line
+        },
       );
 
       // Set flag to refresh workout data when returning to main screen
@@ -274,6 +278,25 @@ export default function AddWorkoutScreen() {
               />
             </View>
           </View>
+
+          {/* Indoor Checkbox */}
+          <View style={styles.checkboxContainer}>
+            <TouchableRipple
+              style={styles.checkboxRow}
+              onPress={() => setIsIndoor(!isIndoor)}
+            >
+              <View style={styles.checkboxContent}>
+                <View style={styles.checkboxWrapper}>
+                  <Ionicons
+                    name={isIndoor ? 'checkbox' : 'square-outline'}
+                    size={24}
+                    color={isIndoor ? colors.primary : colors.gray}
+                  />
+                </View>
+                <Text style={styles.checkboxLabel}>Indoor workout</Text>
+              </View>
+            </TouchableRipple>
+          </View>
         </View>
 
         {/* Date Picker */}
@@ -420,5 +443,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.primary,
     borderRadius: 12,
+  },
+  checkboxContainer: {
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  checkboxRow: {
+    padding: 12,
+    borderRadius: 8,
+  },
+  checkboxContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkboxWrapper: {
+    marginRight: 12,
+  },
+  checkboxLabel: {
+    fontSize: 16,
+    color: colors.neutral,
+    fontFamily: LatoFonts.regular,
   },
 });

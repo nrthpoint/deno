@@ -17,6 +17,7 @@ interface GroupCarouselProps {
   groupType: GroupType;
   distanceUnit: string;
   setSelectedOption: (_option: string) => void;
+  groups: Record<string, any>;
 }
 
 export const GroupCarousel = ({
@@ -24,6 +25,7 @@ export const GroupCarousel = ({
   itemSuffix,
   groupType,
   setSelectedOption,
+  groups,
 }: GroupCarouselProps) => {
   const { colorProfile } = useTheme();
   const carouselRef = useRef<any>(null);
@@ -61,77 +63,89 @@ export const GroupCarousel = ({
         parallaxScrollingOffset: 50,
         parallaxAdjacentItemScale: 0.6,
       }}
-      renderItem={({ item }) => (
-        <View style={styles.carouselItem}>
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              borderRadius: 20,
-              overflow: 'hidden',
-            }}
-          >
-            <Svg
-              width="100%"
-              height="100%"
+      renderItem={({ item }) => {
+        const group = groups[item];
+        const isIndoor = group?.isIndoor || false;
+
+        return (
+          <View style={styles.carouselItem}>
+            <View
               style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
-                borderRadius: 0,
+                borderRadius: 20,
+                overflow: 'hidden',
               }}
             >
-              <Defs>
-                <LinearGradient
-                  id="grad"
-                  x1="1"
-                  y1="0"
-                  x2="1"
-                  y2="1"
-                >
-                  <Stop
-                    offset="0%"
-                    stopColor="#ebebeb"
-                  />
-                  <Stop
-                    offset="100%"
-                    stopColor="#e7e7e7"
-                  />
-                </LinearGradient>
-              </Defs>
-              <Rect
-                x="0"
-                y="0"
+              <Svg
                 width="100%"
                 height="100%"
-                //rx="20"
-                fill="url(#grad)"
-              />
-            </Svg>
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  borderRadius: 0,
+                }}
+              >
+                <Defs>
+                  <LinearGradient
+                    id="grad"
+                    x1="1"
+                    y1="0"
+                    x2="1"
+                    y2="1"
+                  >
+                    <Stop
+                      offset="0%"
+                      stopColor="#ebebeb"
+                    />
+                    <Stop
+                      offset="100%"
+                      stopColor="#e7e7e7"
+                    />
+                  </LinearGradient>
+                </Defs>
+                <Rect
+                  x="0"
+                  y="0"
+                  width="100%"
+                  height="100%"
+                  //rx="20"
+                  fill="url(#grad)"
+                />
+              </Svg>
+            </View>
+            <View style={styles.carouselItemContent}>
+              {/* Indoor label */}
+              {isIndoor && (
+                <View style={[styles.indoorLabel, { backgroundColor: colorProfile.primary }]}>
+                  <Text style={styles.indoorLabelText}>Indoor</Text>
+                </View>
+              )}
+
+              <Text
+                style={[
+                  styles.carouselText,
+                  {
+                    color: colorProfile.primary,
+                    fontSize: item.length > 3 ? 60 : item.length > 2 ? 70 : 80,
+                  },
+                ]}
+              >
+                {item.replace(/-indoor|-outdoor/, '')} {/* Remove the suffix from display */}
+              </Text>
+              <Text style={[styles.carouselSubText, { color: colorProfile.primary }]}>
+                {itemSuffix}
+              </Text>
+            </View>
           </View>
-          <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-            <Text
-              style={[
-                styles.carouselText,
-                {
-                  color: colorProfile.primary,
-                  fontSize: item.length > 3 ? 60 : item.length > 2 ? 70 : 80,
-                },
-              ]}
-            >
-              {item}
-            </Text>
-            <Text style={[styles.carouselSubText, { color: colorProfile.primary }]}>
-              {itemSuffix}
-            </Text>
-          </View>
-        </View>
-      )}
+        );
+      }}
     />
   );
 };
@@ -143,6 +157,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     overflow: 'visible',
+  },
+  carouselItemContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
   },
   carouselItem: {
     width: 140,
@@ -175,5 +194,25 @@ const styles = StyleSheet.create({
     marginTop: 0,
     textAlign: 'center',
     color: colors.other,
+  },
+  indoorLabel: {
+    position: 'absolute',
+    textAlign: 'center',
+    top: 10,
+    left: -13,
+    borderRadius: 8,
+    right: 0,
+    width: 70,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+  },
+  indoorLabelText: {
+    ...subheading,
+    marginTop: 0,
+    textAlign: 'center',
+    marginBottom: 0,
+    color: colors.neutral,
+    fontSize: 10,
+    fontWeight: 'bold',
   },
 });
