@@ -19,8 +19,8 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { isAppActive, showAchievementNotification } from '@/services/notifications';
 import { ExtendedWorkout, WorkoutAchievements } from '@/types/ExtendedWorkout';
-import { isAppActive, showAchievementNotification } from '@/utils/notifications';
 import {
   findFastestRun,
   findHighestElevationRun,

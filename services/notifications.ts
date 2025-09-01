@@ -12,9 +12,9 @@ import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
 import Toast from 'react-native-toast-message';
 
+import { checkForNewAchievementsInBackground } from '@/services/background-service';
+import { NotificationSettings } from '@/services/notifications.types';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
-import { checkForNewAchievementsInBackground } from '@/utils/backgroundAchievements';
-import { NotificationSettings } from '@/utils/notifications.types';
 
 const BACKGROUND_NOTIFICATION_TASK = 'background-notification-task';
 const NOTIFICATION_SETTINGS_KEY = 'notificationSettings';

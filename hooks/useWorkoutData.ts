@@ -11,8 +11,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 
 import { SampleTypesToRead, SampleTypesToWrite } from '@/config/sampleIdentifiers';
+import { handleAchievementNotifications } from '@/services/achievements';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
-import { handleAchievementNotifications } from '@/utils/achievements';
 import { parseWorkoutSamples } from '@/utils/parser';
 
 type UseWorkoutDataParams = {

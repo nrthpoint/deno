@@ -6,9 +6,12 @@ import { Card } from '@/components/Card/Card';
 import { NotificationTestCard } from '@/components/NotificationSettings/NotificationTestCard';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { clearPreviousAchievements, showTestAchievementNotification } from '@/utils/achievements';
-import { debugAchievements, forceBackgroundCheck } from '@/utils/backgroundAchievements';
-import { getBackgroundTaskStatus, unregisterBackgroundTask } from '@/utils/notifications';
+import {
+  clearPreviousAchievements,
+  showTestAchievementNotification,
+} from '@/services/achievements';
+import { debugAchievements, forceBackgroundCheck } from '@/services/background-service';
+import { getBackgroundTaskStatus, unregisterBackgroundTask } from '@/services/notifications';
 
 export const DeveloperSettings: React.FC = () => {
   const handleDebugAchievements = async () => {

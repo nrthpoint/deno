@@ -1,9 +1,9 @@
 import { LengthUnit, Quantity } from '@kingstinct/react-native-healthkit';
 
+import { calculateAchievements } from '@/services/achievements';
 import { ExtendedWorkout, WorkoutProxy } from '@/types/ExtendedWorkout';
-import { calculateAchievements } from '@/utils/achievements';
 
-import { metersToMiles, metersToKilometers } from './distance';
+import { metersToKilometers, metersToMiles } from './distance';
 import { formatPace } from './time';
 import { calculatePace } from './workout';
 

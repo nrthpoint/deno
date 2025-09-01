@@ -13,12 +13,12 @@ import {
 } from '@kingstinct/react-native-healthkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import {
   checkAndNotifyNewAchievements,
   getPreviousAchievements,
   handleAchievementNotifications,
-} from '@/utils/achievements';
+} from '@/services/achievements';
+import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { parseWorkoutSamples } from '@/utils/parser';
 
 const LAST_BACKGROUND_CHECK_KEY = 'lastBackgroundAchievementCheck';
@@ -168,7 +168,7 @@ export const debugAchievements = async (): Promise<void> => {
     console.log('Parsed workouts:', parsedWorkouts.length);
 
     // Get current and previous achievements for debugging
-    const { extractCurrentAchievements } = await import('@/utils/achievements');
+    const { extractCurrentAchievements } = await import('@/services/achievements');
     const previousAchievements = await getPreviousAchievements();
     const currentAchievements = extractCurrentAchievements(parsedWorkouts);
 
