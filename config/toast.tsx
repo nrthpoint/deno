@@ -49,12 +49,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   text1: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '600',
     color: '#1f2937',
   },
   text2: {
-    fontSize: 14,
+    fontSize: 10,
     color: '#6b7280',
   },
 });
