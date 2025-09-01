@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   indoorLabel: {
     position: 'absolute',
     textAlign: 'center',
-    top: 10,
+    top: -12,
     left: -13,
     borderRadius: 8,
     right: 0,

@@ -240,7 +240,7 @@ export const styles = StyleSheet.create({
   },
   activityIconContainer: {
     position: 'absolute',
-    top: 130,
+    top: 120,
     left: '50%',
     width: 48,
     height: 48,
