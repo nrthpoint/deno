@@ -55,7 +55,7 @@ export default function AddWorkoutScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showDurationPicker, setShowDurationPicker] = useState(false);
-  const [isIndoor, setIsIndoor] = useState(false); // Add this line
+  const [isIndoor, setIsIndoor] = useState(false);
 
   const resetForm = () => {
     setDistance('');
@@ -64,7 +64,7 @@ export default function AddWorkoutScreen() {
     setShowDatePicker(false);
     setShowTimePicker(false);
     setShowDurationPicker(false);
-    setIsIndoor(false); // Add this line
+    setIsIndoor(false);
   };
 
   const handleSaveWorkout = async () => {
@@ -130,9 +130,11 @@ export default function AddWorkoutScreen() {
     if (selectedDate) {
       // Preserve the time part when changing date
       const newDate = new Date(startDate);
+
       newDate.setFullYear(selectedDate.getFullYear());
       newDate.setMonth(selectedDate.getMonth());
       newDate.setDate(selectedDate.getDate());
+
       setStartDate(newDate);
     }
   };
@@ -141,8 +143,10 @@ export default function AddWorkoutScreen() {
     if (selectedTime) {
       // Preserve the date part when changing time
       const newDate = new Date(startDate);
+
       newDate.setHours(selectedTime.getHours());
       newDate.setMinutes(selectedTime.getMinutes());
+
       setStartDate(newDate);
     }
   };
@@ -182,10 +186,11 @@ export default function AddWorkoutScreen() {
         <View style={styles.form}>
           <Text style={styles.sectionTitle}>Add Workout</Text>
 
-          <Text style={styles.label}>Activity Type</Text>
+          <Text style={styles.label}>Activity</Text>
+
           <TouchableRipple
             style={styles.dateTimeButton}
-            onPress={() => router.push('/(tabs)/settings')}
+            onPress={() => router.replace('/(tabs)/settings')}
           >
             <View style={styles.dateTimeButtonContent}>
               <Text style={styles.disabledText}>{getActivityTypeLabel(activityType)}</Text>
@@ -196,11 +201,11 @@ export default function AddWorkoutScreen() {
               />
             </View>
           </TouchableRipple>
-          <Text style={{ marginBottom: 16, color: colors.lightGray }}>
+
+          <Text style={styles.inputFooter}>
             This is linked to the activity type set in settings. Tap to change.
           </Text>
 
-          {/* First Row: Date and Time */}
           <View style={styles.gridRow}>
             <View style={styles.gridItem}>
               <Text style={styles.label}>Date</Text>
@@ -210,11 +215,6 @@ export default function AddWorkoutScreen() {
               >
                 <View style={styles.dateTimeButtonContent}>
                   <Text style={styles.dateTimeButtonText}>{formatDate(startDate)}</Text>
-                  <Ionicons
-                    name="calendar-outline"
-                    size={20}
-                    color={colors.gray}
-                  />
                 </View>
               </TouchableRipple>
             </View>
@@ -227,11 +227,6 @@ export default function AddWorkoutScreen() {
               >
                 <View style={styles.dateTimeButtonContent}>
                   <Text style={styles.dateTimeButtonText}>{formatTime(startDate)}</Text>
-                  <Ionicons
-                    name="time-outline"
-                    size={20}
-                    color={colors.gray}
-                  />
                 </View>
               </TouchableRipple>
             </View>
@@ -246,14 +241,7 @@ export default function AddWorkoutScreen() {
                 onPress={() => setShowDurationPicker(true)}
               >
                 <View style={styles.dateTimeButtonContent}>
-                  <Text style={styles.dateTimeButtonText}>
-                    {duration || 'Select duration (MM:SS)'}
-                  </Text>
-                  <Ionicons
-                    name="time-outline"
-                    size={20}
-                    color={colors.gray}
-                  />
+                  <Text style={styles.dateTimeButtonText}>{duration || '00:00'}</Text>
                 </View>
               </TouchableRipple>
             </View>
@@ -264,17 +252,11 @@ export default function AddWorkoutScreen() {
                 mode="outlined"
                 value={distance}
                 onChangeText={setDistance}
-                placeholder={`Enter distance in ${distanceUnit === 'mi' ? 'miles' : 'kilometers'}`}
+                placeholder={`Distance in ${distanceUnit === 'mi' ? 'miles' : 'kilometers'}`}
                 keyboardType="decimal-pad"
                 style={styles.gridInput}
                 placeholderTextColor={colors.gray}
                 outlineStyle={{ borderColor: '#161616' }}
-                right={
-                  <TextInput.Icon
-                    icon="map-marker-distance"
-                    color={colors.gray}
-                  />
-                }
               />
             </View>
           </View>
@@ -293,7 +275,7 @@ export default function AddWorkoutScreen() {
                     color={isIndoor ? colors.primary : colors.gray}
                   />
                 </View>
-                <Text style={styles.checkboxLabel}>Indoor workout</Text>
+                <Text style={styles.checkboxLabel}>Indoor?</Text>
               </View>
             </TouchableRipple>
           </View>
@@ -337,7 +319,7 @@ export default function AddWorkoutScreen() {
               { backgroundColor: colors.surface, borderColor: colors.surfaceHighlight },
             ]}
             disabled={isLoading}
-            labelStyle={{ color: colors.neutral }}
+            labelStyle={styles.buttonLabel}
           >
             Cancel
           </Button>
@@ -347,7 +329,7 @@ export default function AddWorkoutScreen() {
             style={styles.button}
             loading={isLoading}
             disabled={isLoading}
-            labelStyle={{ color: colors.neutral }}
+            labelStyle={styles.buttonLabel}
           >
             Save
           </Button>
@@ -384,9 +366,16 @@ const styles = StyleSheet.create({
     color: colors.neutral,
     marginTop: 10,
     marginBottom: 10,
+    letterSpacing: 0.5,
+  },
+  inputFooter: {
+    marginBottom: 16,
+    color: colors.lightGray,
+    lineHeight: 20,
   },
   label: {
     ...subheading,
+    marginBottom: 15,
   },
   gridRow: {
     flexDirection: 'row',
@@ -411,6 +400,7 @@ const styles = StyleSheet.create({
     borderColor: '#161616',
     borderWidth: 1,
     borderRadius: 4,
+    height: 62,
   },
   disabledText: {
     color: colors.gray,
@@ -418,7 +408,8 @@ const styles = StyleSheet.create({
   dateTimeButton: {
     borderWidth: 1,
     borderColor: '#161616',
-    borderRadius: 4,
+    borderRadius: 8,
+    overflow: 'hidden',
     padding: 16,
     marginBottom: 8,
     backgroundColor: colors.surface,
@@ -427,6 +418,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    height: 30,
   },
   dateTimeButtonText: {
     fontSize: 16,
@@ -449,8 +441,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   checkboxRow: {
+    backgroundColor: colors.surface,
     padding: 12,
     borderRadius: 8,
+    paddingVertical: 20,
   },
   checkboxContent: {
     flexDirection: 'row',
@@ -463,5 +457,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.neutral,
     fontFamily: LatoFonts.regular,
+  },
+  buttonLabel: {
+    color: colors.neutral,
+    fontFamily: LatoFonts.bold,
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
+    fontSize: 12,
   },
 });

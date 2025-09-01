@@ -12,6 +12,7 @@ import {
   type SettingsMenuItem,
 } from '@/components/SettingsMenu';
 import { colors } from '@/config/colors';
+import { OrelegaOneFonts } from '@/config/fonts';
 
 type SettingsSection = 'menu' | 'general' | 'notifications' | 'developer' | 'app';
 
@@ -108,10 +109,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   headerTitle: {
-    color: '#fff',
+    color: colors.neutral,
     fontSize: 40,
-    fontFamily: 'OrelegaOne',
-    textAlign: 'left',
+    fontFamily: OrelegaOneFonts.regular,
   },
   content: {
     flex: 1,
