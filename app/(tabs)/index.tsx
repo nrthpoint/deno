@@ -18,6 +18,29 @@ import { useWorkoutGroups } from '@/hooks/useWorkoutGroups';
 import { GroupType } from '@/types/Groups';
 import { subheading } from '@/utils/text';
 
+const Background = () => (
+  <View
+    style={{
+      ...StyleSheet.absoluteFillObject,
+      // Extends the background underneath the GroupStats so it says underneath the curved corners.
+      bottom: -200,
+      zIndex: -1,
+    }}
+  >
+    {/* Gradient background */}
+    <View
+      style={{
+        flex: 1,
+        height: '100%',
+        width: '100%',
+        backgroundColor: 'transparent',
+      }}
+    >
+      <ThemedGradient />
+    </View>
+  </View>
+);
+
 export default function Index() {
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
 
@@ -134,33 +157,15 @@ export default function Index() {
           onGroupTypeChange={setGroupingType}
         />
 
-        <View style={{ borderRadius: 20, overflow: 'hidden' }}>
+        <View
+          id="top-carousel"
+          style={{ borderRadius: 20, overflow: 'hidden' }}
+        >
           <Animated.View
             style={{
               transform: [{ translateY: scrollY }],
             }}
           >
-            <View
-              style={{
-                ...StyleSheet.absoluteFillObject,
-                // Extends the background underneath the GroupStats so it says underneath the curved corners.
-                bottom: -200,
-                zIndex: -1,
-              }}
-            >
-              {/* Gradient background */}
-              <View
-                style={{
-                  flex: 1,
-                  height: '100%',
-                  width: '100%',
-                  backgroundColor: 'transparent',
-                }}
-              >
-                <ThemedGradient />
-              </View>
-            </View>
-
             <View style={styles.header}>
               <Text style={styles.headerTitle}>Groups</Text>
               <Text style={styles.headerSubtitle}>{tabLabels[groupType]}</Text>
@@ -182,7 +187,6 @@ export default function Index() {
               />
             </View>
 
-            {/* add a dynamic small white icon here that is centered above the carousel and represented the activity type in a visual way */}
             <View style={styles.activityIconContainer}>
               <IconButton
                 icon={getActivityIcon(activityType)}
@@ -201,6 +205,8 @@ export default function Index() {
               setSelectedOption={setSelectedOption}
               groups={groups}
             />
+
+            <Background />
           </Animated.View>
         </View>
 
