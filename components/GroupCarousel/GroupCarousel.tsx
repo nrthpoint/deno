@@ -103,6 +103,7 @@ export const GroupCarousel = ({
     <Carousel
       ref={carouselRef}
       width={itemWidth}
+      loop={false}
       height={180}
       data={options.length > 0 ? options : ['--']}
       scrollAnimationDuration={300}
