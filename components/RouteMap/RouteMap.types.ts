@@ -19,4 +19,7 @@ export type RouteSegments = {
 // Component props
 export interface RouteMapProps {
   samples: ExtendedWorkout[];
+  previewMode?: boolean;
+  onPress?: () => void;
+  maxPoints?: number;
 }

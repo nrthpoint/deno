@@ -14,7 +14,7 @@ import { subheading } from '@/utils/text';
 import { formatDate, formatPace, formatTime, formatWorkoutDate } from '@/utils/time';
 
 export default function ViewWorkoutScreen() {
-  const { selectedWorkout } = useWorkout();
+  const { selectedWorkout, setSelectedWorkouts } = useWorkout();
 
   if (!selectedWorkout) {
     return (
@@ -164,6 +164,11 @@ export default function ViewWorkoutScreen() {
   const paceUnit = workout.averagePace.unit || 'min/mi';
   const formattedWorkoutDate = formatWorkoutDate(workout.endDate);
 
+  const handleMapPress = () => {
+    setSelectedWorkouts([workout]);
+    router.push('/map-detail');
+  };
+
   return (
     <>
       <Stack.Screen
@@ -211,7 +216,12 @@ export default function ViewWorkoutScreen() {
         </Card>
 
         <View>
-          <RouteMap samples={[workout]} />
+          <RouteMap
+            samples={[workout]}
+            previewMode={true}
+            onPress={handleMapPress}
+            maxPoints={40}
+          />
         </View>
 
         {/* Key metrics */}

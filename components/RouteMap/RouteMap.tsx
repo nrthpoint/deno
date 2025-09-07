@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import MapView, { Polyline, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 
 import { parseRouteLocations } from '@/components/RouteMap/parseRouteLocations';
 import { RouteMapProps, RouteSegments } from '@/components/RouteMap/RouteMap.types';
-import { calculateInitialRegion, getSegments } from '@/components/RouteMap/RouteMap.utils';
+import {
+  calculateInitialRegion,
+  getSegments,
+  reduceRoutePoints,
+} from '@/components/RouteMap/RouteMap.utils';
 import { colors } from '@/config/colors';
 
 const routeStyles = [
@@ -14,7 +18,12 @@ const routeStyles = [
   { strokeWidth: 4, lineDashPattern: [1, 2] },
 ];
 
-export const RouteMap = ({ samples }: RouteMapProps) => {
+export const RouteMap = ({
+  samples,
+  previewMode = false,
+  onPress,
+  maxPoints = 50,
+}: RouteMapProps) => {
   const [routes, setRouteSegments] = useState<RouteSegments>([]);
   const [initialRegion, setInitialRegion] = useState<Region | undefined>();
   const [isLoading, setIsLoading] = useState(true);
@@ -27,9 +36,10 @@ export const RouteMap = ({ samples }: RouteMapProps) => {
 
       Promise.all(routePromises)
         .then((allRoutes) => {
-          const allRoutesLocations = allRoutes.map((route) =>
-            parseRouteLocations(route[0].locations),
-          );
+          const allRoutesLocations = allRoutes.map((route) => {
+            const parsedLocations = parseRouteLocations(route[0].locations);
+            return previewMode ? reduceRoutePoints(parsedLocations, maxPoints) : parsedLocations;
+          });
           const allRouteSegments = allRoutesLocations.map(getSegments);
           const initialRegion = calculateInitialRegion(allRoutesLocations);
 
@@ -42,7 +52,7 @@ export const RouteMap = ({ samples }: RouteMapProps) => {
     };
 
     fetchRoutes();
-  }, [samples]);
+  }, [samples, previewMode, maxPoints]);
 
   if (isLoading) {
     return (
@@ -56,14 +66,20 @@ export const RouteMap = ({ samples }: RouteMapProps) => {
     );
   }
 
-  return (
-    <View style={styles.mapContainer}>
+  const MapComponent = (
+    <View
+      style={[
+        styles.mapContainer,
+        previewMode && styles.previewContainer,
+        !previewMode && { flex: 1, marginBottom: 50 },
+      ]}
+    >
       <MapView
         style={styles.map}
         provider={PROVIDER_GOOGLE}
         initialRegion={initialRegion}
-        scrollEnabled={true}
-        zoomEnabled={true}
+        scrollEnabled={!previewMode}
+        zoomEnabled={!previewMode}
         pitchEnabled={false}
         rotateEnabled={false}
         userInterfaceStyle="dark"
@@ -82,15 +98,31 @@ export const RouteMap = ({ samples }: RouteMapProps) => {
       </MapView>
     </View>
   );
+
+  if (previewMode && onPress) {
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        activeOpacity={0.8}
+      >
+        {MapComponent}
+      </TouchableOpacity>
+    );
+  }
+
+  return MapComponent;
 };
 
 const styles = StyleSheet.create({
   mapContainer: {
     width: '100%',
-    height: 550,
     borderRadius: 12,
     overflow: 'hidden',
     marginTop: 16,
+  },
+  previewContainer: {
+    height: 200,
+    marginTop: 12,
   },
   loadingContainer: {
     justifyContent: 'center',

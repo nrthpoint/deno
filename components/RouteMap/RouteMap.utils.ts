@@ -65,3 +65,26 @@ export const getSegments = (route: LocationPoint[]) => {
 
   return segments;
 };
+
+/**
+ * Reduces the number of points in a route for preview mode performance
+ */
+export const reduceRoutePoints = (route: LocationPoint[], maxPoints: number): LocationPoint[] => {
+  if (route.length <= maxPoints) return route;
+
+  const step = Math.floor(route.length / maxPoints);
+  const reducedRoute: LocationPoint[] = [];
+
+  // Always include the first point
+  reducedRoute.push(route[0]);
+
+  // Sample points at regular intervals
+  for (let i = step; i < route.length - step; i += step) {
+    reducedRoute.push(route[i]);
+  }
+
+  // Always include the last point
+  reducedRoute.push(route[route.length - 1]);
+
+  return reducedRoute;
+};

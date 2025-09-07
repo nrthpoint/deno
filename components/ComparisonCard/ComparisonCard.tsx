@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -6,6 +7,7 @@ import { ComparisonRow } from '@/components/ComparisonCard/ComparisonRow/Compari
 import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { useWorkout } from '@/context/WorkoutContext';
 
 import { SampleComparisonCardProps } from './ComparisonCard.types';
 import { SampleDropdown } from './SampleDropdown';
@@ -28,6 +30,8 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
     onSample2Change,
   } = props;
 
+  const { setSelectedWorkouts } = useWorkout();
+
   const showDropdowns =
     sampleOptions &&
     onSample1Change &&
@@ -36,6 +40,11 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
     selectedSample2Type;
 
   const isSameSample = sample1?.uuid && sample2?.uuid && sample1.uuid === sample2.uuid;
+
+  const handleMapPress = () => {
+    setSelectedWorkouts([sample1, sample2]);
+    router.push('/map-detail?mode=comparison');
+  };
 
   return (
     <View style={styles.container}>
@@ -88,7 +97,12 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
         ),
       )}
 
-      <RouteMap samples={[sample1, sample2]} />
+      <RouteMap
+        samples={[sample1, sample2]}
+        previewMode={true}
+        onPress={handleMapPress}
+        maxPoints={30}
+      />
     </View>
   );
 };
