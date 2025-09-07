@@ -2,7 +2,7 @@ import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 export type ComparisonProperty = 'duration' | 'averagePace' | 'elevation' | 'distance' | 'humidity';
 
-export type SampleType = 'highlight' | 'worst' | 'mostRecent';
+export type SampleType = 'highlight' | 'worst' | 'mostRecent' | 'previousPersonalBest';
 
 export interface SampleOption {
   type: SampleType;

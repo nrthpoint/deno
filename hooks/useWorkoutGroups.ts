@@ -41,5 +41,5 @@ export function useWorkoutGroups({
     config,
   );
 
-  return { groups, meta, loading, authorizationStatus, requestAuthorization, refresh };
+  return { groups, meta, samples, loading, authorizationStatus, requestAuthorization, refresh };
 }

@@ -7,8 +7,10 @@ import { SampleDropdown } from '@/components/ComparisonCard/SampleDropdown';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
 import { SplitComparison } from '@/components/SplitComparison/SplitComparison';
 import { TabBar, TabOption } from '@/components/TabBar/TabBar';
+import { WeatherComparison } from '@/components/WeatherComparison/WeatherComparison';
 import { colors } from '@/config/colors';
-import { LatoFonts } from '@/config/fonts';
+import { LatoFonts, OrelegaOneFonts } from '@/config/fonts';
+import { useSettings } from '@/context/SettingsContext';
 
 export interface ComparisonTabProps extends TabContentProps {
   selectedSample1Type: SampleType;
@@ -17,16 +19,43 @@ export interface ComparisonTabProps extends TabContentProps {
   onSample2Change: (type: SampleType) => void;
 }
 
-type ComparisonMode = 'general' | 'splits';
+type ComparisonMode = 'general' | 'splits' | 'weather';
+
+// Tab options for the custom TabBar
+const comparisonTabs: TabOption[] = [
+  { id: 'general', label: 'Overall' },
+  { id: 'splits', label: 'Splits' },
+  { id: 'weather', label: 'Weather' },
+];
 
 export const ComparisonTab = ({
   group,
+  allWorkouts,
   selectedSample1Type,
   selectedSample2Type,
   onSample1Change,
   onSample2Change,
 }: ComparisonTabProps) => {
+  const { distanceUnit } = useSettings();
   const [comparisonMode, setComparisonMode] = useState<ComparisonMode>('general');
+
+  // Find workouts with personal best achievements for previous comparison
+  const personalBestWorkouts = allWorkouts.filter(
+    (w) =>
+      w.achievements.isAllTimeFastest ||
+      w.achievements.isAllTimeLongest ||
+      w.achievements.isAllTimeFurthest ||
+      w.achievements.isAllTimeHighestElevation,
+  );
+
+  // Get the most recent personal best workout for previous comparison
+  const mostRecentPersonalBest =
+    personalBestWorkouts.length > 0
+      ? personalBestWorkouts.sort(
+          (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
+        )[0]
+      : group.highlight; // Fallback to highlight if no personal bests found
+
   // Create sample options from the group data
   const sampleOptions: SampleOption[] = [
     {
@@ -56,6 +85,21 @@ export const ComparisonTab = ({
       })(),
       workout: group.mostRecent,
     },
+    {
+      type: 'previousPersonalBest',
+      label: (() => {
+        const workout = mostRecentPersonalBest;
+        if (!workout || !workout.achievements) return 'Previous Personal Best';
+
+        if (workout.achievements.isAllTimeFastest) return 'Previous Fastest';
+        if (workout.achievements.isAllTimeLongest) return 'Previous Longest';
+        if (workout.achievements.isAllTimeFurthest) return 'Previous Furthest';
+        if (workout.achievements.isAllTimeHighestElevation) return 'Previous Highest';
+
+        return 'Previous Personal Best';
+      })(),
+      workout: mostRecentPersonalBest,
+    },
   ];
 
   // Get the selected samples based on the current selection
@@ -67,6 +111,8 @@ export const ComparisonTab = ({
         return group.worst;
       case 'mostRecent':
         return group.mostRecent;
+      case 'previousPersonalBest':
+        return mostRecentPersonalBest;
       default:
         return group.highlight;
     }
@@ -78,12 +124,6 @@ export const ComparisonTab = ({
     sampleOptions.find((opt) => opt.type === selectedSample1Type)?.label || 'Sample 1';
   const selectedSample2Label =
     sampleOptions.find((opt) => opt.type === selectedSample2Type)?.label || 'Sample 2';
-
-  // Tab options for the custom TabBar
-  const comparisonTabs: TabOption[] = [
-    { id: 'general', label: 'General Stats' },
-    { id: 'splits', label: 'Split Times' },
-  ];
 
   const renderWorkoutSelectors = () => (
     <View style={styles.workoutSelectors}>
@@ -133,13 +173,23 @@ export const ComparisonTab = ({
           sample2Label={selectedSample2Label}
           propertiesToCompare={['duration', 'averagePace', 'distance', 'elevation', 'humidity']}
         />
-      ) : (
+      ) : comparisonMode === 'splits' ? (
         <View style={styles.splitContainer}>
           <SplitComparison
             sample1={selectedSample1}
             sample2={selectedSample2}
             sample1Label={selectedSample1Label}
             sample2Label={selectedSample2Label}
+            distanceUnit={distanceUnit}
+          />
+        </View>
+      ) : (
+        <View style={styles.splitContainer}>
+          <WeatherComparison
+            workout1={selectedSample1}
+            workout2={selectedSample2}
+            workout1Label={selectedSample1Label}
+            workout2Label={selectedSample2Label}
           />
         </View>
       )}
@@ -154,22 +204,23 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   sectionHeader: {
+    fontFamily: OrelegaOneFonts.regular,
     color: colors.neutral,
-    fontSize: 18,
-    fontFamily: LatoFonts.bold,
+    fontSize: 28,
     marginTop: 20,
     marginBottom: 10,
     paddingHorizontal: 5,
-    textTransform: 'uppercase',
-    letterSpacing: 1.2,
   },
   sectionDescription: {
     color: colors.lightGray,
     fontSize: 14,
     fontFamily: LatoFonts.regular,
-    marginBottom: 20,
     paddingHorizontal: 5,
     lineHeight: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surface,
+    marginBottom: 20,
   },
   workoutSelectors: {
     flexDirection: 'row',

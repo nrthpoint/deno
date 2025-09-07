@@ -1,7 +1,11 @@
 import { LengthUnit } from '@kingstinct/react-native-healthkit';
 
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
-import { calculateWorkoutSplits } from '@/utils/splits';
+import {
+  calculateExactDistanceSplits,
+  findFastestSplit,
+  formatSplitTime,
+} from '@/utils/workoutSplits';
 
 export interface ProfileStats {
   fastestWorkout: {
@@ -87,43 +91,15 @@ export async function calculateProfileStats(
     return currentElevation > highestElevation ? current : highest;
   });
 
-  // Find fastest individual split across all workouts
-  let fastestSplit = {
-    workout: null as ExtendedWorkout | null,
-    splitTime: 'N/A',
-    splitNumber: 0,
+  // Find fastest whole split across all workouts
+  const splitsByWorkout = await calculateExactDistanceSplits(workouts, distanceUnit);
+  const { workout: fastestSplitWorkout, split } = findFastestSplit(splitsByWorkout, workouts, true);
+
+  const fastestSplit = {
+    workout: fastestSplitWorkout,
+    splitTime: split ? formatSplitTime(split.duration) : 'N/A',
+    splitNumber: split?.splitNumber || 0,
   };
-
-  let bestSplitTime = Number.MAX_SAFE_INTEGER;
-
-  // Check splits for top 10 recent workouts (to avoid processing too many)
-  const recentWorkouts = workouts.slice(0, 10);
-
-  for (const workout of recentWorkouts) {
-    try {
-      const splits = await calculateWorkoutSplits(workout);
-
-      for (const split of splits) {
-        // Only consider splits that match the selected distance unit and are close to 1 unit
-        if (
-          split.distanceUnit === distanceUnit &&
-          split.distance >= 0.9 &&
-          split.distance <= 1.1 &&
-          split.duration < bestSplitTime
-        ) {
-          bestSplitTime = split.duration;
-          fastestSplit = {
-            workout,
-            splitTime: formatDuration(split.duration),
-            splitNumber: split.splitNumber,
-          };
-        }
-      }
-    } catch (error) {
-      // Skip this workout if split calculation fails
-      console.warn('Failed to calculate splits for workout:', error);
-    }
-  }
 
   return {
     fastestWorkout: {

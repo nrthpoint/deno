@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
+    color: colors.neutral,
     zIndex: 1,
   },
   firstTab: {

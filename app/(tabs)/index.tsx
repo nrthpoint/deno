@@ -79,14 +79,15 @@ export default function Index() {
   /*
    * 3. Fetch workout groups based on the current configuration
    */
-  const { groups, meta, loading, authorizationStatus, requestAuthorization } = useWorkoutGroups({
-    activityType,
-    distanceUnit,
-    timeRangeInDays,
-    groupType,
-    tolerance,
-    groupSize,
-  });
+  const { groups, meta, samples, loading, authorizationStatus, requestAuthorization } =
+    useWorkoutGroups({
+      activityType,
+      distanceUnit,
+      timeRangeInDays,
+      groupType,
+      tolerance,
+      groupSize,
+    });
 
   /*
    * 4. Get all options for the carousel
@@ -214,6 +215,7 @@ export default function Index() {
           <GroupStats
             group={selectedGroup}
             meta={meta}
+            allWorkouts={samples}
           />
         )}
       </Animated.ScrollView>

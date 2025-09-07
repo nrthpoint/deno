@@ -7,6 +7,7 @@ import { Text } from 'react-native-paper';
 import { Card } from '@/components/Card/Card';
 import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { AchievementListBadge } from '@/components/StatCard/AchievementListBadge';
+import { WeatherSummary } from '@/components/WeatherSummary/WeatherSummary';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWorkout } from '@/context/WorkoutContext';
@@ -87,22 +88,6 @@ export default function ViewWorkoutScreen() {
           {
             label: 'Elevation Gain',
             value: `${Math.round(workout.totalElevation?.quantity || 0)} ${workout.totalElevation?.unit || 'm'}`,
-          },
-          {
-            label: 'Humidity',
-            value: `${Math.round(workout.humidity?.quantity || 0)}${workout.humidity?.unit || '%'}`,
-          },
-          {
-            label: 'Temperature',
-            value: workout.metadata?.HKWeatherTemperature
-              ? `${Math.round(Number(workout.metadata.HKWeatherTemperature))}°C`
-              : 'N/A',
-          },
-          {
-            label: 'Humidity',
-            value: workout.metadata?.HKWeatherHumidity
-              ? `${Math.round(Number(workout.metadata.HKWeatherHumidity) * 100)}%`
-              : 'N/A',
           },
         ],
       },
@@ -242,6 +227,9 @@ export default function ViewWorkoutScreen() {
 
         {/* Achievements */}
         {renderAchievements()}
+
+        {/* Weather Summary */}
+        <WeatherSummary workout={workout} />
 
         {/* Detailed stats */}
         {renderStatsTable()}

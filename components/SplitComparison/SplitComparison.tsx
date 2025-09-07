@@ -1,3 +1,4 @@
+import { LengthUnit } from '@kingstinct/react-native-healthkit';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -6,18 +7,19 @@ import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import {
+  calculateSplitsForWorkout,
   calculateTimeDifference,
-  calculateWorkoutSplits,
   formatSplitPace,
   formatSplitTime,
   WorkoutSplit,
-} from '@/utils/splits';
+} from '@/utils/workoutSplits';
 
 interface SplitComparisonProps {
   sample1: ExtendedWorkout;
   sample2: ExtendedWorkout;
   sample1Label: string;
   sample2Label: string;
+  distanceUnit: LengthUnit;
 }
 
 export const SplitComparison: React.FC<SplitComparisonProps> = ({
@@ -25,6 +27,7 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
   sample2,
   sample1Label,
   sample2Label,
+  distanceUnit,
 }) => {
   const [splits1, setSplits1] = useState<WorkoutSplit[]>([]);
   const [splits2, setSplits2] = useState<WorkoutSplit[]>([]);
@@ -38,8 +41,8 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
 
       try {
         const [workout1Splits, workout2Splits] = await Promise.all([
-          calculateWorkoutSplits(sample1),
-          calculateWorkoutSplits(sample2),
+          calculateSplitsForWorkout(sample1, distanceUnit),
+          calculateSplitsForWorkout(sample2, distanceUnit),
         ]);
 
         setSplits1(workout1Splits);
@@ -53,7 +56,7 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
     };
 
     fetchSplits();
-  }, [sample1, sample2]);
+  }, [sample1, sample2, distanceUnit]);
 
   if (isLoading) {
     return (
@@ -78,7 +81,7 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
   }
 
   const maxSplits = Math.max(splits1.length, splits2.length);
-  const distanceUnit = splits1[0]?.distanceUnit || 'mi';
+  const splitDistanceUnit = splits1[0]?.distanceUnit || distanceUnit;
 
   const renderSplitRow = (splitIndex: number) => {
     const split1 = splits1[splitIndex];
@@ -103,11 +106,13 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
         </View>
 
         <View style={styles.dataColumn}>
-          <Text style={styles.sampleLabel}>{sample1Label}</Text>
+          {/* <Text style={styles.sampleLabel}>{sample1Label}</Text> */}
           {split1 ? (
             <>
               <Text style={styles.timeValue}>{formatSplitTime(split1.duration)}</Text>
-              <Text style={styles.paceValue}>{formatSplitPace(split1.pace, distanceUnit)}</Text>
+              <Text style={styles.paceValue}>
+                {formatSplitPace(split1.pace, splitDistanceUnit)}
+              </Text>
             </>
           ) : (
             <Text style={styles.noDataText}>-</Text>
@@ -115,11 +120,13 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
         </View>
 
         <View style={styles.dataColumn}>
-          <Text style={styles.sampleLabel}>{sample2Label}</Text>
+          {/* <Text style={styles.sampleLabel}>{sample2Label}</Text> */}
           {split2 ? (
             <>
               <Text style={styles.timeValue}>{formatSplitTime(split2.duration)}</Text>
-              <Text style={styles.paceValue}>{formatSplitPace(split2.pace, distanceUnit)}</Text>
+              <Text style={styles.paceValue}>
+                {formatSplitPace(split2.pace, splitDistanceUnit)}
+              </Text>
             </>
           ) : (
             <Text style={styles.noDataText}>-</Text>
@@ -127,7 +134,7 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
         </View>
 
         <View style={styles.diffColumn}>
-          <Text style={styles.diffLabel}>Diff</Text>
+          {/* <Text style={styles.diffLabel}>Diff</Text> */}
           {timeDiff ? (
             <>
               <Text style={[styles.diffValue, timeDiff.isPositive ? styles.slower : styles.faster]}>
@@ -136,7 +143,7 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
               </Text>
               <Text style={[styles.diffPace, paceDiff?.isPositive ? styles.slower : styles.faster]}>
                 {paceDiff?.isPositive ? '+' : '-'}
-                {paceDiff?.formatted}/{distanceUnit}
+                {paceDiff?.formatted}/{splitDistanceUnit}
               </Text>
             </>
           ) : (
@@ -149,17 +156,17 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.title}>Split Comparison</Text>
         <Text style={styles.subtitle}>
-          Time and pace per {distanceUnit === 'mi' ? 'mile' : 'kilometer'}
+          Time and pace per {splitDistanceUnit === 'mi' ? 'mile' : 'kilometer'}
         </Text>
         <Text style={styles.calculationMethod}>
           {splits1.length > 0 && splits1[0].startTime
             ? 'Using workout segment data'
             : 'Using GPS route data'}
         </Text>
-      </View>
+      </View> */}
 
       <View style={styles.table}>
         <View style={styles.headerRow}>
@@ -193,7 +200,6 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   loadingContainer: {
     flex: 1,
@@ -220,26 +226,6 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.regular,
     color: colors.lightGray,
     textAlign: 'center',
-  },
-  header: {
-    padding: 16,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    color: colors.lightGray,
-  },
-  calculationMethod: {
-    fontSize: 12,
-    fontFamily: LatoFonts.regular,
-    color: colors.lightGray,
     fontStyle: 'italic',
     marginTop: 4,
   },
@@ -273,6 +259,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 8,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   diffColumn: {
     width: 80,
@@ -291,13 +278,13 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
   },
-  sampleLabel: {
-    fontSize: 10,
-    fontFamily: LatoFonts.regular,
-    color: colors.lightGray,
-    marginBottom: 2,
-    textAlign: 'center',
-  },
+  // sampleLabel: {
+  //   fontSize: 10,
+  //   fontFamily: LatoFonts.regular,
+  //   color: colors.lightGray,
+  //   marginBottom: 2,
+  //   textAlign: 'center',
+  // },
   timeValue: {
     fontSize: 16,
     fontFamily: LatoFonts.bold,
@@ -309,13 +296,13 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.regular,
     color: colors.lightGray,
   },
-  diffLabel: {
-    fontSize: 10,
-    fontFamily: LatoFonts.regular,
-    color: colors.lightGray,
-    marginBottom: 2,
-    textAlign: 'center',
-  },
+  // diffLabel: {
+  //   fontSize: 10,
+  //   fontFamily: LatoFonts.regular,
+  //   color: colors.lightGray,
+  //   marginBottom: 2,
+  //   textAlign: 'center',
+  // },
   diffValue: {
     fontSize: 14,
     fontFamily: LatoFonts.bold,

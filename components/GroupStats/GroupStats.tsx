@@ -11,7 +11,7 @@ import { ComparisonTab } from './tabs/ComparisonTab';
 import { PredictionsTab } from './tabs/PredictionsTab';
 import { StatsTab } from './tabs/StatsTab';
 
-export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta }) => {
+export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta, allWorkouts }) => {
   const [selectedSample1Type, setSelectedSample1Type] = useState<SampleType>('highlight');
   const [selectedSample2Type, setSelectedSample2Type] = useState<SampleType>('mostRecent');
   const [activeTab, setActiveTab] = useState<TabType>('stats');
@@ -23,6 +23,7 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta }) => {
           <PredictionsTab
             group={group}
             meta={meta}
+            allWorkouts={allWorkouts}
           />
         );
 
@@ -31,6 +32,7 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta }) => {
           <ComparisonTab
             group={group}
             meta={meta}
+            allWorkouts={allWorkouts}
             selectedSample1Type={selectedSample1Type}
             selectedSample2Type={selectedSample2Type}
             onSample1Change={setSelectedSample1Type}
@@ -43,6 +45,7 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta }) => {
           <StatsTab
             group={group}
             meta={meta}
+            allWorkouts={allWorkouts}
           />
         );
     }
