@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { ComparisonCard } from '@/components/ComparisonCard/ComparisonCard';
 import { SampleOption, SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
+import { SampleDropdown } from '@/components/ComparisonCard/SampleDropdown';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
+import { SplitComparison } from '@/components/SplitComparison/SplitComparison';
+import { TabBar, TabOption } from '@/components/TabBar/TabBar';
+import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 
 export interface ComparisonTabProps extends TabContentProps {
@@ -13,6 +17,8 @@ export interface ComparisonTabProps extends TabContentProps {
   onSample2Change: (type: SampleType) => void;
 }
 
+type ComparisonMode = 'general' | 'splits';
+
 export const ComparisonTab = ({
   group,
   selectedSample1Type,
@@ -20,6 +26,7 @@ export const ComparisonTab = ({
   onSample1Change,
   onSample2Change,
 }: ComparisonTabProps) => {
+  const [comparisonMode, setComparisonMode] = useState<ComparisonMode>('general');
   // Create sample options from the group data
   const sampleOptions: SampleOption[] = [
     {
@@ -72,6 +79,33 @@ export const ComparisonTab = ({
   const selectedSample2Label =
     sampleOptions.find((opt) => opt.type === selectedSample2Type)?.label || 'Sample 2';
 
+  // Tab options for the custom TabBar
+  const comparisonTabs: TabOption[] = [
+    { id: 'general', label: 'General Stats' },
+    { id: 'splits', label: 'Split Times' },
+  ];
+
+  const renderWorkoutSelectors = () => (
+    <View style={styles.workoutSelectors}>
+      <View style={styles.dropdownContainer}>
+        <SampleDropdown
+          options={sampleOptions}
+          selectedType={selectedSample1Type}
+          onSelect={onSample1Change}
+          placeholder="Select Sample 1"
+        />
+      </View>
+      <View style={styles.dropdownContainer}>
+        <SampleDropdown
+          options={sampleOptions}
+          selectedType={selectedSample2Type}
+          onSelect={onSample2Change}
+          placeholder="Select Sample 2"
+        />
+      </View>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.sectionHeader}>Workout Comparison</Text>
@@ -79,18 +113,36 @@ export const ComparisonTab = ({
         Compare your workouts side by side to see how they stack up against each other.
       </Text>
 
-      <ComparisonCard
-        sample1={selectedSample1}
-        sample2={selectedSample2}
-        sample1Label={selectedSample1Label}
-        sample2Label={selectedSample2Label}
-        sampleOptions={sampleOptions}
-        onSample1Change={onSample1Change}
-        onSample2Change={onSample2Change}
-        selectedSample1Type={selectedSample1Type}
-        selectedSample2Type={selectedSample2Type}
-        propertiesToCompare={['duration', 'averagePace', 'distance', 'elevation', 'humidity']}
+      {renderWorkoutSelectors()}
+
+      <TabBar
+        tabs={comparisonTabs}
+        activeTabId={comparisonMode}
+        onTabPress={(tabId) => setComparisonMode(tabId as ComparisonMode)}
+        style={styles.tabBar}
+        activeTabColor={colors.primary}
+        activeTextColor={colors.neutral}
+        inactiveTextColor={colors.lightGray}
       />
+
+      {comparisonMode === 'general' ? (
+        <ComparisonCard
+          sample1={selectedSample1}
+          sample2={selectedSample2}
+          sample1Label={selectedSample1Label}
+          sample2Label={selectedSample2Label}
+          propertiesToCompare={['duration', 'averagePace', 'distance', 'elevation', 'humidity']}
+        />
+      ) : (
+        <View style={styles.splitContainer}>
+          <SplitComparison
+            sample1={selectedSample1}
+            sample2={selectedSample2}
+            sample1Label={selectedSample1Label}
+            sample2Label={selectedSample2Label}
+          />
+        </View>
+      )}
     </View>
   );
 };
@@ -102,7 +154,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   sectionHeader: {
-    color: '#FFFFFF',
+    color: colors.neutral,
     fontSize: 18,
     fontFamily: LatoFonts.bold,
     marginTop: 20,
@@ -112,11 +164,28 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
   },
   sectionDescription: {
-    color: '#CCCCCC',
+    color: colors.lightGray,
     fontSize: 14,
     fontFamily: LatoFonts.regular,
     marginBottom: 20,
     paddingHorizontal: 5,
     lineHeight: 20,
+  },
+  workoutSelectors: {
+    flexDirection: 'row',
+    gap: 8,
+    marginHorizontal: 5,
+    marginBottom: 20,
+  },
+  dropdownContainer: {
+    flex: 1,
+  },
+  tabBar: {
+    marginHorizontal: 5,
+    marginBottom: 20,
+  },
+  splitContainer: {
+    flex: 1,
+    marginHorizontal: -10,
   },
 });

@@ -70,6 +70,7 @@ export default function MapDetailScreen() {
         <RouteMap
           samples={workoutsToShow}
           previewMode={false}
+          maxPoints={100}
         />
       </View>
     </>

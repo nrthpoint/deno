@@ -16,9 +16,4 @@ export interface SampleComparisonCardProps {
   sample1Label: string;
   sample2Label: string;
   propertiesToCompare: ComparisonProperty[];
-  sampleOptions?: SampleOption[];
-  onSample1Change?: (sampleType: SampleType) => void;
-  onSample2Change?: (sampleType: SampleType) => void;
-  selectedSample1Type?: SampleType;
-  selectedSample2Type?: SampleType;
 }

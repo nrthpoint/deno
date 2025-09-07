@@ -161,11 +161,11 @@ export const showAchievementNotification = async (
 
   try {
     if (isAppActive) {
-      console.log('Queuing achievement toast:', { title, message, workout });
       queueToast(`${title}: ${message}`, 'success', 4000);
     } else {
       // Show push notification
       console.log('Scheduling push notification:', { title, message, workout });
+
       await Notifications.scheduleNotificationAsync({
         content: {
           title,
