@@ -33,7 +33,7 @@ export const SettingsMenu: React.FC<SettingsMenuProps> = ({ items }) => {
             <Ionicons
               name={item.icon as any}
               size={24}
-              color={colors.primary}
+              color={colors.neutral}
             />
           </View>
           <View style={styles.textContainer}>
