@@ -14,7 +14,7 @@ interface WeatherSummaryProps {
 }
 
 interface WeatherCondition {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: keyof typeof Ionicons.glyphMap | string; // Allow custom weather icons
   label: string;
   value: string;
   color: string;
@@ -221,7 +221,7 @@ export const WeatherSummary: React.FC<WeatherSummaryProps> = ({ workout }) => {
           <Ionicons
             name="cloud"
             size={24}
-            color={colors.primary}
+            color={colors.neutral}
           />
           <Text style={styles.title}>Weather Conditions</Text>
           {error && (
@@ -233,38 +233,39 @@ export const WeatherSummary: React.FC<WeatherSummaryProps> = ({ workout }) => {
             />
           )}
         </View>
-
-        {error && !weather && (
-          <View style={styles.errorContainer}>
-            <Ionicons
-              name="cloud-offline"
-              size={32}
-              color={colors.lightGray}
-            />
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        )}
-
-        <View style={styles.conditionsGrid}>
-          {conditions.map((condition, index) => (
-            <View
-              key={index}
-              style={styles.conditionItem}
-            >
-              <View style={styles.conditionHeader}>
-                <Ionicons
-                  name={condition.icon}
-                  size={20}
-                  color={condition.color}
-                />
-                <Text style={styles.conditionLabel}>{condition.label}</Text>
-              </View>
-              <Text style={[styles.conditionValue, { color: condition.color }]}>
-                {condition.value}
-              </Text>
-              {renderWeatherBar(condition)}
+        <View style={styles.innerContainer}>
+          {error && !weather && (
+            <View style={styles.errorContainer}>
+              <Ionicons
+                name="cloud-offline"
+                size={32}
+                color={colors.lightGray}
+              />
+              <Text style={styles.errorText}>{error}</Text>
             </View>
-          ))}
+          )}
+
+          <View style={styles.conditionsGrid}>
+            {conditions.map((condition, index) => (
+              <View
+                key={index}
+                style={styles.conditionItem}
+              >
+                <View style={styles.conditionHeader}>
+                  <Ionicons
+                    name={condition.icon as keyof typeof Ionicons.glyphMap}
+                    size={20}
+                    color={condition.color}
+                  />
+                  <Text style={styles.conditionLabel}>{condition.label}</Text>
+                </View>
+                <Text style={[styles.conditionValue, { color: condition.color }]}>
+                  {condition.value}
+                </Text>
+                {renderWeatherBar(condition)}
+              </View>
+            ))}
+          </View>
         </View>
 
         <View style={styles.dataSourceNote}>
@@ -288,24 +289,38 @@ export const WeatherSummary: React.FC<WeatherSummaryProps> = ({ workout }) => {
 
 const styles = StyleSheet.create({
   container: {
+    //padding: 16,
+    gap: 16,
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+  },
+  innerContainer: {
     padding: 16,
+    gap: 16,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    padding: 16,
+    backgroundColor: colors.surfaceHighlight,
   },
   title: {
-    fontSize: 18,
+    fontSize: 13,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
+    textTransform: 'uppercase',
     marginLeft: 8,
+    letterSpacing: 1.5,
   },
   conditionsGrid: {
     gap: 16,
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   conditionItem: {
     marginBottom: 4,
+    flexBasis: '45%',
   },
   conditionHeader: {
     flexDirection: 'row',
@@ -313,17 +328,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   conditionLabel: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: LatoFonts.regular,
     color: colors.lightGray,
     marginLeft: 8,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 1.5,
   },
   conditionValue: {
-    fontSize: 24,
+    fontSize: 14,
     fontFamily: LatoFonts.bold,
-    marginBottom: 8,
+    //marginBottom: 8,
+    marginVertical: 10,
   },
   barContainer: {
     marginBottom: 8,
@@ -367,16 +383,18 @@ const styles = StyleSheet.create({
   dataSourceNote: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 12,
-    padding: 8,
+    padding: 20,
     backgroundColor: colors.surfaceHighlight,
-    borderRadius: 8,
+    borderRadius: 0,
   },
   dataSourceText: {
-    fontSize: 12,
+    fontSize: 10,
+    textTransform: 'uppercase',
     fontFamily: LatoFonts.regular,
     color: colors.lightGray,
-    marginLeft: 6,
+    marginLeft: 12,
     flex: 1,
+    letterSpacing: 1.5,
+    lineHeight: 20,
   },
 });

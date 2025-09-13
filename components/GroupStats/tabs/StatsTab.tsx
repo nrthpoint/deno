@@ -5,6 +5,7 @@ import { VisualCards } from '@/components/GroupStats/GroupHighlights';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
 import { GroupSummaryHeader } from '@/components/GroupSummaryHeader/GroupSummaryHeader';
 import { LowDataWarning } from '@/components/LowDataWarning/LowDataWarning';
+import { ProgressionCard } from '@/components/ProgressionCard/ProgressionCard';
 import { StatCard } from '@/components/StatCard/StatCard';
 import { LatoFonts } from '@/config/fonts';
 import {
@@ -12,6 +13,7 @@ import {
   generateLowDataWarningMessage,
   shouldShowLowDataWarning,
 } from '@/utils/groupSummary';
+import { generateProgressionData } from '@/utils/progression';
 
 const getTabColor = (label: string) => {
   switch (label.toLowerCase()) {
@@ -40,17 +42,25 @@ export const StatsTab: React.FC<TabContentProps> = ({
   const summary = generateGroupSummary(group, groupType, timeRangeInDays);
   const showWarning = shouldShowLowDataWarning(group);
   const warningMessage = showWarning ? generateLowDataWarningMessage(group, groupType) : '';
+  const progressionData = generateProgressionData(group, groupType);
 
   return (
     <View style={styles.container}>
+      <GroupSummaryHeader summary={summary} />
+
+      {showWarning && <LowDataWarning message={warningMessage} />}
+
       <VisualCards
         group={group}
         meta={meta}
       />
 
-      <GroupSummaryHeader summary={summary} />
-
-      {showWarning && <LowDataWarning message={warningMessage} />}
+      <ProgressionCard
+        title={progressionData.title}
+        description={progressionData.description}
+        entries={progressionData.entries}
+        metricLabel={progressionData.metricLabel}
+      />
 
       {group.stats.map((section) => (
         <View key={section.title}>

@@ -11,8 +11,15 @@ import { WeatherSummary } from '@/components/WeatherSummary/WeatherSummary';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWorkout } from '@/context/WorkoutContext';
+import { formatDistance } from '@/utils/distance';
 import { subheading } from '@/utils/text';
-import { formatDate, formatPace, formatTime, formatWorkoutDate } from '@/utils/time';
+import {
+  formatDate,
+  formatDuration,
+  formatPace,
+  formatTime,
+  formatWorkoutDate,
+} from '@/utils/time';
 
 export default function ViewWorkoutScreen() {
   const { selectedWorkout, setSelectedWorkouts } = useWorkout();
@@ -25,69 +32,72 @@ export default function ViewWorkoutScreen() {
     );
   }
 
-  const workout = selectedWorkout;
-
-  const formatDurationValue = (duration: any) => {
-    if (!duration?.quantity) return '0s';
-
-    const seconds = Math.round(duration.quantity);
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-
-    if (hours > 0) {
-      return `${hours}h ${minutes}m ${remainingSeconds}s`;
-    } else if (minutes > 0) {
-      return `${minutes}m ${remainingSeconds}s`;
-    } else {
-      return `${remainingSeconds}s`;
-    }
-  };
-
-  const formatDistanceValue = (distance: any) => {
-    if (!distance?.quantity) return '0';
-    return `${distance.quantity.toFixed(2)} ${distance.unit}`;
-  };
-
   const renderStatsTable = () => {
     const stats = [
       {
         category: 'Workout Info',
+        icon: 'information-circle' as keyof typeof Ionicons.glyphMap,
         items: [
-          { label: 'Date', value: formatDate(new Date(workout.startDate)) },
-          { label: 'Start Time', value: formatTime(new Date(workout.startDate)) },
-          { label: 'Duration', value: formatDurationValue(workout.duration) },
-          { label: 'Distance', value: formatDistanceValue(workout.totalDistance) },
-          { label: 'Average Pace', value: workout.prettyPace },
+          {
+            label: 'Date',
+            value: formatDate(new Date(selectedWorkout.startDate)),
+            icon: 'calendar' as keyof typeof Ionicons.glyphMap,
+          },
+          {
+            label: 'Start Time',
+            value: formatTime(new Date(selectedWorkout.startDate)),
+            icon: 'time' as keyof typeof Ionicons.glyphMap,
+          },
+          {
+            label: 'Duration',
+            value: formatDuration(selectedWorkout.duration),
+            icon: 'stopwatch' as keyof typeof Ionicons.glyphMap,
+          },
+          {
+            label: 'Distance',
+            value: formatDistance(selectedWorkout.totalDistance),
+            icon: 'map' as keyof typeof Ionicons.glyphMap,
+          },
+          {
+            label: 'Average Pace',
+            value: selectedWorkout.prettyPace,
+            icon: 'speedometer' as keyof typeof Ionicons.glyphMap,
+          },
         ],
       },
       {
         category: 'Performance',
+        icon: 'trending-up' as keyof typeof Ionicons.glyphMap,
         items: [
           {
             label: 'Total Energy Burned',
-            value: `${Math.round(workout.totalEnergyBurned?.quantity || 0)} ${workout.totalEnergyBurned?.unit || 'kcal'}`,
+            value: `${Math.round(selectedWorkout.totalEnergyBurned?.quantity || 0)} ${selectedWorkout.totalEnergyBurned?.unit || 'kcal'}`,
+            icon: 'flame' as keyof typeof Ionicons.glyphMap,
           },
           {
             label: 'Average Heart Rate',
-            value: workout.metadata?.HKAverageHeartRate
-              ? `${Math.round(Number(workout.metadata.HKAverageHeartRate))} bpm`
+            value: selectedWorkout.metadata?.HKAverageHeartRate
+              ? `${Math.round(Number(selectedWorkout.metadata.HKAverageHeartRate))} bpm`
               : 'N/A',
+            icon: 'heart' as keyof typeof Ionicons.glyphMap,
           },
           {
             label: 'Max Heart Rate',
-            value: workout.metadata?.HKMaximumHeartRate
-              ? `${Math.round(Number(workout.metadata.HKMaximumHeartRate))} bpm`
+            value: selectedWorkout.metadata?.HKMaximumHeartRate
+              ? `${Math.round(Number(selectedWorkout.metadata.HKMaximumHeartRate))} bpm`
               : 'N/A',
+            icon: 'heart-outline' as keyof typeof Ionicons.glyphMap,
           },
         ],
       },
       {
         category: 'Environmental',
+        icon: 'earth' as keyof typeof Ionicons.glyphMap,
         items: [
           {
             label: 'Elevation Gain',
-            value: `${Math.round(workout.totalElevation?.quantity || 0)} ${workout.totalElevation?.unit || 'm'}`,
+            value: `${Math.round(selectedWorkout.totalElevation?.quantity || 0)} ${selectedWorkout.totalElevation?.unit || 'm'}`,
+            icon: 'trending-up' as keyof typeof Ionicons.glyphMap,
           },
         ],
       },
@@ -96,14 +106,29 @@ export default function ViewWorkoutScreen() {
     return stats.map((section, sectionIndex) => (
       <Card key={sectionIndex}>
         <View style={styles.statsContainer}>
-          <Text style={styles.sectionTitle}>{section.category}</Text>
+          <View style={styles.sectionHeader}>
+            <Ionicons
+              name={section.icon}
+              size={20}
+              color={colors.neutral}
+            />
+            <Text style={styles.sectionTitle}>{section.category}</Text>
+          </View>
+
           <View style={styles.statsTable}>
             {section.items.map((item, index) => (
               <View
                 key={index}
-                style={styles.statsRow}
+                style={[styles.statsRow, index === section.items.length - 1 && styles.statsRowLast]}
               >
-                <Text style={styles.statsLabel}>{item.label}</Text>
+                <View style={styles.statsLabelContainer}>
+                  <Ionicons
+                    name={item.icon}
+                    size={16}
+                    color={colors.lightGray}
+                  />
+                  <Text style={styles.statsLabel}>{item.label}</Text>
+                </View>
                 <Text style={styles.statsValue}>{item.value}</Text>
               </View>
             ))}
@@ -116,16 +141,16 @@ export default function ViewWorkoutScreen() {
   const renderAchievements = () => {
     const achievements = [];
 
-    if (workout.achievements.isAllTimeFastest) {
+    if (selectedWorkout.achievements.isAllTimeFastest) {
       achievements.push({ label: 'All-Time Fastest' });
     }
-    if (workout.achievements.isAllTimeLongest) {
+    if (selectedWorkout.achievements.isAllTimeLongest) {
       achievements.push({ label: 'All-Time Longest' });
     }
-    if (workout.achievements.isAllTimeFurthest) {
+    if (selectedWorkout.achievements.isAllTimeFurthest) {
       achievements.push({ label: 'All-Time Furthest' });
     }
-    if (workout.achievements.isAllTimeHighestElevation) {
+    if (selectedWorkout.achievements.isAllTimeHighestElevation) {
       achievements.push({ label: 'Highest Elevation' });
     }
 
@@ -145,12 +170,12 @@ export default function ViewWorkoutScreen() {
     );
   };
 
-  const paceWithoutUnit = formatPace(workout.averagePace, false);
-  const paceUnit = workout.averagePace.unit || 'min/mi';
-  const formattedWorkoutDate = formatWorkoutDate(workout.endDate);
+  const paceWithoutUnit = formatPace(selectedWorkout.averagePace, false);
+  const paceUnit = selectedWorkout.averagePace.unit || 'min/mi';
+  const formattedWorkoutDate = formatWorkoutDate(selectedWorkout.endDate);
 
   const handleMapPress = () => {
-    setSelectedWorkouts([workout]);
+    setSelectedWorkouts([selectedWorkout]);
     router.push('/map-detail');
   };
 
@@ -187,52 +212,60 @@ export default function ViewWorkoutScreen() {
       >
         {/* Header with main stats */}
         <Card>
-          <View style={[styles.headerContent, { backgroundColor: colors.primary }]}>
-            <Ionicons
+          <View style={[styles.headerContent]}>
+            {/* <Ionicons
               name="fitness"
               size={48}
               color={colors.neutral}
-            />
+            /> */}
             <View style={styles.headerText}>
               <Text style={styles.workoutType}>{formattedWorkoutDate}</Text>
-              <Text style={styles.workoutDate}>{workout.daysAgo}</Text>
+              <Text style={styles.workoutDate}>{selectedWorkout.daysAgo}</Text>
             </View>
           </View>
         </Card>
 
         <View>
           <RouteMap
-            samples={[workout]}
+            samples={[selectedWorkout]}
             previewMode={true}
             onPress={handleMapPress}
             maxPoints={40}
           />
         </View>
 
+        {renderAchievements()}
+
         {/* Key metrics */}
         <View style={styles.keyMetrics}>
           <Card style={styles.metricCard}>
-            <Text style={styles.metricValue}>{formatDistanceValue(workout.totalDistance)}</Text>
-            <Text style={styles.metricLabel}>Distance</Text>
+            <Text style={styles.metricValue}>{formatDistance(selectedWorkout.totalDistance)}</Text>
+
+            <View style={styles.metricLabelContainer}>
+              <Text style={styles.metricLabel}>Distance</Text>
+            </View>
           </Card>
+
           <Card style={styles.metricCard}>
-            <Text style={styles.metricValue}>{formatDurationValue(workout.duration)}</Text>
-            <Text style={styles.metricLabel}>Duration</Text>
+            <Text style={styles.metricValue}>{formatDuration(selectedWorkout.duration)}</Text>
+
+            <View style={styles.metricLabelContainer}>
+              <Text style={styles.metricLabel}>Duration</Text>
+            </View>
           </Card>
+
           <Card style={styles.metricCard}>
             <Text style={styles.metricValue}>{paceWithoutUnit}</Text>
-            <Text style={styles.metricLabel}>{paceUnit}</Text>
+
+            <View style={styles.metricLabelContainer}>
+              <Text style={styles.metricLabel}>{paceUnit}</Text>
+            </View>
           </Card>
         </View>
 
-        {/* Achievements */}
-        {renderAchievements()}
-
-        {/* Weather Summary */}
-        <WeatherSummary workout={workout} />
-
-        {/* Detailed stats */}
         {renderStatsTable()}
+
+        <WeatherSummary workout={selectedWorkout} />
       </ScrollView>
     </>
   );
@@ -257,11 +290,11 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   headerText: {
-    marginLeft: 16,
+    //marginLeft: 16,
     flex: 1,
   },
   workoutType: {
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
     textTransform: 'capitalize',
@@ -281,41 +314,48 @@ const styles = StyleSheet.create({
   metricCard: {
     flex: 1,
     flexGrow: 1,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.surface,
     borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
   },
   metricValue: {
     fontSize: 20,
     fontFamily: LatoFonts.bold,
-    color: colors.lightGray,
+    color: colors.neutral,
     marginBottom: 4,
+    textAlign: 'center',
+    padding: 16,
+  },
+  metricLabelContainer: {
+    padding: 16,
+    alignItems: 'center',
+    backgroundColor: colors.surfaceHighlight,
   },
   metricLabel: {
     fontSize: 12,
     fontFamily: LatoFonts.regular,
     color: colors.lightGray,
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 1.5,
   },
   achievementsSection: {
-    marginBottom: 24,
+    marginTop: 30,
+    //marginBottom: 24,
   },
-  statsContainer: {
-    margin: 10,
+  statsContainer: {},
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    padding: 16,
     backgroundColor: colors.surfaceHighlight,
-    paddingHorizontal: 12,
-    borderRadius: 8,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 13,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
-    marginTop: 10,
-    marginBottom: 10,
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 1.5,
+    marginLeft: 8,
   },
   achievementsContainer: {
     flexDirection: 'row',
@@ -325,20 +365,31 @@ const styles = StyleSheet.create({
   },
   statsTable: {
     overflow: 'hidden',
+    paddingHorizontal: 16,
   },
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: colors.gray,
   },
+  statsRowLast: {
+    borderBottomWidth: 0,
+  },
+  statsLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
   statsLabel: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: LatoFonts.regular,
     color: colors.lightGray,
-    flex: 1,
+    marginLeft: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
   },
   statsValue: {
     fontSize: 14,

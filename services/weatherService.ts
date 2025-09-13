@@ -1,3 +1,5 @@
+import { Ionicons } from '@expo/vector-icons';
+
 export interface WeatherConditions {
   temperature: number; // Celsius
   humidity: number; // Percentage
@@ -172,8 +174,8 @@ export class WeatherService {
   static getWeatherIcon(
     weatherIcon: string,
     isDay: boolean = true,
-  ): keyof typeof import('@expo/vector-icons/Ionicons').glyphMap {
-    const iconMap: Record<string, keyof typeof import('@expo/vector-icons/Ionicons').glyphMap> = {
+  ): keyof typeof Ionicons.glyphMap {
+    const iconMap: Record<string, keyof typeof Ionicons.glyphMap> = {
       '01d': 'sunny', // Clear sky day
       '01n': 'moon', // Clear sky night
       '02d': 'partly-sunny', // Few clouds day
