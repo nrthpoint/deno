@@ -99,7 +99,7 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
     return (
       <View
         key={splitIndex}
-        style={styles.splitRow}
+        style={[styles.splitRow, splitIndex === maxSplits - 1 && { borderBottomWidth: 0 }]}
       >
         <View style={styles.splitNumberColumn}>
           <Text style={styles.splitNumber}>{splitNumber}</Text>
@@ -230,25 +230,27 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   table: {
-    backgroundColor: colors.surface,
-    marginHorizontal: 16,
-    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.surface,
+    borderRadius: 8,
     overflow: 'hidden',
+    marginHorizontal: 16,
   },
   headerRow: {
     flexDirection: 'row',
-    backgroundColor: colors.surfaceHighlight,
+    backgroundColor: colors.surface,
     paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.gray,
+    paddingHorizontal: 10,
   },
   splitRow: {
     flexDirection: 'row',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 12,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray,
+    borderBottomColor: colors.surface,
   },
   splitNumberColumn: {
     width: 50,
@@ -267,16 +269,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    fontSize: 12,
+    flex: 1,
+    color: '#FFFFFF',
+    fontSize: 14,
     fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-    textTransform: 'uppercase',
     textAlign: 'center',
   },
   splitNumber: {
-    fontSize: 16,
-    fontFamily: LatoFonts.bold,
-    color: colors.neutral,
+    fontSize: 13,
+    fontFamily: LatoFonts.regular,
+    color: '#CCCCCC',
   },
   // sampleLabel: {
   //   fontSize: 10,
@@ -286,15 +288,15 @@ const styles = StyleSheet.create({
   //   textAlign: 'center',
   // },
   timeValue: {
-    fontSize: 16,
-    fontFamily: LatoFonts.bold,
-    color: colors.neutral,
+    fontSize: 13,
+    fontFamily: LatoFonts.regular,
+    color: '#CCCCCC',
     marginBottom: 2,
   },
   paceValue: {
     fontSize: 12,
     fontFamily: LatoFonts.regular,
-    color: colors.lightGray,
+    color: '#CCCCCC',
   },
   // diffLabel: {
   //   fontSize: 10,
@@ -319,9 +321,9 @@ const styles = StyleSheet.create({
     color: '#ff1744',
   },
   noDataText: {
-    fontSize: 16,
+    fontSize: 13,
     fontFamily: LatoFonts.regular,
-    color: colors.lightGray,
+    color: '#CCCCCC',
   },
   legend: {
     padding: 16,

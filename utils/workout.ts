@@ -343,6 +343,38 @@ export const getMostFrequentDistance = (runs: ExtendedWorkout[]): Quantity => {
   return mostFrequentDistance;
 };
 
+export const getMostFrequentElevation = (runs: ExtendedWorkout[]): Quantity => {
+  if (runs.length === 0) {
+    return newQuantity(0, 'ft');
+  }
+
+  // Count frequency of elevation values (rounded to nearest 10 feet for grouping)
+  const elevationFrequency = new Map<number, number>();
+  let mostFrequentElevation = runs[0].totalElevation;
+
+  runs.forEach((run) => {
+    const roundedElevation = Math.round(run.totalElevation.quantity / 10) * 10; // Round to nearest 10 ft
+    const count = (elevationFrequency.get(roundedElevation) || 0) + 1;
+    elevationFrequency.set(roundedElevation, count);
+  });
+
+  // Find the elevation with highest frequency
+  let maxCount = 0;
+  for (const [elevation, count] of elevationFrequency.entries()) {
+    if (count > maxCount) {
+      maxCount = count;
+      const matchingRun = runs.find(
+        (run) => Math.round(run.totalElevation.quantity / 10) * 10 === elevation,
+      );
+      if (matchingRun) {
+        mostFrequentElevation = matchingRun.totalElevation;
+      }
+    }
+  }
+
+  return mostFrequentElevation;
+};
+
 /**
  * Finds the most recent workout from an array of runs
  * @param runs - Array of ExtendedWorkout objects

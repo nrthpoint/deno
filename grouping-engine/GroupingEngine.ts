@@ -95,8 +95,9 @@ function parseSampleIntoGroup({
 
   if (!isCloseEnough) {
     console.warn(
-      `Run with ${config.property} ${value.quantity} ${value.unit} is not close enough to ${nearestGroup} ${value.unit}. Skipping.`,
+      `Run with ${config.property} ${value.quantity} ${value.unit} is not close enough to ${nearestGroup} ${value.unit} with a tolerance of ${tolerance}. Skipping.`,
     );
+
     group.skipped = (group.skipped || 0) + 1;
 
     return;

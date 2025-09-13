@@ -107,6 +107,20 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
               />
             ),
           },
+          // Distance
+          {
+            type: 'distance',
+            label: 'Distance',
+            value: group.highlight.totalDistance,
+            workout: group.highlight,
+            icon: (
+              <Ionicons
+                name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
         ],
       },
       {
@@ -134,6 +148,20 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
             icon: (
               <Ionicons
                 name="stopwatch-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          // Distance
+          {
+            type: 'distance',
+            label: 'Distance',
+            value: group.worst.totalDistance,
+            workout: group.worst,
+            icon: (
+              <Ionicons
+                name="map-outline"
                 size={40}
                 color="#FFFFFF"
               />

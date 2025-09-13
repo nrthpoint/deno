@@ -45,13 +45,13 @@ export const GroupSummaryHeader: React.FC<GroupSummaryHeaderProps> = ({ summary 
 const styles = StyleSheet.create({
   container: {
     paddingTop: 10,
-    paddingBottom: 25,
+    paddingBottom: 10,
   },
   summaryText: {
     color: '#CCCCCC',
     fontSize: 16,
     fontFamily: LatoFonts.regular,
-    lineHeight: 24,
+    lineHeight: 28,
   },
   boldText: {
     fontFamily: LatoFonts.bold,

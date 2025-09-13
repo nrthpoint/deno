@@ -27,7 +27,7 @@ export const GeneralSettings: React.FC = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text
         variant="titleLarge"
-        style={styles.heading}
+        style={[styles.heading, { marginTop: 0 }]}
       >
         Distance Unit
       </Text>
@@ -65,54 +65,56 @@ export const GeneralSettings: React.FC = () => {
         inactiveTextColor="#999999"
       />
 
-      <Card>
-        <View style={styles.cardContent}>
-          <Text
-            variant="titleLarge"
-            style={[styles.heading, { marginTop: 0 }]}
-          >
-            Time Range
-          </Text>
-          <Text style={styles.subheading}>The amount of time from now, to fetch workout data.</Text>
+      <View>
+        <Text
+          variant="titleLarge"
+          style={[styles.heading]}
+        >
+          Time Range
+        </Text>
+        <Text style={styles.subheading}>The amount of time from now, to fetch workout data.</Text>
 
-          <View style={styles.rangeContainer}>
-            <Text
-              variant="bodyLarge"
-              style={styles.rangeTitle}
-            >
-              {TIME_RANGE_LABELS[timeRange]}
-            </Text>
-            <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={TIME_RANGE_OPTIONS.length - 1}
-              value={TIME_RANGE_OPTIONS.findIndex((option) => option.value === timeRange)}
-              onValueChange={(sliderValue) => {
-                const index = Math.round(sliderValue);
-                setTimeRange(TIME_RANGE_OPTIONS[index].value);
-              }}
-              step={1}
-              minimumTrackTintColor={colors.neutral}
-              maximumTrackTintColor={'#121212'}
-              thumbTintColor={`#424bff`}
-            />
-            <View style={styles.rangeLabelsContainer}>
+        <Card>
+          <View style={styles.cardContent}>
+            <View style={styles.rangeContainer}>
               <Text
-                variant="bodySmall"
-                style={styles.rangeLabel}
+                variant="bodyLarge"
+                style={styles.rangeTitle}
               >
-                {TIME_RANGE_OPTIONS[0].label}
+                {TIME_RANGE_LABELS[timeRange]}
               </Text>
-              <Text
-                variant="bodySmall"
-                style={styles.rangeLabel}
-              >
-                {TIME_RANGE_OPTIONS[TIME_RANGE_OPTIONS.length - 1].label}
-              </Text>
+              <Slider
+                style={styles.slider}
+                minimumValue={0}
+                maximumValue={TIME_RANGE_OPTIONS.length - 1}
+                value={TIME_RANGE_OPTIONS.findIndex((option) => option.value === timeRange)}
+                onValueChange={(sliderValue) => {
+                  const index = Math.round(sliderValue);
+                  setTimeRange(TIME_RANGE_OPTIONS[index].value);
+                }}
+                step={1}
+                minimumTrackTintColor={colors.neutral}
+                maximumTrackTintColor={'#121212'}
+                thumbTintColor={`#424bff`}
+              />
+              <View style={styles.rangeLabelsContainer}>
+                <Text
+                  variant="bodySmall"
+                  style={styles.rangeLabel}
+                >
+                  {TIME_RANGE_OPTIONS[0].label}
+                </Text>
+                <Text
+                  variant="bodySmall"
+                  style={styles.rangeLabel}
+                >
+                  {TIME_RANGE_OPTIONS[TIME_RANGE_OPTIONS.length - 1].label}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
-      </Card>
+        </Card>
+      </View>
     </ScrollView>
   );
 };
@@ -120,11 +122,10 @@ export const GeneralSettings: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    gap: 24,
-    flexGrow: 1,
   },
   heading: {
-    marginTop: 10,
+    marginTop: 30,
+    marginBottom: 15,
     fontSize: 18,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
@@ -133,14 +134,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: LatoFonts.regular,
     color: colors.neutral,
-    marginTop: 10,
+    marginTop: -10,
+    marginBottom: 10,
     lineHeight: 22,
   },
   cardContent: {
     padding: 16,
-    margin: 10,
-    borderRadius: 8,
-    backgroundColor: colors.surfaceHighlight,
   },
   rangeContainer: {
     paddingHorizontal: 8,
@@ -149,6 +148,7 @@ const styles = StyleSheet.create({
     ...subheading,
     textAlign: 'center',
     fontSize: 14,
+    marginTop: 0,
     marginBottom: 18,
   },
   slider: {

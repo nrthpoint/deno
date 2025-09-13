@@ -127,7 +127,7 @@ export const GroupCarousel = ({
 
             <View style={styles.carouselItemContent}>
               {isIndoor && (
-                <View style={[styles.indoorLabel, { backgroundColor: colorProfile.primary }]}>
+                <View style={[styles.indoorLabel, { backgroundColor: '#ff4800' }]}>
                   <Text style={styles.indoorLabelText}>Indoor</Text>
                 </View>
               )}
@@ -202,8 +202,8 @@ const styles = StyleSheet.create({
   indoorLabel: {
     position: 'absolute',
     textAlign: 'center',
-    top: -12,
-    left: -13,
+    top: -10,
+    left: -15,
     borderRadius: 8,
     right: 0,
     width: 70,

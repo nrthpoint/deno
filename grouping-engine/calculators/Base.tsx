@@ -9,7 +9,9 @@ import { formatPace } from '@/utils/time';
 import {
   getGreatestElevationWorkout,
   getLowestElevationWorkout,
+  getMostFrequentDistance,
   getMostFrequentDuration,
+  getMostFrequentElevation,
   getMostFrequentHumidity,
   getMostFrequentPace,
   getMostRecentWorkout,
@@ -39,6 +41,8 @@ export class BaseGroupStatCalculator implements GroupStatCalculator {
     group.oldest = getOldestWorkout(group.runs);
     group.greatestElevation = getGreatestElevationWorkout(group.runs);
     group.lowestElevation = getLowestElevationWorkout(group.runs);
+    group.averageDistance = getMostFrequentDistance(group.runs);
+    group.averageElevation = getMostFrequentElevation(group.runs);
 
     // Initialize empty stats array
     group.stats = [

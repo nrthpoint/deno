@@ -1,9 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native-paper';
 
+import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { subheading } from '@/utils/text';
 
 export interface ProgressionEntry {
   date: string;
@@ -24,75 +26,137 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
   entries,
   metricLabel,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+
   if (entries.length === 0) {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.description}>{description}</Text>
-        </View>
-        <View style={styles.noDataContainer}>
-          <Text style={styles.noDataText}>Not enough data to show progression</Text>
-        </View>
+        <TouchableOpacity
+          style={styles.headerContainer}
+          onPress={() => setIsExpanded(!isExpanded)}
+          activeOpacity={0.7}
+        >
+          <View style={[styles.headerContent, isExpanded && styles.headerContentExpanded]}>
+            <Text style={styles.title}>{title}</Text>
+            <Ionicons
+              name={isExpanded ? 'chevron-up' : 'chevron-down'}
+              size={24}
+              color="#FFFFFF"
+              style={styles.chevronIcon}
+            />
+          </View>
+          {isExpanded && <Text style={styles.description}>{description}</Text>}
+        </TouchableOpacity>
+
+        {isExpanded && (
+          <View style={styles.noDataContainerWrapper}>
+            <View style={styles.noDataContainer}>
+              <Text style={styles.noDataText}>Not enough data to show progression</Text>
+            </View>
+          </View>
+        )}
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
-      </View>
-
-      <View style={styles.table}>
-        <View style={styles.tableHeader}>
-          <Text style={styles.headerCell}>Date</Text>
-          <Text style={styles.headerCell}>{metricLabel}</Text>
-          <Text style={styles.headerCell}>Change</Text>
+      <TouchableOpacity
+        style={styles.headerContainer}
+        onPress={() => setIsExpanded(!isExpanded)}
+        activeOpacity={0.7}
+      >
+        <View style={[styles.headerContent, isExpanded && styles.headerContentExpanded]}>
+          <Text style={styles.title}>{title}</Text>
+          <Ionicons
+            name={isExpanded ? 'chevron-up' : 'chevron-down'}
+            size={24}
+            color="#FFFFFF"
+            style={styles.chevronIcon}
+          />
         </View>
+        {isExpanded && <Text style={styles.description}>{description}</Text>}
+      </TouchableOpacity>
 
-        {entries.reverse().map((entry, index) => (
-          <View
-            key={index}
-            style={styles.tableRow}
-          >
-            <Text style={styles.cell}>{entry.date}</Text>
-            <Text style={styles.cell}>{entry.value}</Text>
-            <View style={styles.changeCell}>
-              {index > 0 && (
-                <Ionicons
-                  name={entry.isImprovement ? 'trending-up' : 'trending-down'}
-                  size={16}
-                  color={entry.isImprovement ? '#4CAF50' : '#f32121'}
-                />
-              )}
+      {isExpanded && (
+        <View style={styles.tableContainer}>
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.headerCell}>Date</Text>
+              <Text style={styles.headerCell}>{metricLabel}</Text>
+              <Text style={styles.headerCell}>Change</Text>
             </View>
+
+            {entries.reverse().map((entry, index) => (
+              <View
+                key={index}
+                style={styles.tableRow}
+              >
+                <Text style={styles.cell}>{entry.date}</Text>
+                <Text style={styles.cell}>{entry.value}</Text>
+                <View style={styles.changeCell}>
+                  {index !== entries.length - 1 && index !== 0 && (
+                    <Ionicons
+                      name={entry.isImprovement ? 'trending-up' : 'trending-down'}
+                      size={16}
+                      color={entry.isImprovement ? '#4CAF50' : '#f32121'}
+                    />
+                  )}
+                  {index === 0 && (
+                    <Ionicons
+                      name="star"
+                      size={16}
+                      color="#FFD700"
+                    />
+                  )}
+                </View>
+              </View>
+            ))}
           </View>
-        ))}
-      </View>
+        </View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {},
-  header: {
-    marginBottom: 15,
+  headerContainer: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 15,
+  },
+  headerContentExpanded: {
+    paddingBottom: 0,
   },
   title: {
+    ...subheading,
+    marginTop: 0,
     color: '#FFFFFF',
-    fontSize: 26,
-    fontFamily: 'OrelegaOne',
-    marginTop: 20,
+    fontSize: 14,
+    fontFamily: LatoFonts.bold,
     textAlign: 'left',
-    marginBottom: 10,
+    flex: 1,
+  },
+  chevronIcon: {
+    marginLeft: 10,
   },
   description: {
     color: '#CCCCCC',
     fontSize: 14,
     fontFamily: LatoFonts.regular,
-    lineHeight: 20,
+    marginTop: 10,
+    marginBottom: 10,
+    textAlign: 'left',
+  },
+  noDataContainerWrapper: {
+    paddingBottom: 15,
   },
   noDataContainer: {
     paddingVertical: 20,
@@ -104,15 +168,19 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.regular,
     fontStyle: 'italic',
   },
+  tableContainer: {
+    paddingBottom: 15,
+    paddingHorizontal: 20,
+  },
   table: {
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: colors.surface,
     borderRadius: 8,
     overflow: 'hidden',
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: colors.surface,
     paddingVertical: 12,
     paddingHorizontal: 10,
   },
@@ -125,13 +193,13 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
-    height: 40,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 10,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
+    borderBottomColor: colors.surface,
   },
   cell: {
     flex: 1,

@@ -1,13 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
+import { CollapsibleStatSection } from '@/components/CollapsibleStatSection/CollapsibleStatSection';
 import { VisualCards } from '@/components/GroupStats/GroupHighlights';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
 import { GroupSummaryHeader } from '@/components/GroupSummaryHeader/GroupSummaryHeader';
 import { LowDataWarning } from '@/components/LowDataWarning/LowDataWarning';
 import { ProgressionCard } from '@/components/ProgressionCard/ProgressionCard';
-import { StatCard } from '@/components/StatCard/StatCard';
-import { LatoFonts } from '@/config/fonts';
 import {
   generateGroupSummary,
   generateLowDataWarningMessage,
@@ -35,7 +34,6 @@ const getTabColor = (label: string) => {
 export const StatsTab: React.FC<TabContentProps> = ({
   group,
   meta,
-  allWorkouts: _allWorkouts,
   groupType,
   timeRangeInDays,
 }) => {
@@ -46,14 +44,16 @@ export const StatsTab: React.FC<TabContentProps> = ({
 
   return (
     <View style={styles.container}>
-      <GroupSummaryHeader summary={summary} />
+      <View style={{ paddingHorizontal: 16 }}>
+        <GroupSummaryHeader summary={summary} />
 
-      {showWarning && <LowDataWarning message={warningMessage} />}
+        {showWarning && <LowDataWarning message={warningMessage} />}
 
-      <VisualCards
-        group={group}
-        meta={meta}
-      />
+        <VisualCards
+          group={group}
+          meta={meta}
+        />
+      </View>
 
       <ProgressionCard
         title={progressionData.title}
@@ -62,46 +62,19 @@ export const StatsTab: React.FC<TabContentProps> = ({
         metricLabel={progressionData.metricLabel}
       />
 
-      {group.stats.map((section) => (
-        <View key={section.title}>
-          <Text style={styles.sectionHeader}>{section.title}</Text>
-          {section.description && <Text style={styles.sectionDesc}>{section.description}</Text>}
-
-          {section.items.map((stat) => (
-            <StatCard
-              key={stat.label}
-              stat={stat}
-              accentColor={getTabColor(section.title)}
-              hasModal={!!stat.workout}
-            />
-          ))}
-        </View>
+      {group.stats.map((section, index) => (
+        <CollapsibleStatSection
+          key={section.title}
+          section={section}
+          getTabColor={getTabColor}
+          initialExpanded={true}
+          alternatingBackground={index % 2 === 0}
+        />
       ))}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    paddingVertical: 0,
-  },
-  sectionHeader: {
-    color: '#FFFFFF',
-    fontSize: 26,
-    fontFamily: 'OrelegaOne',
-    marginTop: 20,
-    paddingHorizontal: 5,
-    textAlign: 'left',
-    marginBottom: 10,
-  },
-  sectionDesc: {
-    color: '#CCCCCC',
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    marginBottom: 15,
-    paddingHorizontal: 5,
-    textAlign: 'left',
-  },
+  container: {},
 });

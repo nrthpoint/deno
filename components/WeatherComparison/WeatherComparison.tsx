@@ -317,7 +317,7 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
         {metrics.map((metric, index) => (
           <View
             key={index}
-            style={styles.metricRow}
+            style={[styles.metricRow, index === metrics.length - 1 && { borderBottomWidth: 0 }]}
           >
             <View style={styles.metricColumn}>
               <View style={styles.metricInfo}>
@@ -376,26 +376,26 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   comparisonTable: {
-    //marginBottom: 16,
+    borderWidth: 1,
+    borderColor: colors.surface,
+    borderRadius: 8,
+    overflow: 'hidden',
   },
   headerRow: {
     flexDirection: 'row',
+    backgroundColor: colors.surface,
     paddingVertical: 12,
-    paddingHorizontal: 8,
-    //borderRadius: 8,
-    //marginBottom: 8,
-    justifyContent: 'center',
-    backgroundColor: colors.surfaceHighlight,
+    paddingHorizontal: 10,
   },
   metricRow: {
-    backgroundColor: colors.surface,
     flexDirection: 'row',
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceHighlight,
-    alignItems: 'center',
+    height: 50,
     justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surface,
   },
   metricColumn: {
     flex: 1.5,
@@ -409,12 +409,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    fontSize: 12,
+    flex: 1,
+    color: '#FFFFFF',
+    fontSize: 14,
     fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-    textTransform: 'uppercase',
     textAlign: 'center',
-    lineHeight: 22,
   },
   metricInfo: {
     flexDirection: 'row',
@@ -424,15 +423,15 @@ const styles = StyleSheet.create({
     ...subheading,
     marginTop: 0,
     marginBottom: 0,
-    //fontSize: 14,
     fontFamily: LatoFonts.regular,
-    color: colors.neutral,
+    color: '#CCCCCC',
     marginLeft: 8,
   },
   valueText: {
-    fontSize: 14,
-    fontFamily: LatoFonts.bold,
-    color: colors.neutral,
+    flex: 1,
+    color: '#CCCCCC',
+    fontSize: 13,
+    fontFamily: LatoFonts.regular,
     textAlign: 'center',
   },
   differenceIndicator: {
