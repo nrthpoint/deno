@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -51,7 +52,7 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
           <Text style={styles.headerCell}>Change</Text>
         </View>
 
-        {entries.map((entry, index) => (
+        {entries.reverse().map((entry, index) => (
           <View
             key={index}
             style={styles.tableRow}
@@ -60,14 +61,11 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
             <Text style={styles.cell}>{entry.value}</Text>
             <View style={styles.changeCell}>
               {index > 0 && (
-                <Text
-                  style={[
-                    styles.changeText,
-                    entry.isImprovement ? styles.improvement : styles.regression,
-                  ]}
-                >
-                  {entry.isImprovement ? '↗' : '↘'}
-                </Text>
+                <Ionicons
+                  name={entry.isImprovement ? 'trending-up' : 'trending-down'}
+                  size={16}
+                  color={entry.isImprovement ? '#4CAF50' : '#f32121'}
+                />
               )}
             </View>
           </View>
@@ -78,11 +76,7 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: 10,
-    marginTop: 10,
-    marginBottom: 20,
-  },
+  container: {},
   header: {
     marginBottom: 15,
   },
@@ -91,7 +85,6 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontFamily: 'OrelegaOne',
     marginTop: 20,
-    paddingHorizontal: 5,
     textAlign: 'left',
     marginBottom: 10,
   },
@@ -132,6 +125,9 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 10,
     borderBottomWidth: 1,
@@ -148,15 +144,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  changeText: {
-    fontSize: 16,
-    fontFamily: LatoFonts.bold,
-  },
-  improvement: {
-    color: '#4CAF50',
-  },
-  regression: {
-    color: '#f32121',
   },
 });

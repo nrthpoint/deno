@@ -53,11 +53,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 193, 7, 0.1)',
-    //borderLeftWidth: 4,
-    //borderLeftColor: '#FFC107',
     borderRadius: 8,
     padding: 15,
-    marginHorizontal: 10,
     marginBottom: 15,
     alignItems: 'center',
   },

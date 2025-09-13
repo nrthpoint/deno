@@ -1,3 +1,4 @@
+import { LengthUnit } from '@kingstinct/react-native-healthkit';
 import { LatLng, Region } from 'react-native-maps';
 
 import { LocationPoint } from '@/components/RouteMap/parseRouteLocations';
@@ -61,6 +62,79 @@ export const getSegments = (route: LocationPoint[]) => {
       coords: [prev, curr],
       color: getPaceColor(curr.pace),
     });
+  }
+
+  return segments;
+};
+
+const getDistanceInMeters = (point1: LocationPoint, point2: LocationPoint): number => {
+  const R = 6371000;
+  const dLat = ((point2.latitude - point1.latitude) * Math.PI) / 180;
+  const dLng = ((point2.longitude - point1.longitude) * Math.PI) / 180;
+  const lat1 = (point1.latitude * Math.PI) / 180;
+  const lat2 = (point2.latitude * Math.PI) / 180;
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+};
+
+const getSplitColorByIndex = (splitIndex: number): string => {
+  const colors = [
+    PACING.veryFast,
+    PACING.fast,
+    PACING.medium,
+    PACING.slow,
+    '#9c27b0',
+    '#3f51b5',
+    '#2196f3',
+    '#00bcd4',
+    '#009688',
+    '#4caf50',
+    '#8bc34a',
+    '#cddc39',
+    '#ffeb3b',
+    '#ffc107',
+    '#ff9800',
+    '#ff5722',
+  ];
+  return colors[splitIndex % colors.length];
+};
+
+export const getSegmentsBySplits = (route: LocationPoint[], distanceUnit: LengthUnit) => {
+  if (route.length === 0) return [];
+
+  const segments: { coords: LatLng[]; color: string }[] = [];
+  const splitDistanceMeters = distanceUnit === 'mi' ? 1609.34 : 1000;
+
+  let currentSplitIndex = 0;
+  let accumulatedDistance = 0;
+  let splitStartIndex = 0;
+
+  for (let i = 1; i < route.length; i++) {
+    const prev = route[i - 1];
+    const curr = route[i];
+    const segmentDistance = getDistanceInMeters(prev, curr);
+
+    accumulatedDistance += segmentDistance;
+
+    if (accumulatedDistance >= splitDistanceMeters || i === route.length - 1) {
+      const splitColor = getSplitColorByIndex(currentSplitIndex);
+
+      for (let j = splitStartIndex + 1; j <= i; j++) {
+        segments.push({
+          coords: [route[j - 1], route[j]],
+          color: splitColor,
+        });
+      }
+
+      currentSplitIndex++;
+      splitStartIndex = i;
+      accumulatedDistance = 0;
+    }
   }
 
   return segments;
