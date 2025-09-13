@@ -7,7 +7,7 @@ import { formatDuration } from '@/utils/time';
 
 import { TabContentProps } from './GroupStats.types';
 
-export const VisualCards = ({ group, meta }: TabContentProps) => {
+export const VisualCards = ({ group, meta }: Pick<TabContentProps, 'group' | 'meta'>) => {
   return (
     <View style={[styles.row]}>
       <View style={styles.column}>

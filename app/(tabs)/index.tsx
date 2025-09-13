@@ -216,6 +216,8 @@ export default function Index() {
             group={selectedGroup}
             meta={meta}
             allWorkouts={samples}
+            groupType={groupType}
+            timeRangeInDays={timeRangeInDays}
           />
         )}
       </Animated.ScrollView>

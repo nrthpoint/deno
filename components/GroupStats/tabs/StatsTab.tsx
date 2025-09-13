@@ -3,8 +3,15 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { VisualCards } from '@/components/GroupStats/GroupHighlights';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
+import { GroupSummaryHeader } from '@/components/GroupSummaryHeader/GroupSummaryHeader';
+import { LowDataWarning } from '@/components/LowDataWarning/LowDataWarning';
 import { StatCard } from '@/components/StatCard/StatCard';
 import { LatoFonts } from '@/config/fonts';
+import {
+  generateGroupSummary,
+  generateLowDataWarningMessage,
+  shouldShowLowDataWarning,
+} from '@/utils/groupSummary';
 
 const getTabColor = (label: string) => {
   switch (label.toLowerCase()) {
@@ -16,16 +23,34 @@ const getTabColor = (label: string) => {
       return '#f32121';
     case 'most common':
       return '#FF9800';
+    case 'highest':
+      return '#2196F3';
+    case 'lowest':
+      return '#9C27B0';
   }
 };
 
-export const StatsTab: React.FC<TabContentProps> = ({ group, meta }) => {
+export const StatsTab: React.FC<TabContentProps> = ({
+  group,
+  meta,
+  allWorkouts: _allWorkouts,
+  groupType,
+  timeRangeInDays,
+}) => {
+  const summary = generateGroupSummary(group, groupType, timeRangeInDays);
+  const showWarning = shouldShowLowDataWarning(group);
+  const warningMessage = showWarning ? generateLowDataWarningMessage(group, groupType) : '';
+
   return (
     <View style={styles.container}>
       <VisualCards
         group={group}
         meta={meta}
       />
+
+      <GroupSummaryHeader summary={summary} />
+
+      {showWarning && <LowDataWarning message={warningMessage} />}
 
       {group.stats.map((section) => (
         <View key={section.title}>

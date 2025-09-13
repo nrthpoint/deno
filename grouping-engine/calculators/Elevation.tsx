@@ -107,29 +107,36 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
         ],
       },
       {
-        title: 'Elevation',
+        title: 'Highest',
+        description: 'Your highest workouts at this elevation',
         items: [
           {
             type: 'elevation',
-            label: 'Highest Elevation Gain',
+            label: 'Elevation',
             value: group.highlight.totalElevation,
             workout: group.highlight,
             icon: (
               <Ionicons
-                name="trending-up"
+                name="triangle"
                 size={40}
                 color="#FFFFFF"
               />
             ),
           },
+        ],
+      },
+      {
+        title: 'Lowest',
+        description: 'Your lowest workouts at this elevation',
+        items: [
           {
             type: 'elevation',
-            label: 'Lowest Elevation Gain',
+            label: 'Elevation',
             value: group.worst.totalElevation,
             workout: group.worst,
             icon: (
               <Ionicons
-                name="trending-up"
+                name="triangle-outline"
                 size={40}
                 color="#FFFFFF"
               />

@@ -3,13 +3,11 @@ import { StyleSheet, Text } from 'react-native';
 
 import { LatoFonts } from '@/config/fonts';
 
-export const PredictionsHeader: React.FC = () => {
+export const TabHeader = ({ title, description }: { title: string; description: string }) => {
   return (
     <>
-      <Text style={styles.sectionHeader}>Predictions</Text>
-      <Text style={styles.sectionDescription}>
-        Compare your predicted performance over the next 4 and 12 weeks.
-      </Text>
+      <Text style={styles.sectionHeader}>{title}</Text>
+      <Text style={styles.sectionDescription}>{description}</Text>
     </>
   );
 };
@@ -19,7 +17,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     fontFamily: LatoFonts.bold,
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 10,
     paddingHorizontal: 5,
     textTransform: 'uppercase',

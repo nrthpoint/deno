@@ -6,7 +6,7 @@ import { colors } from '@/config/colors';
 import { useTheme } from '@/context/ThemeContext';
 import { PredictedWorkout } from '@/types/Prediction';
 import { subheading } from '@/utils/text';
-import { formatDuration } from '@/utils/time';
+import { formatDuration, formatPace } from '@/utils/time';
 
 interface PredictionCardProps {
   prediction: PredictedWorkout;
@@ -21,18 +21,17 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({ prediction, titl
     <Card>
       <View style={styles.container}>
         <View style={[styles.predictionHeader, { backgroundColor: colorProfile.primary }]}>
+          <Text style={styles.predictionPrefix}>IN</Text>
           <Text style={styles.predictionTitle}>{title}</Text>
           <Text style={styles.predictionSubtitle}>{subtitle}</Text>
         </View>
 
         <View style={styles.predictionDetails}>
           <Text style={styles.predictionLabel}>Expected Pace</Text>
-          <Text style={styles.predictionPace}>
-            {prediction.predictedPace.quantity.toFixed(2)} {prediction.predictedPace.unit}
-          </Text>
+          <Text style={styles.predictionValue}>{formatPace(prediction.predictedPace)}</Text>
 
           <Text style={styles.predictionLabel}>Expected Duration</Text>
-          <Text style={styles.predictionTime}>{formatDuration(prediction.predictedDuration)}</Text>
+          <Text style={styles.predictionValue}>{formatDuration(prediction.predictedDuration)}</Text>
         </View>
 
         {/* <View style={styles.metricsContainer}>
@@ -78,6 +77,14 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 10,
   },
+  predictionPrefix: {
+    ...subheading,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginBottom: 0,
+    marginTop: 0,
+    fontWeight: '600',
+  },
   predictionTitle: {
     marginTop: 5,
     fontFamily: 'OrelegaOne',
@@ -91,17 +98,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#FFFFFF',
   },
-  predictionPace: {
-    //...subheading,
-    color: colors.neutral,
-    marginTop: 0,
-    marginBottom: 10,
-  },
-  predictionTime: {
+  predictionValue: {
     // ...subheading,
     color: '#FFFFFF',
     marginTop: 0,
     marginBottom: 10,
+    fontWeight: '600',
   },
   predictionLabel: {
     ...subheading,

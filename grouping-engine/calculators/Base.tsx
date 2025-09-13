@@ -3,16 +3,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { GroupStatCalculator } from '@/grouping-engine/GroupStatCalculator';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
+import { convertShortUnitToLong } from '@/utils/distance';
 import { calculatePercentage } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
 import {
+  getGreatestElevationWorkout,
+  getLowestElevationWorkout,
   getMostFrequentDuration,
   getMostFrequentHumidity,
   getMostFrequentPace,
   getMostRecentWorkout,
   getOldestWorkout,
-  getGreatestElevationWorkout,
-  getLowestElevationWorkout,
 } from '@/utils/workout';
 
 /**
@@ -20,7 +21,10 @@ import {
  */
 export class BaseGroupStatCalculator implements GroupStatCalculator {
   calculateStats(group: Group, samples: readonly ExtendedWorkout[]): void {
-    group.prettyName = `${group.key} ${group.unit}`;
+    group.prettyName = `${group.key} ${convertShortUnitToLong({
+      unit: group.unit,
+      amount: group.key === 'All' ? samples.length : parseInt(group.key, 10),
+    })}`;
 
     // Calculate basic percentage
     group.prettyPace = formatPace(group.averagePace);

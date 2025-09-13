@@ -11,7 +11,13 @@ import { ComparisonTab } from './tabs/ComparisonTab';
 import { PredictionsTab } from './tabs/PredictionsTab';
 import { StatsTab } from './tabs/StatsTab';
 
-export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta, allWorkouts }) => {
+export const GroupStats: React.FC<GroupStatsProps> = ({
+  group,
+  meta,
+  allWorkouts,
+  groupType,
+  timeRangeInDays,
+}) => {
   const [selectedSample1Type, setSelectedSample1Type] = useState<SampleType>('highlight');
   const [selectedSample2Type, setSelectedSample2Type] = useState<SampleType>('mostRecent');
   const [activeTab, setActiveTab] = useState<TabType>('stats');
@@ -24,6 +30,8 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta, allWorkouts
             group={group}
             meta={meta}
             allWorkouts={allWorkouts}
+            groupType={groupType}
+            timeRangeInDays={timeRangeInDays}
           />
         );
 
@@ -33,6 +41,8 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta, allWorkouts
             group={group}
             meta={meta}
             allWorkouts={allWorkouts}
+            groupType={groupType}
+            timeRangeInDays={timeRangeInDays}
             selectedSample1Type={selectedSample1Type}
             selectedSample2Type={selectedSample2Type}
             onSample1Change={setSelectedSample1Type}
@@ -46,6 +56,8 @@ export const GroupStats: React.FC<GroupStatsProps> = ({ group, meta, allWorkouts
             group={group}
             meta={meta}
             allWorkouts={allWorkouts}
+            groupType={groupType}
+            timeRangeInDays={timeRangeInDays}
           />
         );
     }

@@ -107,19 +107,6 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
               />
             ),
           },
-          {
-            type: 'elevation',
-            label: 'Elevation',
-            value: group.highlight.totalElevation,
-            workout: group.highlight,
-            icon: (
-              <Ionicons
-                name="triangle-outline"
-                size={40}
-                color="#FFFFFF"
-              />
-            ),
-          },
         ],
       },
       {
@@ -152,11 +139,36 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
               />
             ),
           },
+        ],
+      },
+      {
+        title: 'Highest',
+        description: `Your highest elevation workouts for ${prettyName}`,
+        items: [
           {
             type: 'elevation',
             label: 'Elevation',
-            value: group.worst.totalElevation,
-            workout: group.worst,
+            value: group.greatestElevation.totalElevation,
+            workout: group.greatestElevation,
+            icon: (
+              <Ionicons
+                name="triangle"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+        ],
+      },
+      {
+        title: 'Lowest',
+        description: `Your lowest elevation workouts for ${prettyName}`,
+        items: [
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.lowestElevation.totalElevation,
+            workout: group.lowestElevation,
             icon: (
               <Ionicons
                 name="triangle-outline"

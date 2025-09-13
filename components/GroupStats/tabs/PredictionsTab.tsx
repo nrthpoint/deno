@@ -4,17 +4,26 @@ import { StyleSheet, View } from 'react-native';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
 import { NoPredictionsMessage } from '@/components/GroupStats/tabs/components/NoPredictionsMessage';
 import { PredictionCard } from '@/components/GroupStats/tabs/components/PredictionCard';
-import { PredictionsHeader } from '@/components/GroupStats/tabs/components/PredictionsHeader';
+import { TabHeader } from '@/components/GroupStats/tabs/components/TabHeader';
 // import { TrainingRecommendations } from '@/components/GroupStats/tabs/components/TrainingRecommendations';
 
-export const PredictionsTab: React.FC<TabContentProps> = ({ group }) => {
+export const PredictionsTab: React.FC<TabContentProps> = ({
+  group,
+  meta: _meta,
+  allWorkouts: _allWorkouts,
+  groupType: _groupType,
+  timeRangeInDays: _timeRangeInDays,
+}) => {
   const hasPredictions = group.predictions.prediction4Week || group.predictions.prediction12Week;
 
   return (
     <View style={styles.container}>
       {hasPredictions ? (
         <>
-          <PredictionsHeader />
+          <TabHeader
+            title="Predictions"
+            description="Compare your predicted performance over the next 4 and 12 weeks."
+          />
 
           {/* 4-Week Prediction */}
           {group.predictions.prediction4Week && (

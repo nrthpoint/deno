@@ -22,14 +22,35 @@ export function metersToKilometers(m: Quantity): Quantity {
   return newUnit;
 }
 
-export function convertShortUnitToLong(unit: string): string {
+export function convertShortUnitToLong({
+  unit,
+  amount = 1,
+}: {
+  unit: string;
+  amount?: number;
+}): string {
+  // use amount to determine pluralization
+  if (amount !== 1) {
+    switch (unit) {
+      case 'm':
+        return 'meters';
+      case 'km':
+        return 'kilometers';
+      case 'mi':
+        return 'miles';
+      default:
+        return unit;
+    }
+  }
+
+  // Singular
   switch (unit) {
     case 'm':
-      return 'meters';
+      return 'meter';
     case 'km':
-      return 'kilometers';
+      return 'kilometer';
     case 'mi':
-      return 'miles';
+      return 'mile';
     default:
       return unit;
   }

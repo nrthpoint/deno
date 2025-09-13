@@ -99,25 +99,6 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
         ],
       },
       {
-        title: 'Highest Elevation',
-        description: 'The highest elevation gain at this pace',
-        items: [
-          {
-            type: 'elevation',
-            label: 'Elevation',
-            value: group.greatestElevation.totalElevation,
-            workout: group.greatestElevation,
-            icon: (
-              <Ionicons
-                name="arrow-up-outline"
-                size={40}
-                color="#FFFFFF"
-              />
-            ),
-          },
-        ],
-      },
-      {
         title: 'Shortest',
         description: 'The shortest run at this pace',
         items: [
@@ -137,8 +118,27 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
         ],
       },
       {
-        title: 'Lowest Elevation',
-        description: 'The lowest elevation gain at this pace',
+        title: 'Highest',
+        description: 'Your highest elevation workouts at this pace',
+        items: [
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.greatestElevation.totalElevation,
+            workout: group.greatestElevation,
+            icon: (
+              <Ionicons
+                name="triangle"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+        ],
+      },
+      {
+        title: 'Lowest',
+        description: 'Your lowest elevation workouts at this pace',
         items: [
           {
             type: 'elevation',
@@ -147,7 +147,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
             workout: group.lowestElevation,
             icon: (
               <Ionicons
-                name="arrow-down-outline"
+                name="triangle-outline"
                 size={40}
                 color="#FFFFFF"
               />

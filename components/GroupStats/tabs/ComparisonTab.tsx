@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { ComparisonCard } from '@/components/ComparisonCard/ComparisonCard';
 import { SampleOption, SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
 import { SampleDropdown } from '@/components/ComparisonCard/SampleDropdown';
 import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
+import { TabHeader } from '@/components/GroupStats/tabs/components/TabHeader';
 import { SplitComparison } from '@/components/SplitComparison/SplitComparison';
 import { TabBar, TabOption } from '@/components/TabBar/TabBar';
 import { WeatherComparison } from '@/components/WeatherComparison/WeatherComparison';
 import { colors } from '@/config/colors';
-import { LatoFonts, OrelegaOneFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
 
 export interface ComparisonTabProps extends TabContentProps {
@@ -30,7 +30,10 @@ const comparisonTabs: TabOption[] = [
 
 export const ComparisonTab = ({
   group,
+  meta: _meta,
   allWorkouts,
+  groupType: _groupType,
+  timeRangeInDays: _timeRangeInDays,
   selectedSample1Type,
   selectedSample2Type,
   onSample1Change,
@@ -148,10 +151,14 @@ export const ComparisonTab = ({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionHeader}>Workout Comparison</Text>
+      {/* <Text style={styles.sectionHeader}>Workout Comparison</Text>
       <Text style={styles.sectionDescription}>
         Compare your workouts side by side to see how they stack up against each other.
-      </Text>
+      </Text> */}
+      <TabHeader
+        title="Workout Comparison"
+        description="Compare your workouts side by side to see how they stack up against each other."
+      />
 
       {renderWorkoutSelectors()}
 
@@ -203,25 +210,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingVertical: 0,
   },
-  sectionHeader: {
-    fontFamily: OrelegaOneFonts.regular,
-    color: colors.neutral,
-    fontSize: 28,
-    marginTop: 20,
-    marginBottom: 10,
-    paddingHorizontal: 5,
-  },
-  sectionDescription: {
-    color: colors.lightGray,
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    paddingHorizontal: 5,
-    lineHeight: 20,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surface,
-    marginBottom: 20,
-  },
+
   workoutSelectors: {
     flexDirection: 'row',
     gap: 8,
