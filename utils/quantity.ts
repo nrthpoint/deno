@@ -2,7 +2,7 @@ import { Quantity } from '@kingstinct/react-native-healthkit';
 
 export function newQuantity(quantity = 0, unit: string = 'mi'): Quantity {
   if (isNaN(quantity) || quantity < 0) {
-    throw new Error('Invalid quantity value');
+    throw new Error('newQuantity: Invalid quantity value');
   }
 
   return { quantity, unit };
@@ -10,7 +10,7 @@ export function newQuantity(quantity = 0, unit: string = 'mi'): Quantity {
 
 export function copyQuantity(quantity: Quantity): Quantity {
   if (!quantity || !quantity.quantity || isNaN(quantity.quantity)) {
-    throw new Error('Invalid quantity object');
+    throw new Error('copyQuantity: Invalid quantity object');
   }
 
   return { quantity: quantity.quantity, unit: quantity.unit };
@@ -18,7 +18,7 @@ export function copyQuantity(quantity: Quantity): Quantity {
 
 export function formatQuantity(quantity: Quantity): string {
   if (!quantity || !quantity.quantity || isNaN(quantity.quantity)) {
-    throw new Error('Invalid quantity object');
+    throw new Error('formatQuantity: Invalid quantity object');
   }
 
   return `${quantity.quantity} ${quantity.unit}`;
@@ -72,8 +72,6 @@ export function getAbsoluteDifference(a: Quantity, b: Quantity): Quantity {
   }
 
   const diff = Math.abs(a.quantity - b.quantity);
-
-  console.log('Absolute difference:', diff);
 
   if (isNaN(diff) || diff < 0) {
     throw new Error('Resulting quantity must be a valid non-negative number');

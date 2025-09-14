@@ -6,7 +6,8 @@ import { Text } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { subtractQuantities } from '@/utils/quantity';
+import { formatDistance } from '@/utils/distance';
+import { getAbsoluteDifference } from '@/utils/quantity';
 import { subheading } from '@/utils/text';
 import { formatDuration } from '@/utils/time';
 
@@ -24,6 +25,19 @@ interface ProgressionCardProps {
   metricLabel: string;
 }
 
+const calculateDifference = (current: Quantity, previous?: Quantity): string => {
+  if (!previous) return '—';
+
+  const diff = getAbsoluteDifference(previous, current);
+
+  // TODO: Handle other units like "min/mi" or "min/km"
+  const formattedDiff = diff.unit === 's' ? formatDuration(diff) : formatDistance(diff);
+
+  if (diff.quantity === 0) return '—';
+
+  return formattedDiff;
+};
+
 export const ProgressionCard: React.FC<ProgressionCardProps> = ({
   title,
   description,
@@ -32,23 +46,44 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  const calculateDifference = (current: Quantity, previous?: Quantity): string => {
-    if (!previous) return '—';
-
-    const diff = subtractQuantities(previous, current);
-    const formattedDiff = formatDuration(diff);
-
-    if (diff.quantity === 0) return '—';
-
-    return formattedDiff;
-  };
-
   const NoData = () => (
     <View style={styles.noDataContainerWrapper}>
       <View style={styles.noDataContainer}>
         <Text style={styles.noDataText}>Not enough data to show progression</Text>
       </View>
     </View>
+  );
+
+  const NoChangeIndicator = () => <Text style={styles.cell}>—</Text>;
+
+  const LatestEntryChange = ({
+    currentQuantity,
+    previousQuantity,
+  }: {
+    currentQuantity: Quantity;
+    previousQuantity?: Quantity;
+  }) => (
+    <View style={styles.latestContainer}>
+      <Text style={[styles.cell, styles.differenceText]}>
+        {calculateDifference(currentQuantity, previousQuantity)}
+      </Text>
+    </View>
+  );
+
+  const HistoricalEntryChange = ({
+    currentQuantity,
+    previousQuantity,
+    isImprovement,
+  }: {
+    currentQuantity: Quantity;
+    previousQuantity?: Quantity;
+    isImprovement: boolean;
+  }) => (
+    <Text
+      style={[styles.cell, styles.differenceText, { color: isImprovement ? '#4CAF50' : '#f32121' }]}
+    >
+      {calculateDifference(currentQuantity, previousQuantity)}
+    </Text>
   );
 
   const Row = ({
@@ -68,29 +103,18 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
       <Text style={styles.cell}>{entry.value}</Text>
       <View style={styles.changeCell}>
         {index === entries.length - 1 ? (
-          <Text style={styles.cell}>—</Text>
+          <NoChangeIndicator />
         ) : index === 0 ? (
-          <View style={styles.latestContainer}>
-            <Text style={[styles.cell, styles.differenceText]}>
-              {calculateDifference(entry.fullQuantity, previousEntry?.fullQuantity)}
-            </Text>
-            {/* <Ionicons
-              name="star"
-              size={14}
-              color="#FFD700"
-              style={styles.starIcon}
-            /> */}
-          </View>
+          <LatestEntryChange
+            currentQuantity={entry.fullQuantity}
+            previousQuantity={previousEntry?.fullQuantity}
+          />
         ) : (
-          <Text
-            style={[
-              styles.cell,
-              styles.differenceText,
-              { color: entry.isImprovement ? '#4CAF50' : '#f32121' },
-            ]}
-          >
-            {calculateDifference(entry.fullQuantity, previousEntry?.fullQuantity)}
-          </Text>
+          <HistoricalEntryChange
+            currentQuantity={entry.fullQuantity}
+            previousQuantity={previousEntry?.fullQuantity}
+            isImprovement={entry.isImprovement}
+          />
         )}
       </View>
     </View>
