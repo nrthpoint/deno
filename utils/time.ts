@@ -131,6 +131,16 @@ export const convertDurationToMinutes = (duration: Quantity, decimalPlaces: numb
   return Number(result.toFixed(decimalPlaces));
 };
 
+export const convertDurationToMinutesQuantity = (
+  duration: Quantity,
+  decimalPlaces: number = 2,
+): Quantity => {
+  return {
+    quantity: convertDurationToMinutes(duration, decimalPlaces),
+    unit: 'min',
+  };
+};
+
 /**
  * Formats a date into a human-readable string (e.g., "Monday, January 1, 2023")
  * @param date - The date to format

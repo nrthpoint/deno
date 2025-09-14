@@ -1,5 +1,6 @@
 import { GroupConfig } from '@/grouping-engine/types/GroupConfig';
 import { GroupType } from '@/types/Groups';
+import { convertDurationToMinutesQuantity } from '@/utils/time';
 
 /**
  * Registry of all available grouping configurations
@@ -41,9 +42,9 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     property: 'duration',
     defaultTolerance: 300, // 5 minutes tolerance
     defaultGroupSize: 900, // 15 minute increments
-    unitFormatter: () => 's',
-    titleFormatter: (key) => `${Math.round(Number(key) / 60)} min`,
+    unitFormatter: () => 'minutes',
     suffixFormatter: () => 'minutes',
-    valueExtractor: (sample) => sample.duration,
+    titleFormatter: (key) => `${Math.round(Number(key) / 60)} min`,
+    valueExtractor: (sample) => convertDurationToMinutesQuantity(sample.duration),
   },
 };
