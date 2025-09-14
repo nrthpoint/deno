@@ -15,8 +15,6 @@ interface TabBarProps {
   activeTabId: string | number;
   style?: any;
   activeTabColor?: string;
-  activeTextColor?: string;
-  inactiveTextColor?: string;
   onTabPress: (tabId: string | number) => void;
 }
 
@@ -24,9 +22,7 @@ export const TabBar: React.FC<TabBarProps> = ({
   tabs,
   style,
   activeTabId,
-  activeTabColor = '#424bff', // Default blue from your design
-  activeTextColor = '#FFFFFF',
-  inactiveTextColor = '#999999',
+  activeTabColor = '#424bff',
   onTabPress,
 }) => {
   // Find the index of the active tab
@@ -96,8 +92,8 @@ export const TabBar: React.FC<TabBarProps> = ({
               <Text
                 style={[
                   styles.tabText,
-                  isActive && [styles.activeTabText, { color: activeTextColor }],
-                  !isActive && { color: inactiveTextColor },
+                  isActive && styles.activeTabText,
+                  !isActive && styles.inactiveTabText,
                   isDisabled && styles.disabledTabText,
                 ]}
               >
@@ -169,6 +165,11 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  inactiveTabText: {
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   disabledTabText: {
     color: '#666666',

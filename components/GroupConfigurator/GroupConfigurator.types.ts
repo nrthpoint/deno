@@ -8,5 +8,4 @@ export interface GroupingConfigModalProps {
   config: GroupingConfig;
   onDismiss: () => void;
   onConfigChange: (config: GroupingConfig) => void;
-  onGroupTypeChange: (groupType: GroupType) => void;
 }

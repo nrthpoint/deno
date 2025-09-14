@@ -57,9 +57,7 @@ const parseWorkoutSample = async ({
     let totalDistance = plainRun.totalDistance;
 
     if (!totalDistance) {
-      console.log('plainRun', plainRun);
       console.warn('No totalDistance found, using default of 0 m');
-
       totalDistance = { quantity: 0, unit: 'm' };
     }
 

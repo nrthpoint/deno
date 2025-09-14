@@ -6,13 +6,15 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string) => {
       return {
         tolerance: {
           label: 'Distance Tolerance',
+          subheading: 'The allowed variance in workout distance',
           unit: distanceUnit,
-          min: 0.1,
+          min: 0.0,
           max: 1.0,
           step: 0.1,
         },
         groupSize: {
           label: 'Distance Grouping',
+          subheading: 'Size of distance ranges to group workouts in',
           unit: distanceUnit,
           min: 0.5,
           max: 2.0,
@@ -23,6 +25,7 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string) => {
       return {
         tolerance: {
           label: 'Pace Tolerance',
+          subheading: 'How close paces need to be to group together',
           unit: 'min',
           min: 0.1,
           max: 1.0,
@@ -30,6 +33,7 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string) => {
         },
         groupSize: {
           label: 'Pace Grouping',
+          subheading: 'Size of pace ranges for grouping workouts',
           unit: 'min',
           min: 0.2,
           max: 2.0,
@@ -40,6 +44,7 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string) => {
       return {
         tolerance: {
           label: 'Elevation Tolerance',
+          subheading: 'How close elevation gains need to be to group together',
           unit: 'm',
           min: 25,
           max: 200,
@@ -47,6 +52,7 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string) => {
         },
         groupSize: {
           label: 'Elevation Grouping',
+          subheading: 'Size of elevation ranges for grouping workouts',
           unit: 'm',
           min: 50,
           max: 500,
@@ -57,6 +63,7 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string) => {
       return {
         tolerance: {
           label: 'Tolerance',
+          subheading: 'How close values need to be to group together',
           unit: '',
           min: 0.1,
           max: 1.0,
@@ -64,6 +71,7 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string) => {
         },
         groupSize: {
           label: 'Group Size',
+          subheading: 'Size of ranges for grouping workouts',
           unit: '',
           min: 0.2,
           max: 2.0,

@@ -1,13 +1,17 @@
 import { WorkoutActivityType } from '@kingstinct/react-native-healthkit';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { ActivityIndicator, IconButton, Text } from 'react-native-paper';
 
 import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
 import { GroupCarousel } from '@/components/GroupCarousel/GroupCarousel';
 import { GroupingConfigModal } from '@/components/GroupConfigurator/GroupConfigurator';
 import { GroupStats } from '@/components/GroupStats/GroupStats';
+import {
+  GroupTypeBottomSheetWithRef,
+  GroupTypeBottomSheetRef,
+} from '@/components/GroupTypeBottomSheet/GroupTypeBottomSheet';
 import { ThemedGradient } from '@/components/ThemedGradient';
 import { colors, tabColors } from '@/config/colors';
 import { getTabOptionConfig, tabLabels } from '@/config/ui';
@@ -45,6 +49,7 @@ export default function Index() {
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
 
   const scrollY = useRef(new Animated.Value(0)).current;
+  const groupTypeBottomSheetRef = useRef<GroupTypeBottomSheetRef>(null);
 
   const [groupType, setGroupingType] = useState<GroupType>('distance');
   const [configModalVisible, setConfigModalVisible] = useState(false);
@@ -155,7 +160,12 @@ export default function Index() {
           distanceUnit={distanceUnit}
           config={{ tolerance, groupSize }}
           onConfigChange={handleConfigChange}
-          onGroupTypeChange={setGroupingType}
+        />
+
+        <GroupTypeBottomSheetWithRef
+          ref={groupTypeBottomSheetRef}
+          selectedGroupType={groupType}
+          onSelect={setGroupingType}
         />
 
         <View
@@ -167,10 +177,14 @@ export default function Index() {
               transform: [{ translateY: scrollY }],
             }}
           >
-            <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.header}
+              onPress={() => groupTypeBottomSheetRef.current?.open()}
+              activeOpacity={0.7}
+            >
               <Text style={styles.headerTitle}>Groups</Text>
               <Text style={styles.headerSubtitle}>{tabLabels[groupType]}</Text>
-            </View>
+            </TouchableOpacity>
 
             {/* Settings and Add Workout Icons */}
             <View style={styles.settingsContainer}>

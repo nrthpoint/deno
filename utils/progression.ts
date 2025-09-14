@@ -18,82 +18,73 @@ const formatDate = (date: Date): string => {
   });
 };
 
-const getPersonalBestProgression = (workouts: ExtendedWorkout[]): ProgressionEntry[] => {
-  if (workouts.length === 0) return [];
-
-  const sortedWorkouts = [...workouts].sort(
+const sortWorkoutsByDate = (workouts: ExtendedWorkout[]): ExtendedWorkout[] => {
+  return [...workouts].sort(
     (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
   );
+};
 
-  console.log(
-    'Sorted Workouts:',
-    sortedWorkouts.forEach((w) => console.log(w.startDate, w.duration, w.totalDistance)),
-  );
+interface ProgressionConfig<T> {
+  getValue: (workout: ExtendedWorkout) => T;
+  formatValue: (value: T) => string;
+  isImprovement: (current: T, best: T) => boolean;
+  limit?: number;
+}
 
+const createProgressionEntries = <T>(
+  workouts: ExtendedWorkout[],
+  config: ProgressionConfig<T>,
+): ProgressionEntry[] => {
+  if (workouts.length === 0) return [];
+
+  const sortedWorkouts = sortWorkoutsByDate(workouts);
   const progressionPoints: ProgressionEntry[] = [];
-  let currentBest = sortedWorkouts[0];
+  let currentBest = config.getValue(sortedWorkouts[0]);
 
   // Add first workout as baseline
   progressionPoints.push({
-    date: formatDate(currentBest.startDate),
-    value: formatDuration(currentBest.duration),
+    date: formatDate(sortedWorkouts[0].startDate),
+    value: config.formatValue(currentBest),
     isImprovement: true,
   });
 
   // Find subsequent improvements
   for (let i = 1; i < sortedWorkouts.length; i++) {
     const workout = sortedWorkouts[i];
+    const workoutValue = config.getValue(workout);
 
-    // This ignores slower times that are not improvements.
-    if (workout.duration.quantity < currentBest.duration.quantity) {
-      const isImprovement = workout.duration.quantity < currentBest.duration.quantity;
-
+    if (config.isImprovement(workoutValue, currentBest)) {
       progressionPoints.push({
         date: formatDate(new Date(workout.startDate)),
-        value: formatDuration(workout.duration),
-        isImprovement,
-      });
-
-      currentBest = workout;
-    }
-  }
-
-  return progressionPoints;
-};
-
-const getTotalDistanceProgression = (workouts: ExtendedWorkout[]): ProgressionEntry[] => {
-  if (workouts.length === 0) return [];
-
-  // Sort workouts by date
-  const sortedWorkouts = [...workouts].sort(
-    (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
-  );
-
-  console.log(
-    'Sorted Workouts:',
-    sortedWorkouts.forEach((w) => console.log(w.startDate, w.totalDistance)),
-  );
-
-  const progressionPoints: ProgressionEntry[] = [];
-  let currentBestDistance = 0;
-
-  // Track the furthest distance achieved at this pace level
-  for (const workout of sortedWorkouts) {
-    const workoutDistance = workout.totalDistance.quantity;
-
-    // Only add entry if this is a new personal best distance at this pace
-    if (workoutDistance > currentBestDistance) {
-      progressionPoints.push({
-        date: formatDate(new Date(workout.startDate)),
-        value: `${workoutDistance.toFixed(1)} ${workout.totalDistance.unit}`,
+        value: config.formatValue(workoutValue),
         isImprovement: true,
       });
 
-      currentBestDistance = workoutDistance;
+      currentBest = workoutValue;
     }
   }
 
-  return progressionPoints.slice(-8); // Show last 8 distance improvements
+  return config.limit ? progressionPoints.slice(-config.limit) : progressionPoints;
+};
+
+const getPersonalBestProgression = (workouts: ExtendedWorkout[]): ProgressionEntry[] => {
+  return createProgressionEntries(workouts, {
+    getValue: (workout) => workout.duration.quantity,
+    formatValue: (value) => formatDuration({ quantity: value, unit: 's' }),
+    isImprovement: (current, best) => current < best,
+  });
+};
+
+const getTotalDistanceProgression = (workouts: ExtendedWorkout[]): ProgressionEntry[] => {
+  return createProgressionEntries(workouts, {
+    getValue: (workout) => workout.totalDistance.quantity,
+    formatValue: (value) => {
+      const unit = workouts[0]?.totalDistance.unit || 'km';
+      return `${value.toFixed(1)} ${unit}`;
+    },
+    isImprovement: (current, best) => current > best,
+    limit: 8,
+  });
 };
 
 export const generateProgressionData = (group: Group, groupType: GroupType): ProgressionData => {

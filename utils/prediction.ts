@@ -78,7 +78,6 @@ const calculateLinearRegression = (data: { daysSinceFirst: number; pace: number 
 
   // Handle edge case: insufficient data
   if (n < 2) {
-    console.log('Linear Regression: Insufficient data points');
     const meanY = n > 0 ? data[0].pace : 0;
     return { slope: 0, intercept: meanY, r2: 0 };
   }
@@ -94,8 +93,6 @@ const calculateLinearRegression = (data: { daysSinceFirst: number; pace: number 
   if (denominator === 0) {
     // All data points have the same daysSinceFirst value (same day)
     // Return zero slope (no trend) and mean pace as intercept
-    console.log('Linear Regression: No x-variation detected, returning zero slope');
-
     const meanY = sumY / n;
     return { slope: 0, intercept: meanY, r2: 0 };
   }

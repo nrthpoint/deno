@@ -6,8 +6,8 @@ export interface TimeRangeConfig {
 }
 
 export const TIME_RANGE_OPTIONS: TimeRangeConfig[] = [
-  { value: 7, label: 'Week' },
-  { value: 30, label: 'Month' },
+  { value: 7, label: 'A Week' },
+  { value: 30, label: 'A Month' },
   { value: 90, label: '3 Months' },
   { value: 180, label: '6 Months' },
   { value: 365, label: 'Year' },

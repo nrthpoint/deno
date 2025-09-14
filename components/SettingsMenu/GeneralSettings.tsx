@@ -1,17 +1,15 @@
 import { LengthUnit, WorkoutActivityType } from '@kingstinct/react-native-healthkit';
-import Slider from '@react-native-community/slider';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-import { Card } from '@/components/Card/Card';
+import { CardSlider } from '@/components/CardSlider/CardSlider';
 import { TabBar } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 import { DISTANCE_UNIT_OPTIONS } from '@/config/distanceUnits';
 import { LatoFonts } from '@/config/fonts';
 import { TIME_RANGE_LABELS, TIME_RANGE_OPTIONS } from '@/config/timeRanges';
 import { useSettings } from '@/context/SettingsContext';
-import { subheading } from '@/utils/text';
 
 export const GeneralSettings: React.FC = () => {
   const {
@@ -74,46 +72,23 @@ export const GeneralSettings: React.FC = () => {
         </Text>
         <Text style={styles.subheading}>The amount of time from now, to fetch workout data.</Text>
 
-        <Card>
-          <View style={styles.cardContent}>
-            <View style={styles.rangeContainer}>
-              <Text
-                variant="bodyLarge"
-                style={styles.rangeTitle}
-              >
-                {TIME_RANGE_LABELS[timeRange]}
-              </Text>
-              <Slider
-                style={styles.slider}
-                minimumValue={0}
-                maximumValue={TIME_RANGE_OPTIONS.length - 1}
-                value={TIME_RANGE_OPTIONS.findIndex((option) => option.value === timeRange)}
-                onValueChange={(sliderValue) => {
-                  const index = Math.round(sliderValue);
-                  setTimeRange(TIME_RANGE_OPTIONS[index].value);
-                }}
-                step={1}
-                minimumTrackTintColor={colors.neutral}
-                maximumTrackTintColor={'#121212'}
-                thumbTintColor={`#424bff`}
-              />
-              <View style={styles.rangeLabelsContainer}>
-                <Text
-                  variant="bodySmall"
-                  style={styles.rangeLabel}
-                >
-                  {TIME_RANGE_OPTIONS[0].label}
-                </Text>
-                <Text
-                  variant="bodySmall"
-                  style={styles.rangeLabel}
-                >
-                  {TIME_RANGE_OPTIONS[TIME_RANGE_OPTIONS.length - 1].label}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </Card>
+        <CardSlider
+          title={TIME_RANGE_LABELS[timeRange]}
+          value={TIME_RANGE_OPTIONS.findIndex((option) => option.value === timeRange)}
+          minimumValue={0}
+          maximumValue={TIME_RANGE_OPTIONS.length - 1}
+          step={1}
+          onValueChange={(sliderValue) => {
+            const index = Math.round(sliderValue);
+            setTimeRange(TIME_RANGE_OPTIONS[index].value);
+          }}
+          minimumLabel={TIME_RANGE_OPTIONS[0].label}
+          maximumLabel={TIME_RANGE_OPTIONS[TIME_RANGE_OPTIONS.length - 1].label}
+          thumbColor="#424bff"
+          minimumTrackColor={colors.neutral}
+          maximumTrackColor="#121212"
+          formatValue={() => ''}
+        />
       </View>
     </ScrollView>
   );
@@ -137,29 +112,5 @@ const styles = StyleSheet.create({
     marginTop: -10,
     marginBottom: 10,
     lineHeight: 22,
-  },
-  cardContent: {
-    padding: 16,
-  },
-  rangeContainer: {
-    paddingHorizontal: 8,
-  },
-  rangeTitle: {
-    ...subheading,
-    textAlign: 'center',
-    fontSize: 14,
-    marginTop: 0,
-    marginBottom: 18,
-  },
-  slider: {
-    width: '100%',
-    height: 40,
-  },
-  rangeLabelsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  rangeLabel: {
-    ...subheading,
   },
 });
