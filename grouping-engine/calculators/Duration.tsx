@@ -1,16 +1,22 @@
 import { Ionicons } from '@expo/vector-icons';
 
+import { TimeRange } from '@/config/timeRanges';
 import { BaseGroupStatCalculator } from '@/grouping-engine/calculators/Base';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 import { getAbsoluteDifference } from '@/utils/quantity';
+import { generateTimeLabel } from '@/utils/timeLabels';
 
 /**
  * Duration-based group statistics calculator
  */
 export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
-  calculateStats(group: Group, samples: readonly ExtendedWorkout[]): void {
-    super.calculateStats(group, samples);
+  calculateStats(
+    group: Group,
+    samples: readonly ExtendedWorkout[],
+    timeRangeInDays?: TimeRange,
+  ): void {
+    super.calculateStats(group, samples, timeRangeInDays);
 
     // For duration groups, highlight is the run that went the furthest at this duration
     group.highlight = group.runs.reduce((longest, run) =>
@@ -27,16 +33,17 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
       group.highlight.totalDistance,
     );
 
-    this.generateStats(group);
+    this.generateStats(group, timeRangeInDays);
   }
 
-  private generateStats(group: Group): void {
+  private generateStats(group: Group, timeRangeInDays?: TimeRange): void {
     const { prettyName } = group;
+    const timeLabel = timeRangeInDays ? ` ${generateTimeLabel(timeRangeInDays)}` : '';
 
     group.stats = [
       {
         title: 'Furthest',
-        description: `Your longest distance at ${prettyName}`,
+        description: `Your longest distance at ${prettyName}${timeLabel}`,
         items: [
           {
             type: 'distance',
@@ -68,7 +75,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Shortest',
-        description: `Your shortest distance at ${prettyName}`,
+        description: `Your shortest distance at ${prettyName}${timeLabel}`,
         items: [
           {
             type: 'distance',
@@ -100,7 +107,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Highest',
-        description: `Your highest elevation workouts at ${prettyName}`,
+        description: `Your highest elevation workouts at ${prettyName}${timeLabel}`,
         items: [
           {
             type: 'elevation',
@@ -119,7 +126,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Lowest',
-        description: `Your lowest elevation workouts at ${prettyName}`,
+        description: `Your lowest elevation workouts at ${prettyName}${timeLabel}`,
         items: [
           {
             type: 'elevation',

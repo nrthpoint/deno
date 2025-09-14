@@ -1,5 +1,6 @@
 import { LengthUnit, WorkoutActivityType } from '@kingstinct/react-native-healthkit';
 
+import { TimeRange } from '@/config/timeRanges';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { groupWorkouts } from '@/grouping-engine/GroupingEngine';
 import { useWorkoutData } from '@/hooks/useWorkoutData';
@@ -8,7 +9,7 @@ import { GroupType } from '@/types/Groups';
 type UseGroupedActivityDataParams = {
   activityType: WorkoutActivityType;
   distanceUnit: LengthUnit;
-  timeRangeInDays: number;
+  timeRangeInDays: TimeRange;
   groupType: GroupType;
   tolerance: number;
   groupSize: number;
@@ -39,6 +40,7 @@ export function useWorkoutGroups({
       distanceUnit,
     },
     config,
+    timeRangeInDays,
   );
 
   return { groups, meta, samples, loading, authorizationStatus, requestAuthorization, refresh };

@@ -11,6 +11,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 
 import { SampleTypesToRead, SampleTypesToWrite } from '@/config/sampleIdentifiers';
+import { TimeRange } from '@/config/timeRanges';
 import { handleAchievementNotifications } from '@/services/achievements';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { parseWorkoutSamples } from '@/utils/parser';
@@ -18,7 +19,7 @@ import { parseWorkoutSamples } from '@/utils/parser';
 type UseWorkoutDataParams = {
   activityType: WorkoutActivityType;
   distanceUnit: LengthUnit;
-  timeRangeInDays: number;
+  timeRangeInDays: TimeRange;
 };
 
 export type MetaWorkoutData = {

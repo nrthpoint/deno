@@ -1,11 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 
+import { TimeRange } from '@/config/timeRanges';
 import { GroupStatCalculator } from '@/grouping-engine/GroupStatCalculator';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 import { convertShortUnitToLong } from '@/utils/distance';
 import { calculatePercentage } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
+import { generateTimeLabel } from '@/utils/timeLabels';
 import {
   getGreatestElevationWorkout,
   getLowestElevationWorkout,
@@ -22,7 +24,11 @@ import {
  * Basic group statistics calculator that handles common stats
  */
 export class BaseGroupStatCalculator implements GroupStatCalculator {
-  calculateStats(group: Group, samples: readonly ExtendedWorkout[]): void {
+  calculateStats(
+    group: Group,
+    samples: readonly ExtendedWorkout[],
+    timeRangeInDays?: TimeRange,
+  ): void {
     group.prettyName = `${group.key} ${convertShortUnitToLong({
       unit: group.unit,
       amount: group.key === 'All' ? samples.length : parseInt(group.key, 10),
@@ -45,10 +51,11 @@ export class BaseGroupStatCalculator implements GroupStatCalculator {
     group.averageElevation = getMostFrequentElevation(group.runs);
 
     // Initialize empty stats array
+    const timeLabel = timeRangeInDays ? ` ${generateTimeLabel(timeRangeInDays)}` : '';
     group.stats = [
       {
         title: 'Most Common',
-        description: `These are the most common stats for ${group.prettyName}`,
+        description: `These are the most common stats for ${group.prettyName}${timeLabel}`,
         items: [
           {
             type: 'pace',

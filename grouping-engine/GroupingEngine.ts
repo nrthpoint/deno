@@ -1,3 +1,4 @@
+import { TimeRange } from '@/config/timeRanges';
 import { createStatCalculator } from '@/grouping-engine/GroupStatCalculator';
 import { GroupConfig } from '@/grouping-engine/types/GroupConfig';
 import { GroupingParameters, IndividualSampleParserParams } from '@/grouping-engine/types/Grouping';
@@ -9,7 +10,11 @@ import { assignRankToGroups, sortGroupsByKeyInAscending } from '@/utils/sort';
 /**
  * Generic grouping engine that can group workouts by any property
  */
-export function groupWorkouts(params: GroupingParameters, config: GroupConfig): Groups {
+export function groupWorkouts(
+  params: GroupingParameters,
+  config: GroupConfig,
+  timeRangeInDays?: TimeRange,
+): Groups {
   const {
     samples,
     tolerance = config.defaultTolerance,
@@ -45,7 +50,7 @@ export function groupWorkouts(params: GroupingParameters, config: GroupConfig): 
   const statCalculator = createStatCalculator(config);
 
   for (const groupKey in groups) {
-    statCalculator.calculateStats(groups[groupKey], filteredSamples);
+    statCalculator.calculateStats(groups[groupKey], filteredSamples, timeRangeInDays);
   }
 
   // Assign ranks and sort

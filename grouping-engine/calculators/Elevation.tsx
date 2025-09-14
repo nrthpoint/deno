@@ -1,19 +1,25 @@
 import { Ionicons } from '@expo/vector-icons';
 
+import { TimeRange } from '@/config/timeRanges';
 import { BaseGroupStatCalculator } from '@/grouping-engine/calculators/Base';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 import { generateWorkoutPrediction } from '@/utils/prediction';
 import { getAbsoluteDifference } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
+import { generateTimeLabel } from '@/utils/timeLabels';
 import { findHighestElevationRun, findLowestElevationRun } from '@/utils/workout';
 
 /**
  * Elevation-based group statistics calculator
  */
 export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
-  calculateStats(group: Group, samples: readonly ExtendedWorkout[]): void {
-    super.calculateStats(group, samples);
+  calculateStats(
+    group: Group,
+    samples: readonly ExtendedWorkout[],
+    timeRangeInDays?: TimeRange,
+  ): void {
+    super.calculateStats(group, samples, timeRangeInDays);
 
     group.variantDistribution = group.runs.map((run) => run.duration.quantity);
 
@@ -26,7 +32,7 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
     );
 
     this.generatePredictions(group);
-    this.generateStats(group);
+    this.generateStats(group, timeRangeInDays);
   }
 
   private generatePredictions(group: Group): void {
@@ -73,10 +79,12 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
     return recommendations;
   }
 
-  private generateStats(group: Group): void {
+  private generateStats(group: Group, timeRangeInDays?: TimeRange): void {
+    const timeLabel = timeRangeInDays ? ` ${generateTimeLabel(timeRangeInDays)}` : '';
     group.stats = [
       {
         title: 'Overview',
+        description: `Your elevation stats overview${timeLabel}`,
         items: [
           {
             type: 'distance',
@@ -108,7 +116,7 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Highest',
-        description: 'Your highest workouts at this elevation',
+        description: `Your highest workouts at this elevation${timeLabel}`,
         items: [
           {
             type: 'elevation',
@@ -127,7 +135,7 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Lowest',
-        description: 'Your lowest workouts at this elevation',
+        description: `Your lowest workouts at this elevation${timeLabel}`,
         items: [
           {
             type: 'elevation',

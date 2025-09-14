@@ -1,19 +1,25 @@
 import { Ionicons } from '@expo/vector-icons';
 
+import { TimeRange } from '@/config/timeRanges';
 import { BaseGroupStatCalculator } from '@/grouping-engine/calculators/Base';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 import { generateWorkoutPrediction } from '@/utils/prediction';
 import { getAbsoluteDifference } from '@/utils/quantity';
 import { formatPace } from '@/utils/time';
+import { generateTimeLabel } from '@/utils/timeLabels';
 import { findLongestRun, findShortestRun } from '@/utils/workout';
 
 /**
  * Pace-based group statistics calculator
  */
 export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
-  calculateStats(group: Group, samples: readonly ExtendedWorkout[]): void {
-    super.calculateStats(group, samples);
+  calculateStats(
+    group: Group,
+    samples: readonly ExtendedWorkout[],
+    timeRangeInDays?: TimeRange,
+  ): void {
+    super.calculateStats(group, samples, timeRangeInDays);
 
     group.highlight = findLongestRun(group.runs);
     group.worst = findShortestRun(group.runs);
@@ -26,7 +32,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
     );
 
     this.generatePredictions(group);
-    this.generateStats(group);
+    this.generateStats(group, timeRangeInDays);
   }
 
   private generatePredictions(group: Group): void {
@@ -77,11 +83,12 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
     return recommendations;
   }
 
-  private generateStats(group: Group): void {
+  private generateStats(group: Group, timeRangeInDays?: TimeRange): void {
+    const timeLabel = timeRangeInDays ? ` ${generateTimeLabel(timeRangeInDays)}` : '';
     group.stats = [
       {
         title: 'Furthest',
-        description: 'The longest run at this pace',
+        description: `The longest run at this pace${timeLabel}`,
         items: [
           {
             type: 'distance',
@@ -100,7 +107,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Shortest',
-        description: 'The shortest run at this pace',
+        description: `The shortest run at this pace${timeLabel}`,
         items: [
           {
             type: 'distance',
@@ -119,7 +126,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Highest',
-        description: 'Your highest elevation workouts at this pace',
+        description: `Your highest elevation workouts at this pace${timeLabel}`,
         items: [
           {
             type: 'elevation',
@@ -138,7 +145,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Lowest',
-        description: 'Your lowest elevation workouts at this pace',
+        description: `Your lowest elevation workouts at this pace${timeLabel}`,
         items: [
           {
             type: 'elevation',
@@ -158,7 +165,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
       ...group.stats,
       {
         title: 'Cumulative',
-        description: 'The total cumulative stats at this pace',
+        description: `The total cumulative stats at this pace${timeLabel}`,
         items: [
           {
             type: 'distance',

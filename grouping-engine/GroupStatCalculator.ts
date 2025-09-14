@@ -1,3 +1,4 @@
+import { TimeRange } from '@/config/timeRanges';
 import { BaseGroupStatCalculator } from '@/grouping-engine/calculators/Base';
 import { DistanceGroupStatCalculator } from '@/grouping-engine/calculators/Distance';
 import { DurationGroupStatCalculator } from '@/grouping-engine/calculators/Duration';
@@ -8,7 +9,11 @@ import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 
 export interface GroupStatCalculator {
-  calculateStats(_group: Group, _samples: readonly ExtendedWorkout[]): void;
+  calculateStats(
+    _group: Group,
+    _samples: readonly ExtendedWorkout[],
+    _timeRangeInDays?: TimeRange,
+  ): void;
 }
 
 export function createStatCalculator(config: GroupConfig): GroupStatCalculator {
