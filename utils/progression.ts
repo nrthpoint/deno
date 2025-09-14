@@ -1,3 +1,5 @@
+import { Quantity } from '@kingstinct/react-native-healthkit';
+
 import { ProgressionEntry } from '@/components/ProgressionCard/ProgressionCard';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group, GroupType } from '@/types/Groups';
@@ -26,6 +28,7 @@ const sortWorkoutsByDate = (workouts: ExtendedWorkout[]): ExtendedWorkout[] => {
 
 interface ProgressionConfig<T> {
   getValue: (workout: ExtendedWorkout) => T;
+  getFullQuantity: (workout: ExtendedWorkout) => Quantity;
   formatValue: (value: T) => string;
   isImprovement: (current: T, best: T) => boolean;
   limit?: number;
@@ -45,6 +48,7 @@ const createProgressionEntries = <T>(
   progressionPoints.push({
     date: formatDate(sortedWorkouts[0].startDate),
     value: config.formatValue(currentBest),
+    fullQuantity: config.getFullQuantity(sortedWorkouts[0]),
     isImprovement: true,
   });
 
@@ -57,6 +61,7 @@ const createProgressionEntries = <T>(
       progressionPoints.push({
         date: formatDate(new Date(workout.startDate)),
         value: config.formatValue(workoutValue),
+        fullQuantity: config.getFullQuantity(workout),
         isImprovement: true,
       });
 
@@ -70,6 +75,7 @@ const createProgressionEntries = <T>(
 const getPersonalBestProgression = (workouts: ExtendedWorkout[]): ProgressionEntry[] => {
   return createProgressionEntries(workouts, {
     getValue: (workout) => workout.duration.quantity,
+    getFullQuantity: (workout) => workout.duration,
     formatValue: (value) => formatDuration({ quantity: value, unit: 's' }),
     isImprovement: (current, best) => current < best,
   });
@@ -78,6 +84,7 @@ const getPersonalBestProgression = (workouts: ExtendedWorkout[]): ProgressionEnt
 const getTotalDistanceProgression = (workouts: ExtendedWorkout[]): ProgressionEntry[] => {
   return createProgressionEntries(workouts, {
     getValue: (workout) => workout.totalDistance.quantity,
+    getFullQuantity: (workout) => workout.totalDistance,
     formatValue: (value) => {
       const unit = workouts[0]?.totalDistance.unit || 'km';
       return `${value.toFixed(1)} ${unit}`;

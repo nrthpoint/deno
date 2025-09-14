@@ -73,6 +73,8 @@ export function getAbsoluteDifference(a: Quantity, b: Quantity): Quantity {
 
   const diff = Math.abs(a.quantity - b.quantity);
 
+  console.log('Absolute difference:', diff);
+
   if (isNaN(diff) || diff < 0) {
     throw new Error('Resulting quantity must be a valid non-negative number');
   }
