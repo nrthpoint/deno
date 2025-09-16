@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
@@ -17,7 +18,15 @@ import { OrelegaOneFonts } from '@/config/fonts';
 type SettingsSection = 'menu' | 'general' | 'notifications' | 'developer' | 'app';
 
 export default function ConfigurationScreen() {
+  const { section } = useLocalSearchParams<{ section?: string }>();
   const [currentSection, setCurrentSection] = useState<SettingsSection>('menu');
+
+  // Auto-navigate to the specified section if provided via URL parameter
+  useEffect(() => {
+    if (section && ['general', 'notifications', 'developer', 'app'].includes(section)) {
+      setCurrentSection(section as SettingsSection);
+    }
+  }, [section]);
 
   const menuItems: SettingsMenuItem[] = [
     {

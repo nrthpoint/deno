@@ -20,8 +20,6 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
 
   const { setSelectedWorkouts } = useWorkout();
 
-  const isSameSample = sample1?.uuid && sample2?.uuid && sample1.uuid === sample2.uuid;
-
   const handleMapPress = () => {
     setSelectedWorkouts([sample1, sample2]);
     router.push('/map-detail?mode=comparison');
@@ -31,28 +29,19 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
     <View style={styles.container}>
       <View style={styles.labelContainer}>
         <Text style={styles.headerLabel}>{sample1Label}</Text>
-        {!isSameSample && <Text style={styles.headerLabel}>{sample2Label}</Text>}
+        <Text style={styles.headerLabel}>{sample2Label}</Text>
       </View>
 
-      {propertiesToCompare.map((property) =>
-        isSameSample ? (
-          <ComparisonRow
-            key={property}
-            property={property}
-            sample1={sample1}
-            sample1Label={sample1Label}
-          />
-        ) : (
-          <ComparisonRow
-            key={property}
-            property={property}
-            sample1={sample1}
-            sample2={sample2}
-            sample1Label={sample1Label}
-            sample2Label={sample2Label}
-          />
-        ),
-      )}
+      {propertiesToCompare.map((property) => (
+        <ComparisonRow
+          key={property}
+          property={property}
+          sample1={sample1}
+          sample2={sample2}
+          sample1Label={sample1Label}
+          sample2Label={sample2Label}
+        />
+      ))}
 
       <RouteMap
         samples={[sample1, sample2]}

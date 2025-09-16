@@ -25,6 +25,7 @@ const getTimeRangeLabel = (timeRangeInDays: number): TimeRangeInfo => {
 
 const getGroupTypeContext = (groupType: GroupType, group: Group): string => {
   const isIndoor = group.isIndoor ? 'indoor ' : '';
+  const runPlural = group.runs.length === 1 ? 'run' : 'runs';
   const longUnit = convertShortUnitToLong({
     unit: group.unit,
     amount: group.key === 'All' ? group.runs.length : parseInt(group.key, 10),
@@ -32,15 +33,15 @@ const getGroupTypeContext = (groupType: GroupType, group: Group): string => {
 
   switch (groupType) {
     case 'distance':
-      return `${isIndoor}runs for ${group.key} ${longUnit}`;
+      return `${isIndoor}${runPlural} for ${group.key} ${longUnit}`;
     case 'pace':
-      return `${isIndoor}runs at ${group.key} ${longUnit} pace`;
+      return `${isIndoor}${runPlural} at ${group.key} ${longUnit} pace`;
     case 'duration':
-      return `${isIndoor}runs lasting ${group.key} ${longUnit}`;
+      return `${isIndoor}${runPlural} lasting ${group.key} ${longUnit}`;
     case 'elevation':
-      return `${isIndoor}runs with ${group.key} ${longUnit} elevation gain`;
+      return `${isIndoor}${runPlural} with ${group.key} ${longUnit} elevation gain`;
     default:
-      return `${isIndoor}runs`;
+      return `${isIndoor}${runPlural}`;
   }
 };
 

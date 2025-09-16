@@ -38,6 +38,7 @@ export const RouteMap = ({
   const [routes, setRouteSegments] = useState<RouteSegments>([]);
   const [initialRegion, setInitialRegion] = useState<Region | undefined>();
   const [isLoading, setIsLoading] = useState(true);
+  const [hasLocationData, setHasLocationData] = useState(true);
   const [paceDisplayMode, setPaceDisplayMode] = useState<PaceDisplayMode>('per-minute');
 
   useEffect(() => {
@@ -48,6 +49,17 @@ export const RouteMap = ({
 
       Promise.all(routePromises)
         .then((allRoutes) => {
+          // Check if any routes have location data
+          const hasAnyLocationData = allRoutes.some(
+            (route) =>
+              route && route.length > 0 && route[0].locations && route[0].locations.length > 0,
+          );
+
+          if (!hasAnyLocationData) {
+            setHasLocationData(false);
+            return;
+          }
+
           const allRoutesLocations = allRoutes.map((route) => {
             const parsedLocations = parseRouteLocations(route[0].locations);
 
@@ -65,6 +77,7 @@ export const RouteMap = ({
 
           setRouteSegments(allRouteSegments);
           setInitialRegion(initialRegion);
+          setHasLocationData(true);
         })
         .finally(() => {
           setIsLoading(false);
@@ -83,6 +96,11 @@ export const RouteMap = ({
         />
       </View>
     );
+  }
+
+  // Hide the map if there's no location data
+  if (!hasLocationData) {
+    return null;
   }
 
   const MapComponent = (

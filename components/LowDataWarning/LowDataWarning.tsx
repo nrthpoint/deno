@@ -1,5 +1,6 @@
+import { router } from 'expo-router';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { LatoFonts } from '@/config/fonts';
@@ -36,16 +37,25 @@ const renderMessageWithBold = (text: string) => {
 };
 
 export const LowDataWarning: React.FC<LowDataWarningProps> = ({ message }) => {
+  const handlePress = () => {
+    router.push('/settings?section=general');
+  };
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={handlePress}
+      activeOpacity={0.8}
+    >
       <View style={styles.iconContainer}>
         <Text style={styles.icon}>⚠️</Text>
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>Limited Data</Text>
         <Text style={styles.message}>{renderMessageWithBold(message)}</Text>
+        <Text style={styles.tapHint}>Tap to adjust time range</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -84,5 +94,13 @@ const styles = StyleSheet.create({
   boldMessage: {
     fontFamily: LatoFonts.bold,
     color: '#FFC107',
+  },
+  tapHint: {
+    color: '#FFC107',
+    fontSize: 10,
+    fontFamily: LatoFonts.bold,
+    marginTop: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
 });

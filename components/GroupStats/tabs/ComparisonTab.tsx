@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Text } from 'react-native-paper';
 
 import { ComparisonCard } from '@/components/ComparisonCard/ComparisonCard';
 import { SampleOption, SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
@@ -114,6 +115,10 @@ export const ComparisonTab = () => {
   const selectedSample2Label =
     sampleOptions.find((opt) => opt.type === selectedSample2Type)?.label || 'Sample 2';
 
+  // Check if both samples are the same workout
+  const isSameWorkout =
+    selectedSample1?.uuid && selectedSample2?.uuid && selectedSample1.uuid === selectedSample2.uuid;
+
   const renderWorkoutSelectors = () => (
     <View style={styles.workoutSelectors}>
       <View style={styles.dropdownContainer}>
@@ -147,6 +152,22 @@ export const ComparisonTab = () => {
       />
 
       {renderWorkoutSelectors()}
+
+      {/* Warning when both workouts are the same */}
+      {isSameWorkout && (
+        <View style={styles.warningContainer}>
+          <View style={styles.warningIconContainer}>
+            <Text style={styles.warningIcon}>⚠️</Text>
+          </View>
+          <View style={styles.warningTextContainer}>
+            <Text style={styles.warningTitle}>Same Workout Selected</Text>
+            <Text style={styles.warningMessage}>
+              You&apos;re comparing the same workout to itself. Select different workouts to see
+              meaningful comparisons.
+            </Text>
+          </View>
+        </View>
+      )}
 
       <TabBar
         tabs={comparisonTabs}
@@ -211,5 +232,36 @@ const styles = StyleSheet.create({
   splitContainer: {
     flex: 1,
     marginHorizontal: -10,
+  },
+  warningContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+    borderRadius: 8,
+    padding: 12,
+    marginHorizontal: 5,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  warningIconContainer: {
+    marginRight: 10,
+  },
+  warningIcon: {
+    fontSize: 18,
+  },
+  warningTextContainer: {
+    flex: 1,
+  },
+  warningTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#FFC107',
+    marginBottom: 2,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  warningMessage: {
+    color: '#CCCCCC',
+    fontSize: 11,
+    lineHeight: 16,
   },
 });
