@@ -8,22 +8,18 @@ import { ModalProps } from '@/components/Modal/Modal.types';
 import { ThemedGradient } from '@/components/ThemedGradient';
 import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
+import { useGroupStats } from '@/context/GroupStatsContext';
 import { subheading } from '@/utils/text';
 
 interface HalfMoonProgressProps extends ModalProps {
-  value: number;
-  total: number;
   label: string;
   size: number;
 }
 
-export const HalfMoonProgress = ({
-  value,
-  total,
-  label,
-  size = 120,
-  ...modalProps
-}: HalfMoonProgressProps) => {
+export const HalfMoonProgress = ({ label, size = 120, ...modalProps }: HalfMoonProgressProps) => {
+  const { group, meta } = useGroupStats();
+  const value = group.runs.length;
+  const total = meta.totalRuns;
   const percentage = Math.min((value / total) * 100, 100);
   const strokeWidth = 8;
   const radius = (size - strokeWidth) / 2;

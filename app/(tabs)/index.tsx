@@ -15,6 +15,7 @@ import {
 import { ThemedGradient } from '@/components/ThemedGradient';
 import { colors, tabColors } from '@/config/colors';
 import { getTabOptionConfig, tabLabels } from '@/config/ui';
+import { GroupStatsProvider } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { GroupingConfig } from '@/grouping-engine/types/Grouping';
@@ -226,14 +227,15 @@ export default function Index() {
         </View>
 
         {selectedGroup && (
-          // Do we need prop-drilling here. Could this move to a context?
-          <GroupStats
+          <GroupStatsProvider
             group={selectedGroup}
             meta={meta}
             allWorkouts={samples}
             groupType={groupType}
             timeRangeInDays={timeRangeInDays}
-          />
+          >
+            <GroupStats />
+          </GroupStatsProvider>
         )}
       </Animated.ScrollView>
     </ThemeProvider>

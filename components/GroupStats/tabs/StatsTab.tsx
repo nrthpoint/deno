@@ -3,10 +3,10 @@ import { StyleSheet, View } from 'react-native';
 
 import { CollapsibleStatSection } from '@/components/CollapsibleStatSection/CollapsibleStatSection';
 import { VisualCards } from '@/components/GroupStats/GroupHighlights';
-import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
 import { GroupSummaryHeader } from '@/components/GroupSummaryHeader/GroupSummaryHeader';
 import { LowDataWarning } from '@/components/LowDataWarning/LowDataWarning';
 import { ProgressionCard } from '@/components/ProgressionCard/ProgressionCard';
+import { useGroupStats } from '@/context/GroupStatsContext';
 import {
   generateGroupSummary,
   generateLowDataWarningMessage,
@@ -31,12 +31,8 @@ const getTabColor = (label: string) => {
   }
 };
 
-export const StatsTab: React.FC<TabContentProps> = ({
-  group,
-  meta,
-  groupType,
-  timeRangeInDays,
-}) => {
+export const StatsTab: React.FC = () => {
+  const { group, groupType, timeRangeInDays } = useGroupStats();
   const summary = generateGroupSummary(group, groupType, timeRangeInDays);
   const showWarning = shouldShowLowDataWarning(group);
   const warningMessage = showWarning ? generateLowDataWarningMessage(group, groupType) : '';
@@ -49,10 +45,7 @@ export const StatsTab: React.FC<TabContentProps> = ({
 
         {showWarning && <LowDataWarning message={warningMessage} />}
 
-        <VisualCards
-          group={group}
-          meta={meta}
-        />
+        <VisualCards />
       </View>
 
       <ProgressionCard

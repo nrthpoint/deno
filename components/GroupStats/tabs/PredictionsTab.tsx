@@ -1,19 +1,14 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
 import { NoPredictionsMessage } from '@/components/GroupStats/tabs/components/NoPredictionsMessage';
 import { PredictionCard } from '@/components/GroupStats/tabs/components/PredictionCard';
 import { TabHeader } from '@/components/GroupStats/tabs/components/TabHeader';
+import { useGroupStats } from '@/context/GroupStatsContext';
 // import { TrainingRecommendations } from '@/components/GroupStats/tabs/components/TrainingRecommendations';
 
-export const PredictionsTab: React.FC<TabContentProps> = ({
-  group,
-  meta: _meta,
-  allWorkouts: _allWorkouts,
-  groupType: _groupType,
-  timeRangeInDays: _timeRangeInDays,
-}) => {
+export const PredictionsTab: React.FC = () => {
+  const { group } = useGroupStats();
   const hasPredictions = group.predictions.prediction4Week || group.predictions.prediction12Week;
 
   return (

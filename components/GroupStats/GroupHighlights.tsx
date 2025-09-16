@@ -3,17 +3,16 @@ import { StyleSheet, View } from 'react-native';
 
 import { HalfMoonProgress } from '@/components/Stats/HalfMoonProgress';
 import { VariationBar } from '@/components/Stats/VariationBar';
+import { useGroupStats } from '@/context/GroupStatsContext';
 import { formatDuration } from '@/utils/time';
 
-import { TabContentProps } from './GroupStats.types';
+export const VisualCards = () => {
+  const { group, meta } = useGroupStats();
 
-export const VisualCards = ({ group, meta }: Pick<TabContentProps, 'group' | 'meta'>) => {
   return (
     <View style={[styles.row]}>
       <View style={styles.column}>
         <HalfMoonProgress
-          value={group.runs.length}
-          total={meta.totalRuns}
           label="of Workouts"
           size={100}
           hasModal={true}
@@ -30,10 +29,8 @@ export const VisualCards = ({ group, meta }: Pick<TabContentProps, 'group' | 'me
 
       <View style={styles.column}>
         <VariationBar
-          distribution={group.variantDistribution}
           label="Variation"
           width={150}
-          groupType={group.type}
           hasModal={true}
           modalTitle={group.type === 'pace' ? 'Distance Variation' : 'Duration Variation'}
           modalDescription={

@@ -100,8 +100,6 @@ export const RouteMap = ({
             activeTabId={paceDisplayMode}
             onTabPress={(tabId) => setPaceDisplayMode(tabId as PaceDisplayMode)}
             activeTabColor={colors.primary}
-            activeTextColor={colors.neutral}
-            inactiveTextColor={colors.lightGray}
           />
         </View>
       )}

@@ -4,20 +4,13 @@ import { StyleSheet, View } from 'react-native';
 import { ComparisonCard } from '@/components/ComparisonCard/ComparisonCard';
 import { SampleOption, SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
 import { SampleDropdown } from '@/components/ComparisonCard/SampleDropdown';
-import { TabContentProps } from '@/components/GroupStats/GroupStats.types';
 import { TabHeader } from '@/components/GroupStats/tabs/components/TabHeader';
 import { SplitComparison } from '@/components/SplitComparison/SplitComparison';
 import { TabBar, TabOption } from '@/components/TabBar/TabBar';
 import { WeatherComparison } from '@/components/WeatherComparison/WeatherComparison';
 import { colors } from '@/config/colors';
+import { useGroupStats } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
-
-export interface ComparisonTabProps extends TabContentProps {
-  selectedSample1Type: SampleType;
-  selectedSample2Type: SampleType;
-  onSample1Change: (type: SampleType) => void;
-  onSample2Change: (type: SampleType) => void;
-}
 
 type ComparisonMode = 'general' | 'splits' | 'weather';
 
@@ -28,19 +21,12 @@ const comparisonTabs: TabOption[] = [
   { id: 'weather', label: 'Weather' },
 ];
 
-export const ComparisonTab = ({
-  group,
-  meta: _meta,
-  allWorkouts,
-  groupType: _groupType,
-  timeRangeInDays: _timeRangeInDays,
-  selectedSample1Type,
-  selectedSample2Type,
-  onSample1Change,
-  onSample2Change,
-}: ComparisonTabProps) => {
+export const ComparisonTab = () => {
+  const { group, allWorkouts } = useGroupStats();
   const { distanceUnit } = useSettings();
   const [comparisonMode, setComparisonMode] = useState<ComparisonMode>('general');
+  const [selectedSample1Type, setSelectedSample1Type] = useState<SampleType>('highlight');
+  const [selectedSample2Type, setSelectedSample2Type] = useState<SampleType>('mostRecent');
 
   // Find workouts with personal best achievements for previous comparison
   const personalBestWorkouts = allWorkouts.filter(
@@ -134,7 +120,7 @@ export const ComparisonTab = ({
         <SampleDropdown
           options={sampleOptions}
           selectedType={selectedSample1Type}
-          onSelect={onSample1Change}
+          onSelect={setSelectedSample1Type}
           placeholder="Select Sample 1"
         />
       </View>
@@ -142,7 +128,7 @@ export const ComparisonTab = ({
         <SampleDropdown
           options={sampleOptions}
           selectedType={selectedSample2Type}
-          onSelect={onSample2Change}
+          onSelect={setSelectedSample2Type}
           placeholder="Select Sample 2"
         />
       </View>
@@ -168,8 +154,6 @@ export const ComparisonTab = ({
         onTabPress={(tabId) => setComparisonMode(tabId as ComparisonMode)}
         style={styles.tabBar}
         activeTabColor={colors.primary}
-        activeTextColor={colors.neutral}
-        inactiveTextColor={colors.lightGray}
       />
 
       {comparisonMode === 'general' ? (

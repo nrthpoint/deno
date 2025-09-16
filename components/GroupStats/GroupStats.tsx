@@ -1,65 +1,28 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
 import { TabBar } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 import { groupStatsTabs } from '@/config/ui';
 
-import { GroupStatsProps, TabType } from './GroupStats.types';
+import { TabType } from './GroupStats.types';
 import { ComparisonTab } from './tabs/ComparisonTab';
 import { PredictionsTab } from './tabs/PredictionsTab';
 import { StatsTab } from './tabs/StatsTab';
 
-export const GroupStats: React.FC<GroupStatsProps> = ({
-  group,
-  meta,
-  allWorkouts,
-  groupType,
-  timeRangeInDays,
-}) => {
-  const [selectedSample1Type, setSelectedSample1Type] = useState<SampleType>('highlight');
-  const [selectedSample2Type, setSelectedSample2Type] = useState<SampleType>('mostRecent');
+export const GroupStats: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('stats');
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'predictions':
-        return (
-          <PredictionsTab
-            group={group}
-            meta={meta}
-            allWorkouts={allWorkouts}
-            groupType={groupType}
-            timeRangeInDays={timeRangeInDays}
-          />
-        );
+        return <PredictionsTab />;
 
       case 'compare':
-        return (
-          <ComparisonTab
-            group={group}
-            meta={meta}
-            allWorkouts={allWorkouts}
-            groupType={groupType}
-            timeRangeInDays={timeRangeInDays}
-            selectedSample1Type={selectedSample1Type}
-            selectedSample2Type={selectedSample2Type}
-            onSample1Change={setSelectedSample1Type}
-            onSample2Change={setSelectedSample2Type}
-          />
-        );
+        return <ComparisonTab />;
 
       default:
-        return (
-          <StatsTab
-            group={group}
-            meta={meta}
-            allWorkouts={allWorkouts}
-            groupType={groupType}
-            timeRangeInDays={timeRangeInDays}
-          />
-        );
+        return <StatsTab />;
     }
   };
 

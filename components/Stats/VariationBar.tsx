@@ -8,16 +8,14 @@ import { ModalProps } from '@/components/Modal/Modal.types';
 import { ThemedGradient } from '@/components/ThemedGradient';
 import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
-import { GroupType } from '@/types/Groups';
+import { useGroupStats } from '@/context/GroupStatsContext';
 import { formatDistance } from '@/utils/distance';
 import { newQuantity } from '@/utils/quantity';
 import { formatDuration } from '@/utils/time';
 
 interface VariationBarProps extends ModalProps {
-  distribution: number[];
   label: string;
   width: number;
-  groupType?: GroupType; // Add group type to determine formatting
 }
 
 const BAR_HEIGHT = 4;
@@ -27,13 +25,10 @@ const LABEL_Y = BAR_Y + BAR_HEIGHT + 35;
 const END_BAR_WIDTH = 4;
 const INTERVAL_BAR_WIDTH = 4;
 
-export const VariationBar: React.FC<VariationBarProps> = ({
-  distribution,
-  label,
-  width,
-  groupType = 'distance', // Default to distance for backward compatibility
-  ...modalProps
-}) => {
+export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...modalProps }) => {
+  const { group } = useGroupStats();
+  const distribution = group.variantDistribution;
+  const groupType = group.type;
   // Helper function to format values based on group type
   const formatValue = (value: number): string => {
     if (groupType === 'pace') {
