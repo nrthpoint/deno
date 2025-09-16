@@ -37,56 +37,47 @@ export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
     >
       <TouchableWithoutFeedback onPress={onDismiss}>
         <View style={modalStyles.modalOverlay}>
-          <TouchableWithoutFeedback onPress={() => {}}>
-            <View style={styles.modalContent}>
-              <ThemeProvider groupType={groupType}>
-                <View style={styles.content}>
-                  <CardSlider
-                    style={styles.slider}
-                    //title={labels.tolerance.label}
-                    title="Tolerance"
-                    subheading={labels.tolerance.subheading}
-                    value={config.tolerance}
-                    unit={labels.tolerance.unit}
-                    step={labels.tolerance.step}
-                    thumbColor={colorProfile.primary}
-                    minimumValue={labels.tolerance.min}
-                    maximumValue={labels.tolerance.max}
-                    minimumLabel={labels.tolerance.min.toString()}
-                    maximumLabel={labels.tolerance.max.toString()}
-                    onValueChange={handleToleranceChange}
-                  />
+          <View style={styles.modalContent}>
+            <ThemeProvider groupType={groupType}>
+              <CardSlider
+                style={styles.slider}
+                title="Tolerance"
+                subheading={labels.tolerance.subheading}
+                value={config.tolerance}
+                unit={labels.tolerance.unit}
+                step={labels.tolerance.step}
+                thumbColor={colorProfile.primary}
+                minimumValue={labels.tolerance.min}
+                maximumValue={labels.tolerance.max}
+                minimumLabel={labels.tolerance.min.toString()}
+                maximumLabel={labels.tolerance.max.toString()}
+                onValueChange={handleToleranceChange}
+              />
 
-                  <View style={styles.sliderSpacing} />
+              <CardSlider
+                style={styles.slider}
+                title="Group Size"
+                subheading={labels.groupSize.subheading}
+                value={config.groupSize}
+                unit={labels.groupSize.unit}
+                step={labels.groupSize.step}
+                thumbColor={colorProfile.primary}
+                minimumValue={labels.groupSize.min}
+                maximumValue={labels.groupSize.max}
+                minimumLabel={labels.groupSize.min.toString()}
+                maximumLabel={labels.groupSize.max.toString()}
+                onValueChange={handleGroupSizeChange}
+              />
 
-                  <CardSlider
-                    style={styles.slider}
-                    title="Group Size"
-                    subheading={labels.groupSize.subheading}
-                    value={config.groupSize}
-                    unit={labels.groupSize.unit}
-                    step={labels.groupSize.step}
-                    thumbColor={colorProfile.primary}
-                    minimumValue={labels.groupSize.min}
-                    maximumValue={labels.groupSize.max}
-                    minimumLabel={labels.groupSize.min.toString()}
-                    maximumLabel={labels.groupSize.max.toString()}
-                    onValueChange={handleGroupSizeChange}
-                  />
-                </View>
-
-                <View style={[styles.actions]}>
-                  <Button
-                    mode="contained"
-                    onPress={onDismiss}
-                    style={[styles.button]}
-                  >
-                    Apply
-                  </Button>
-                </View>
-              </ThemeProvider>
-            </View>
-          </TouchableWithoutFeedback>
+              <Button
+                mode="contained"
+                onPress={onDismiss}
+                style={[styles.button]}
+              >
+                Apply
+              </Button>
+            </ThemeProvider>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </Modal>
@@ -95,25 +86,18 @@ export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
 
 const styles = StyleSheet.create({
   modalContent: {
-    backgroundColor: colors.background,
-    margin: 20,
-    minHeight: 500,
+    minHeight: 480,
     borderRadius: 12,
     width: '90%',
-  },
-  content: {
-    padding: 16,
-    paddingTop: 16,
-    flex: 1,
+    gap: 20,
+    padding: 20,
+    backgroundColor: colors.background,
   },
   slider: {
     flex: 1,
-  },
-  sliderSpacing: {
-    height: 16,
-  },
-  actions: {
-    padding: 16,
+    margin: 0,
+    marginBottom: 0,
+    marginTop: 0,
   },
   button: {
     borderRadius: 8,

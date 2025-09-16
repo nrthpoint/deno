@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
 
 import { ComparisonCard } from '@/components/ComparisonCard/ComparisonCard';
 import { SampleOption, SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
@@ -8,6 +7,7 @@ import { SampleDropdown } from '@/components/ComparisonCard/SampleDropdown';
 import { TabHeader } from '@/components/GroupStats/tabs/components/TabHeader';
 import { SplitComparison } from '@/components/SplitComparison/SplitComparison';
 import { TabBar, TabOption } from '@/components/TabBar/TabBar';
+import { Warning } from '@/components/Warning';
 import { WeatherComparison } from '@/components/WeatherComparison/WeatherComparison';
 import { colors } from '@/config/colors';
 import { useGroupStats } from '@/context/GroupStatsContext';
@@ -142,10 +142,6 @@ export const ComparisonTab = () => {
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.sectionHeader}>Workout Comparison</Text>
-      <Text style={styles.sectionDescription}>
-        Compare your workouts side by side to see how they stack up against each other.
-      </Text> */}
       <TabHeader
         title="Workout Comparison"
         description="Compare your workouts side by side to see how they stack up against each other."
@@ -153,20 +149,11 @@ export const ComparisonTab = () => {
 
       {renderWorkoutSelectors()}
 
-      {/* Warning when both workouts are the same */}
       {isSameWorkout && (
-        <View style={styles.warningContainer}>
-          <View style={styles.warningIconContainer}>
-            <Text style={styles.warningIcon}>⚠️</Text>
-          </View>
-          <View style={styles.warningTextContainer}>
-            <Text style={styles.warningTitle}>Same Workout Selected</Text>
-            <Text style={styles.warningMessage}>
-              You&apos;re comparing the same workout to itself. Select different workouts to see
-              meaningful comparisons.
-            </Text>
-          </View>
-        </View>
+        <Warning
+          title="Same Workout Selected"
+          message="You're comparing the same workout to itself. Select different workouts to see meaningful comparisons."
+        />
       )}
 
       <TabBar
@@ -232,36 +219,5 @@ const styles = StyleSheet.create({
   splitContainer: {
     flex: 1,
     marginHorizontal: -10,
-  },
-  warningContainer: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255, 193, 7, 0.1)',
-    borderRadius: 8,
-    padding: 12,
-    marginHorizontal: 5,
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  warningIconContainer: {
-    marginRight: 10,
-  },
-  warningIcon: {
-    fontSize: 18,
-  },
-  warningTextContainer: {
-    flex: 1,
-  },
-  warningTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#FFC107',
-    marginBottom: 2,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  warningMessage: {
-    color: '#CCCCCC',
-    fontSize: 11,
-    lineHeight: 16,
   },
 });

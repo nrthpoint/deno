@@ -38,7 +38,7 @@ const Stats = ({
   </View>
 );
 
-export const ComparisonRow = ({ property, sample1, sample2 }: ComparisonRowProps) => {
+export const ComparisonRow = ({ property, sample1, sample2, style }: ComparisonRowProps) => {
   const sample1Data = formatPropertyValue(property, sample1);
   const sample2Data = sample2 ? formatPropertyValue(property, sample2) : undefined;
 
@@ -50,7 +50,7 @@ export const ComparisonRow = ({ property, sample1, sample2 }: ComparisonRowProps
   const widthTwo = sample2Data ? Math.max((sample2Data.numericValue / maxValue) * 100, 1) : 0;
 
   return (
-    <View style={styles.comparisonRow}>
+    <View style={[styles.comparisonRow, style]}>
       <Text style={styles.propertyLabel}>{getPropertyLabel(property)}</Text>
       <Stats
         sample1Data={sample1Data}
@@ -66,16 +66,14 @@ export const ComparisonRow = ({ property, sample1, sample2 }: ComparisonRowProps
 
 const styles = StyleSheet.create({
   comparisonRow: {
-    marginBottom: 8,
-    marginTop: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 18,
   },
   propertyLabel: {
     fontSize: 14,
     fontFamily: LatoFonts.regular,
     color: colors.neutral,
     fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 1.5,
   },
   valuesContainer: {
     flexDirection: 'row',

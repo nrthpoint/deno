@@ -8,6 +8,7 @@ import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWorkout } from '@/context/WorkoutContext';
+import { uppercase } from '@/utils/text';
 
 import { SampleComparisonCardProps } from './ComparisonCard.types';
 
@@ -32,16 +33,19 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
         <Text style={styles.headerLabel}>{sample2Label}</Text>
       </View>
 
-      {propertiesToCompare.map((property) => (
-        <ComparisonRow
-          key={property}
-          property={property}
-          sample1={sample1}
-          sample2={sample2}
-          sample1Label={sample1Label}
-          sample2Label={sample2Label}
-        />
-      ))}
+      <View style={styles.comparisonRowsContainer}>
+        {propertiesToCompare.map((property, index) => (
+          <ComparisonRow
+            key={property}
+            property={property}
+            sample1={sample1}
+            sample2={sample2}
+            sample1Label={sample1Label}
+            sample2Label={sample2Label}
+            style={index % 2 === 1 ? { backgroundColor: colors.background } : undefined}
+          />
+        ))}
+      </View>
 
       <RouteMap
         samples={[sample1, sample2]}
@@ -57,17 +61,19 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.surface,
     borderRadius: 12,
-    padding: 16,
-    marginVertical: 8,
+    overflow: 'hidden',
   },
   labelContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    backgroundColor: colors.background,
+    padding: 16,
   },
+  comparisonRowsContainer: {},
   headerLabel: {
-    fontSize: 16,
+    ...uppercase,
+    fontSize: 14,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
   },

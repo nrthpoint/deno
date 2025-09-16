@@ -17,12 +17,12 @@ interface CardSliderProps {
   minimumValue: number;
   maximumValue: number;
   step?: number;
-  onValueChange: (value: number) => void;
   minimumLabel?: string;
   maximumLabel?: string;
   thumbColor?: string;
   minimumTrackColor?: string;
   maximumTrackColor?: string;
+  onValueChange: (value: number) => void;
   formatValue?: (value: number) => string;
 }
 

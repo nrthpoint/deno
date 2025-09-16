@@ -106,7 +106,6 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
         </View>
 
         <View style={styles.dataColumn}>
-          {/* <Text style={styles.sampleLabel}>{sample1Label}</Text> */}
           {split1 ? (
             <>
               <Text style={styles.timeValue}>{formatSplitTime(split1.duration)}</Text>
@@ -120,7 +119,6 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
         </View>
 
         <View style={styles.dataColumn}>
-          {/* <Text style={styles.sampleLabel}>{sample2Label}</Text> */}
           {split2 ? (
             <>
               <Text style={styles.timeValue}>{formatSplitTime(split2.duration)}</Text>
@@ -134,7 +132,6 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
         </View>
 
         <View style={styles.diffColumn}>
-          {/* <Text style={styles.diffLabel}>Diff</Text> */}
           {timeDiff ? (
             <>
               <Text style={[styles.diffValue, timeDiff.isPositive ? styles.slower : styles.faster]}>
@@ -156,18 +153,6 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
 
   return (
     <ScrollView style={styles.container}>
-      {/* <View style={styles.header}>
-        <Text style={styles.title}>Split Comparison</Text>
-        <Text style={styles.subtitle}>
-          Time and pace per {splitDistanceUnit === 'mi' ? 'mile' : 'kilometer'}
-        </Text>
-        <Text style={styles.calculationMethod}>
-          {splits1.length > 0 && splits1[0].startTime
-            ? 'Using workout segment data'
-            : 'Using GPS route data'}
-        </Text>
-      </View> */}
-
       <View style={styles.table}>
         <View style={styles.headerRow}>
           <View style={styles.splitNumberColumn}>
@@ -220,6 +205,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.background,
     padding: 20,
+    marginBottom: 20,
   },
   errorText: {
     fontSize: 16,
@@ -227,7 +213,6 @@ const styles = StyleSheet.create({
     color: colors.lightGray,
     textAlign: 'center',
     fontStyle: 'italic',
-    marginTop: 4,
   },
   table: {
     borderWidth: 1,
