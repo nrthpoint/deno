@@ -1,3 +1,4 @@
+import { TimeRange } from '@/config/timeRanges';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group, GroupType, MetaWorkoutData } from '@/types/Groups';
 
@@ -8,7 +9,7 @@ export interface GroupStatsProps {
   meta: MetaWorkoutData;
   allWorkouts: ExtendedWorkout[];
   groupType: GroupType;
-  timeRangeInDays: number;
+  timeRangeInDays: TimeRange;
 }
 
 export interface TabContentProps {
@@ -16,5 +17,5 @@ export interface TabContentProps {
   meta: MetaWorkoutData;
   allWorkouts: ExtendedWorkout[];
   groupType: GroupType;
-  timeRangeInDays: number;
+  timeRangeInDays: TimeRange;
 }

@@ -13,7 +13,7 @@ import { assignRankToGroups, sortGroupsByKeyInAscending } from '@/utils/sort';
 export function groupWorkouts(
   params: GroupingParameters,
   config: GroupConfig,
-  timeRangeInDays?: TimeRange,
+  timeRangeInDays: TimeRange,
 ): Groups {
   const {
     samples,

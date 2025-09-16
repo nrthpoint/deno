@@ -1,16 +1,16 @@
-import { WorkoutActivityType } from '@kingstinct/react-native-healthkit';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator, IconButton, Text } from 'react-native-paper';
 
 import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
+import { getActivityIcon } from '@/components/GroupCarousel/getActivityIcon';
 import { GroupCarousel } from '@/components/GroupCarousel/GroupCarousel';
 import { GroupingConfigModal } from '@/components/GroupConfigurator/GroupConfigurator';
 import { GroupStats } from '@/components/GroupStats/GroupStats';
 import {
-  GroupTypeBottomSheetWithRef,
   GroupTypeBottomSheetRef,
+  GroupTypeBottomSheetWithRef,
 } from '@/components/GroupTypeBottomSheet/GroupTypeBottomSheet';
 import { ThemedGradient } from '@/components/ThemedGradient';
 import { colors, tabColors } from '@/config/colors';
@@ -226,6 +226,7 @@ export default function Index() {
         </View>
 
         {selectedGroup && (
+          // Do we need prop-drilling here. Could this move to a context?
           <GroupStats
             group={selectedGroup}
             meta={meta}
@@ -238,19 +239,6 @@ export default function Index() {
     </ThemeProvider>
   );
 }
-
-const getActivityIcon = (activityType: WorkoutActivityType) => {
-  switch (activityType) {
-    case WorkoutActivityType.running:
-      return 'run';
-    case WorkoutActivityType.walking:
-      return 'walk';
-    case WorkoutActivityType.cycling:
-      return 'bike';
-    default:
-      return 'run';
-  }
-};
 
 export const styles = StyleSheet.create({
   container: {

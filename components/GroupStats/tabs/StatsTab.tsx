@@ -40,7 +40,7 @@ export const StatsTab: React.FC<TabContentProps> = ({
   const summary = generateGroupSummary(group, groupType, timeRangeInDays);
   const showWarning = shouldShowLowDataWarning(group);
   const warningMessage = showWarning ? generateLowDataWarningMessage(group, groupType) : '';
-  const progressionData = generateProgressionData(group, groupType);
+  const progressionData = generateProgressionData(group, groupType, timeRangeInDays);
 
   return (
     <View style={styles.container}>

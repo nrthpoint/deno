@@ -1,9 +1,11 @@
 import { Quantity } from '@kingstinct/react-native-healthkit';
 
 import { ProgressionEntry } from '@/components/ProgressionCard/ProgressionCard';
+import { TimeRange } from '@/config/timeRanges';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group, GroupType } from '@/types/Groups';
 import { formatDuration } from '@/utils/time';
+import { generateTimeLabel } from '@/utils/timeLabels';
 
 interface ProgressionData {
   title: string;
@@ -94,12 +96,18 @@ const getTotalDistanceProgression = (workouts: ExtendedWorkout[]): ProgressionEn
   });
 };
 
-export const generateProgressionData = (group: Group, groupType: GroupType): ProgressionData => {
+export const generateProgressionData = (
+  group: Group,
+  groupType: GroupType,
+  timeRangeInDays: TimeRange,
+): ProgressionData => {
+  const timeLabel = generateTimeLabel(timeRangeInDays);
+
   switch (groupType) {
     case 'distance':
       return {
         title: 'Progression',
-        description: `Your fastest times for ${group.prettyName} over time`,
+        description: `Your fastest times for ${group.prettyName} ${timeLabel}`,
         entries: getPersonalBestProgression(group.runs),
         metricLabel: 'Time',
       };
@@ -107,7 +115,7 @@ export const generateProgressionData = (group: Group, groupType: GroupType): Pro
     case 'pace':
       return {
         title: 'Progression',
-        description: `Total distance covered at ${group.prettyName} pace over time`,
+        description: `Total distance covered at ${group.prettyName} pace ${timeLabel}`,
         entries: getTotalDistanceProgression(group.runs),
         metricLabel: 'Distance',
       };
@@ -115,7 +123,7 @@ export const generateProgressionData = (group: Group, groupType: GroupType): Pro
     case 'duration':
       return {
         title: 'Progression',
-        description: `Distance covered in ${group.prettyName} sessions over time`,
+        description: `Distance covered in ${group.prettyName} sessions ${timeLabel}`,
         entries: getTotalDistanceProgression(group.runs),
         metricLabel: 'Distance',
       };
@@ -123,7 +131,7 @@ export const generateProgressionData = (group: Group, groupType: GroupType): Pro
     case 'elevation':
       return {
         title: 'Progression',
-        description: `Elevation achievements for ${group.prettyName} workouts`,
+        description: `Elevation achievements for ${group.prettyName} sessions ${timeLabel}`,
         entries: getTotalDistanceProgression(group.runs),
         metricLabel: 'Distance',
       };
@@ -131,7 +139,7 @@ export const generateProgressionData = (group: Group, groupType: GroupType): Pro
     default:
       return {
         title: 'Progression',
-        description: 'Track your improvement over time',
+        description: `Track your improvement over ${timeLabel}`,
         entries: [],
         metricLabel: 'Progress',
       };

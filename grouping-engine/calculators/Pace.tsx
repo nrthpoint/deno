@@ -17,7 +17,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
   calculateStats(
     group: Group,
     samples: readonly ExtendedWorkout[],
-    timeRangeInDays?: TimeRange,
+    timeRangeInDays: TimeRange,
   ): void {
     super.calculateStats(group, samples, timeRangeInDays);
 
@@ -83,8 +83,8 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
     return recommendations;
   }
 
-  private generateStats(group: Group, timeRangeInDays?: TimeRange): void {
-    const timeLabel = timeRangeInDays ? ` ${generateTimeLabel(timeRangeInDays)}` : '';
+  private generateStats(group: Group, timeRangeInDays: TimeRange): void {
+    const timeLabel = ` ${generateTimeLabel(timeRangeInDays)}`;
     group.stats = [
       {
         title: 'Furthest',

@@ -75,8 +75,6 @@ export const GroupStats: React.FC<GroupStatsProps> = ({
           activeTabId={activeTab}
           onTabPress={handleTabPress}
           activeTabColor={colors.surfaceHighlight}
-          activeTextColor="#FFFFFF"
-          inactiveTextColor={colors.lightGray}
           style={{
             margin: 10,
           }}

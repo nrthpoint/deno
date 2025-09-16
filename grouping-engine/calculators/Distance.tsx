@@ -17,7 +17,7 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
   calculateStats(
     group: Group,
     samples: readonly ExtendedWorkout[],
-    timeRangeInDays?: TimeRange,
+    timeRangeInDays: TimeRange,
   ): void {
     super.calculateStats(group, samples, timeRangeInDays);
 
@@ -79,9 +79,9 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
     return recommendations;
   }
 
-  private generateStats(group: Group, timeRangeInDays?: TimeRange): void {
+  private generateStats(group: Group, timeRangeInDays: TimeRange): void {
     const { prettyName } = group;
-    const timeLabel = timeRangeInDays ? ` ${generateTimeLabel(timeRangeInDays)}` : '';
+    const timeLabel = ` ${generateTimeLabel(timeRangeInDays)}`;
 
     group.stats = [
       {

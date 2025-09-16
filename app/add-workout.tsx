@@ -14,6 +14,7 @@ import { LatoFonts, OrelegaOneFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
 import { useWorkoutAuthorization } from '@/hooks/useWorkoutAuthorization';
 import { subheading } from '@/utils/text';
+import { formatDate, formatTime } from '@/utils/time';
 
 function convertDurationToMinutes(durationString: string): number {
   if (!durationString) return 0;
@@ -34,14 +35,6 @@ const getActivityTypeLabel = (type: WorkoutActivityType) => {
     { value: WorkoutActivityType.walking, label: 'Walking' },
   ];
   return activityTypeOptions.find((option) => option.value === type)?.label || 'Other';
-};
-
-const formatDate = (date: Date) => {
-  return date.toLocaleDateString();
-};
-
-const formatTime = (date: Date) => {
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
 export default function AddWorkoutScreen() {

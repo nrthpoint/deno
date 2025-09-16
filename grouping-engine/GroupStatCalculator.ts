@@ -12,7 +12,7 @@ export interface GroupStatCalculator {
   calculateStats(
     _group: Group,
     _samples: readonly ExtendedWorkout[],
-    _timeRangeInDays?: TimeRange,
+    _timeRangeInDays: TimeRange,
   ): void;
 }
 
