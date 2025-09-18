@@ -1,9 +1,8 @@
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { ActivityIndicator, IconButton, Text } from 'react-native-paper';
+import { IconButton, Text } from 'react-native-paper';
 
-import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
 import { getActivityIcon } from '@/components/GroupCarousel/getActivityIcon';
 import { GroupCarousel } from '@/components/GroupCarousel/GroupCarousel';
 import { GroupingConfigModal } from '@/components/GroupConfigurator/GroupConfigurator';
@@ -85,15 +84,14 @@ export default function Index() {
   /*
    * 3. Fetch workout groups based on the current configuration
    */
-  const { groups, meta, samples, loading, authorizationStatus, requestAuthorization } =
-    useWorkoutGroups({
-      activityType,
-      distanceUnit,
-      timeRangeInDays,
-      groupType,
-      tolerance,
-      groupSize,
-    });
+  const { groups, meta, samples, loading, authorizationStatus } = useWorkoutGroups({
+    activityType,
+    distanceUnit,
+    timeRangeInDays,
+    groupType,
+    tolerance,
+    groupSize,
+  });
 
   /*
    * 4. Get all options for the carousel
@@ -122,23 +120,6 @@ export default function Index() {
 
   return (
     <ThemeProvider groupType={groupType}>
-      {/* Authorization Overlay - moved outside ScrollView to cover entire viewport */}
-      <AuthorizationOverlay
-        authorizationStatus={authorizationStatus}
-        requestAuthorization={requestAuthorization}
-      />
-
-      {/* Loading Overlay */}
-      {loading && (
-        <View style={styles.loadingOverlay}>
-          <ActivityIndicator
-            animating
-            color="#fff"
-            size="large"
-          />
-        </View>
-      )}
-
       {/* No Data Overlay */}
       {hasNoData && (
         <View style={styles.noDataOverlay}>
@@ -272,17 +253,6 @@ export const styles = StyleSheet.create({
     ...subheading,
     marginTop: 10,
     color: '#fff',
-  },
-  loadingOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    zIndex: 100,
   },
   noDataOverlay: {
     position: 'absolute',

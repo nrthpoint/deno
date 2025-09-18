@@ -1,3 +1,4 @@
+import { AuthorizationRequestStatus } from '@kingstinct/react-native-healthkit';
 import { useFonts } from 'expo-font';
 import * as Notifications from 'expo-notifications';
 import { Stack } from 'expo-router';
@@ -8,10 +9,13 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 
+import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { colors } from '@/config/colors';
 import { toastConfig } from '@/config/toast';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { WorkoutProvider } from '@/context/WorkoutContext';
+import { useWorkoutAuthorization } from '@/hooks/useWorkoutAuthorization';
 import {
   handleNotificationReceived,
   handleNotificationResponse,
@@ -25,6 +29,7 @@ SplashScreen.preventAutoHideAsync();
 function AppContent() {
   const notificationListener = useRef<Notifications.EventSubscription | null>(null);
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
+  const { authorizationStatus, requestAuthorization } = useWorkoutAuthorization();
 
   useEffect(() => {
     let appStateSubscription: any;
@@ -68,6 +73,21 @@ function AppContent() {
       }
     };
   }, []);
+
+  // Show loading screen while authorization status is being determined
+  if (authorizationStatus === null) {
+    return <LoadingScreen message="Initializing..." />;
+  }
+
+  // Show authorization overlay if permission is needed
+  if (authorizationStatus !== AuthorizationRequestStatus.unnecessary) {
+    return (
+      <AuthorizationOverlay
+        authorizationStatus={authorizationStatus}
+        requestAuthorization={requestAuthorization}
+      />
+    );
+  }
 
   return (
     <Stack
