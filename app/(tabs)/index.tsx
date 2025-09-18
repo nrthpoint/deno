@@ -13,11 +13,11 @@ import {
 } from '@/components/GroupTypeBottomSheet/GroupTypeBottomSheet';
 import { ThemedGradient } from '@/components/ThemedGradient';
 import { colors, tabColors } from '@/config/colors';
-import { getTabOptionConfig, tabLabels } from '@/config/ui';
+import { tabLabels } from '@/config/ui';
 import { GroupStatsProvider } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { ThemeProvider } from '@/context/ThemeContext';
-import { GroupingConfig } from '@/grouping-engine/types/Grouping';
+import { useGroupConfig } from '@/hooks/useGroupConfig';
 import { useWorkoutGroups } from '@/hooks/useWorkoutGroups';
 import { GroupType } from '@/types/Groups';
 import { subheading } from '@/utils/text';
@@ -47,6 +47,7 @@ const Background = () => (
 
 export default function Index() {
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
+  const { getConfig, updateConfig } = useGroupConfig();
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const groupTypeBottomSheetRef = useRef<GroupTypeBottomSheetRef>(null);
@@ -55,31 +56,9 @@ export default function Index() {
   const [configModalVisible, setConfigModalVisible] = useState(false);
 
   /*
-   * 1. Define state for grouping configurations
+   * Get the grouping configuration for the selected group type
    */
-  const [groupingConfigs, setGroupingConfigs] = useState<Record<GroupType, GroupingConfig>>({
-    distance: {
-      tolerance: getTabOptionConfig('distance').tolerance,
-      groupSize: getTabOptionConfig('distance').groupSize,
-    },
-    pace: {
-      tolerance: getTabOptionConfig('pace').tolerance,
-      groupSize: getTabOptionConfig('pace').groupSize,
-    },
-    elevation: {
-      tolerance: getTabOptionConfig('elevation').tolerance,
-      groupSize: getTabOptionConfig('elevation').groupSize,
-    },
-    duration: {
-      tolerance: getTabOptionConfig('duration').tolerance,
-      groupSize: getTabOptionConfig('duration').groupSize,
-    },
-  });
-
-  /*
-   * 2. Destructure the grouping configuration for the selected group type
-   */
-  const { tolerance, groupSize } = groupingConfigs[groupType];
+  const { tolerance, groupSize } = getConfig(groupType);
 
   /*
    * 3. Fetch workout groups based on the current configuration
@@ -98,13 +77,6 @@ export default function Index() {
    */
   const options = Object.keys(groups);
   const [selectedOption, setSelectedOption] = useState<string>('');
-
-  const handleConfigChange = (config: GroupingConfig) => {
-    setGroupingConfigs((prev) => ({
-      ...prev,
-      [groupType]: config,
-    }));
-  };
 
   // Update selectedOption when options change and selectedOption is not valid
   useEffect(() => {
@@ -141,7 +113,7 @@ export default function Index() {
           groupType={groupType}
           distanceUnit={distanceUnit}
           config={{ tolerance, groupSize }}
-          onConfigChange={handleConfigChange}
+          onConfigChange={(config) => updateConfig(groupType, config)}
         />
 
         <GroupTypeBottomSheetWithRef
