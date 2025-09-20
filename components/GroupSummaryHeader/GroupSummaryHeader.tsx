@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { LatoFonts } from '@/config/fonts';
+import { uppercase } from '@/utils/text';
 
 interface GroupSummaryHeaderProps {
   summary: string;
@@ -23,6 +24,7 @@ const renderTextWithBold = (text: string) => {
         </Text>
       );
     }
+
     return (
       <Text
         key={index}
@@ -37,12 +39,20 @@ const renderTextWithBold = (text: string) => {
 export const GroupSummaryHeader: React.FC<GroupSummaryHeaderProps> = ({ summary }) => {
   return (
     <View style={styles.container}>
+      <Text style={styles.summaryHeading}>Summary</Text>
       <Text style={styles.summaryText}>{renderTextWithBold(summary)}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  summaryHeading: {
+    ...uppercase,
+    fontSize: 14,
+    color: '#FFFFFF',
+    marginBottom: 10,
+    marginTop: 10,
+  },
   container: {
     paddingBottom: 20,
   },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { LatoFonts } from '@/config/fonts';
@@ -12,6 +12,7 @@ export interface WarningProps {
   onPress?: () => void;
   actionHint?: string;
   variant?: 'default' | 'touchable';
+  style?: ViewStyle;
 }
 
 const renderMessageWithBold = (text: string) => {
@@ -47,13 +48,14 @@ export const Warning: React.FC<WarningProps> = ({
   onPress,
   actionHint,
   variant = 'default',
+  style,
 }) => {
   const Container = variant === 'touchable' && onPress ? TouchableOpacity : View;
   const containerProps = variant === 'touchable' && onPress ? { onPress, activeOpacity: 0.8 } : {};
 
   return (
     <Container
-      style={styles.container}
+      style={[styles.container, style]}
       {...containerProps}
     >
       <View style={styles.iconContainer}>

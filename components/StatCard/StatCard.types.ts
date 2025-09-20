@@ -4,4 +4,5 @@ import { Stat } from '@/types/Stat';
 export interface StatCardProps extends ModalProps {
   stat: Stat;
   accentColor?: string;
+  darkerBackground?: boolean;
 }

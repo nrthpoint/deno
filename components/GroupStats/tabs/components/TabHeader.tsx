@@ -15,7 +15,7 @@ export const TabHeader = ({ title, description }: { title: string; description: 
 const styles = StyleSheet.create({
   sectionHeader: {
     color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 14,
     fontFamily: LatoFonts.bold,
     marginTop: 10,
     marginBottom: 10,

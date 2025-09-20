@@ -4,6 +4,7 @@ import { Text } from 'react-native-paper';
 
 import { Card } from '@/components/Card/Card';
 import { ModalProvider } from '@/components/Modal/Modal';
+import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -25,6 +26,7 @@ const Value = ({ value }: { value: DisplayValue }) => {
 export const StatCard = ({
   stat: { icon, label, value, type = 'default', ...modalProps },
   accentColor,
+  darkerBackground = false,
 }: StatCardProps) => {
   const {
     colorProfile: { primary },
@@ -33,7 +35,7 @@ export const StatCard = ({
   const formattedValue = formatQuantityValue(value, type);
 
   const cardContent = (
-    <Card>
+    <Card backgroundColor={darkerBackground ? colors.background : colors.surface}>
       <View style={styles.innerContainer}>
         <View style={[styles.accentStrip, { backgroundColor: accentColor || primary }]}>
           <View style={styles.iconContainer}>{icon}</View>

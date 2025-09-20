@@ -143,7 +143,7 @@ export const ComparisonTab = () => {
   return (
     <View style={styles.container}>
       <TabHeader
-        title="Workout Comparison"
+        title="Compare"
         description="Compare your workouts side by side to see how they stack up against each other."
       />
 

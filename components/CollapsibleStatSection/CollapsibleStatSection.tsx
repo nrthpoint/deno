@@ -61,6 +61,7 @@ export const CollapsibleStatSection: React.FC<CollapsibleStatSectionProps> = ({
                 stat={stat}
                 accentColor={getTabColor(section.title)}
                 hasModal={!!stat.workout}
+                darkerBackground={alternatingBackground}
               />
             ))}
           </View>
@@ -107,8 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: LatoFonts.regular,
     marginTop: 3,
-    marginBottom: 5,
-    textAlign: 'left',
+    marginBottom: 10,
   },
   sectionContentWrapper: {
     paddingBottom: 15,
