@@ -141,7 +141,7 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
 
   const TableHeader = () => (
     <View style={styles.tableHeader}>
-      <Text style={styles.headerCell}>Date</Text>
+      <View style={styles.spacerCell}></View>
       <Text style={styles.headerCell}>{metricLabel}</Text>
       <Text style={styles.headerCell}>Difference</Text>
     </View>
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     marginTop: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     paddingVertical: 5,
   },
   headerContent: {
@@ -239,6 +239,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     paddingVertical: 12,
     paddingHorizontal: 10,
+  },
+  spacerCell: {
+    flex: 1,
   },
   headerCell: {
     ...uppercase,

@@ -17,10 +17,10 @@ const Value = ({ value, darkerBackground }: { value: DisplayValue; darkerBackgro
       key={index}
       style={styles.durationComponent}
     >
-      <Text style={[styles.value, { color: darkerBackground ? colors.surface : colors.neutral }]}>
+      <Text style={[styles.value, { color: darkerBackground ? colors.neutral : colors.neutral }]}>
         {component.displayValue}
       </Text>
-      <Text style={[styles.unit, { color: darkerBackground ? colors.surface : colors.neutral }]}>
+      <Text style={[styles.unit, { color: darkerBackground ? colors.neutral : colors.neutral }]}>
         {component.unit}
       </Text>
     </View>
@@ -39,7 +39,7 @@ export const StatCard = ({
   const formattedValue = formatQuantityValue(value, type);
 
   const cardContent = (
-    <Card backgroundColor={darkerBackground ? colors.neutral : colors.surface}>
+    <Card backgroundColor={darkerBackground ? colors.background : colors.surface}>
       <View style={styles.innerContainer}>
         <View style={[styles.accentStrip, { backgroundColor: accentColor || primary }]}>
           <View style={styles.iconContainer}>{icon}</View>
@@ -47,7 +47,7 @@ export const StatCard = ({
 
         <View style={styles.content}>
           <Text
-            style={[styles.label, { color: darkerBackground ? colors.surface : colors.neutral }]}
+            style={[styles.label, { color: darkerBackground ? colors.neutral : colors.neutral }]}
           >
             {label}
           </Text>

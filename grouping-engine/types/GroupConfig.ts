@@ -11,6 +11,7 @@ export interface GroupConfig {
   property: keyof ExtendedWorkout;
   defaultTolerance: number;
   defaultGroupSize: number;
+  backgroundColor: string;
   unitFormatter: (key: string, sample: ExtendedWorkout, distanceUnit: LengthUnit) => string;
   titleFormatter: (key: string, sample: ExtendedWorkout, distanceUnit: LengthUnit) => string;
   suffixFormatter: (distanceUnit: LengthUnit) => string;

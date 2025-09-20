@@ -8,7 +8,7 @@ import { LatoFonts } from '@/config/fonts';
 import { useMultipleWeatherData } from '@/hooks/useWeatherData';
 import { WeatherService } from '@/services/weatherService';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
-import { subheading } from '@/utils/text';
+import { subheading, uppercase } from '@/utils/text';
 
 interface WeatherComparisonProps {
   workout1: ExtendedWorkout;
@@ -301,7 +301,7 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
       <View style={styles.comparisonTable}>
         <View style={styles.headerRow}>
           <View style={styles.metricColumn}>
-            <Text style={styles.headerText}>Condition</Text>
+            <Text style={styles.conditionHeaderText}></Text>
           </View>
           <View style={styles.valueColumn}>
             <Text style={styles.headerText}>{workout1Label}</Text>
@@ -310,7 +310,7 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
             <Text style={styles.headerText}>{workout2Label}</Text>
           </View>
           <View style={styles.differenceColumn}>
-            <Text style={styles.headerText}>Difference</Text>
+            <Text style={styles.headerText}></Text>
           </View>
         </View>
 
@@ -361,7 +361,6 @@ const styles = StyleSheet.create({
   container: {
     margin: 12,
     marginTop: 0,
-    borderRadius: 12,
     overflow: 'hidden',
   },
   header: {
@@ -378,7 +377,6 @@ const styles = StyleSheet.create({
   comparisonTable: {
     borderWidth: 1,
     borderColor: colors.surface,
-    borderRadius: 8,
     overflow: 'hidden',
   },
   headerRow: {
@@ -399,21 +397,28 @@ const styles = StyleSheet.create({
   },
   metricColumn: {
     flex: 1.5,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
   },
   valueColumn: {
     flex: 1,
+    justifyContent: 'center',
   },
   differenceColumn: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   headerText: {
-    flex: 1,
+    ...uppercase,
     color: '#FFFFFF',
-    fontSize: 14,
     fontFamily: LatoFonts.bold,
     textAlign: 'center',
+  },
+  conditionHeaderText: {
+    ...uppercase,
+    color: '#FFFFFF',
+    fontFamily: LatoFonts.bold,
+    textAlign: 'left',
   },
   metricInfo: {
     flexDirection: 'row',
@@ -423,12 +428,11 @@ const styles = StyleSheet.create({
     ...subheading,
     marginTop: 0,
     marginBottom: 0,
-    fontFamily: LatoFonts.regular,
-    color: '#CCCCCC',
+    fontFamily: LatoFonts.bold,
+    color: '#FFF',
     marginLeft: 8,
   },
   valueText: {
-    flex: 1,
     color: '#CCCCCC',
     fontSize: 13,
     fontFamily: LatoFonts.regular,
@@ -470,7 +474,6 @@ const styles = StyleSheet.create({
     padding: 8,
     paddingVertical: 12,
     backgroundColor: colors.surface,
-    //borderRadius: 8,
     alignItems: 'center',
   },
   legendText: {

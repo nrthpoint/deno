@@ -12,6 +12,8 @@ interface SampleDropdownProps {
   options: SampleOption[];
   selectedType: SampleType;
   placeholder?: string;
+  showShortLabel?: boolean;
+  shortLabel?: string;
   onSelect: (type: SampleType) => void;
 }
 
@@ -20,6 +22,8 @@ export const SampleDropdown = ({
   selectedType,
   placeholder = 'Select Sample',
   onSelect,
+  // showShortLabel = false,
+  // shortLabel = '',
 }: SampleDropdownProps) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const selectedOption = options.find((option) => option.type === selectedType);

@@ -11,7 +11,7 @@ import Carousel from 'react-native-reanimated-carousel';
 
 import { CardBackground } from '@/components/GroupCarousel/CardBackground';
 import { colors } from '@/config/colors';
-import { useTheme } from '@/context/ThemeContext';
+import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { GroupType } from '@/types/Groups';
 import { subheading } from '@/utils/text';
 
@@ -37,6 +37,7 @@ interface BackgroundImageProps {
 
 const BackgroundImage = ({ groupType, parallaxOffset }: BackgroundImageProps) => {
   const image = getImageForGroupType(groupType);
+  const backgroundColor = GROUPING_CONFIGS[groupType].backgroundColor;
 
   const animatedStyle = useAnimatedStyle(() => {
     const translateX = interpolate(parallaxOffset.value, [-100, 0, 100], [-0.1, 0, 0.1]);
@@ -50,7 +51,7 @@ const BackgroundImage = ({ groupType, parallaxOffset }: BackgroundImageProps) =>
 
   return (
     <View style={styles.backgroundImageContainer}>
-      <View style={styles.backgroundColorLayer} />
+      <View style={[styles.backgroundColorLayer, { backgroundColor }]} />
       <Animated.View style={[styles.imageWrapper, animatedStyle]}>
         <Image
           source={image}
@@ -83,9 +84,9 @@ export const GroupCarousel = ({
   groups,
   setSelectedOption,
 }: GroupCarouselProps) => {
-  const { colorProfile } = useTheme();
   const carouselRef = useRef<any>(null);
   const parallaxOffset = useSharedValue(0);
+  const backgroundColor = GROUPING_CONFIGS[groupType].backgroundColor;
 
   // Reset carousel to index 0 when group type changes.
   // TODO: Fix this, wrong use of useEffect, Ali would hate me.
@@ -147,7 +148,7 @@ export const GroupCarousel = ({
                   style={[
                     styles.carouselText,
                     {
-                      color: colorProfile.primary,
+                      color: backgroundColor,
                       fontSize: item.length > 3 ? 60 : item.length > 2 ? 70 : 80,
                     },
                   ]}
@@ -155,7 +156,7 @@ export const GroupCarousel = ({
                   {item.replace(/-indoor|-outdoor/, '')} {/* Remove the suffix from display */}
                 </Text>
 
-                <Text style={[styles.carouselSubText, { color: colorProfile.primary }]}>
+                <Text style={[styles.carouselSubText, { color: backgroundColor }]}>
                   {itemSuffix}
                 </Text>
               </View>
@@ -181,6 +182,7 @@ const styles = StyleSheet.create({
     top: 0,
     height: '100%',
     zIndex: -1,
+    overflow: 'hidden',
   },
   backgroundColorLayer: {
     position: 'absolute',
@@ -188,7 +190,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#5681FE',
     zIndex: 1,
   },
   imageWrapper: {
@@ -206,13 +207,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     height: '100%',
   },
-  // blurOverlay: {
-  //   position: 'absolute',
-  //   top: 0,
-  //   left: 0,
-  //   right: 0,
-  //   bottom: 0,
-  // },
   carousel: {
     marginTop: 200,
     paddingHorizontal: 20,

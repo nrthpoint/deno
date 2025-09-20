@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { Pressable, StyleSheet, Text, View, ScrollView } from 'react-native';
@@ -11,12 +12,37 @@ import { GroupType } from '@/types/Groups';
 interface GroupTypeOption {
   key: GroupType;
   label: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  description: string;
 }
 
 interface GroupTypeBottomSheetProps {
   selectedGroupType: GroupType;
   onSelect: (groupType: GroupType) => void;
 }
+
+const groupTypeConfig: Record<
+  GroupType,
+  { icon: keyof typeof Ionicons.glyphMap; description: string }
+> = {
+  distance: {
+    icon: 'map-outline',
+    description:
+      'Group workouts by similar distances to track your progress at different run lengths',
+  },
+  pace: {
+    icon: 'speedometer-outline',
+    description: 'Group workouts by pace to analyze your speed patterns and training zones',
+  },
+  elevation: {
+    icon: 'trending-up-outline',
+    description: 'Group workouts by elevation gain to compare flat vs hilly runs',
+  },
+  duration: {
+    icon: 'time-outline',
+    description: 'Group workouts by time duration to track endurance and training volume',
+  },
+};
 
 export interface GroupTypeBottomSheetRef {
   open: () => void;
@@ -33,16 +59,18 @@ export const GroupTypeBottomSheetWithRef = React.forwardRef<
   const options: GroupTypeOption[] = enabledTabOptions.map((opt) => ({
     key: opt.key,
     label: tabLabels[opt.key],
+    icon: groupTypeConfig[opt.key].icon,
+    description: groupTypeConfig[opt.key].description,
   }));
 
   // Define snap points for the bottom sheet
   const snapPoints = useMemo(() => {
     const headerHeight = 60;
-    const itemHeight = 65;
+    const itemHeight = 85; // Increased to accommodate icon and description
     const totalItems = options.length;
     const contentHeight = headerHeight + totalItems * itemHeight;
 
-    const maxHeight = Math.min(contentHeight, 400);
+    const maxHeight = Math.min(contentHeight, 500);
     return [maxHeight];
   }, [options.length]);
 
@@ -85,11 +113,26 @@ export const GroupTypeBottomSheetWithRef = React.forwardRef<
         style={[styles.optionItem, selectedGroupType === item.key && styles.selectedOptionItem]}
         onPress={() => handleSelectOption(item.key)}
       >
-        <Text
-          style={[styles.optionText, selectedGroupType === item.key && styles.selectedOptionText]}
-        >
-          {item.label}
-        </Text>
+        <View style={styles.optionContent}>
+          <View style={styles.iconContainer}>
+            <Ionicons
+              name={item.icon}
+              size={34}
+              color={selectedGroupType === item.key ? colors.neutral : colors.lightGray}
+            />
+          </View>
+          <View style={styles.textContainer}>
+            <Text
+              style={[
+                styles.optionText,
+                selectedGroupType === item.key && styles.selectedOptionText,
+              ]}
+            >
+              {item.label}
+            </Text>
+            <Text style={styles.descriptionText}>{item.description}</Text>
+          </View>
+        </View>
         {selectedGroupType === item.key && (
           <View style={styles.checkmark}>
             <Text style={styles.checkmarkText}>✓</Text>
@@ -177,15 +220,33 @@ const styles = StyleSheet.create({
   selectedOptionItem: {
     backgroundColor: colors.neutral + '10',
   },
-  optionText: {
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    color: colors.neutral,
+  optionContent: {
+    flexDirection: 'row',
     flex: 1,
+  },
+  iconContainer: {
+    marginRight: 20,
+    width: 34,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  optionText: {
+    fontSize: 16,
+    fontFamily: LatoFonts.bold,
+    color: colors.neutral,
+    marginBottom: 6,
   },
   selectedOptionText: {
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
+  },
+  descriptionText: {
+    fontSize: 12,
+    fontFamily: LatoFonts.regular,
+    color: colors.lightGray,
+    lineHeight: 20,
+    paddingRight: 20,
   },
   checkmark: {
     width: 20,

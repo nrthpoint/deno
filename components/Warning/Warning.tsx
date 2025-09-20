@@ -95,20 +95,10 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
   },
-  // title: {
-  //   ...subheading,
-  //   // ...getLatoFont('black'),
-  //   marginTop: 0,
-  //   fontSize: 12,
-  //   color: colors.background,
-  //   marginBottom: 4,
-  //   textTransform: 'uppercase',
-  //   letterSpacing: 0.5,
-  // },
   message: {
     color: colors.background,
-    fontSize: 11,
-    lineHeight: 16,
+    fontSize: 12,
+    lineHeight: 20,
     fontFamily: LatoFonts?.regular,
   },
   boldMessage: {
@@ -116,9 +106,8 @@ const styles = StyleSheet.create({
     color: colors.background,
   },
   actionHint: {
-    //...uppercase,
     color: colors.background,
-    fontSize: 11,
+    fontSize: 12,
     fontFamily: LatoFonts?.bold,
     marginTop: 6,
     marginBottom: 0,

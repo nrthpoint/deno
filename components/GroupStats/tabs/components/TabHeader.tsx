@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 
 import { LatoFonts } from '@/config/fonts';
+import { uppercase } from '@/utils/text';
 
 export const TabHeader = ({ title, description }: { title: string; description: string }) => {
   return (
@@ -14,21 +15,18 @@ export const TabHeader = ({ title, description }: { title: string; description: 
 
 const styles = StyleSheet.create({
   sectionHeader: {
+    ...uppercase,
     color: '#FFFFFF',
     fontSize: 14,
     fontFamily: LatoFonts.bold,
-    marginTop: 10,
     marginBottom: 10,
-    paddingHorizontal: 5,
     textTransform: 'uppercase',
-    letterSpacing: 1.2,
   },
   sectionDescription: {
     color: '#CCCCCC',
     fontSize: 14,
     fontFamily: LatoFonts.regular,
     marginBottom: 20,
-    paddingHorizontal: 5,
-    lineHeight: 20,
+    lineHeight: 22,
   },
 });

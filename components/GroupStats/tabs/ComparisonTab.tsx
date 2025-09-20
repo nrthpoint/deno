@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 
 import { ComparisonCard } from '@/components/ComparisonCard/ComparisonCard';
 import { SampleOption, SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
@@ -10,6 +10,7 @@ import { TabBar, TabOption } from '@/components/TabBar/TabBar';
 import { Warning } from '@/components/Warning';
 import { WeatherComparison } from '@/components/WeatherComparison/WeatherComparison';
 import { colors } from '@/config/colors';
+import { LatoFonts } from '@/config/fonts';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
 
@@ -110,10 +111,6 @@ export const ComparisonTab = () => {
 
   const selectedSample1 = getSelectedSample(selectedSample1Type);
   const selectedSample2 = getSelectedSample(selectedSample2Type);
-  const selectedSample1Label =
-    sampleOptions.find((opt) => opt.type === selectedSample1Type)?.label || 'Sample 1';
-  const selectedSample2Label =
-    sampleOptions.find((opt) => opt.type === selectedSample2Type)?.label || 'Sample 2';
 
   // Check if both samples are the same workout
   const isSameWorkout =
@@ -121,55 +118,74 @@ export const ComparisonTab = () => {
 
   const renderWorkoutSelectors = () => (
     <View style={styles.workoutSelectors}>
-      <View style={styles.dropdownContainer}>
-        <SampleDropdown
-          options={sampleOptions}
-          selectedType={selectedSample1Type}
-          onSelect={setSelectedSample1Type}
-          placeholder="Select Sample 1"
-        />
+      <View style={styles.dropdownWithLabel}>
+        <View style={styles.dropdownLabelContainer}>
+          <Text style={styles.dropdownLabel}>1</Text>
+        </View>
+        <View style={styles.dropdownContainer}>
+          <SampleDropdown
+            options={sampleOptions}
+            selectedType={selectedSample1Type}
+            onSelect={setSelectedSample1Type}
+            placeholder="Select Sample 1"
+            showShortLabel={true}
+            shortLabel="1"
+          />
+        </View>
       </View>
-      <View style={styles.dropdownContainer}>
-        <SampleDropdown
-          options={sampleOptions}
-          selectedType={selectedSample2Type}
-          onSelect={setSelectedSample2Type}
-          placeholder="Select Sample 2"
-        />
+      <View style={styles.vsContainer}>
+        <Text style={styles.vsText}>vs.</Text>
+      </View>
+      <View style={styles.dropdownWithLabel}>
+        <View style={styles.dropdownLabelContainer}>
+          <Text style={styles.dropdownLabel}>2</Text>
+        </View>
+        <View style={styles.dropdownContainer}>
+          <SampleDropdown
+            options={sampleOptions}
+            selectedType={selectedSample2Type}
+            onSelect={setSelectedSample2Type}
+            placeholder="Select Sample 2"
+            showShortLabel={true}
+            shortLabel="2"
+          />
+        </View>
       </View>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <TabHeader
-        title="Compare"
-        description="Compare your workouts side by side to see how they stack up against each other."
-      />
-
-      {renderWorkoutSelectors()}
-
-      {isSameWorkout && (
-        <Warning
-          title="Same Workout Selected"
-          message="You're comparing the same workout to itself. Select different workouts to see meaningful comparisons."
+      <View style={styles.innerContainer}>
+        <TabHeader
+          title="Compare"
+          description="Compare your workouts side by side to see how they stack up against each other."
         />
-      )}
 
-      <TabBar
-        tabs={comparisonTabs}
-        activeTabId={comparisonMode}
-        onTabPress={(tabId) => setComparisonMode(tabId as ComparisonMode)}
-        style={styles.tabBar}
-        activeTabColor={colors.primary}
-      />
+        {renderWorkoutSelectors()}
+
+        {isSameWorkout && (
+          <Warning
+            title="Same Workout Selected"
+            message="You're comparing the same workout to itself. Select different workouts to see meaningful comparisons."
+          />
+        )}
+
+        <TabBar
+          tabs={comparisonTabs}
+          activeTabId={comparisonMode}
+          onTabPress={(tabId) => setComparisonMode(tabId as ComparisonMode)}
+          style={styles.tabBar}
+          activeTabColor={colors.primary}
+        />
+      </View>
 
       {comparisonMode === 'general' ? (
         <ComparisonCard
           sample1={selectedSample1}
           sample2={selectedSample2}
-          sample1Label={selectedSample1Label}
-          sample2Label={selectedSample2Label}
+          sample1Label="1"
+          sample2Label="2"
           propertiesToCompare={['duration', 'averagePace', 'distance', 'elevation', 'humidity']}
         />
       ) : comparisonMode === 'splits' ? (
@@ -177,8 +193,8 @@ export const ComparisonTab = () => {
           <SplitComparison
             sample1={selectedSample1}
             sample2={selectedSample2}
-            sample1Label={selectedSample1Label}
-            sample2Label={selectedSample2Label}
+            sample1Label="1"
+            sample2Label="2"
             distanceUnit={distanceUnit}
           />
         </View>
@@ -187,8 +203,8 @@ export const ComparisonTab = () => {
           <WeatherComparison
             workout1={selectedSample1}
             workout2={selectedSample2}
-            workout1Label={selectedSample1Label}
-            workout2Label={selectedSample2Label}
+            workout1Label="1"
+            workout2Label="2"
           />
         </View>
       )}
@@ -199,22 +215,56 @@ export const ComparisonTab = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    paddingVertical: 0,
   },
-
+  innerContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
   workoutSelectors: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
-    marginHorizontal: 5,
     marginBottom: 20,
+  },
+  dropdownWithLabel: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  dropdownLabelContainer: {
+    //circle
+    //width: '100%',
+    borderRadius: 9999,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface,
+    alignContent: 'center',
+    alignSelf: 'center',
+    padding: 10,
+    marginBottom: 8,
+  },
+  dropdownLabel: {
+    fontSize: 16,
+    fontFamily: LatoFonts.bold,
+    color: colors.neutral,
+    marginBottom: 8,
   },
   dropdownContainer: {
-    flex: 1,
+    width: '100%',
+  },
+  vsContainer: {
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  vsText: {
+    fontSize: 16,
+    fontFamily: LatoFonts.bold,
+    color: colors.neutral,
   },
   tabBar: {
-    marginHorizontal: 5,
-    marginBottom: 20,
+    marginVertical: 20,
   },
   splitContainer: {
     flex: 1,

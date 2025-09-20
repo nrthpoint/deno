@@ -11,6 +11,7 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     property: 'totalDistance',
     defaultTolerance: 0.25,
     defaultGroupSize: 1.0,
+    backgroundColor: '#5681FE',
     unitFormatter: (_key, sample) => sample.totalDistance?.unit || 'mi',
     titleFormatter: (key, sample) => `${key}${sample.totalDistance?.unit}`,
     suffixFormatter: (distanceUnit) => distanceUnit,
@@ -21,6 +22,7 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     property: 'averagePace',
     defaultTolerance: 0.5,
     defaultGroupSize: 1.0,
+    backgroundColor: '#5c96eb',
     unitFormatter: () => 'min/mile',
     titleFormatter: (key) => `${key} min/mile`,
     suffixFormatter: () => 'min/mile',
@@ -31,6 +33,7 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     property: 'totalElevation',
     defaultTolerance: 50,
     defaultGroupSize: 100,
+    backgroundColor: '#6283f7',
     unitFormatter: () => 'm',
     titleFormatter: (key) => `${key}m elevation`,
     suffixFormatter: () => 'm',
@@ -42,6 +45,7 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     property: 'duration',
     defaultTolerance: 300, // 5 minutes tolerance
     defaultGroupSize: 900, // 15 minute increments
+    backgroundColor: '#7eadec',
     unitFormatter: () => 'minutes',
     suffixFormatter: () => 'minutes',
     titleFormatter: (key) => `${Math.round(Number(key) / 60)} min`,
