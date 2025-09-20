@@ -14,7 +14,7 @@ export const LowDataWarning: React.FC<LowDataWarningProps> = ({ message }) => {
 
   return (
     <Warning
-      title="Limited Data"
+      title="Not much data!"
       message={message}
       onPress={handlePress}
       actionHint="Tap to adjust time range"

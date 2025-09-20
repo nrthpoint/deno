@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { LatoFonts } from '@/config/fonts';
-import { subheading } from '@/utils/text';
+import { subheading, uppercase } from '@/utils/text';
 
 export interface WarningProps {
   title: string;
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 193, 7, 0.1)',
     borderRadius: 8,
     padding: 12,
-    marginBottom: 15,
+    paddingHorizontal: 16,
     alignItems: 'center',
   },
   iconContainer: {
@@ -107,11 +107,11 @@ const styles = StyleSheet.create({
     color: '#FFC107',
   },
   actionHint: {
-    color: '#FFC107',
+    ...uppercase,
+    color: '#FFF',
     fontSize: 10,
     fontFamily: LatoFonts?.bold,
-    marginTop: 4,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    marginTop: 6,
+    marginBottom: 0,
   },
 });

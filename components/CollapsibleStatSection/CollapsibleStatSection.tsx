@@ -10,16 +10,16 @@ import { subheading } from '@/utils/text';
 
 interface CollapsibleStatSectionProps {
   section: StatGroup;
-  getTabColor: (label: string) => string | undefined;
   initialExpanded?: boolean;
   alternatingBackground?: boolean;
+  getTabColor: (label: string) => string | undefined;
 }
 
 export const CollapsibleStatSection: React.FC<CollapsibleStatSectionProps> = ({
   section,
-  getTabColor,
   initialExpanded = true,
   alternatingBackground = false,
+  getTabColor,
 }) => {
   const [isExpanded, setIsExpanded] = useState(initialExpanded);
 
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     color: '#CCCCCC',
     fontSize: 14,
     fontFamily: LatoFonts.regular,
-    marginTop: 10,
+    marginTop: 3,
     marginBottom: 5,
     textAlign: 'left',
   },

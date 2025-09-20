@@ -8,7 +8,7 @@ import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { formatDistance } from '@/utils/distance';
 import { getAbsoluteDifference } from '@/utils/quantity';
-import { subheading } from '@/utils/text';
+import { subheading, uppercase } from '@/utils/text';
 import { formatDuration } from '@/utils/time';
 
 export interface ProgressionEntry {
@@ -54,7 +54,7 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
     </View>
   );
 
-  const NoChangeIndicator = () => <Text style={styles.cell}>—</Text>;
+  const NoChangeIndicator = () => <Text style={[styles.cell, styles.noChangeText]}>—</Text>;
 
   const LatestEntryChange = ({
     currentQuantity,
@@ -151,7 +151,7 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
             <Text style={styles.headerCell}>Difference</Text>
           </View>
 
-          {entries.reverse().map((entry, index) => (
+          {entries.map((entry, index) => (
             <Row
               key={index}
               entry={entry}
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     color: '#CCCCCC',
     fontSize: 14,
     fontFamily: LatoFonts.regular,
-    marginTop: 10,
+    marginTop: 5,
     marginBottom: 15,
     textAlign: 'left',
   },
@@ -225,12 +225,11 @@ const styles = StyleSheet.create({
   },
   tableContainer: {
     paddingBottom: 15,
-    paddingHorizontal: 20,
   },
   table: {
-    borderWidth: 1,
-    borderColor: colors.surface,
-    borderRadius: 8,
+    //borderWidth: 1,
+    //borderColor: colors.surface,
+    //borderRadius: 8,
     overflow: 'hidden',
     marginBottom: 5,
   },
@@ -258,11 +257,15 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.surface,
   },
   cell: {
+    ...uppercase,
     flex: 1,
     color: '#CCCCCC',
-    fontSize: 13,
+    //fontSize: 13,
     fontFamily: LatoFonts.regular,
     textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // height: '100%',
   },
   changeCell: {
     flex: 1,
@@ -278,5 +281,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  noChangeText: {
+    marginTop: 6,
+    color: '#666666',
   },
 });
