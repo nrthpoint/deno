@@ -1,13 +1,69 @@
 import { useEffect, useRef } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
+import Animated, {
+  interpolate,
+  SharedValue,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
+import { CardBackground } from '@/components/GroupCarousel/CardBackground';
 import { colors } from '@/config/colors';
 import { useTheme } from '@/context/ThemeContext';
 import { GroupType } from '@/types/Groups';
 import { subheading } from '@/utils/text';
+
+const getImageForGroupType = (groupType: GroupType) => {
+  switch (groupType) {
+    case 'distance':
+      return require('@/assets/images/carousel/distance.jpg');
+    case 'pace':
+      return require('@/assets/images/carousel/pace.jpg');
+    case 'elevation':
+      return require('@/assets/images/carousel/elevation.jpg');
+    case 'duration':
+      return require('@/assets/images/carousel/duration.jpg');
+    default:
+      return null;
+  }
+};
+
+interface BackgroundImageProps {
+  groupType: GroupType;
+  parallaxOffset: SharedValue<number>;
+}
+
+const BackgroundImage = ({ groupType, parallaxOffset }: BackgroundImageProps) => {
+  const image = getImageForGroupType(groupType);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    const translateX = interpolate(parallaxOffset.value, [-100, 0, 100], [-0.1, 0, 0.1]);
+
+    return {
+      transform: [{ translateX }],
+    };
+  });
+
+  if (!image) return null;
+
+  return (
+    <View style={styles.backgroundImageContainer}>
+      <View style={styles.backgroundColorLayer} />
+      <Animated.View style={[styles.imageWrapper, animatedStyle]}>
+        <Image
+          source={image}
+          style={styles.backgroundImage}
+          width={600}
+          height={250}
+          resizeMode="cover"
+          blurRadius={4}
+        />
+      </Animated.View>
+    </View>
+  );
+};
 
 interface GroupCarouselProps {
   options: string[];
@@ -16,73 +72,20 @@ interface GroupCarouselProps {
   tolerance: number;
   groupType: GroupType;
   distanceUnit: string;
-  setSelectedOption: (_option: string) => void;
   groups: Record<string, any>;
+  setSelectedOption: (_option: string) => void;
 }
-
-const CardBackground = () => (
-  <View
-    style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      borderRadius: 20,
-      overflow: 'hidden',
-    }}
-  >
-    <Svg
-      width="100%"
-      height="100%"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        borderRadius: 0,
-      }}
-    >
-      <Defs>
-        <LinearGradient
-          id="grad"
-          x1="1"
-          y1="0"
-          x2="1"
-          y2="1"
-        >
-          <Stop
-            offset="0%"
-            stopColor="#ebebeb"
-          />
-          <Stop
-            offset="100%"
-            stopColor="#e7e7e7"
-          />
-        </LinearGradient>
-      </Defs>
-      <Rect
-        x="0"
-        y="0"
-        width="100%"
-        height="100%"
-        //rx="20"
-        fill="url(#grad)"
-      />
-    </Svg>
-  </View>
-);
 
 export const GroupCarousel = ({
   options,
   itemSuffix,
   groupType,
-  setSelectedOption,
   groups,
+  setSelectedOption,
 }: GroupCarouselProps) => {
   const { colorProfile } = useTheme();
   const carouselRef = useRef<any>(null);
+  const parallaxOffset = useSharedValue(0);
 
   // Reset carousel to index 0 when group type changes.
   // TODO: Fix this, wrong use of useEffect, Ali would hate me.
@@ -100,69 +103,124 @@ export const GroupCarousel = ({
   const itemWidth = (deviceWidth - padding) / visibleItems;
 
   return (
-    <Carousel
-      ref={carouselRef}
-      width={itemWidth}
-      loop={false}
-      height={180}
-      data={options.length > 0 ? options : ['--']}
-      scrollAnimationDuration={300}
-      onSnapToItem={(index) => {
-        setSelectedOption(options[index]);
-      }}
-      style={styles.carousel}
-      mode="parallax"
-      modeConfig={{
-        parallaxScrollingScale: 0.9,
-        parallaxScrollingOffset: 60,
-        parallaxAdjacentItemScale: 0.7,
-      }}
-      renderItem={({ item }) => {
-        const group = groups[item];
-        const isIndoor = group?.isIndoor || false;
+    <View style={styles.carouselContainer}>
+      <BackgroundImage
+        groupType={groupType}
+        parallaxOffset={parallaxOffset}
+      />
+      <Carousel
+        ref={carouselRef}
+        width={itemWidth}
+        loop={false}
+        height={180}
+        data={options.length > 0 ? options : ['--']}
+        scrollAnimationDuration={300}
+        onSnapToItem={(index) => {
+          setSelectedOption(options[index]);
+        }}
+        onProgressChange={(offsetProgress) => {
+          parallaxOffset.value = offsetProgress * 100;
+        }}
+        style={styles.carousel}
+        mode="parallax"
+        modeConfig={{
+          parallaxScrollingScale: 0.9,
+          parallaxScrollingOffset: 60,
+          parallaxAdjacentItemScale: 0.7,
+        }}
+        renderItem={({ item }) => {
+          const group = groups[item];
+          const isIndoor = group?.isIndoor || false;
 
-        return (
-          <View style={styles.carouselItem}>
-            <CardBackground />
+          return (
+            <View style={styles.carouselItem}>
+              <CardBackground />
 
-            <View style={styles.carouselItemContent}>
-              {isIndoor && (
-                <View style={[styles.indoorLabel, { backgroundColor: '#ff4800' }]}>
-                  <Text style={styles.indoorLabelText}>Indoor</Text>
-                </View>
-              )}
+              <View style={styles.carouselItemContent}>
+                {isIndoor && (
+                  <View style={[styles.indoorLabel, { backgroundColor: '#ff4800' }]}>
+                    <Text style={styles.indoorLabelText}>Indoor</Text>
+                  </View>
+                )}
 
-              <Text
-                style={[
-                  styles.carouselText,
-                  {
-                    color: colorProfile.primary,
-                    fontSize: item.length > 3 ? 60 : item.length > 2 ? 70 : 80,
-                  },
-                ]}
-              >
-                {item.replace(/-indoor|-outdoor/, '')} {/* Remove the suffix from display */}
-              </Text>
+                <Text
+                  style={[
+                    styles.carouselText,
+                    {
+                      color: colorProfile.primary,
+                      fontSize: item.length > 3 ? 60 : item.length > 2 ? 70 : 80,
+                    },
+                  ]}
+                >
+                  {item.replace(/-indoor|-outdoor/, '')} {/* Remove the suffix from display */}
+                </Text>
 
-              <Text style={[styles.carouselSubText, { color: colorProfile.primary }]}>
-                {itemSuffix}
-              </Text>
+                <Text style={[styles.carouselSubText, { color: colorProfile.primary }]}>
+                  {itemSuffix}
+                </Text>
+              </View>
             </View>
-          </View>
-        );
-      }}
-    />
+          );
+        }}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  carouselContainer: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+  },
+  backgroundImageContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
+    height: '100%',
+    zIndex: -1,
+  },
+  backgroundColorLayer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#5681FE',
+    zIndex: 1,
+  },
+  imageWrapper: {
+    flex: 1,
+    zIndex: 2,
+  },
+  backgroundImage: {
+    opacity: 0.4,
+    backgroundColor: 'red',
+    position: 'absolute',
+    bottom: -50,
+    overflow: 'visible',
+    alignContent: 'flex-end',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    height: '100%',
+  },
+  // blurOverlay: {
+  //   position: 'absolute',
+  //   top: 0,
+  //   left: 0,
+  //   right: 0,
+  //   bottom: 0,
+  // },
   carousel: {
-    marginTop: 20,
+    marginTop: 200,
     paddingHorizontal: 20,
     justifyContent: 'center',
     alignSelf: 'center',
     width: '100%',
     overflow: 'visible',
+    zIndex: 10,
   },
   carouselItemContent: {
     justifyContent: 'center',

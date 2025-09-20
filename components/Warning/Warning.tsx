@@ -1,9 +1,10 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Text } from 'react-native-paper';
 
+import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { subheading, uppercase } from '@/utils/text';
 
 export interface WarningProps {
   title: string;
@@ -42,9 +43,9 @@ const renderMessageWithBold = (text: string) => {
 };
 
 export const Warning: React.FC<WarningProps> = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   title,
   message,
-  icon = '⚠️',
   onPress,
   actionHint,
   variant = 'default',
@@ -59,10 +60,16 @@ export const Warning: React.FC<WarningProps> = ({
       {...containerProps}
     >
       <View style={styles.iconContainer}>
-        <Text style={styles.icon}>{icon}</Text>
+        <Text style={styles.icon}>
+          <Ionicons
+            name="warning"
+            color={colors.background}
+            size={28}
+          />
+        </Text>
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{title}</Text>
+        {/* <Text style={styles.title}>{title}</Text> */}
         <Text style={styles.message}>{renderMessageWithBold(message)}</Text>
         {actionHint && <Text style={styles.actionHint}>{actionHint}</Text>}
       </View>
@@ -73,7 +80,7 @@ export const Warning: React.FC<WarningProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+    backgroundColor: 'rgb(255, 193, 7)', // 'rgba(255, 193, 7, 0.1)',
     borderRadius: 8,
     padding: 12,
     paddingHorizontal: 16,
@@ -88,30 +95,30 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
   },
-  title: {
-    ...subheading,
-    marginTop: 0,
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#FFC107',
-    marginBottom: 6,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
+  // title: {
+  //   ...subheading,
+  //   // ...getLatoFont('black'),
+  //   marginTop: 0,
+  //   fontSize: 12,
+  //   color: colors.background,
+  //   marginBottom: 4,
+  //   textTransform: 'uppercase',
+  //   letterSpacing: 0.5,
+  // },
   message: {
-    color: '#CCCCCC',
+    color: colors.background,
     fontSize: 11,
     lineHeight: 16,
     fontFamily: LatoFonts?.regular,
   },
   boldMessage: {
     fontFamily: LatoFonts?.bold,
-    color: '#FFC107',
+    color: colors.background,
   },
   actionHint: {
-    ...uppercase,
-    color: '#FFF',
-    fontSize: 10,
+    //...uppercase,
+    color: colors.background,
+    fontSize: 11,
     fontFamily: LatoFonts?.bold,
     marginTop: 6,
     marginBottom: 0,

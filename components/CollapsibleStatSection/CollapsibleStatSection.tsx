@@ -73,11 +73,10 @@ export const CollapsibleStatSection: React.FC<CollapsibleStatSectionProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
   },
   sectionHeaderContainer: {
     marginTop: 20,
-    paddingHorizontal: 5,
     paddingVertical: 5,
   },
   sectionHeaderContent: {

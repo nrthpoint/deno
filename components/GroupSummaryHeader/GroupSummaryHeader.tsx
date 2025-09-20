@@ -38,7 +38,7 @@ const renderTextWithBold = (text: string) => {
 
 export const GroupSummaryHeader: React.FC<GroupSummaryHeaderProps> = ({ summary }) => {
   return (
-    <View style={styles.container}>
+    <View>
       <Text style={styles.summaryHeading}>Summary</Text>
       <Text style={styles.summaryText}>{renderTextWithBold(summary)}</Text>
     </View>
@@ -52,9 +52,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginBottom: 10,
     marginTop: 10,
-  },
-  container: {
-    paddingBottom: 20,
   },
   summaryText: {
     color: '#CCCCCC',

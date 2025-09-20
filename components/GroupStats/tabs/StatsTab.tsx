@@ -32,10 +32,9 @@ export const StatsTab: React.FC = () => {
   const progressionData = generateProgressionData(group, groupType, timeRangeInDays);
 
   return (
-    <View style={styles.container}>
-      <View style={{ paddingHorizontal: 16 }}>
+    <>
+      <View style={styles.headingContainer}>
         <GroupSummaryHeader summary={summary} />
-
         <VisualCards />
       </View>
 
@@ -55,10 +54,13 @@ export const StatsTab: React.FC = () => {
           alternatingBackground={index % 2 === 0}
         />
       ))}
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  headingContainer: {
+    paddingHorizontal: 10,
+    gap: 10,
+  },
 });

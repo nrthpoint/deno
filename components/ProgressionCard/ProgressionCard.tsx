@@ -120,7 +120,7 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
     </View>
   );
 
-  const headerComponent = (
+  const Header = () => (
     <TouchableOpacity
       style={styles.headerContainer}
       onPress={() => setIsExpanded(!isExpanded)}
@@ -139,18 +139,22 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
     </TouchableOpacity>
   );
 
-  const contentComponent =
+  const TableHeader = () => (
+    <View style={styles.tableHeader}>
+      <Text style={styles.headerCell}>Date</Text>
+      <Text style={styles.headerCell}>{metricLabel}</Text>
+      <Text style={styles.headerCell}>Difference</Text>
+    </View>
+  );
+
+  const Content = () =>
     entries.length === 0 ? (
       <NoData />
     ) : (
       <View style={styles.tableContainer}>
-        <View style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={styles.headerCell}>Date</Text>
-            <Text style={styles.headerCell}>{metricLabel}</Text>
-            <Text style={styles.headerCell}>Difference</Text>
-          </View>
+        <TableHeader />
 
+        <View style={styles.table}>
           {entries.map((entry, index) => (
             <Row
               key={index}
@@ -165,8 +169,8 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
 
   return (
     <View style={styles.container}>
-      {headerComponent}
-      {isExpanded && contentComponent}
+      <Header />
+      {isExpanded && <Content />}
     </View>
   );
 };
@@ -177,7 +181,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     marginTop: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 5,
   },
   headerContent: {
@@ -227,9 +231,6 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   table: {
-    //borderWidth: 1,
-    //borderColor: colors.surface,
-    //borderRadius: 8,
     overflow: 'hidden',
     marginBottom: 5,
   },
@@ -240,10 +241,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   headerCell: {
+    ...uppercase,
     flex: 1,
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontFamily: LatoFonts.bold,
+    color: '#CCCCCC',
     textAlign: 'center',
   },
   tableRow: {
@@ -258,14 +258,10 @@ const styles = StyleSheet.create({
   },
   cell: {
     ...uppercase,
+    color: '#FFF',
     flex: 1,
-    color: '#CCCCCC',
-    //fontSize: 13,
-    fontFamily: LatoFonts.regular,
+    fontFamily: LatoFonts.bold,
     textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    // height: '100%',
   },
   changeCell: {
     flex: 1,

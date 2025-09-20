@@ -11,7 +11,6 @@ import {
   GroupTypeBottomSheetRef,
   GroupTypeBottomSheetWithRef,
 } from '@/components/GroupTypeBottomSheet/GroupTypeBottomSheet';
-import { ThemedGradient } from '@/components/ThemedGradient';
 import { colors, tabColors } from '@/config/colors';
 import { tabLabels } from '@/config/ui';
 import { GroupStatsProvider } from '@/context/GroupStatsContext';
@@ -21,29 +20,6 @@ import { useGroupConfig } from '@/hooks/useGroupConfig';
 import { useWorkoutGroups } from '@/hooks/useWorkoutGroups';
 import { GroupType } from '@/types/Groups';
 import { subheading } from '@/utils/text';
-
-const Background = () => (
-  <View
-    style={{
-      ...StyleSheet.absoluteFillObject,
-      // Extends the background underneath the GroupStats so it says underneath the curved corners.
-      bottom: -200,
-      zIndex: -1,
-    }}
-  >
-    {/* Gradient background */}
-    <View
-      style={{
-        flex: 1,
-        height: '100%',
-        width: '100%',
-        backgroundColor: 'transparent',
-      }}
-    >
-      <ThemedGradient />
-    </View>
-  </View>
-);
 
 export default function Index() {
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
@@ -123,8 +99,11 @@ export default function Index() {
         />
 
         <View
-          id="top-carousel"
-          style={{ borderRadius: 20, overflow: 'hidden' }}
+          style={{
+            borderRadius: 20,
+            overflow: 'hidden',
+            height: 400,
+          }}
         >
           <Animated.View
             style={{
@@ -175,7 +154,7 @@ export default function Index() {
               groups={groups}
             />
 
-            <Background />
+            {/* <Background /> */}
           </Animated.View>
         </View>
 
@@ -201,7 +180,7 @@ export const styles = StyleSheet.create({
   },
   activityIconContainer: {
     position: 'absolute',
-    top: 120,
+    top: 150,
     left: '50%',
     width: 48,
     height: 48,
@@ -212,6 +191,7 @@ export const styles = StyleSheet.create({
     zIndex: 10,
   },
   header: {
+    position: 'absolute',
     paddingTop: 80,
     paddingHorizontal: 20,
   },

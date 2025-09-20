@@ -112,10 +112,10 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
     backgroundColor: colors.surface,
-    borderRadius: 12,
+    borderRadius: 8,
     padding: 4,
     borderWidth: 1,
-    borderColor: colors.gray,
+    borderColor: colors.surfaceHighlight,
     position: 'relative',
   },
   slidingIndicator: {
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     top: 4,
     bottom: 4,
     left: 4,
-    borderRadius: 8,
+    borderRadius: 6,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

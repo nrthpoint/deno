@@ -11,14 +11,18 @@ import { useTheme } from '@/context/ThemeContext';
 import { StatCardProps } from './StatCard.types';
 import { DisplayValue, formatQuantityValue } from './StatCard.utils';
 
-const Value = ({ value }: { value: DisplayValue }) => {
+const Value = ({ value, darkerBackground }: { value: DisplayValue; darkerBackground: boolean }) => {
   return value.map((component, index) => (
     <View
       key={index}
       style={styles.durationComponent}
     >
-      <Text style={styles.value}>{component.displayValue}</Text>
-      <Text style={styles.unit}>{component.unit}</Text>
+      <Text style={[styles.value, { color: darkerBackground ? colors.surface : colors.neutral }]}>
+        {component.displayValue}
+      </Text>
+      <Text style={[styles.unit, { color: darkerBackground ? colors.surface : colors.neutral }]}>
+        {component.unit}
+      </Text>
     </View>
   ));
 };
@@ -35,16 +39,23 @@ export const StatCard = ({
   const formattedValue = formatQuantityValue(value, type);
 
   const cardContent = (
-    <Card backgroundColor={darkerBackground ? colors.background : colors.surface}>
+    <Card backgroundColor={darkerBackground ? colors.neutral : colors.surface}>
       <View style={styles.innerContainer}>
         <View style={[styles.accentStrip, { backgroundColor: accentColor || primary }]}>
           <View style={styles.iconContainer}>{icon}</View>
         </View>
 
         <View style={styles.content}>
-          <Text style={styles.label}>{label}</Text>
+          <Text
+            style={[styles.label, { color: darkerBackground ? colors.surface : colors.neutral }]}
+          >
+            {label}
+          </Text>
           <View style={styles.valueContainer}>
-            <Value value={formattedValue} />
+            <Value
+              value={formattedValue}
+              darkerBackground={darkerBackground}
+            />
           </View>
         </View>
       </View>
@@ -83,7 +94,7 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.bold,
     textTransform: 'uppercase',
     letterSpacing: 1.6,
-    marginBottom: 8,
+    marginBottom: 4,
   },
   valueContainer: {
     flexDirection: 'row',
