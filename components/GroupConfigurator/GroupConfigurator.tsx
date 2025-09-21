@@ -19,14 +19,18 @@ export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
 }) => {
   const { colorProfile } = useTheme();
 
-  const labels = getConfigLabels(groupType, distanceUnit);
+  const labels = getConfigLabels(groupType, distanceUnit, config.groupSize);
 
   const handleToleranceChange = (value: number) => {
-    onConfigChange({ ...config, tolerance: value });
+    const maxTolerance = config.groupSize / 2;
+    const constrainedValue = Math.min(value, maxTolerance);
+    onConfigChange({ ...config, tolerance: constrainedValue });
   };
 
   const handleGroupSizeChange = (value: number) => {
-    onConfigChange({ ...config, groupSize: value });
+    const maxTolerance = value / 2;
+    const constrainedTolerance = Math.min(config.tolerance, maxTolerance);
+    onConfigChange({ ...config, groupSize: value, tolerance: constrainedTolerance });
   };
 
   return (

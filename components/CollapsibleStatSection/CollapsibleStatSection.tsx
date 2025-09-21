@@ -17,7 +17,7 @@ interface CollapsibleStatSectionProps {
 
 export const CollapsibleStatSection: React.FC<CollapsibleStatSectionProps> = ({
   section,
-  initialExpanded = true,
+  initialExpanded = false,
   alternatingBackground = false,
   getTabColor,
 }) => {

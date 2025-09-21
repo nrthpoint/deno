@@ -9,32 +9,36 @@ import { GroupType } from '@/types/Groups';
  * Provides state management and update methods for tolerance and groupSize settings.
  */
 export function useGroupConfig() {
-  const [groupingConfigs, setGroupingConfigs] = useState<Record<GroupType, GroupingConfig>>({
-    distance: {
-      tolerance: getTabOptionConfig('distance').tolerance,
-      groupSize: getTabOptionConfig('distance').groupSize,
-    },
-    pace: {
-      tolerance: getTabOptionConfig('pace').tolerance,
-      groupSize: getTabOptionConfig('pace').groupSize,
-    },
-    elevation: {
-      tolerance: getTabOptionConfig('elevation').tolerance,
-      groupSize: getTabOptionConfig('elevation').groupSize,
-    },
-    duration: {
-      tolerance: getTabOptionConfig('duration').tolerance,
-      groupSize: getTabOptionConfig('duration').groupSize,
-    },
+  const [groupingConfigs, setGroupingConfigs] = useState<Record<GroupType, GroupingConfig>>(() => {
+    const groupTypes: GroupType[] = ['distance', 'pace', 'elevation', 'duration'];
+
+    return groupTypes.reduce(
+      (acc, groupType) => {
+        const config = getTabOptionConfig(groupType);
+        acc[groupType] = {
+          tolerance: config.tolerance,
+          groupSize: config.groupSize,
+        };
+        return acc;
+      },
+      {} as Record<GroupType, GroupingConfig>,
+    );
   });
 
   /**
    * Update configuration for a specific group type
    */
   const updateConfig = useCallback((groupType: GroupType, config: GroupingConfig) => {
+    // Ensure tolerance doesn't exceed half the group size
+    const maxTolerance = config.groupSize / 2;
+    const validatedConfig = {
+      ...config,
+      tolerance: Math.min(config.tolerance, maxTolerance),
+    };
+
     setGroupingConfigs((prev) => ({
       ...prev,
-      [groupType]: config,
+      [groupType]: validatedConfig,
     }));
   }, []);
 
@@ -66,24 +70,20 @@ export function useGroupConfig() {
    * Reset all configurations to defaults
    */
   const resetAllConfigs = useCallback(() => {
-    setGroupingConfigs({
-      distance: {
-        tolerance: getTabOptionConfig('distance').tolerance,
-        groupSize: getTabOptionConfig('distance').groupSize,
+    const groupTypes: GroupType[] = ['distance', 'pace', 'elevation', 'duration'];
+    const resetConfigs = groupTypes.reduce(
+      (acc, groupType) => {
+        const config = getTabOptionConfig(groupType);
+        acc[groupType] = {
+          tolerance: config.tolerance,
+          groupSize: config.groupSize,
+        };
+        return acc;
       },
-      pace: {
-        tolerance: getTabOptionConfig('pace').tolerance,
-        groupSize: getTabOptionConfig('pace').groupSize,
-      },
-      elevation: {
-        tolerance: getTabOptionConfig('elevation').tolerance,
-        groupSize: getTabOptionConfig('elevation').groupSize,
-      },
-      duration: {
-        tolerance: getTabOptionConfig('duration').tolerance,
-        groupSize: getTabOptionConfig('duration').groupSize,
-      },
-    });
+      {} as Record<GroupType, GroupingConfig>,
+    );
+
+    setGroupingConfigs(resetConfigs);
   }, []);
 
   return {

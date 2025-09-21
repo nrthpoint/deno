@@ -9,6 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 
+import { FlyingBirds } from '@/components/FlyingBirds/FlyingBirds';
 import { CardBackground } from '@/components/GroupCarousel/CardBackground';
 import { colors } from '@/config/colors';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
@@ -109,6 +110,7 @@ export const GroupCarousel = ({
         groupType={groupType}
         parallaxOffset={parallaxOffset}
       />
+      <FlyingBirds count={3} />
       <Carousel
         ref={carouselRef}
         width={itemWidth}

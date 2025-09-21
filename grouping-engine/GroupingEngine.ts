@@ -77,15 +77,17 @@ function parseSampleIntoGroup({
     return;
   }
 
-  // Calculate the nearest group based on groupSize
-  const nearestGroup = Math.round(value.quantity / groupSize) * groupSize;
+  // Calculate the nearest group based on groupSize, rounding down
+  const nearestGroup = Math.floor(value.quantity / groupSize) * groupSize;
   // Create a string key for the group INCLUDING indoor/outdoor designation
   const baseGroupKey = nearestGroup % 1 === 0 ? nearestGroup.toString() : nearestGroup.toFixed(1);
   const indoorSuffix = sample.isIndoor ? '-indoor' : '-outdoor';
   const groupKey = baseGroupKey + indoorSuffix;
 
-  // Check if the sample is close enough to the group
-  const isCloseEnough = Math.abs(value.quantity - nearestGroup) <= tolerance;
+  // Check if the sample is within the group range (nearestGroup to nearestGroup + groupSize)
+  // and within tolerance of the nearestGroup
+  const isCloseEnough =
+    value.quantity >= nearestGroup && value.quantity <= nearestGroup + groupSize + tolerance;
 
   // Create or get the group for the current sample
   const group =
@@ -99,7 +101,7 @@ function parseSampleIntoGroup({
 
   if (!isCloseEnough) {
     console.warn(
-      `Run with ${config.property} ${value.quantity} ${value.unit} is not close enough to ${nearestGroup} ${value.unit} with a tolerance of ${tolerance}. Skipping.`,
+      `Run with ${config.property} ${value.quantity} ${value.unit} is not within the group range ${nearestGroup}-${nearestGroup + groupSize} ${value.unit} with tolerance ${tolerance}. Skipping.`,
     );
 
     group.skipped = (group.skipped || 0) + 1;
