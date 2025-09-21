@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Button } from 'react-native-paper';
 
 import { CollapsibleStatSection } from '@/components/CollapsibleStatSection/CollapsibleStatSection';
 import { VisualCards } from '@/components/GroupStats/GroupHighlights';
 import { GroupSummaryHeader } from '@/components/GroupSummaryHeader/GroupSummaryHeader';
 import { ProgressionCard } from '@/components/ProgressionCard/ProgressionCard';
+import {
+  WorkoutListBottomSheet,
+  WorkoutListBottomSheetRef,
+} from '@/components/WorkoutListBottomSheet/WorkoutListBottomSheet';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { generateGroupSummary } from '@/utils/groupSummary';
 import { generateProgressionData } from '@/utils/progression';
@@ -28,8 +33,13 @@ const getTabColor = (label: string) => {
 
 export const StatsTab: React.FC = () => {
   const { group, groupType, timeRangeInDays } = useGroupStats();
+  const workoutListRef = useRef<WorkoutListBottomSheetRef>(null);
   const summary = generateGroupSummary(group, groupType, timeRangeInDays);
   const progressionData = generateProgressionData(group, groupType, timeRangeInDays);
+
+  const handleViewAllWorkouts = () => {
+    workoutListRef.current?.open();
+  };
 
   return (
     <>
@@ -54,6 +64,23 @@ export const StatsTab: React.FC = () => {
           alternatingBackground={index % 2 === 0}
         />
       ))}
+
+      <View style={styles.buttonContainer}>
+        <Button
+          mode="contained"
+          onPress={handleViewAllWorkouts}
+          style={styles.viewAllButton}
+          labelStyle={styles.buttonLabel}
+        >
+          View All {group.runs.length} Workouts
+        </Button>
+      </View>
+
+      <WorkoutListBottomSheet
+        ref={workoutListRef}
+        workouts={group.runs}
+        title={`All ${group.runs.length} Workouts`}
+      />
     </>
   );
 };
@@ -62,5 +89,16 @@ const styles = StyleSheet.create({
   headingContainer: {
     paddingHorizontal: 20,
     gap: 10,
+  },
+  buttonContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  viewAllButton: {
+    borderRadius: 8,
+  },
+  buttonLabel: {
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
