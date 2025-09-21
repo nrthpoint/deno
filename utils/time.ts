@@ -182,3 +182,18 @@ export const formatWorkoutDate = (date: Date) => {
 
   return `${date.toLocaleDateString('en-US', { weekday: 'long' })} ${getOrdinal(workoutDay)} ${date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
 };
+
+/**
+ * Formats a date as "X days ago", "1 day ago", or "today"
+ * @param date - The date to format
+ * @returns Formatted days ago string
+ */
+export const formatDaysAgo = (date: Date): string => {
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - date.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return 'today';
+  if (diffDays === 1) return '1 day ago';
+  return `${diffDays} days ago`;
+};

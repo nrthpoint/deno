@@ -6,7 +6,7 @@ import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 import { generateWorkoutPrediction } from '@/utils/prediction';
 import { getAbsoluteDifference } from '@/utils/quantity';
-import { formatPace } from '@/utils/time';
+import { formatPace, formatDaysAgo } from '@/utils/time';
 import { generateTimeLabel } from '@/utils/timeLabels';
 import { findHighestElevationRun, findLowestElevationRun } from '@/utils/workout';
 
@@ -176,6 +176,51 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
             icon: (
               <Ionicons
                 name="speedometer"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+        ],
+      },
+      {
+        title: 'Most Recent',
+        description: `Your most recent workout at this elevation${timeLabel} (${formatDaysAgo(group.mostRecent.endDate)})`,
+        items: [
+          {
+            type: 'distance',
+            label: 'Distance',
+            value: group.mostRecent.totalDistance,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'pace',
+            label: 'Pace',
+            value: group.mostRecent.averagePace,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="speedometer"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'duration',
+            label: 'Time',
+            value: group.mostRecent.duration,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="stopwatch-outline"
                 size={40}
                 color="#FFFFFF"
               />

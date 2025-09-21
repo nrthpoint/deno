@@ -5,6 +5,7 @@ import { BaseGroupStatCalculator } from '@/grouping-engine/calculators/Base';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 import { getAbsoluteDifference } from '@/utils/quantity';
+import { formatDaysAgo } from '@/utils/time';
 import { generateTimeLabel } from '@/utils/timeLabels';
 
 /**
@@ -133,6 +134,51 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
             label: 'Elevation',
             value: group.lowestElevation.totalElevation,
             workout: group.lowestElevation,
+            icon: (
+              <Ionicons
+                name="triangle-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+        ],
+      },
+      {
+        title: 'Most Recent',
+        description: `Your most recent workout at ${prettyName}${timeLabel} (${formatDaysAgo(group.mostRecent.endDate)})`,
+        items: [
+          {
+            type: 'distance',
+            label: 'Distance',
+            value: group.mostRecent.totalDistance,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'pace',
+            label: 'Pace',
+            value: group.mostRecent.averagePace,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="speedometer"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.mostRecent.totalElevation,
+            workout: group.mostRecent,
             icon: (
               <Ionicons
                 name="triangle-outline"

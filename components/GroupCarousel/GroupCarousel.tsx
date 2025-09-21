@@ -13,7 +13,7 @@ import { CardBackground } from '@/components/GroupCarousel/CardBackground';
 import { colors } from '@/config/colors';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { GroupType } from '@/types/Groups';
-import { subheading } from '@/utils/text';
+import { subheading, uppercase } from '@/utils/text';
 
 const getImageForGroupType = (groupType: GroupType) => {
   switch (groupType) {
@@ -132,34 +132,44 @@ export const GroupCarousel = ({
         renderItem={({ item }) => {
           const group = groups[item];
           const isIndoor = group?.isIndoor || false;
+          const skippedCount = group?.skipped || 0;
 
           return (
-            <View style={styles.carouselItem}>
-              <CardBackground />
+            <View style={styles.carouselItemContainer}>
+              <View style={styles.carouselItem}>
+                <CardBackground />
 
-              <View style={styles.carouselItemContent}>
-                {isIndoor && (
-                  <View style={[styles.indoorLabel, { backgroundColor: '#ff4800' }]}>
-                    <Text style={styles.indoorLabelText}>Indoor</Text>
-                  </View>
-                )}
+                <View style={styles.carouselItemContent}>
+                  {isIndoor && (
+                    <View style={[styles.indoorLabel, { backgroundColor: '#ff4800' }]}>
+                      <Text style={styles.indoorLabelText}>Indoor</Text>
+                    </View>
+                  )}
 
-                <Text
-                  style={[
-                    styles.carouselText,
-                    {
-                      color: backgroundColor,
-                      fontSize: item.length > 3 ? 60 : item.length > 2 ? 70 : 80,
-                    },
-                  ]}
-                >
-                  {item.replace(/-indoor|-outdoor/, '')} {/* Remove the suffix from display */}
-                </Text>
+                  <Text
+                    style={[
+                      styles.carouselText,
+                      {
+                        color: backgroundColor,
+                        fontSize: item.length > 3 ? 60 : item.length > 2 ? 70 : 80,
+                      },
+                    ]}
+                  >
+                    {item.replace(/-indoor|-outdoor/, '')} {/* Remove the suffix from display */}
+                  </Text>
 
-                <Text style={[styles.carouselSubText, { color: backgroundColor }]}>
-                  {itemSuffix}
-                </Text>
+                  <Text style={[styles.carouselSubText, { color: backgroundColor }]}>
+                    {itemSuffix}
+                  </Text>
+                </View>
               </View>
+
+              {/* Excluded workouts indicator */}
+              {skippedCount > 0 && (
+                <View style={styles.excludedIndicator}>
+                  <Text style={styles.excludedIndicatorText}>{skippedCount} excluded</Text>
+                </View>
+              )}
             </View>
           );
         }}
@@ -216,6 +226,9 @@ const styles = StyleSheet.create({
     overflow: 'visible',
     zIndex: 10,
   },
+  carouselItemContainer: {
+    alignItems: 'center',
+  },
   carouselItemContent: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -236,6 +249,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 1,
+  },
+  excludedIndicator: {
+    marginTop: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  excludedIndicatorText: {
+    ...uppercase,
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'center',
   },
   carouselText: {
     verticalAlign: 'middle',
