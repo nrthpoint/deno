@@ -1,4 +1,5 @@
 import { LengthUnit, WorkoutActivityType } from '@kingstinct/react-native-healthkit';
+import { useMemo } from 'react';
 
 import { TimeRange } from '@/config/timeRanges';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
@@ -32,16 +33,23 @@ export function useWorkoutGroups({
 
   const config = GROUPING_CONFIGS[groupType];
 
-  const groups = groupWorkouts(
-    {
-      samples,
-      tolerance: tolerance ?? config.defaultTolerance,
-      groupSize: groupSize ?? config.defaultGroupSize,
-      distanceUnit,
-    },
-    config,
-    timeRangeInDays,
-  );
+  // Memoize the expensive groupWorkouts calculation
+  const groups = useMemo(() => {
+    if (loading || samples.length === 0) {
+      return {};
+    }
+
+    return groupWorkouts(
+      {
+        samples,
+        tolerance: tolerance ?? config.defaultTolerance,
+        groupSize: groupSize ?? config.defaultGroupSize,
+        distanceUnit,
+      },
+      config,
+      timeRangeInDays,
+    );
+  }, [samples, tolerance, groupSize, distanceUnit, config, timeRangeInDays, loading]);
 
   return { groups, meta, samples, loading, authorizationStatus, requestAuthorization, refresh };
 }

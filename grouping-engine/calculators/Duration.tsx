@@ -44,7 +44,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
     group.stats = [
       {
         title: 'Furthest',
-        description: `Your longest distance at ${prettyName}${timeLabel}`,
+        description: `Your longest distance at ${prettyName}${timeLabel} (${formatDaysAgo(group.highlight.endDate)})`,
         items: [
           {
             type: 'distance',
@@ -76,7 +76,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Shortest',
-        description: `Your shortest distance at ${prettyName}${timeLabel}`,
+        description: `Your shortest distance at ${prettyName}${timeLabel} (${formatDaysAgo(group.worst.endDate)})`,
         items: [
           {
             type: 'distance',

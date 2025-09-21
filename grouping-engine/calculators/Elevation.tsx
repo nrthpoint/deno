@@ -116,7 +116,7 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Highest',
-        description: `Your highest workouts at this elevation${timeLabel}`,
+        description: `Your highest workouts at this elevation${timeLabel} (${formatDaysAgo(group.highlight.endDate)})`,
         items: [
           {
             type: 'elevation',
@@ -135,7 +135,7 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Lowest',
-        description: `Your lowest workouts at this elevation${timeLabel}`,
+        description: `Your lowest workouts at this elevation${timeLabel} (${formatDaysAgo(group.worst.endDate)})`,
         items: [
           {
             type: 'elevation',

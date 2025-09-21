@@ -88,7 +88,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
     group.stats = [
       {
         title: 'Furthest',
-        description: `The longest run at this pace${timeLabel}`,
+        description: `The longest run at this pace${timeLabel} (${formatDaysAgo(group.highlight.endDate)})`,
         items: [
           {
             type: 'distance',
@@ -107,7 +107,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Shortest',
-        description: `The shortest run at this pace${timeLabel}`,
+        description: `The shortest run at this pace${timeLabel} (${formatDaysAgo(group.worst.endDate)})`,
         items: [
           {
             type: 'distance',

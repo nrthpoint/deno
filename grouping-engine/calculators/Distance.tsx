@@ -86,7 +86,7 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
     group.stats = [
       {
         title: 'Fastest',
-        description: `Your best performance for ${prettyName}${timeLabel}`,
+        description: `Your best performance for ${prettyName}${timeLabel} (${formatDaysAgo(group.highlight.endDate)})`,
         items: [
           {
             type: 'pace',
@@ -132,7 +132,7 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Slowest',
-        description: `Your worst performance for ${prettyName}${timeLabel}`,
+        description: `Your worst performance for ${prettyName}${timeLabel} (${formatDaysAgo(group.worst.endDate)})`,
         items: [
           {
             type: 'pace',
