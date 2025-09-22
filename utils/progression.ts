@@ -71,7 +71,9 @@ const createProgressionEntries = <T>(
     }
   }
 
-  return config.limit ? progressionPoints.slice(-config.limit) : progressionPoints;
+  return config.limit
+    ? progressionPoints.slice(-config.limit).reverse()
+    : progressionPoints.reverse();
 };
 
 const getPersonalBestProgression = (workouts: ExtendedWorkout[]): ProgressionEntry[] => {

@@ -207,6 +207,7 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
     };
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getEnvironmentComparison = (): WeatherMetric => {
     const isIndoor1 = workout1.isIndoor;
     const isIndoor2 = workout2.isIndoor;
@@ -232,7 +233,7 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
     getHumidityComparison(),
     getWindComparison(),
     getPrecipitationComparison(),
-    getEnvironmentComparison(),
+    // getEnvironmentComparison(),
   ];
 
   const renderDifferenceIndicator = (metric: WeatherMetric) => {
@@ -362,6 +363,7 @@ const styles = StyleSheet.create({
     margin: 12,
     marginTop: 0,
     overflow: 'hidden',
+    paddingHorizontal: 15,
   },
   header: {
     flexDirection: 'row',
@@ -377,6 +379,7 @@ const styles = StyleSheet.create({
   comparisonTable: {
     borderWidth: 1,
     borderColor: colors.surface,
+    borderRadius: 8,
     overflow: 'hidden',
   },
   headerRow: {
@@ -473,7 +476,7 @@ const styles = StyleSheet.create({
   legend: {
     padding: 8,
     paddingVertical: 12,
-    backgroundColor: colors.surface,
+    //backgroundColor: colors.surface,
     alignItems: 'center',
   },
   legendText: {

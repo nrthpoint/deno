@@ -60,7 +60,6 @@ export const StatsTab: React.FC = () => {
           key={section.title}
           section={section}
           getTabColor={getTabColor}
-          initialExpanded={true}
           alternatingBackground={index % 2 === 0}
         />
       ))}
@@ -95,6 +94,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   viewAllButton: {
+    backgroundColor: '#FFF',
+    color: '#000',
     borderRadius: 8,
   },
   buttonLabel: {

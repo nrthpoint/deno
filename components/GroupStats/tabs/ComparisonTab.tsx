@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 
@@ -5,6 +6,7 @@ import { ComparisonCard } from '@/components/ComparisonCard/ComparisonCard';
 import { SampleOption, SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
 import { SampleDropdown } from '@/components/ComparisonCard/SampleDropdown';
 import { TabHeader } from '@/components/GroupStats/tabs/components/TabHeader';
+import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { SplitComparison } from '@/components/SplitComparison/SplitComparison';
 import { TabBar, TabOption } from '@/components/TabBar/TabBar';
 import { Warning } from '@/components/Warning';
@@ -13,6 +15,7 @@ import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
+import { useWorkout } from '@/context/WorkoutContext';
 
 type ComparisonMode = 'general' | 'splits' | 'weather';
 
@@ -24,14 +27,14 @@ const comparisonTabs: TabOption[] = [
 ];
 
 export const ComparisonTab = () => {
-  const { group, allWorkouts } = useGroupStats();
+  const { group } = useGroupStats();
   const { distanceUnit } = useSettings();
+  const { setSelectedWorkouts } = useWorkout();
   const [comparisonMode, setComparisonMode] = useState<ComparisonMode>('general');
   const [selectedSample1Type, setSelectedSample1Type] = useState<SampleType>('highlight');
   const [selectedSample2Type, setSelectedSample2Type] = useState<SampleType>('mostRecent');
 
-  // Find workouts with personal best achievements for previous comparison
-  const personalBestWorkouts = allWorkouts.filter(
+  const personalBestWorkouts = group.runs.filter(
     (w) =>
       w.achievements.isAllTimeFastest ||
       w.achievements.isAllTimeLongest ||
@@ -47,7 +50,6 @@ export const ComparisonTab = () => {
         )[0]
       : group.highlight; // Fallback to highlight if no personal bests found
 
-  // Create sample options from the group data
   const sampleOptions: SampleOption[] = [
     {
       type: 'highlight',
@@ -69,8 +71,8 @@ export const ComparisonTab = () => {
           (today.getTime() - mostRecent.getTime()) / (1000 * 60 * 60 * 24),
         );
 
-        if (diffTime === 0) return 'Today';
-        if (diffTime === 1) return 'Yesterday';
+        if (diffTime === 0) return 'Most Recent (Today)';
+        if (diffTime === 1) return 'Most Recent (Yesterday)';
 
         return `Most Recent (${diffTime}d)`;
       })(),
@@ -111,6 +113,11 @@ export const ComparisonTab = () => {
 
   const selectedSample1 = getSelectedSample(selectedSample1Type);
   const selectedSample2 = getSelectedSample(selectedSample2Type);
+
+  const handleMapPress = () => {
+    setSelectedWorkouts([selectedSample1, selectedSample2]);
+    router.push('/map-detail?mode=comparison');
+  };
 
   // Check if both samples are the same workout
   const isSameWorkout =
@@ -171,6 +178,16 @@ export const ComparisonTab = () => {
           />
         )}
 
+        {!isSameWorkout && (
+          <RouteMap
+            samples={[selectedSample1, selectedSample2]}
+            previewMode={true}
+            onPress={handleMapPress}
+            maxPoints={30}
+            style={{ borderRadius: 8 }}
+          />
+        )}
+
         <TabBar
           tabs={comparisonTabs}
           activeTabId={comparisonMode}
@@ -224,15 +241,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    marginBottom: 20,
   },
   dropdownWithLabel: {
     flex: 1,
     alignItems: 'center',
   },
   dropdownLabelContainer: {
-    //circle
-    //width: '100%',
     borderRadius: 9999,
     overflow: 'hidden',
     alignItems: 'center',
@@ -240,14 +254,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     alignContent: 'center',
     alignSelf: 'center',
-    padding: 10,
     marginBottom: 8,
+    width: 32,
+    height: 32,
+    paddingTop: 6,
   },
   dropdownLabel: {
     fontSize: 16,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   dropdownContainer: {
     width: '100%',
@@ -256,7 +272,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 35,
   },
   vsText: {
     fontSize: 16,
@@ -264,7 +280,7 @@ const styles = StyleSheet.create({
     color: colors.neutral,
   },
   tabBar: {
-    marginVertical: 20,
+    marginVertical: 10,
   },
   splitContainer: {
     flex: 1,

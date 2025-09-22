@@ -7,6 +7,7 @@ import {
 } from '@/components/ComparisonCard/ComparisonRow/ComparisonRowUtils';
 import { colors, SAMPLE1_COLOR, SAMPLE2_COLOR } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { uppercase } from '@/utils/text';
 
 import { ComparisonRowProps } from './ComparisonRow.types';
 
@@ -70,10 +71,7 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
   },
   propertyLabel: {
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    color: colors.neutral,
-    fontWeight: '600',
+    ...uppercase,
   },
   valuesContainer: {
     flexDirection: 'row',

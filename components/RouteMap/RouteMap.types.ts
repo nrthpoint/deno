@@ -1,4 +1,5 @@
 import { WorkoutRouteLocation } from '@kingstinct/react-native-healthkit';
+import { ViewStyle } from 'react-native';
 import { LatLng } from 'react-native-maps';
 
 import { LocationPoint } from '@/components/RouteMap/parseRouteLocations';
@@ -22,4 +23,5 @@ export interface RouteMapProps {
   previewMode?: boolean;
   onPress?: () => void;
   maxPoints?: number;
+  style?: ViewStyle;
 }

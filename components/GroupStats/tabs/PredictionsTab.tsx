@@ -50,7 +50,7 @@ export const PredictionsTab: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    paddingVertical: 0,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
 });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -32,7 +32,6 @@ const FlyingBird: React.FC<FlyingBirdProps> = ({ bird, screenWidth }) => {
   const translateY = useSharedValue(bird.yPosition);
   const opacity = useSharedValue(0);
   const scale = useSharedValue(1);
-  const timeoutRef = useRef<number | null>(null);
   const isMountedRef = useRef(true);
 
   useEffect(() => {
@@ -41,7 +40,7 @@ const FlyingBird: React.FC<FlyingBirdProps> = ({ bird, screenWidth }) => {
     // Fade in
     opacity.value = withDelay(bird.startDelay, withTiming(0.6, { duration: 1000 }));
 
-    // Wing flapping animation (simpler approach)
+    // Wing flapping (infinite)
     scale.value = withDelay(
       bird.startDelay,
       withRepeat(
@@ -50,11 +49,11 @@ const FlyingBird: React.FC<FlyingBirdProps> = ({ bird, screenWidth }) => {
           withTiming(0.85, { duration: 200, easing: Easing.in(Easing.quad) }),
         ),
         -1,
-        false,
+        true,
       ),
     );
 
-    // Vertical bobbing motion
+    // Vertical bobbing (infinite)
     translateY.value = withDelay(
       bird.startDelay,
       withRepeat(
@@ -63,81 +62,43 @@ const FlyingBird: React.FC<FlyingBirdProps> = ({ bird, screenWidth }) => {
           withTiming(bird.yPosition - 12, { duration: 2500, easing: Easing.inOut(Easing.sin) }),
         ),
         -1,
+        true,
+      ),
+    );
+
+    // Horizontal flight (infinite loop)
+    translateX.value = withDelay(
+      bird.startDelay,
+      withRepeat(
+        withSequence(
+          withTiming(screenWidth + 50, {
+            duration: bird.speed,
+            easing: Easing.linear,
+          }),
+          withDelay(bird.restartDelay, withTiming(-50, { duration: 0 })),
+        ),
+        -1,
         false,
       ),
     );
 
-    // Horizontal flight with safe restart
-    const startFlight = () => {
-      if (!isMountedRef.current) return;
-
-      translateX.value = -50;
-      translateX.value = withTiming(
-        screenWidth + 50,
-        { duration: bird.speed, easing: Easing.linear },
-        (finished) => {
-          if (finished && isMountedRef.current) {
-            // Clear any existing timeout
-            if (timeoutRef.current) {
-              clearTimeout(timeoutRef.current);
-            }
-
-            // Schedule next flight safely
-            timeoutRef.current = setTimeout(() => {
-              if (isMountedRef.current) {
-                startFlight();
-              }
-            }, bird.restartDelay);
-          }
-        },
-      );
-    };
-
-    // Start first flight after initial delay
-    const initialTimeout = setTimeout(() => {
-      if (isMountedRef.current) {
-        startFlight();
-      }
-    }, bird.startDelay);
-
-    // Cleanup function
     return () => {
       isMountedRef.current = false;
-
-      // Clear timeouts
-      clearTimeout(initialTimeout);
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      // Cancel animations
       cancelAnimation(translateX);
       cancelAnimation(translateY);
       cancelAnimation(opacity);
       cancelAnimation(scale);
     };
-  }, [
-    bird.startDelay,
-    bird.yPosition,
-    bird.speed,
-    bird.restartDelay,
-    screenWidth,
-    opacity,
-    scale,
-    translateY,
-    translateX,
-  ]);
+  }, [bird, opacity, scale, screenWidth, translateX, translateY]);
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { translateX: translateX.value },
-        { translateY: translateY.value },
-        { scaleX: scale.value },
-      ],
-      opacity: opacity.value,
-    };
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+      { scaleX: scale.value },
+    ],
+    opacity: opacity.value,
+  }));
 
   return (
     <Animated.View style={[styles.bird, animatedStyle]}>
@@ -154,24 +115,16 @@ interface FlyingBirdsProps {
 }
 
 export const FlyingBirds: React.FC<FlyingBirdsProps> = ({ count = 3 }) => {
-  const [birds, setBirds] = useState<BirdData[]>([]);
   const screenWidth = Dimensions.get('window').width;
 
-  useEffect(() => {
-    // Generate bird data with stable characteristics
-    const birdData: BirdData[] = [];
-    for (let i = 0; i < count; i++) {
-      birdData.push({
-        id: i,
-        startDelay: i * 1500 + Math.random() * 1000, // Staggered start with more spacing
-        yPosition: 60 + i * 40 + Math.random() * 20, // More distributed heights
-        size: 14 + Math.random() * 4, // Size between 14-18
-        speed: 10000 + Math.random() * 2000, // Speed between 10-12 seconds
-        restartDelay: 4000 + Math.random() * 3000, // Restart delay 4-7 seconds
-      });
-    }
-    setBirds(birdData);
-  }, [count]);
+  const birds: BirdData[] = Array.from({ length: count }).map((_, i) => ({
+    id: i,
+    startDelay: i * 1500 + Math.random() * 1000,
+    yPosition: 60 + i * 40 + Math.random() * 20,
+    size: 14 + Math.random() * 4,
+    speed: 10000 + Math.random() * 2000,
+    restartDelay: 4000 + Math.random() * 3000,
+  }));
 
   return (
     <View
@@ -196,7 +149,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 5, // Above background image but below carousel items
+    zIndex: 5,
   },
   bird: {
     position: 'absolute',

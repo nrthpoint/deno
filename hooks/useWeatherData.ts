@@ -168,7 +168,7 @@ function createWeatherFromHealthKit(workout: ExtendedWorkout): WeatherConditions
     cloudCover: 50, // Default
     pressure: 1013, // Standard atmospheric pressure
     visibility: 10, // Default good visibility
-    weatherDescription: workout.isIndoor ? 'Indoor workout' : 'Unknown conditions',
+    weatherDescription: workout.isIndoor ? 'Indoor workout' : 'n/a',
     weatherIcon: workout.isIndoor ? '01d' : '02d',
   };
 }

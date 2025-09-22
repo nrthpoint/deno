@@ -1,30 +1,20 @@
-import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { ComparisonRow } from '@/components/ComparisonCard/ComparisonRow/ComparisonRow';
-import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { useWorkout } from '@/context/WorkoutContext';
 import { uppercase } from '@/utils/text';
 
 import { SampleComparisonCardProps } from './ComparisonCard.types';
 
 /**
- * Card comparing two workout samples, with a map overlay of both routes and a pace heatmap.
+ * Card comparing two workout samples with detailed metrics comparison.
  * @param props SampleComparisonCardProps
  */
 export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
   const { sample1, sample2, sample1Label, sample2Label, propertiesToCompare } = props;
-
-  const { setSelectedWorkouts } = useWorkout();
-
-  const handleMapPress = () => {
-    setSelectedWorkouts([sample1, sample2]);
-    router.push('/map-detail?mode=comparison');
-  };
 
   return (
     <View style={styles.container}>
@@ -46,13 +36,6 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
           />
         ))}
       </View>
-
-      <RouteMap
-        samples={[sample1, sample2]}
-        previewMode={true}
-        onPress={handleMapPress}
-        maxPoints={30}
-      />
     </View>
   );
 };
@@ -60,7 +43,6 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.surface,
-    borderRadius: 12,
     overflow: 'hidden',
   },
   labelContainer: {

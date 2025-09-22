@@ -33,6 +33,7 @@ export const RouteMap = ({
   previewMode = false,
   onPress,
   maxPoints = 50,
+  style,
 }: RouteMapProps) => {
   const { distanceUnit } = useSettings();
   const [routes, setRouteSegments] = useState<RouteSegments>([]);
@@ -89,7 +90,7 @@ export const RouteMap = ({
 
   if (isLoading) {
     return (
-      <View style={[styles.mapContainer, styles.loadingContainer]}>
+      <View style={[styles.mapContainer, styles.loadingContainer, style]}>
         <ActivityIndicator
           size="large"
           color="#ffffff"
@@ -109,6 +110,7 @@ export const RouteMap = ({
         styles.mapContainer,
         previewMode && styles.previewContainer,
         !previewMode && { flex: 1, marginBottom: 50 },
+        style,
       ]}
     >
       {!previewMode && (
@@ -164,6 +166,7 @@ export const RouteMap = ({
 const styles = StyleSheet.create({
   mapContainer: {
     width: '100%',
+    overflow: 'hidden',
   },
   previewContainer: {
     height: 200,

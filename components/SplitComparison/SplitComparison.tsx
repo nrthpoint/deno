@@ -6,6 +6,7 @@ import { Text } from 'react-native-paper';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { uppercase } from '@/utils/text';
 import {
   calculateSplitsForWorkout,
   calculateTimeDifference,
@@ -165,7 +166,7 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
             <Text style={styles.headerText}>{sample2Label}</Text>
           </View>
           <View style={styles.diffColumn}>
-            <Text style={styles.headerText}>Difference</Text>
+            <Text style={styles.headerText}>Diff.</Text>
           </View>
         </View>
 
@@ -185,6 +186,7 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 15,
   },
   loadingContainer: {
     flex: 1,
@@ -254,9 +256,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
+    ...uppercase,
     flex: 1,
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: LatoFonts.bold,
     textAlign: 'center',
   },
