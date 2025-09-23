@@ -131,7 +131,7 @@ export const getTimeUntilNextCheck = async (): Promise<number> => {
  */
 export const debugAchievements = async (): Promise<void> => {
   try {
-    console.log('=== DEBUG ACHIEVEMENTS ===');
+    console.log('Debugging achievements...');
 
     // Check if HealthKit data is available
     const isAvailable = await isProtectedDataAvailable();
@@ -147,7 +147,6 @@ export const debugAchievements = async (): Promise<void> => {
     const startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     console.log('Querying workouts from', startDate, 'to', endDate);
-
     const workouts = await queryWorkoutSamples({
       ascending: false,
       limit: 100,
@@ -158,14 +157,10 @@ export const debugAchievements = async (): Promise<void> => {
       },
     });
 
-    console.log('Raw HealthKit workouts:', workouts?.length || 0);
-
     const parsedWorkouts = await parseWorkoutSamples({
       samples: workouts || [],
       distanceUnit: 'mi', // Default to miles
     });
-
-    console.log('Parsed workouts:', parsedWorkouts.length);
 
     // Get current and previous achievements for debugging
     const { extractCurrentAchievements } = await import('@/services/achievements');
@@ -175,10 +170,10 @@ export const debugAchievements = async (): Promise<void> => {
     console.log('Previous achievements:', previousAchievements);
     console.log('Current achievements:', currentAchievements);
 
-    console.log('=== RUNNING BACKGROUND ACHIEVEMENT CHECK ===');
+    console.log('Running background achievement check...');
     await checkAndNotifyNewAchievements(parsedWorkouts);
 
-    console.log('=== END DEBUG ===');
+    console.log('Background achievement check complete.');
   } catch (error) {
     console.error('Error in debug achievements:', error);
   }

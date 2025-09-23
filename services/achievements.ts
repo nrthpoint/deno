@@ -175,24 +175,6 @@ export const handleAchievementNotifications = async (workouts: ExtendedWorkout[]
 };
 
 /**
- * Test function to show sample achievement notifications
- */
-export const showTestAchievementNotification = async () => {
-  // Create a mock workout for testing
-  const testWorkout = {
-    uuid: 'test-uuid',
-  } as ExtendedWorkout;
-
-  const appActive = await isAppActive();
-  await showAchievementNotification(
-    '🏃‍♂️ Test Achievement!',
-    'This is how notifications will look',
-    testWorkout,
-    appActive,
-  );
-};
-
-/**
  * Clear stored achievements (useful for testing)
  */
 export const clearPreviousAchievements = async (): Promise<void> => {

@@ -12,8 +12,9 @@ type UseGroupedActivityDataParams = {
   distanceUnit: LengthUnit;
   timeRangeInDays: TimeRange;
   groupType: GroupType;
-  tolerance: number;
-  groupSize: number;
+  enabled: boolean;
+  tolerance?: number;
+  groupSize?: number;
 };
 
 export function useWorkoutGroups({
@@ -21,6 +22,7 @@ export function useWorkoutGroups({
   distanceUnit,
   timeRangeInDays,
   groupType,
+  enabled,
   tolerance,
   groupSize,
 }: UseGroupedActivityDataParams) {
@@ -42,6 +44,7 @@ export function useWorkoutGroups({
     return groupWorkouts(
       {
         samples,
+        enabled,
         tolerance: tolerance ?? config.defaultTolerance,
         groupSize: groupSize ?? config.defaultGroupSize,
         distanceUnit,
@@ -49,7 +52,7 @@ export function useWorkoutGroups({
       config,
       timeRangeInDays,
     );
-  }, [samples, tolerance, groupSize, distanceUnit, config, timeRangeInDays, loading]);
+  }, [samples, enabled, tolerance, groupSize, distanceUnit, config, timeRangeInDays, loading]);
 
   return { groups, meta, samples, loading, authorizationStatus, requestAuthorization, refresh };
 }

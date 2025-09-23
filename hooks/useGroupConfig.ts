@@ -16,6 +16,7 @@ export function useGroupConfig() {
       (acc, groupType) => {
         const config = getTabOptionConfig(groupType);
         acc[groupType] = {
+          enabled: false,
           tolerance: config.tolerance,
           groupSize: config.groupSize,
         };
@@ -29,12 +30,16 @@ export function useGroupConfig() {
    * Update configuration for a specific group type
    */
   const updateConfig = useCallback((groupType: GroupType, config: GroupingConfig) => {
-    // Ensure tolerance doesn't exceed half the group size
-    const maxTolerance = config.groupSize / 2;
-    const validatedConfig = {
-      ...config,
-      tolerance: Math.min(config.tolerance, maxTolerance),
-    };
+    let validatedConfig = { ...config };
+
+    // Only validate tolerance/groupSize if grouping is enabled
+    if (config.enabled && config.tolerance !== undefined && config.groupSize !== undefined) {
+      const maxTolerance = config.groupSize / 2;
+      validatedConfig = {
+        ...validatedConfig,
+        tolerance: Math.min(config.tolerance, maxTolerance),
+      };
+    }
 
     setGroupingConfigs((prev) => ({
       ...prev,
@@ -60,6 +65,7 @@ export function useGroupConfig() {
     setGroupingConfigs((prev) => ({
       ...prev,
       [groupType]: {
+        enabled: false,
         tolerance: defaultConfig.tolerance,
         groupSize: defaultConfig.groupSize,
       },
@@ -75,6 +81,7 @@ export function useGroupConfig() {
       (acc, groupType) => {
         const config = getTabOptionConfig(groupType);
         acc[groupType] = {
+          enabled: false,
           tolerance: config.tolerance,
           groupSize: config.groupSize,
         };

@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 
+import { Warning } from '@/components/Warning';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { subheading } from '@/utils/text';
@@ -116,8 +117,6 @@ export default function AppInfo() {
 
   const copyUpdateIdToClipboard = async () => {
     if (updateId !== 'unknown') {
-      // Note: You would need to add @react-native-clipboard/clipboard for this
-      // For now, just show an alert with the full ID
       Alert.alert('Update ID', updateId, [{ text: 'OK' }]);
     }
   };
@@ -223,13 +222,11 @@ export default function AppInfo() {
 
       {/* Update Controls */}
       <View style={styles.updateContainer}>
-        <Text style={styles.updateTitle}>📱 App Updates</Text>
+        <Text style={styles.updateTitle}>📱 Updates</Text>
 
         {isDevelopment ? (
           <View style={styles.developmentNotice}>
-            <Text style={styles.developmentText}>
-              🛠️ Development Mode - Updates are not available during development
-            </Text>
+            <Warning message="You are running a development build. Update checks and installations are disabled. To test updates, create a production build of the app and install it on your device." />
           </View>
         ) : (
           <View style={styles.updateControls}>
@@ -243,6 +240,7 @@ export default function AppInfo() {
                 onPress={handleCheckForUpdates}
                 disabled={isCheckingUpdate}
                 style={styles.updateButton}
+                labelStyle={{ color: colors.neutral }}
                 loading={isCheckingUpdate}
               >
                 Check for Updates
@@ -253,6 +251,7 @@ export default function AppInfo() {
                 onPress={handleForceUpdate}
                 disabled={isCheckingUpdate}
                 style={styles.forceUpdateButton}
+                labelStyle={{ color: colors.neutral }}
                 loading={isCheckingUpdate}
               >
                 Force Update
@@ -281,12 +280,12 @@ const styles = StyleSheet.create({
   versionLabel: {
     ...subheading,
     marginTop: 0,
-    color: colors.lightGray,
+    color: colors.neutral,
     fontFamily: LatoFonts.regular,
   },
   versionValue: {
     color: colors.neutral,
-    fontFamily: LatoFonts.regular,
+    fontFamily: LatoFonts.bold,
   },
   updateContainer: {
     backgroundColor: colors.surface,
@@ -316,24 +315,14 @@ const styles = StyleSheet.create({
   },
   updateButton: {
     flex: 1,
-    borderColor: colors.primary,
+    borderColor: colors.neutral,
   },
   forceUpdateButton: {
     flex: 1,
     backgroundColor: colors.primary,
   },
   developmentNotice: {
-    backgroundColor: colors.background,
-    padding: 12,
-    borderRadius: 8,
-    borderLeftWidth: 4,
-    borderLeftColor: '#ffaa00',
-  },
-  developmentText: {
-    color: '#ffaa00',
-    fontFamily: LatoFonts.regular,
-    fontSize: 12,
-    lineHeight: 16,
+    marginTop: 8,
   },
   tapHint: {
     color: colors.lightGray,

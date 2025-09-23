@@ -72,12 +72,12 @@ export const NotificationSettingsCard = () => {
 
   return (
     <Card style={styles.card}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.title}>🔔 Notification Settings</Text>
         <Text style={styles.subtitle}>
           Configure when you want to receive achievement notifications
         </Text>
-      </View>
+      </View> */}
 
       <View style={styles.settingRow}>
         <View style={styles.settingInfo}>
@@ -151,25 +151,25 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
   },
-  header: {
-    paddingVertical: 22,
-    paddingHorizontal: 16,
-    paddingBottom: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.gray,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.neutral,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.lightGray,
-    marginBottom: 24,
-    lineHeight: 20,
-  },
+  // header: {
+  //   paddingVertical: 22,
+  //   paddingHorizontal: 16,
+  //   paddingBottom: 0,
+  //   borderBottomWidth: 1,
+  //   borderBottomColor: colors.gray,
+  // },
+  // title: {
+  //   fontSize: 20,
+  //   fontWeight: 'bold',
+  //   color: colors.neutral,
+  //   marginBottom: 8,
+  // },
+  // subtitle: {
+  //   fontSize: 14,
+  //   color: colors.lightGray,
+  //   marginBottom: 24,
+  //   lineHeight: 20,
+  // },
   settingRow: {
     flexDirection: 'row',
     alignItems: 'center',

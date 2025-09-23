@@ -3,13 +3,9 @@ import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 
 import { Card } from '@/components/Card/Card';
-import { NotificationTestCard } from '@/components/NotificationSettings/NotificationTestCard';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import {
-  clearPreviousAchievements,
-  showTestAchievementNotification,
-} from '@/services/achievements';
+import { clearPreviousAchievements } from '@/services/achievements';
 import { debugAchievements, forceBackgroundCheck } from '@/services/background-service';
 import { getBackgroundTaskStatus, unregisterBackgroundTask } from '@/services/notifications';
 
@@ -67,42 +63,6 @@ export const DeveloperSettings: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <NotificationTestCard />
-
-      <Card>
-        <View style={styles.cardContent}>
-          <Text
-            variant="titleLarge"
-            style={[styles.heading, { marginTop: 0 }]}
-          >
-            Developer Testing
-          </Text>
-          <Text style={styles.subheading}>
-            Test achievement notifications and reset stored data.
-          </Text>
-
-          <View style={styles.buttonContainer}>
-            <Button
-              mode="contained"
-              onPress={showTestAchievementNotification}
-              style={styles.testButton}
-              labelStyle={styles.buttonText}
-            >
-              Test Achievement Notification
-            </Button>
-
-            <Button
-              mode="outlined"
-              onPress={clearPreviousAchievements}
-              style={styles.clearButton}
-              labelStyle={styles.buttonText}
-            >
-              Clear Achievement History
-            </Button>
-          </View>
-        </View>
-      </Card>
-
       <Card>
         <View style={styles.cardContent}>
           <Text
@@ -115,6 +75,19 @@ export const DeveloperSettings: React.FC = () => {
 
           <View style={styles.buttonContainer}>
             <Button
+              mode="outlined"
+              onPress={clearPreviousAchievements}
+              style={styles.clearButton}
+              labelStyle={styles.buttonText}
+            >
+              Clear Achievement History
+            </Button>
+            <Text style={styles.buttonDescription}>
+              Removes all stored achievement data from AsyncStorage. Use this to reset achievement
+              tracking for testing new personal bests.
+            </Text>
+
+            <Button
               mode="contained"
               onPress={handleDebugAchievements}
               style={styles.debugButton}
@@ -122,6 +95,10 @@ export const DeveloperSettings: React.FC = () => {
             >
               Debug Achievement Detection
             </Button>
+            <Text style={styles.buttonDescription}>
+              Runs achievement detection on all workouts and logs detailed information to console.
+              Shows which achievements would be triggered.
+            </Text>
 
             <Button
               mode="outlined"
@@ -131,6 +108,10 @@ export const DeveloperSettings: React.FC = () => {
             >
               Force Background Check
             </Button>
+            <Text style={styles.buttonDescription}>
+              Manually triggers the background achievement check process. Useful for testing
+              background task functionality without waiting.
+            </Text>
 
             <Button
               mode="outlined"
@@ -140,6 +121,10 @@ export const DeveloperSettings: React.FC = () => {
             >
               Check Background Task Status
             </Button>
+            <Text style={styles.buttonDescription}>
+              Displays the current status of background task registration and whether the task is
+              properly defined and active.
+            </Text>
 
             <Button
               mode="outlined"
@@ -149,6 +134,10 @@ export const DeveloperSettings: React.FC = () => {
             >
               Unregister Background Task
             </Button>
+            <Text style={styles.buttonDescription}>
+              Removes the background task registration from the system. Use this to stop background
+              achievement processing.
+            </Text>
           </View>
         </View>
       </Card>
@@ -180,10 +169,6 @@ export const styles = StyleSheet.create({
     marginTop: 16,
     gap: 12,
   },
-  testButton: {
-    backgroundColor: colors.primary,
-    borderRadius: 8,
-  },
   clearButton: {
     borderColor: colors.gray,
     borderRadius: 8,
@@ -204,5 +189,13 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
+  },
+  buttonDescription: {
+    fontSize: 12,
+    fontFamily: LatoFonts.regular,
+    color: colors.lightGray,
+    marginTop: 4,
+    marginBottom: 15,
+    lineHeight: 16,
   },
 });

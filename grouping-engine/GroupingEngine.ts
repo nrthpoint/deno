@@ -15,11 +15,14 @@ export function groupWorkouts(
   config: GroupConfig,
   timeRangeInDays: TimeRange,
 ): Groups {
-  const {
-    samples,
-    tolerance = config.defaultTolerance,
-    groupSize = config.defaultGroupSize,
-  } = params;
+  const { samples, enabled = true } = params;
+
+  // If grouping is disabled, use unit-based grouping (1 mile, 1 km, 10 min, etc.)
+  if (!enabled) {
+    return createUnitGroups(params, config, timeRangeInDays);
+  }
+
+  const { tolerance = config.defaultTolerance, groupSize = config.defaultGroupSize } = params;
 
   // Filter samples if a filter is provided
   const filteredSamples = config.filter ? samples.filter(config.filter) : samples;
@@ -124,6 +127,102 @@ function parseSampleIntoGroup({
   if (sample.startDate > group.mostRecent.startDate) {
     group.mostRecent = sample;
   }
+}
+
+/**
+ * Creates unit-based groups (1 mile, 1 km, 10 min, etc.) when grouping is disabled
+ */
+function createUnitGroups(
+  params: GroupingParameters,
+  config: GroupConfig,
+  timeRangeInDays: TimeRange,
+): Groups {
+  const { samples, distanceUnit } = params;
+
+  // Filter samples if a filter is provided
+  const filteredSamples = config.filter ? samples.filter(config.filter) : samples;
+
+  if (filteredSamples.length === 0) {
+    console.warn(`No samples found for unit grouping by ${config.type}`);
+    return {};
+  }
+
+  const groups: Groups = {};
+
+  // Use default unit grouping sizes based on type
+  const getUnitGroupSize = (): number => {
+    switch (config.type) {
+      case 'distance':
+        return distanceUnit === 'km' ? 1 : 1; // 1 km or 1 mile
+      case 'pace':
+        return 0.5; // 30 seconds per km/mile
+      case 'duration':
+        return 10 * 60; // 10 minutes
+      case 'elevation':
+        return 100; // 100m
+      default:
+        return 1;
+    }
+  };
+
+  const unitGroupSize = getUnitGroupSize();
+
+  // Group all samples into unit-based groups
+  for (const sample of filteredSamples) {
+    const value = config.valueExtractor(sample);
+
+    if (!value || value.quantity === undefined) {
+      console.warn(`Sample missing ${config.property}, skipping`);
+      continue;
+    }
+
+    // Calculate the unit group (floor to nearest unit)
+    const unitGroup = Math.floor(value.quantity / unitGroupSize) * unitGroupSize;
+    const baseGroupKey = unitGroup % 1 === 0 ? unitGroup.toString() : unitGroup.toFixed(1);
+    const indoorSuffix = sample.isIndoor ? '-indoor' : '-outdoor';
+    const groupKey = baseGroupKey + indoorSuffix;
+
+    // Create or get the group for the current sample
+    const group =
+      groups[groupKey] ||
+      (groups[groupKey] = createEmptyGroup(baseGroupKey, sample, config, distanceUnit));
+
+    // Add indoor/outdoor designation to the group
+    if (!group.isIndoor) {
+      group.isIndoor = sample.isIndoor;
+    }
+
+    // Add all samples to their respective unit groups (no tolerance check)
+    group.runs.push(sample);
+
+    // Aggregate the totals
+    group.totalDistance = sumQuantities([group.totalDistance, sample.totalDistance]);
+    group.totalDuration = sumQuantities([group.totalDuration, sample.duration]);
+    group.totalElevation = sumQuantities([
+      group.totalElevation,
+      sample.totalElevation || { unit: 'm', quantity: 0 },
+    ]);
+
+    // Update most recent run
+    if (sample.startDate > group.mostRecent.startDate) {
+      group.mostRecent = sample;
+    }
+  }
+
+  // Remove empty groups
+  deleteEmptyGroups(groups);
+
+  // Calculate stats for each group using the appropriate calculator
+  const statCalculator = createStatCalculator(config);
+
+  for (const groupKey in groups) {
+    statCalculator.calculateStats(groups[groupKey], filteredSamples, timeRangeInDays);
+  }
+
+  // Assign ranks and sort
+  assignRankToGroups(groups);
+
+  return sortGroupsByKeyInAscending(groups);
 }
 
 /**

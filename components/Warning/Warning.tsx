@@ -7,7 +7,7 @@ import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 
 export interface WarningProps {
-  title: string;
+  title?: string;
   message: string;
   icon?: string;
   onPress?: () => void;

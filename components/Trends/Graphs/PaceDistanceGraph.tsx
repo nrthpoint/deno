@@ -12,6 +12,19 @@ interface PaceDistanceGraphProps {
 
 export const PaceDistanceGraph: React.FC<PaceDistanceGraphProps> = ({ workouts }) => {
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
+  const [tooltipPos, setTooltipPos] = useState<{
+    x: number;
+    y: number;
+    visible: boolean;
+    value: string;
+    label: string;
+  }>({
+    x: 0,
+    y: 0,
+    visible: false,
+    value: '',
+    label: '',
+  });
 
   useEffect(() => {
     const onChange = (result: { window: typeof screenData }) => {
@@ -27,11 +40,29 @@ export const PaceDistanceGraph: React.FC<PaceDistanceGraphProps> = ({ workouts }
   const chartWidth = screenWidth - 40;
   const chartHeight = Math.min(screenHeight - 180, 400);
 
-  const chartData = workouts
+  const filteredWorkouts = workouts
     .filter((workout) => workout.totalDistance.quantity > 0 && workout.averagePace.quantity > 0)
     .map((workout) => ({
       distance: workout.totalDistance.quantity,
       pace: workout.averagePace.quantity, // This should be in minutes per mile
+    }));
+
+  // Group by whole distance units and average the pace
+  const groupedData = new Map<number, number[]>();
+
+  filteredWorkouts.forEach(({ distance, pace }) => {
+    const roundedDistance = Math.round(distance);
+    if (!groupedData.has(roundedDistance)) {
+      groupedData.set(roundedDistance, []);
+    }
+    groupedData.get(roundedDistance)!.push(pace);
+  });
+
+  // Calculate average pace for each distance group
+  const chartData = Array.from(groupedData.entries())
+    .map(([distance, paces]) => ({
+      distance,
+      pace: paces.reduce((sum, pace) => sum + pace, 0) / paces.length,
     }))
     .sort((a, b) => a.distance - b.distance);
 
@@ -46,8 +77,23 @@ export const PaceDistanceGraph: React.FC<PaceDistanceGraphProps> = ({ workouts }
   const distances = chartData.map((d) => d.distance);
   const paces = chartData.map((d) => d.pace);
 
+  const handleDataPointClick = (data: any) => {
+    const dataPointIndex = data.index;
+    const distance = distances[dataPointIndex];
+    const pace = paces[dataPointIndex];
+    const workoutCount = groupedData.get(distance)?.length || 0;
+
+    setTooltipPos((prev) => ({
+      x: data.x,
+      y: data.y,
+      visible: !prev.visible,
+      value: `${parseFloat(pace.toString()) % 1 === 0 ? parseInt(pace.toString()) : parseFloat(pace.toString()).toFixed(1)} min/mi`,
+      label: `${distance} mi • ${workoutCount} workout${workoutCount !== 1 ? 's' : ''}`,
+    }));
+  };
+
   const data = {
-    labels: distances.map((d) => d.toFixed(1)), // Show distance labels
+    labels: distances.map((d) => d.toString()), // Show whole distance labels
     datasets: [
       {
         data: paces,
@@ -102,9 +148,27 @@ export const PaceDistanceGraph: React.FC<PaceDistanceGraphProps> = ({ workouts }
           withDots={true}
           //withShadow={false}
           formatXLabel={(value) => `${value} mi`}
-          formatYLabel={(value) => `${value} min/mi`}
+          formatYLabel={(value) =>
+            `${parseFloat(value) % 1 === 0 ? parseInt(value) : parseFloat(value)} min/mi`
+          }
           yLabelsOffset={-10}
+          onDataPointClick={handleDataPointClick}
         />
+
+        {tooltipPos.visible && (
+          <View
+            style={[
+              styles.tooltip,
+              {
+                left: tooltipPos.x - 60,
+                top: tooltipPos.y - 70,
+              },
+            ]}
+          >
+            <Text style={styles.tooltipLabel}>{tooltipPos.label}</Text>
+            <Text style={styles.tooltipValue}>{tooltipPos.value}</Text>
+          </View>
+        )}
 
         <View style={styles.legend}>
           <View style={styles.legendItem}>
@@ -156,5 +220,33 @@ const styles = StyleSheet.create({
     color: '#bbb',
     fontSize: 16,
     textAlign: 'center',
+  },
+  tooltip: {
+    position: 'absolute',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    minWidth: 120,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  tooltipLabel: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '500',
+    marginBottom: 2,
+  },
+  tooltipValue: {
+    color: '#ff6384',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });

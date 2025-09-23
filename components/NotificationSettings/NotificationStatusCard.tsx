@@ -78,15 +78,15 @@ export const NotificationStatusCard = () => {
 
   return (
     <Card style={styles.card}>
-      <View style={styles.header}>
-        <Text style={styles.title}>📱 Notification Status</Text>
+      {/* <View style={styles.header}>
+        <Text style={styles.title}>Status</Text>
         <IconButton
           icon={getStatusIcon(allEnabled)}
           iconColor={getStatusColor(allEnabled)}
           size={24}
           onPress={loadStatus}
         />
-      </View>
+      </View> */}
 
       <View style={styles.statusList}>
         <View style={styles.statusItem}>
@@ -179,23 +179,24 @@ export const NotificationStatusCard = () => {
 
 const styles = StyleSheet.create({
   card: {
+    paddingTop: 12,
     backgroundColor: colors.surface,
   },
-  header: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceHighlight,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.neutral,
-  },
+  // header: {
+  //   paddingVertical: 6,
+  //   paddingHorizontal: 12,
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   justifyContent: 'space-between',
+  //   marginBottom: 16,
+  //   borderBottomWidth: 1,
+  //   borderBottomColor: colors.surfaceHighlight,
+  // },
+  // title: {
+  //   fontSize: 18,
+  //   fontWeight: 'bold',
+  //   color: colors.neutral,
+  // },
   statusList: {
     gap: 20,
     paddingVertical: 12,

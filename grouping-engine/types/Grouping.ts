@@ -4,8 +4,9 @@ import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group, Groups } from '@/types/Groups';
 
 export interface GroupingConfig {
-  tolerance: number;
-  groupSize: number;
+  enabled: boolean;
+  tolerance?: number;
+  groupSize?: number;
 }
 
 export interface GroupingParameters extends GroupingConfig {

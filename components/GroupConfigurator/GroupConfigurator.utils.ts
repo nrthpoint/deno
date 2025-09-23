@@ -9,7 +9,7 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string, grou
       return {
         tolerance: {
           label: 'Distance Tolerance',
-          subheading: 'The allowed variance in workout distance (max half of group size)',
+          subheading: 'The allowed variance in workout distance',
           unit: distanceUnit,
           min: 0.0,
           max: dynamicToleranceMax,
@@ -28,7 +28,7 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string, grou
       return {
         tolerance: {
           label: 'Pace Tolerance',
-          subheading: 'How close paces need to be to group together (max half of group size)',
+          subheading: 'How close paces need to be to group together',
           unit: 'min',
           min: 0.0,
           max: dynamicToleranceMax,
@@ -47,8 +47,7 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string, grou
       return {
         tolerance: {
           label: 'Elevation Tolerance',
-          subheading:
-            'How close elevation gains need to be to group together (max half of group size)',
+          subheading: 'How close elevation gains need to be to group together',
           unit: 'm',
           min: 0,
           max: dynamicToleranceMax,
@@ -67,7 +66,7 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string, grou
       return {
         tolerance: {
           label: 'Duration Tolerance',
-          subheading: 'How close durations need to be to group together (max half of group size)',
+          subheading: 'How close durations need to be to group together',
           unit: 'min',
           min: 0,
           max: dynamicToleranceMax,
@@ -86,7 +85,7 @@ export const getConfigLabels = (groupType: GroupType, distanceUnit: string, grou
       return {
         tolerance: {
           label: 'Tolerance',
-          subheading: 'How close values need to be to group together (max half of group size)',
+          subheading: 'How close values need to be to group together',
           unit: '',
           min: 0.0,
           max: dynamicToleranceMax,
