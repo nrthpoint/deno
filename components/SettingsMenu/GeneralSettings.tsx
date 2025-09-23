@@ -39,8 +39,6 @@ export const GeneralSettings: React.FC = () => {
         activeTabId={distanceUnit}
         onTabPress={(id) => setDistanceUnit(id as unknown as LengthUnit)}
         activeTabColor={colors.primary}
-        activeTextColor="#FFFFFF"
-        inactiveTextColor="#999999"
       />
 
       <Text
@@ -53,14 +51,12 @@ export const GeneralSettings: React.FC = () => {
       <TabBar
         tabs={[
           { id: String(WorkoutActivityType.running), label: 'Running' },
-          { id: String(WorkoutActivityType.walking), label: 'Walking', disabled: true },
+          { id: String(WorkoutActivityType.walking), label: 'Walking' },
           { id: String(WorkoutActivityType.cycling), label: 'Cycling', disabled: true },
         ]}
         activeTabId={String(activityType)}
         onTabPress={(value) => setActivityType(value as unknown as WorkoutActivityType)}
         activeTabColor={colors.primary}
-        activeTextColor="#FFFFFF"
-        inactiveTextColor="#999999"
       />
 
       <View>
