@@ -186,6 +186,7 @@ export const ComparisonTab = () => {
             onPress={handleMapPress}
             maxPoints={30}
             style={{ borderRadius: 8 }}
+            sampleLabels={['Run 1', 'Run 2']}
           />
         )}
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import MapView, { Polyline, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import { Text } from 'react-native-paper';
 
 import { parseRouteLocations } from '@/components/RouteMap/parseRouteLocations';
 import { RouteMapProps, RouteSegments } from '@/components/RouteMap/RouteMap.types';
@@ -12,6 +13,7 @@ import {
 } from '@/components/RouteMap/RouteMap.utils';
 import { TabBar, TabOption } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
+import { LatoFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
 
 const routeStyles = [
@@ -34,6 +36,7 @@ export const RouteMap = ({
   onPress,
   maxPoints = 50,
   style,
+  sampleLabels,
 }: RouteMapProps) => {
   const { distanceUnit } = useSettings();
   const [routes, setRouteSegments] = useState<RouteSegments>([]);
@@ -146,6 +149,40 @@ export const RouteMap = ({
           )),
         )}
       </MapView>
+
+      {/* Route Labels */}
+      {sampleLabels && sampleLabels.length > 0 && (
+        <View style={styles.labelsContainer}>
+          {sampleLabels.map((label, index) => {
+            if (index >= routes.length || !routes[index] || routes[index].length === 0) {
+              return null;
+            }
+
+            const routeStyle = routeStyles[index] || routeStyles[0];
+            const isDashed = routeStyle.lineDashPattern !== undefined;
+
+            return (
+              <View
+                key={`label-${index}`}
+                style={styles.labelBadge}
+              >
+                <View
+                  style={[
+                    styles.labelLine,
+                    {
+                      borderStyle: isDashed ? 'dashed' : 'solid',
+                      borderWidth: isDashed ? 0 : 2,
+                      borderTopWidth: isDashed ? 2 : 0,
+                      borderColor: routes[index][0]?.color || colors.primary,
+                    },
+                  ]}
+                />
+                <Text style={styles.labelText}>{label}</Text>
+              </View>
+            );
+          })}
+        </View>
+      )}
     </View>
   );
 
@@ -186,5 +223,30 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  labelsContainer: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    zIndex: 2,
+    gap: 8,
+  },
+  labelBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    gap: 8,
+  },
+  labelLine: {
+    width: 20,
+    height: 2,
+  },
+  labelText: {
+    color: colors.neutral,
+    fontSize: 14,
+    fontFamily: LatoFonts.bold,
   },
 });

@@ -24,4 +24,5 @@ export interface RouteMapProps {
   onPress?: () => void;
   maxPoints?: number;
   style?: ViewStyle;
+  sampleLabels?: string[];
 }
