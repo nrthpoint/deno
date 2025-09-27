@@ -15,6 +15,10 @@ export const colors = {
   secondary: '#151748',
   tertiary: '#26c25dff',
   other: '#1e3c72',
+
+  // Text Colors
+  text: '#FFFFFF',
+  textSecondary: '#c2c2c2ff',
 };
 
 export type ColorProfile = {

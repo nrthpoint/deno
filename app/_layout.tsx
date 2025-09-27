@@ -14,6 +14,7 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 import { colors } from '@/config/colors';
 import { toastConfig } from '@/config/toast';
 import { SettingsProvider } from '@/context/SettingsContext';
+import { TutorialProvider } from '@/context/TutorialContext';
 import { WorkoutProvider } from '@/context/WorkoutContext';
 import { useWorkoutAuthorization } from '@/hooks/useWorkoutAuthorization';
 import {
@@ -143,9 +144,11 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
       <PaperProvider>
         <SettingsProvider>
-          <WorkoutProvider>
-            <AppContent />
-          </WorkoutProvider>
+          <TutorialProvider>
+            <WorkoutProvider>
+              <AppContent />
+            </WorkoutProvider>
+          </TutorialProvider>
         </SettingsProvider>
         <Toast config={toastConfig} />
       </PaperProvider>

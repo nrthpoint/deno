@@ -11,11 +11,13 @@ import {
   GroupTypeBottomSheetRef,
   GroupTypeBottomSheetWithRef,
 } from '@/components/GroupTypeBottomSheet/GroupTypeBottomSheet';
+import { TutorialOverlay } from '@/components/Tutorial/TutorialOverlay';
 import { colors, tabColors } from '@/config/colors';
 import { tabLabels } from '@/config/ui';
 import { GroupStatsProvider } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { useTutorialContext } from '@/context/TutorialContext';
 import { useGroupConfig } from '@/hooks/useGroupConfig';
 import { useWorkoutGroups } from '@/hooks/useWorkoutGroups';
 import { GroupType } from '@/types/Groups';
@@ -24,6 +26,16 @@ import { subheading } from '@/utils/text';
 export default function Index() {
   const { distanceUnit, timeRangeInDays, activityType } = useSettings();
   const { getConfig, updateConfig } = useGroupConfig();
+  const {
+    isVisible: tutorialVisible,
+    currentStep,
+    currentStepIndex,
+    totalSteps,
+    nextStep,
+    skipTutorial,
+    completeTutorial,
+    startTutorial,
+  } = useTutorialContext();
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const groupTypeBottomSheetRef = useRef<GroupTypeBottomSheetRef>(null);
@@ -133,6 +145,7 @@ export default function Index() {
                 size={32}
                 iconColor={colors.neutral}
                 onPress={() => setConfigModalVisible(true)}
+                onLongPress={startTutorial}
               />
             </View>
 
@@ -171,6 +184,19 @@ export default function Index() {
           </GroupStatsProvider>
         )}
       </Animated.ScrollView>
+
+      {/* Tutorial Overlay */}
+      {tutorialVisible && currentStep && (
+        <TutorialOverlay
+          visible={tutorialVisible}
+          step={currentStep}
+          currentStepIndex={currentStepIndex}
+          totalSteps={totalSteps}
+          onNext={nextStep}
+          onSkip={skipTutorial}
+          onComplete={completeTutorial}
+        />
+      )}
     </ThemeProvider>
   );
 }
