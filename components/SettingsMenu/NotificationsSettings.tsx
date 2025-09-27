@@ -1,15 +1,28 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { Text } from 'react-native-paper';
 
-import { NotificationSettingsCard } from '@/components/NotificationSettings/NotificationSettingsCard';
-import { NotificationStatusCard } from '@/components/NotificationSettings/NotificationStatusCard';
+import { Card } from '@/components/Card/Card';
 import { styles } from '@/components/SettingsMenu/DeveloperSettings';
+import { colors } from '@/config/colors';
 
 export const NotificationsSettings: React.FC = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <NotificationStatusCard />
-      <NotificationSettingsCard />
+      <Card>
+        <View style={styles.cardContent}>
+          <Text
+            variant="titleLarge"
+            style={[styles.heading, { marginTop: 0 }]}
+          >
+            Toast Notifications
+          </Text>
+          <Text style={[styles.subheading, { color: colors.lightGray }]}>
+            Achievement notifications are shown as toast messages when the app is active. No
+            configuration needed - they appear automatically when you achieve new personal bests.
+          </Text>
+        </View>
+      </Card>
     </ScrollView>
   );
 };

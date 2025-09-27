@@ -1,10 +1,8 @@
 import { AuthorizationRequestStatus } from '@kingstinct/react-native-healthkit';
 import { useFonts } from 'expo-font';
-import * as Notifications from 'expo-notifications';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useRef } from 'react';
-import { AppState } from 'react-native';
+import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
@@ -17,62 +15,11 @@ import { SettingsProvider } from '@/context/SettingsContext';
 import { TutorialProvider } from '@/context/TutorialContext';
 import { WorkoutProvider } from '@/context/WorkoutContext';
 import { useWorkoutAuthorization } from '@/hooks/useWorkoutAuthorization';
-import { registerBackgroundTask } from '@/services/background-service';
-import {
-  handleNotificationReceived,
-  handleNotificationResponse,
-  initializeNotifications,
-} from '@/services/notifications';
 
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
-  const notificationListener = useRef<Notifications.EventSubscription | null>(null);
-  const responseListener = useRef<Notifications.EventSubscription | null>(null);
   const { authorizationStatus, requestAuthorization } = useWorkoutAuthorization();
-
-  useEffect(() => {
-    let appStateSubscription: any;
-
-    const setupNotifications = async () => {
-      await initializeNotifications();
-      await registerBackgroundTask();
-
-      notificationListener.current = Notifications.addNotificationReceivedListener(
-        handleNotificationReceived,
-      );
-
-      responseListener.current = Notifications.addNotificationResponseReceivedListener(
-        handleNotificationResponse,
-      );
-
-      const handleAppStateChange = (nextAppState: string) => {
-        if (nextAppState === 'active') {
-          //setAppActive();
-        }
-      };
-
-      appStateSubscription = AppState.addEventListener('change', handleAppStateChange);
-
-      //await setAppActive();
-    };
-
-    setupNotifications();
-
-    return () => {
-      if (notificationListener.current) {
-        notificationListener.current.remove();
-      }
-
-      if (responseListener.current) {
-        responseListener.current.remove();
-      }
-
-      if (appStateSubscription) {
-        appStateSubscription.remove();
-      }
-    };
-  }, []);
 
   // Show loading screen while authorization status is being determined
   if (authorizationStatus === null) {
