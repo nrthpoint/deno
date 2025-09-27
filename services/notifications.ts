@@ -7,16 +7,12 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as BackgroundTask from 'expo-background-task';
 import * as Notifications from 'expo-notifications';
-import * as TaskManager from 'expo-task-manager';
 import Toast from 'react-native-toast-message';
 
-import { checkForNewAchievementsInBackground } from '@/services/background-service';
 import { NotificationSettings } from '@/services/notifications.types';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
-const BACKGROUND_NOTIFICATION_TASK = 'background-notification-task';
 const NOTIFICATION_SETTINGS_KEY = 'notificationSettings';
 
 interface QueuedToast {
@@ -188,7 +184,7 @@ export const showAchievementNotification = async (
 /**
  * Check if app is currently active/in foreground
  */
-export const isAppActive = async (): Promise<boolean> => {
+/* export const isAppActive = async (): Promise<boolean> => {
   try {
     const lastActiveTime = await AsyncStorage.getItem('lastActiveTime');
 
@@ -204,54 +200,17 @@ export const isAppActive = async (): Promise<boolean> => {
     return false;
   }
 };
-
+ */
 /**
  * Set app as active (call this when app comes to foreground)
  */
-export const setAppActive = async (): Promise<void> => {
+/* export const setAppActive = async (): Promise<void> => {
   try {
     await AsyncStorage.setItem('lastActiveTime', Date.now().toString());
   } catch (error) {
     console.error('Error setting app active:', error);
   }
-};
-
-/**
- * Register background task for achievement notifications
- */
-export const registerBackgroundTask = async (): Promise<void> => {
-  try {
-    console.log('Registering background task...');
-
-    // Define the background task
-    TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async () => {
-      console.log('Background task executing...');
-
-      try {
-        await checkForNewAchievementsInBackground();
-        console.log('Background task completed successfully');
-
-        return BackgroundTask.BackgroundTaskResult.Success;
-      } catch (error) {
-        console.error('Background task error:', error);
-
-        return BackgroundTask.BackgroundTaskResult.Failed;
-      }
-    });
-
-    // Register the background task
-    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK);
-
-    if (!isRegistered) {
-      await BackgroundTask.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
-      console.log('Background task registered successfully');
-    } else {
-      console.log('Background task already registered');
-    }
-  } catch (error) {
-    console.error('Error registering background task:', error);
-  }
-};
+}; */
 
 export const sendTestNotification = async (): Promise<void> => {
   try {

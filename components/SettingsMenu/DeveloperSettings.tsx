@@ -6,21 +6,10 @@ import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { clearPreviousAchievements } from '@/services/achievements';
-import { debugAchievements, forceBackgroundCheck } from '@/services/background-service';
+import { forceBackgroundCheck } from '@/services/background-service';
 import { getBackgroundTaskStatus, unregisterBackgroundTask } from '@/services/notifications';
 
 export const DeveloperSettings: React.FC = () => {
-  const handleDebugAchievements = async () => {
-    try {
-      console.log('Starting achievement debug...');
-      await debugAchievements();
-      Alert.alert('Debug Complete', 'Check console logs for achievement debug information');
-    } catch (error) {
-      console.error('Debug error:', error);
-      Alert.alert('Debug Error', 'Failed to run achievement debug. Check console for details.');
-    }
-  };
-
   const handleForceBackgroundCheck = async () => {
     try {
       console.log('Forcing background check...');
@@ -85,19 +74,6 @@ export const DeveloperSettings: React.FC = () => {
             <Text style={styles.buttonDescription}>
               Removes all stored achievement data from AsyncStorage. Use this to reset achievement
               tracking for testing new personal bests.
-            </Text>
-
-            <Button
-              mode="contained"
-              onPress={handleDebugAchievements}
-              style={styles.debugButton}
-              labelStyle={styles.buttonText}
-            >
-              Debug Achievement Detection
-            </Button>
-            <Text style={styles.buttonDescription}>
-              Runs achievement detection on all workouts and logs detailed information to console.
-              Shows which achievements would be triggered.
             </Text>
 
             <Button
@@ -171,10 +147,6 @@ export const styles = StyleSheet.create({
   },
   clearButton: {
     borderColor: colors.gray,
-    borderRadius: 8,
-  },
-  debugButton: {
-    backgroundColor: colors.primary,
     borderRadius: 8,
   },
   forceButton: {

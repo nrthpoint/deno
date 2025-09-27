@@ -18,37 +18,30 @@ interface HalfMoonProgressProps extends ModalProps {
 
 export const HalfMoonProgress = ({ label, size = 120, ...modalProps }: HalfMoonProgressProps) => {
   const { group, meta } = useGroupStats();
-  const value = group.runs.length;
-  const total = meta.totalRuns;
-  const percentage = Math.min((value / total) * 100, 100);
+  const value = group?.runs?.length ?? 0;
+  const total = meta?.totalRuns ?? 0;
+  const percentage = total > 0 ? Math.min((value / total) * 100, 100) : 0;
+
   const strokeWidth = 8;
   const radius = (size - strokeWidth) / 2;
   const center = size / 2;
 
-  // Calculate the end angle for the progress arc (0 to 180 degrees)
-  const progressAngle = (percentage / 100) * 180;
-  const progressAngleRad = (progressAngle * Math.PI) / 180;
-
-  // SVG path for background half circle
-  const backgroundPath = `
-    M ${strokeWidth / 2} ${center}
-    A ${radius} ${radius} 0 0 1 ${size - strokeWidth / 2} ${center}
-  `;
-
-  // SVG path for progress arc
-  // Start from the left side (180 degrees) and move clockwise
   const startX = strokeWidth / 2;
   const startY = center;
-  const endX = center + radius * Math.cos(Math.PI - progressAngleRad);
-  const endY = center - radius * Math.sin(Math.PI - progressAngleRad);
+  const rightX = center + radius;
 
-  // Use large arc flag when the arc is greater than 180 degrees (but since we're only doing 0-180, it's when > 90)
-  const largeArcFlag = progressAngle > 90 ? 1 : 0;
+  const progressAngleDeg = (percentage / 100) * 180;
+  const progressAngleRad = (progressAngleDeg * Math.PI) / 180;
 
-  const progressPath = `
-    M ${startX} ${startY}
-    A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}
-  `;
+  const angleRad = Math.PI - progressAngleRad;
+
+  const endX = center + radius * Math.cos(angleRad);
+  const endY = center - radius * Math.sin(angleRad);
+
+  const largeArcFlag = progressAngleDeg === 180 ? 1 : 0;
+
+  const backgroundPath = `M ${startX} ${startY} A ${radius} ${radius} 0 0 1 ${rightX} ${startY}`;
+  const progressPath = `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
 
   const content = (
     <View style={styles.container}>

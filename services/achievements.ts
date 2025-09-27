@@ -19,7 +19,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { isAppActive, showAchievementNotification } from '@/services/notifications';
+import { showAchievementNotification } from '@/services/notifications';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 const PREVIOUS_ACHIEVEMENTS_KEY = 'previousAchievements';
@@ -90,7 +90,7 @@ export const checkAndNotifyNewAchievements = async (workouts: ExtendedWorkout[])
   if (currentAchievements.fastest && currentAchievements.fastest !== previousAchievements.fastest) {
     const fastestWorkout = workouts.find((w) => w.uuid === currentAchievements.fastest);
     if (fastestWorkout) {
-      showAchievementToast(
+      showAchievementNotification(
         '🏃‍♂️ New Personal Best!',
         `Fastest pace: ${fastestWorkout.prettyPace}`,
         fastestWorkout,
@@ -108,7 +108,7 @@ export const checkAndNotifyNewAchievements = async (workouts: ExtendedWorkout[])
       const minutes = duration % 60;
       const durationText = hours > 0 ? `${hours} hr ${minutes} mins` : `${duration} minutes`;
 
-      showAchievementToast(
+      showAchievementNotification(
         '⏱️ New Personal Best!',
         `Longest duration: ${durationText}`,
         longestWorkout,
@@ -123,7 +123,7 @@ export const checkAndNotifyNewAchievements = async (workouts: ExtendedWorkout[])
   ) {
     const furthestWorkout = workouts.find((w) => w.uuid === currentAchievements.furthest);
     if (furthestWorkout) {
-      showAchievementToast(
+      showAchievementNotification(
         '🏁 New Personal Best!',
         `Furthest distance: ${furthestWorkout.totalDistance.quantity.toFixed(2)} ${furthestWorkout.totalDistance.unit}`,
         furthestWorkout,
@@ -140,7 +140,7 @@ export const checkAndNotifyNewAchievements = async (workouts: ExtendedWorkout[])
       (w) => w.uuid === currentAchievements.highestElevation,
     );
     if (highestElevationWorkout) {
-      showAchievementToast(
+      showAchievementNotification(
         '🏔️ New Personal Best!',
         `Highest elevation: ${Math.round(highestElevationWorkout.totalElevation.quantity)} ${highestElevationWorkout.totalElevation.unit}`,
         highestElevationWorkout,
@@ -150,17 +150,6 @@ export const checkAndNotifyNewAchievements = async (workouts: ExtendedWorkout[])
 
   // Store current achievements for next comparison
   await storePreviousAchievements(currentAchievements);
-};
-
-/**
- * Show a toast notification for an achievement
- */
-const showAchievementToast = async (title: string, message: string, workout: ExtendedWorkout) => {
-  const appActive = await isAppActive();
-
-  console.log('***App active status:', appActive);
-
-  showAchievementNotification(title, message, workout, appActive);
 };
 
 /**

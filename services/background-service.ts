@@ -12,17 +12,53 @@ import {
   WorkoutActivityType,
 } from '@kingstinct/react-native-healthkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as BackgroundTask from 'expo-background-task';
+import * as TaskManager from 'expo-task-manager';
 
-import {
-  checkAndNotifyNewAchievements,
-  getPreviousAchievements,
-  handleAchievementNotifications,
-} from '@/services/achievements';
+import { handleAchievementNotifications } from '@/services/achievements';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { parseWorkoutSamples } from '@/utils/parser';
 
 const LAST_BACKGROUND_CHECK_KEY = 'lastBackgroundAchievementCheck';
+const BACKGROUND_NOTIFICATION_TASK = 'background-notification-task';
 const BACKGROUND_CHECK_INTERVAL = 1 * 60 * 1000; // 1 minute for testing (was 30 minutes)
+
+/**
+ * Register background task for achievement notifications
+ */
+export const registerBackgroundTask = async (): Promise<void> => {
+  try {
+    console.log('Registering background task...');
+
+    // Define the background task
+    TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, async () => {
+      console.log('Background task executing...');
+
+      try {
+        await checkForNewAchievementsInBackground();
+        console.log('Background task completed successfully');
+
+        return BackgroundTask.BackgroundTaskResult.Success;
+      } catch (error) {
+        console.error('Background task error:', error);
+
+        return BackgroundTask.BackgroundTaskResult.Failed;
+      }
+    });
+
+    // Register the background task
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_NOTIFICATION_TASK);
+
+    if (!isRegistered) {
+      await BackgroundTask.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+      console.log('Background task registered successfully');
+    } else {
+      console.log('Background task already registered');
+    }
+  } catch (error) {
+    console.error('Error registering background task:', error);
+  }
+};
 
 /**
  * Check for new achievements in background
@@ -123,59 +159,6 @@ export const getTimeUntilNextCheck = async (): Promise<number> => {
   } catch (error) {
     console.error('Error getting time until next check:', error);
     return 0;
-  }
-};
-
-/**
- * Debug function to check current vs previous achievements
- */
-export const debugAchievements = async (): Promise<void> => {
-  try {
-    console.log('Debugging achievements...');
-
-    // Check if HealthKit data is available
-    const isAvailable = await isProtectedDataAvailable();
-    console.log('HealthKit data available:', isAvailable);
-
-    if (!isAvailable) {
-      console.log('HealthKit data not available, skipping check');
-      return;
-    }
-
-    // Get recent workouts (last 30 days)
-    const endDate = new Date();
-    const startDate = new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-    console.log('Querying workouts from', startDate, 'to', endDate);
-    const workouts = await queryWorkoutSamples({
-      ascending: false,
-      limit: 100,
-      filter: {
-        workoutActivityType: WorkoutActivityType.running,
-        startDate,
-        endDate,
-      },
-    });
-
-    const parsedWorkouts = await parseWorkoutSamples({
-      samples: workouts || [],
-      distanceUnit: 'mi', // Default to miles
-    });
-
-    // Get current and previous achievements for debugging
-    const { extractCurrentAchievements } = await import('@/services/achievements');
-    const previousAchievements = await getPreviousAchievements();
-    const currentAchievements = extractCurrentAchievements(parsedWorkouts);
-
-    console.log('Previous achievements:', previousAchievements);
-    console.log('Current achievements:', currentAchievements);
-
-    console.log('Running background achievement check...');
-    await checkAndNotifyNewAchievements(parsedWorkouts);
-
-    console.log('Background achievement check complete.');
-  } catch (error) {
-    console.error('Error in debug achievements:', error);
   }
 };
 

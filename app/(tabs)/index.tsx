@@ -12,7 +12,7 @@ import {
   GroupTypeBottomSheetWithRef,
 } from '@/components/GroupTypeBottomSheet/GroupTypeBottomSheet';
 import { TutorialOverlay } from '@/components/Tutorial/TutorialOverlay';
-import { colors, tabColors } from '@/config/colors';
+import { colors } from '@/config/colors';
 import { tabLabels } from '@/config/ui';
 import { GroupStatsProvider } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
@@ -75,14 +75,14 @@ export default function Index() {
   }, [options, selectedOption]);
 
   const selectedGroup = groups[selectedOption];
-  const hasNoData = !loading && !selectedGroup && authorizationStatus === 2;
+  const isAuthorized = authorizationStatus === 2;
+  const noData = !loading && !selectedGroup && !isAuthorized;
   const itemSuffix = selectedGroup?.suffix || '';
-  const colorProfile = tabColors[groupType];
 
   return (
     <ThemeProvider groupType={groupType}>
       {/* No Data Overlay */}
-      {hasNoData && (
+      {noData && (
         <View style={styles.noDataOverlay}>
           <Text style={{ color: '#fff', textAlign: 'center', paddingHorizontal: 20 }}>
             No data available for the selected group.
@@ -159,16 +159,12 @@ export default function Index() {
 
             <GroupCarousel
               options={options}
-              colorProfile={colorProfile}
               itemSuffix={itemSuffix}
-              tolerance={tolerance || 0}
               groupType={groupType}
-              distanceUnit={distanceUnit}
+              selectedOption={selectedOption}
               setSelectedOption={setSelectedOption}
               groups={groups}
             />
-
-            {/* <Background /> */}
           </Animated.View>
         </View>
 
@@ -235,14 +231,14 @@ export const styles = StyleSheet.create({
   },
   noDataOverlay: {
     position: 'absolute',
-    top: 350, // Position below carousel area
+    top: 350,
     left: 0,
     right: 0,
-    bottom: 0, // Above tab buttons
+    bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    zIndex: 50, // Lower than loading overlay
+    zIndex: 50,
   },
   settingsContainer: {
     position: 'absolute',

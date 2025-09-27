@@ -17,12 +17,11 @@ import { SettingsProvider } from '@/context/SettingsContext';
 import { TutorialProvider } from '@/context/TutorialContext';
 import { WorkoutProvider } from '@/context/WorkoutContext';
 import { useWorkoutAuthorization } from '@/hooks/useWorkoutAuthorization';
+import { registerBackgroundTask } from '@/services/background-service';
 import {
   handleNotificationReceived,
   handleNotificationResponse,
   initializeNotifications,
-  registerBackgroundTask,
-  setAppActive,
 } from '@/services/notifications';
 
 SplashScreen.preventAutoHideAsync();
@@ -49,13 +48,13 @@ function AppContent() {
 
       const handleAppStateChange = (nextAppState: string) => {
         if (nextAppState === 'active') {
-          setAppActive();
+          //setAppActive();
         }
       };
 
       appStateSubscription = AppState.addEventListener('change', handleAppStateChange);
 
-      await setAppActive();
+      //await setAppActive();
     };
 
     setupNotifications();
