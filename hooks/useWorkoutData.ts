@@ -7,11 +7,11 @@ import {
   WorkoutActivityType,
 } from '@kingstinct/react-native-healthkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 
 import { SampleTypesToRead, SampleTypesToWrite } from '@/config/sampleIdentifiers';
 import { TimeRange } from '@/config/timeRanges';
+import { useWorkout } from '@/context/WorkoutContext';
 import { handleAchievementNotifications } from '@/services/achievements';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { parseWorkoutSamples } from '@/utils/parser';
@@ -32,6 +32,7 @@ export function useWorkoutData({
   distanceUnit,
   timeRangeInDays,
 }: UseWorkoutDataParams) {
+  const { setFetchWorkouts } = useWorkout();
   const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization(
     SampleTypesToRead,
     SampleTypesToWrite,
@@ -42,7 +43,6 @@ export function useWorkoutData({
     totalDistance: { quantity: 0, unit: distanceUnit },
   });
   const [loading, setLoading] = useState<boolean>(true);
-  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
 
   const fetchWorkouts = useCallback(async () => {
     try {
@@ -102,12 +102,7 @@ export function useWorkoutData({
     } finally {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [distanceUnit, timeRangeInDays, activityType, refreshTrigger]);
-
-  const refresh = useCallback(() => {
-    setRefreshTrigger((prev) => prev + 1);
-  }, []);
+  }, [distanceUnit, timeRangeInDays, activityType]);
 
   useEffect(() => {
     if (authorizationStatus === AuthorizationRequestStatus.unnecessary) {
@@ -115,19 +110,14 @@ export function useWorkoutData({
     }
   }, [fetchWorkouts, authorizationStatus]);
 
-  // Refresh data when screen comes into focus
-  useFocusEffect(
-    useCallback(() => {
-      if (authorizationStatus === AuthorizationRequestStatus.unnecessary) {
-        // Check if we need to refresh due to new workout being added
-        AsyncStorage.getItem('workoutDataNeedsRefresh').then((needsRefresh) => {
-          if (needsRefresh) {
-            refresh();
-          }
-        });
-      }
-    }, [authorizationStatus, refresh]),
-  );
+  useEffect(() => {
+    if (authorizationStatus === AuthorizationRequestStatus.unnecessary) {
+      setFetchWorkouts(() => {
+        console.log('Refreshing workout data due to context trigger.');
+        fetchWorkouts();
+      });
+    }
+  }, [setFetchWorkouts, authorizationStatus, fetchWorkouts]);
 
   return {
     samples,
@@ -135,6 +125,5 @@ export function useWorkoutData({
     loading,
     authorizationStatus,
     requestAuthorization,
-    refresh,
   };
 }

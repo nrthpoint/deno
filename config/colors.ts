@@ -19,6 +19,9 @@ export const colors = {
   // Text Colors
   text: '#FFFFFF',
   textSecondary: '#c2c2c2ff',
+
+  // Status Colors
+  error: '#ff4444',
 };
 
 export type ColorProfile = {

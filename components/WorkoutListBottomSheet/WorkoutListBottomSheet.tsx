@@ -4,6 +4,7 @@ import React, { forwardRef, useCallback, useMemo, useImperativeHandle, useRef } 
 import { Pressable, StyleSheet, ScrollView, View } from 'react-native';
 import { Text, Portal } from 'react-native-paper';
 
+import { DeleteWorkoutPortal } from '@/components/DeleteWorkout/DeleteWorkoutPortal';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWorkout } from '@/context/WorkoutContext';
@@ -26,7 +27,7 @@ export const WorkoutListBottomSheet = forwardRef<
   WorkoutListBottomSheetProps
 >(({ workouts, title = 'All Workouts' }, ref) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { setSelectedWorkout } = useWorkout();
+  const { setSelectedWorkout, deleteWorkout } = useWorkout();
 
   const snapPoints = useMemo(() => ['60%', '90%'], []);
 
@@ -73,12 +74,14 @@ export const WorkoutListBottomSheet = forwardRef<
             showsVerticalScrollIndicator={false}
           >
             {workouts.map((workout, index) => (
-              <Pressable
+              <View
                 key={workout.uuid}
                 style={[styles.workoutItem, index % 2 === 0 && styles.alternateRow]}
-                onPress={() => handleWorkoutPress(workout)}
               >
-                <View style={styles.workoutRow}>
+                <Pressable
+                  style={styles.workoutRow}
+                  onPress={() => handleWorkoutPress(workout)}
+                >
                   <View style={styles.dateColumn}>
                     <Text
                       style={styles.dateText}
@@ -103,8 +106,15 @@ export const WorkoutListBottomSheet = forwardRef<
                       {formatDuration(workout.duration)}
                     </Text>
                   </View>
+                </Pressable>
+                <View style={styles.deleteColumn}>
+                  <DeleteWorkoutPortal
+                    workout={workout}
+                    iconSize={18}
+                    deleteFunction={deleteWorkout}
+                  />
                 </View>
-              </Pressable>
+              </View>
             ))}
           </ScrollView>
         </BottomSheetView>
@@ -137,6 +147,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   workoutItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -146,6 +158,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   workoutRow: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -159,6 +172,10 @@ const styles = StyleSheet.create({
   timeColumn: {
     flex: 1.5,
     alignItems: 'flex-end',
+  },
+  deleteColumn: {
+    marginLeft: 8,
+    justifyContent: 'center',
   },
   dateText: {
     fontSize: 14,

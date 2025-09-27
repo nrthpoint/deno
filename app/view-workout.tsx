@@ -5,6 +5,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { Card } from '@/components/Card/Card';
+import { DeleteWorkout } from '@/components/DeleteWorkout/DeleteWorkout';
 import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { AchievementListBadge } from '@/components/StatCard/AchievementListBadge';
 import { WeatherSummary } from '@/components/WeatherSummary/WeatherSummary';
@@ -179,6 +180,10 @@ export default function ViewWorkoutScreen() {
     router.push('/map-detail');
   };
 
+  const handleDelete = () => {
+    router.back();
+  };
+
   return (
     <>
       <Stack.Screen
@@ -202,6 +207,13 @@ export default function ViewWorkoutScreen() {
                 color={colors.neutral}
               />
             </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <DeleteWorkout
+              workout={selectedWorkout}
+              onDelete={handleDelete}
+              iconSize={24}
+            />
           ),
         }}
       />

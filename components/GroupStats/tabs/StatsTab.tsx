@@ -10,6 +10,7 @@ import {
   WorkoutListBottomSheet,
   WorkoutListBottomSheetRef,
 } from '@/components/WorkoutListBottomSheet/WorkoutListBottomSheet';
+import { colors } from '@/config/colors';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { generateGroupSummary } from '@/utils/groupSummary';
 import { generateProgressionData } from '@/utils/progression';
@@ -33,6 +34,7 @@ const getTabColor = (label: string) => {
 
 export const StatsTab: React.FC = () => {
   const { group, groupType, timeRangeInDays } = useGroupStats();
+
   const workoutListRef = useRef<WorkoutListBottomSheetRef>(null);
   const summary = generateGroupSummary(group, groupType, timeRangeInDays);
   const progressionData = generateProgressionData(group, groupType, timeRangeInDays);
@@ -94,12 +96,13 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   viewAllButton: {
-    backgroundColor: '#FFF',
-    color: '#000',
+    backgroundColor: colors.surface,
     borderRadius: 8,
+    paddingVertical: 10,
   },
   buttonLabel: {
     fontSize: 16,
     fontWeight: '600',
+    color: colors.neutral,
   },
 });
