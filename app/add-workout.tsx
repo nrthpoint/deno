@@ -183,7 +183,7 @@ export default function AddWorkoutScreen() {
 
           <TouchableRipple
             style={styles.dateTimeButton}
-            onPress={() => router.replace('/(tabs)/settings')}
+            onPress={() => router.replace('/(tabs)/settings?section=general')}
           >
             <View style={styles.dateTimeButtonContent}>
               <Text style={styles.disabledText}>{getActivityTypeLabel(activityType)}</Text>

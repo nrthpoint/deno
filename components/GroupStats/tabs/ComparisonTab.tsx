@@ -174,6 +174,7 @@ export const ComparisonTab = () => {
         {isSameWorkout && (
           <Warning
             title="Same Workout Selected"
+            style={{ marginTop: 10 }}
             message="You're comparing the same workout to itself. Select different workouts to see meaningful comparisons."
           />
         )}
