@@ -15,6 +15,7 @@ interface SampleDropdownProps {
   showShortLabel?: boolean;
   shortLabel?: string;
   onSelect: (type: SampleType) => void;
+  style?: any;
 }
 
 export const SampleDropdown = ({
@@ -22,8 +23,7 @@ export const SampleDropdown = ({
   selectedType,
   placeholder = 'Select Sample',
   onSelect,
-  // showShortLabel = false,
-  // shortLabel = '',
+  style,
 }: SampleDropdownProps) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const selectedOption = options.find((option) => option.type === selectedType);
@@ -97,7 +97,7 @@ export const SampleDropdown = ({
   return (
     <View style={styles.container}>
       <Pressable
-        style={styles.dropdownButton}
+        style={[styles.dropdownButton, style]}
         onPress={handleOpenPress}
       >
         <Text style={styles.dropdownText}>{selectedOption?.label || placeholder}</Text>

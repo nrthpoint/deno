@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
@@ -14,27 +14,31 @@ export interface WarningProps {
   actionHint?: string;
   variant?: 'default' | 'touchable';
   style?: ViewStyle;
+  labelStyle?: TextStyle;
+  iconColor?: string;
 }
 
-const renderMessageWithBold = (text: string) => {
+const renderMessageWithBold = (text: string, labelStyle?: TextStyle) => {
   const parts = text.split(/(\*\*.*?\*\*)/g);
 
   return parts.map((part, index) => {
     if (part.startsWith('**') && part.endsWith('**')) {
       const boldText = part.slice(2, -2);
+
       return (
         <Text
           key={index}
-          style={[styles.message, styles.boldMessage]}
+          style={[styles.message, styles.boldMessage, labelStyle]}
         >
           {boldText}
         </Text>
       );
     }
+
     return (
       <Text
         key={index}
-        style={styles.message}
+        style={[styles.message, labelStyle]}
       >
         {part}
       </Text>
@@ -50,6 +54,8 @@ export const Warning: React.FC<WarningProps> = ({
   actionHint,
   variant = 'default',
   style,
+  labelStyle,
+  iconColor,
 }) => {
   const Container = variant === 'touchable' && onPress ? TouchableOpacity : View;
   const containerProps = variant === 'touchable' && onPress ? { onPress, activeOpacity: 0.8 } : {};
@@ -63,15 +69,15 @@ export const Warning: React.FC<WarningProps> = ({
         <Text style={styles.icon}>
           <Ionicons
             name="warning"
-            color={colors.background}
+            color={iconColor || colors.background}
             size={28}
           />
         </Text>
       </View>
       <View style={styles.textContainer}>
         {/* <Text style={styles.title}>{title}</Text> */}
-        <Text style={styles.message}>{renderMessageWithBold(message)}</Text>
-        {actionHint && <Text style={styles.actionHint}>{actionHint}</Text>}
+        <Text>{renderMessageWithBold(message, labelStyle)}</Text>
+        {actionHint && <Text style={[styles.actionHint, labelStyle]}>{actionHint}</Text>}
       </View>
     </Container>
   );
