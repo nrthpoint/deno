@@ -8,13 +8,13 @@ import { ProfileStatCard } from '@/components/ProfileStatCard/ProfileStatCard';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
-import { useWorkout } from '@/context/WorkoutContext';
 import { useWorkoutData } from '@/hooks/useWorkoutData';
+import { useWorkoutSelection } from '@/hooks/useWorkoutSelectors';
 import { calculateProfileStats, ProfileStats } from '@/utils/profileStats';
 
 export default function ProfileScreen() {
   const { distanceUnit } = useSettings();
-  const { setSelectedWorkout } = useWorkout();
+  const { setSelectedWorkout } = useWorkoutSelection();
   const [profileStats, setProfileStats] = useState<ProfileStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
 

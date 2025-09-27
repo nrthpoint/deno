@@ -4,7 +4,7 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 
 import { ConfirmAction } from '@/components/ConfirmAction/ConfirmAction';
 import { colors } from '@/config/colors';
-import { useWorkout } from '@/context/WorkoutContext';
+import { useWorkoutActions } from '@/hooks/useWorkoutSelectors';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 interface DeleteWorkoutProps {
@@ -22,7 +22,7 @@ export const DeleteWorkout: React.FC<DeleteWorkoutProps> = ({
   onDelete,
   deleteFunction,
 }) => {
-  const { deleteWorkout: contextDeleteWorkout } = useWorkout();
+  const { deleteWorkout: contextDeleteWorkout } = useWorkoutActions();
 
   const handleDelete = async () => {
     try {

@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import { WorkoutActivityType, saveWorkoutSample } from '@kingstinct/react-native-healthkit';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Stack, router } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
@@ -13,6 +12,7 @@ import { colors } from '@/config/colors';
 import { LatoFonts, OrelegaOneFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
 import { useWorkoutAuthorization } from '@/hooks/useWorkoutAuthorization';
+import { useWorkoutActions } from '@/hooks/useWorkoutSelectors';
 import { subheading } from '@/utils/text';
 import { formatDate, formatTime } from '@/utils/time';
 
@@ -40,6 +40,7 @@ const getActivityTypeLabel = (type: WorkoutActivityType) => {
 export default function AddWorkoutScreen() {
   const { activityType, distanceUnit } = useSettings();
   const { authorizationStatus, requestAuthorization } = useWorkoutAuthorization();
+  const { refetch } = useWorkoutActions();
 
   const [distance, setDistance] = useState('');
   const [duration, setDuration] = useState('');
@@ -98,8 +99,12 @@ export default function AddWorkoutScreen() {
         },
       );
 
-      // Set flag to refresh workout data when returning to main screen
-      await AsyncStorage.setItem('workoutDataNeedsRefresh', 'true');
+      // Refresh the main workout cache with current settings
+      refetch({
+        activityType,
+        distanceUnit,
+        timeRangeInDays: 30, // Use 30 days as default, or could get from context
+      });
 
       Alert.alert('Success', 'Workout saved successfully!', [
         {

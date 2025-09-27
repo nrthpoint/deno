@@ -11,7 +11,7 @@ import { AchievementListBadge } from '@/components/StatCard/AchievementListBadge
 import { WeatherSummary } from '@/components/WeatherSummary/WeatherSummary';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { useWorkout } from '@/context/WorkoutContext';
+import { useWorkoutSelection } from '@/hooks/useWorkoutSelectors';
 import { formatDistance } from '@/utils/distance';
 import { subheading } from '@/utils/text';
 import {
@@ -23,7 +23,7 @@ import {
 } from '@/utils/time';
 
 export default function ViewWorkoutScreen() {
-  const { selectedWorkout, setSelectedWorkouts } = useWorkout();
+  const { selectedWorkout, setSelectedWorkouts } = useWorkoutSelection();
 
   if (!selectedWorkout) {
     return (
