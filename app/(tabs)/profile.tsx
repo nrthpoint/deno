@@ -1,49 +1,48 @@
 import { Ionicons } from '@expo/vector-icons';
-import { WorkoutActivityType } from '@kingstinct/react-native-healthkit';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ProfileStatCard } from '@/components/ProfileStatCard/ProfileStatCard';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
+import { useWorkoutAnalytics, WorkoutAnalytics } from '@/context/WorkoutAnalytics';
 import { useWorkoutData } from '@/hooks/useWorkoutData';
 import { useWorkoutSelection } from '@/hooks/useWorkoutSelectors';
-import { calculateProfileStats, ProfileStats } from '@/utils/profileStats';
 
 export default function ProfileScreen() {
-  const { distanceUnit } = useSettings();
+  const { distanceUnit, activityType, timeRangeInDays } = useSettings();
   const { setSelectedWorkout } = useWorkoutSelection();
-  const [profileStats, setProfileStats] = useState<ProfileStats | null>(null);
-  const [statsLoading, setStatsLoading] = useState(true);
+  const { getWorkoutAnalytics, isLoading: isStatsLoading } = useWorkoutAnalytics();
+  const [cachedStats, setCachedStats] = useState<WorkoutAnalytics | null>(null);
 
-  // Get all workout data for the past year
-  const { samples: workouts, loading: workoutsLoading } = useWorkoutData({
-    activityType: WorkoutActivityType.running,
-    distanceUnit: distanceUnit,
-    timeRangeInDays: 365,
-  });
+  const query = useMemo(
+    () => ({
+      activityType,
+      distanceUnit,
+      timeRangeInDays,
+    }),
+    [activityType, distanceUnit, timeRangeInDays],
+  );
+  const { samples: workouts, loading: workoutsLoading } = useWorkoutData(query);
 
   useEffect(() => {
     const loadProfileStats = async () => {
       if (!workoutsLoading && workouts.length > 0) {
-        setStatsLoading(true);
         try {
-          const stats = await calculateProfileStats(workouts, distanceUnit);
-          setProfileStats(stats);
+          const stats = await getWorkoutAnalytics(workouts, query);
+          setCachedStats(stats);
         } catch (error) {
           console.error('Error calculating profile stats:', error);
-        } finally {
-          setStatsLoading(false);
         }
       } else if (!workoutsLoading) {
-        setStatsLoading(false);
+        setCachedStats(null);
       }
     };
 
     loadProfileStats();
-  }, [workouts, workoutsLoading, distanceUnit]);
+  }, [workouts, workoutsLoading, getWorkoutAnalytics, query]);
 
   const handleStatPress = (workout: any) => {
     if (workout) {
@@ -52,7 +51,7 @@ export default function ProfileScreen() {
     }
   };
 
-  const isLoading = workoutsLoading || statsLoading;
+  const isLoading = workoutsLoading || isStatsLoading(query);
 
   return (
     <View style={styles.screenContainer}>
@@ -73,55 +72,88 @@ export default function ProfileScreen() {
             />
             <Text style={styles.loadingText}>Loading your stats...</Text>
           </View>
-        ) : profileStats ? (
+        ) : cachedStats ? (
           <>
             <ProfileStatCard
               icon="flash"
               title="Fastest Workout"
-              value={profileStats.fastestWorkout.pace}
-              subtitle={profileStats.fastestWorkout.workout?.daysAgo || 'No data'}
-              onPress={() => handleStatPress(profileStats.fastestWorkout.workout)}
+              value={cachedStats.profileStats.fastestWorkout.pace}
+              subtitle={cachedStats.profileStats.fastestWorkout.workout?.daysAgo || 'No data'}
+              onPress={() => handleStatPress(cachedStats.profileStats.fastestWorkout.workout)}
               color="#00e676"
             />
 
             <ProfileStatCard
               icon="time"
               title="Longest Workout"
-              value={profileStats.longestWorkout.duration}
-              subtitle={profileStats.longestWorkout.workout?.daysAgo || 'No data'}
-              onPress={() => handleStatPress(profileStats.longestWorkout.workout)}
+              value={cachedStats.profileStats.longestWorkout.duration}
+              subtitle={cachedStats.profileStats.longestWorkout.workout?.daysAgo || 'No data'}
+              onPress={() => handleStatPress(cachedStats.profileStats.longestWorkout.workout)}
               color="#ff9800"
             />
 
             <ProfileStatCard
               icon="trending-up"
               title="Highest Elevation"
-              value={profileStats.highestElevationWorkout.elevation}
-              subtitle={profileStats.highestElevationWorkout.workout?.daysAgo || 'No data'}
-              onPress={() => handleStatPress(profileStats.highestElevationWorkout.workout)}
+              value={cachedStats.profileStats.highestElevationWorkout.elevation}
+              subtitle={
+                cachedStats.profileStats.highestElevationWorkout.workout?.daysAgo || 'No data'
+              }
+              onPress={() =>
+                handleStatPress(cachedStats.profileStats.highestElevationWorkout.workout)
+              }
               color="#6cea12ff"
             />
 
             <ProfileStatCard
               icon="speedometer"
               title="Fastest Split"
-              value={profileStats.fastestSplit.splitTime}
+              value={cachedStats.profileStats.fastestSplit.splitTime}
               subtitle={
-                profileStats.fastestSplit.splitNumber > 0
-                  ? `Split ${profileStats.fastestSplit.splitNumber} (${distanceUnit})`
+                cachedStats.profileStats.fastestSplit.splitNumber > 0
+                  ? `Split ${cachedStats.profileStats.fastestSplit.splitNumber} (${distanceUnit})`
                   : 'No split data'
               }
-              onPress={() => handleStatPress(profileStats.fastestSplit.workout)}
+              onPress={() => handleStatPress(cachedStats.profileStats.fastestSplit.workout)}
               color="#e91e63"
             />
 
             <ProfileStatCard
               icon="hourglass"
               title="Shortest Workout"
-              value={profileStats.shortestWorkout.duration}
-              subtitle={profileStats.shortestWorkout.workout?.daysAgo || 'No data'}
-              onPress={() => handleStatPress(profileStats.shortestWorkout.workout)}
+              value={cachedStats.profileStats.shortestWorkout.duration}
+              subtitle={cachedStats.profileStats.shortestWorkout.workout?.daysAgo || 'No data'}
+              onPress={() => handleStatPress(cachedStats.profileStats.shortestWorkout.workout)}
               color="#2196f3"
+            />
+
+            <Text style={styles.trendsTitle}>Weekly Trends</Text>
+
+            <ProfileStatCard
+              icon="calendar"
+              title="Fastest Day"
+              value={cachedStats.weeklyTrends.fastestDay.dayName}
+              subtitle={`${cachedStats.weeklyTrends.fastestDay.count} runs`}
+              onPress={() => {}}
+              color="#00e676"
+            />
+
+            <ProfileStatCard
+              icon="calendar"
+              title="Longest Day"
+              value={cachedStats.weeklyTrends.longestDay.dayName}
+              subtitle={`${cachedStats.weeklyTrends.longestDay.count} runs`}
+              onPress={() => {}}
+              color="#ff9800"
+            />
+
+            <ProfileStatCard
+              icon="calendar"
+              title="Highest Elevation Day"
+              value={cachedStats.weeklyTrends.highestElevationDay.dayName}
+              subtitle={`${cachedStats.weeklyTrends.highestElevationDay.count} runs`}
+              onPress={() => {}}
+              color="#6cea12ff"
             />
           </>
         ) : (
@@ -201,5 +233,13 @@ const styles = StyleSheet.create({
     color: colors.lightGray,
     marginTop: 8,
     textAlign: 'center',
+  },
+  trendsTitle: {
+    fontSize: 24,
+    fontFamily: LatoFonts.bold,
+    color: colors.neutral,
+    marginTop: 32,
+    marginBottom: 16,
+    textAlign: 'left',
   },
 });

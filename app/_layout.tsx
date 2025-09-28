@@ -13,6 +13,7 @@ import { colors } from '@/config/colors';
 import { toastConfig } from '@/config/toast';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { TutorialProvider } from '@/context/TutorialContext';
+import { WorkoutAnalyticsProvider } from '@/context/WorkoutAnalytics';
 import { WorkoutProvider } from '@/context/WorkoutContext';
 import { useWorkoutAuthorization } from '@/hooks/useWorkoutAuthorization';
 
@@ -92,7 +93,9 @@ export default function RootLayout() {
         <SettingsProvider>
           <TutorialProvider>
             <WorkoutProvider>
-              <AppContent />
+              <WorkoutAnalyticsProvider>
+                <AppContent />
+              </WorkoutAnalyticsProvider>
             </WorkoutProvider>
           </TutorialProvider>
         </SettingsProvider>

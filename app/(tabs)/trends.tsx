@@ -17,7 +17,11 @@ export default function TrendsScreen() {
           description="See your average pace for different run distances."
           onPress={() => router.push('/trends/pace-by-distance')}
         />
-        {/* Add more TrendCard components here for other trends */}
+        <TrendCard
+          title="Weekly Patterns"
+          description="Discover which days of the week you run your fastest, longest, and furthest runs."
+          onPress={() => router.push('/trends/weekly-patterns')}
+        />
       </ScrollView>
     </View>
   );

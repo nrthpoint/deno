@@ -61,10 +61,10 @@ type WorkoutAction =
 
 interface WorkoutContextType {
   state: WorkoutState;
-  dispatch: React.Dispatch<WorkoutAction>;
   selectedWorkout: ExtendedWorkout | null;
   selectedWorkouts: ExtendedWorkout[];
   authorizationStatus: AuthorizationRequestStatus;
+  dispatch: React.Dispatch<WorkoutAction>;
   requestAuthorization: () => void;
   setSelectedWorkout: (workout: ExtendedWorkout | null) => void;
   setSelectedWorkouts: (workouts: ExtendedWorkout[]) => void;
