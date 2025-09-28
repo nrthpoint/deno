@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useCallback, useReducer } from 'react';
 
-import { WorkoutQuery } from '@/context/WorkoutContext';
+import { WorkoutQuery } from '@/context/Workout';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { calculateProfileStats } from '@/utils/profileStats';
 

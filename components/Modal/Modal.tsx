@@ -6,7 +6,7 @@ import { Button } from 'react-native-paper';
 import { ModalProps } from '@/components/Modal/Modal.types';
 import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
-import { useWorkout } from '@/context/WorkoutContext';
+import { useWorkout } from '@/context/Workout';
 import { subheading } from '@/utils/text';
 
 export const ModalProvider = ({

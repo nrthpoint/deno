@@ -7,7 +7,7 @@ import { Text } from 'react-native-paper';
 import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { useWorkout } from '@/context/WorkoutContext';
+import { useWorkout } from '@/context/Workout';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 export default function MapDetailScreen() {

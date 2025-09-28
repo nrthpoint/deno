@@ -1,7 +1,7 @@
 import { AuthorizationRequestStatus } from '@kingstinct/react-native-healthkit';
 import { useEffect } from 'react';
 
-import { WorkoutQuery, useWorkout } from '@/context/WorkoutContext';
+import { WorkoutQuery, useWorkout } from '@/context/Workout';
 
 import { LengthUnit } from './useWorkoutSelectors';
 

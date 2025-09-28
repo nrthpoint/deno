@@ -1,4 +1,4 @@
-import { WorkoutQuery } from '@/context/WorkoutContext';
+import { WorkoutQuery } from '@/context/Workout';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { ProfileStats } from '@/utils/profileStats';
 

@@ -1,7 +1,7 @@
 import { LengthUnit } from '@kingstinct/react-native-healthkit';
 import { useCallback } from 'react';
 
-import { useWorkout, WorkoutQuery } from '@/context/WorkoutContext';
+import { useWorkout, WorkoutQuery } from '@/context/Workout';
 
 export const useWorkoutSelection = () => {
   const { selectedWorkout, selectedWorkouts, setSelectedWorkout, setSelectedWorkouts } =

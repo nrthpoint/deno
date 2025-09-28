@@ -7,7 +7,7 @@ import { Text, Portal } from 'react-native-paper';
 import { DeleteWorkoutPortal } from '@/components/DeleteWorkout/DeleteWorkoutPortal';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { useWorkout } from '@/context/WorkoutContext';
+import { useWorkout } from '@/context/Workout';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { formatDistance } from '@/utils/distance';
 import { formatDuration, formatWorkoutDate } from '@/utils/time';

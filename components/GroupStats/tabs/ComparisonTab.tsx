@@ -15,7 +15,7 @@ import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
-import { useWorkout } from '@/context/WorkoutContext';
+import { useWorkout } from '@/context/Workout';
 
 type ComparisonMode = 'general' | 'splits' | 'weather';
 

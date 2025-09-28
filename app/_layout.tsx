@@ -13,8 +13,8 @@ import { colors } from '@/config/colors';
 import { toastConfig } from '@/config/toast';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { TutorialProvider } from '@/context/TutorialContext';
+import { WorkoutProvider } from '@/context/Workout';
 import { WorkoutAnalyticsProvider } from '@/context/WorkoutAnalytics';
-import { WorkoutProvider } from '@/context/WorkoutContext';
 import { useWorkoutAuthorization } from '@/hooks/useWorkoutAuthorization';
 
 SplashScreen.preventAutoHideAsync();
