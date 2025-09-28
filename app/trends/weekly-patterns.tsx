@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { WorkoutActivityType } from '@kingstinct/react-native-healthkit';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 
@@ -13,15 +12,19 @@ import { useWorkoutData } from '@/hooks/useWorkoutData';
 
 export default function WeeklyPatternsScreen() {
   const router = useRouter();
-  const { distanceUnit } = useSettings();
+  const { distanceUnit, activityType, timeRangeInDays } = useSettings();
   const { getWeeklyTrends, isLoading: isAnalyticsLoading } = useWorkoutAnalytics();
   const [weeklyTrends, setWeeklyTrends] = useState<any>(null);
 
-  const query = {
-    activityType: WorkoutActivityType.running,
-    distanceUnit: distanceUnit,
-    timeRangeInDays: 365 as const,
-  };
+  const query = useMemo(
+    () => ({
+      activityType,
+      distanceUnit,
+      timeRangeInDays,
+    }),
+    [activityType, distanceUnit, timeRangeInDays],
+  );
+
   const { samples: workouts, loading: workoutsLoading } = useWorkoutData(query);
 
   useEffect(() => {
@@ -39,7 +42,7 @@ export default function WeeklyPatternsScreen() {
     };
 
     loadWeeklyTrends();
-  }, [workouts, workoutsLoading, distanceUnit, getWeeklyTrends]);
+  }, [getWeeklyTrends, query, workouts, workoutsLoading]);
 
   const isLoading = workoutsLoading || isAnalyticsLoading(query);
 

@@ -4,6 +4,7 @@ import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { WeeklyTrendStats } from './types';
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const emptyDay = { dayName: 'No data', dayIndex: -1, count: 0 };
 
 export const generateQueryKey = (query: WorkoutQuery): string => {
   return `${query.activityType}-${query.distanceUnit}-${query.timeRangeInDays}`;
@@ -11,7 +12,6 @@ export const generateQueryKey = (query: WorkoutQuery): string => {
 
 export const calculateWeeklyTrends = (workouts: ExtendedWorkout[]): WeeklyTrendStats => {
   if (workouts.length === 0) {
-    const emptyDay = { dayName: 'No data', dayIndex: -1, count: 0 };
     return {
       fastestDay: { ...emptyDay, averagePace: 0 },
       longestDay: { ...emptyDay, averageDuration: 0 },
@@ -65,60 +65,54 @@ export const calculateWeeklyTrends = (workouts: ExtendedWorkout[]): WeeklyTrendS
     }
   });
 
-  const fastestDay = dayStats
-    .filter((day) => day.validPaceCount > 0)
-    .reduce(
-      (fastest, current) => {
-        const currentAvg = current.totalPace / current.validPaceCount;
-        const fastestAvg = fastest.totalPace / fastest.validPaceCount;
-        return currentAvg < fastestAvg ? current : fastest;
-      },
-      dayStats.find((day) => day.validPaceCount > 0) || dayStats[0],
-    );
+  const daysWithValidPace = dayStats.filter((day) => day.validPaceCount > 0);
+  const fastestDay =
+    daysWithValidPace.length > 0
+      ? daysWithValidPace.reduce((fastest, current) => {
+          const currentAvg = current.totalPace / current.validPaceCount;
+          const fastestAvg = fastest.totalPace / fastest.validPaceCount;
+          return currentAvg < fastestAvg ? current : fastest;
+        })
+      : null;
 
-  const longestDay = dayStats
-    .filter((day) => day.validDurationCount > 0)
-    .reduce(
-      (longest, current) => {
-        const currentAvg = current.totalDuration / current.validDurationCount;
-        const longestAvg = longest.totalDuration / longest.validDurationCount;
-        return currentAvg > longestAvg ? current : longest;
-      },
-      dayStats.find((day) => day.validDurationCount > 0) || dayStats[0],
-    );
+  const daysWithValidDuration = dayStats.filter((day) => day.validDurationCount > 0);
+  const longestDay =
+    daysWithValidDuration.length > 0
+      ? daysWithValidDuration.reduce((longest, current) => {
+          const currentAvg = current.totalDuration / current.validDurationCount;
+          const longestAvg = longest.totalDuration / longest.validDurationCount;
+          return currentAvg > longestAvg ? current : longest;
+        })
+      : null;
 
-  const shortestDay = dayStats
-    .filter((day) => day.validDurationCount > 0)
-    .reduce(
-      (shortest, current) => {
-        const currentAvg = current.totalDuration / current.validDurationCount;
-        const shortestAvg = shortest.totalDuration / shortest.validDurationCount;
-        return currentAvg < shortestAvg ? current : shortest;
-      },
-      dayStats.find((day) => day.validDurationCount > 0) || dayStats[0],
-    );
+  const shortestDay =
+    daysWithValidDuration.length > 0
+      ? daysWithValidDuration.reduce((shortest, current) => {
+          const currentAvg = current.totalDuration / current.validDurationCount;
+          const shortestAvg = shortest.totalDuration / shortest.validDurationCount;
+          return currentAvg < shortestAvg ? current : shortest;
+        })
+      : null;
 
-  const highestElevationDay = dayStats
-    .filter((day) => day.validElevationCount > 0)
-    .reduce(
-      (highest, current) => {
-        const currentAvg = current.totalElevation / current.validElevationCount;
-        const highestAvg = highest.totalElevation / highest.validElevationCount;
-        return currentAvg > highestAvg ? current : highest;
-      },
-      dayStats.find((day) => day.validElevationCount > 0) || dayStats[0],
-    );
+  const daysWithValidElevation = dayStats.filter((day) => day.validElevationCount > 0);
+  const highestElevationDay =
+    daysWithValidElevation.length > 0
+      ? daysWithValidElevation.reduce((highest, current) => {
+          const currentAvg = current.totalElevation / current.validElevationCount;
+          const highestAvg = highest.totalElevation / highest.validElevationCount;
+          return currentAvg > highestAvg ? current : highest;
+        })
+      : null;
 
-  const furthestDay = dayStats
-    .filter((day) => day.validDistanceCount > 0)
-    .reduce(
-      (furthest, current) => {
-        const currentAvg = current.totalDistance / current.validDistanceCount;
-        const furthestAvg = furthest.totalDistance / furthest.validDistanceCount;
-        return currentAvg > furthestAvg ? current : furthest;
-      },
-      dayStats.find((day) => day.validDistanceCount > 0) || dayStats[0],
-    );
+  const daysWithValidDistance = dayStats.filter((day) => day.validDistanceCount > 0);
+  const furthestDay =
+    daysWithValidDistance.length > 0
+      ? daysWithValidDistance.reduce((furthest, current) => {
+          const currentAvg = current.totalDistance / current.validDistanceCount;
+          const furthestAvg = furthest.totalDistance / furthest.validDistanceCount;
+          return currentAvg > furthestAvg ? current : furthest;
+        })
+      : null;
 
   const totalWorkouts = workouts.length;
   const dayDistribution = dayStats.map((day) => ({
@@ -129,49 +123,47 @@ export const calculateWeeklyTrends = (workouts: ExtendedWorkout[]): WeeklyTrendS
   }));
 
   return {
-    fastestDay: {
-      dayName: fastestDay.dayName,
-      dayIndex: fastestDay.dayIndex,
-      count: fastestDay.count,
-      averagePace:
-        fastestDay.validPaceCount > 0 ? fastestDay.totalPace / fastestDay.validPaceCount : 0,
-    },
-    longestDay: {
-      dayName: longestDay.dayName,
-      dayIndex: longestDay.dayIndex,
-      count: longestDay.count,
-      averageDuration:
-        longestDay.validDurationCount > 0
-          ? longestDay.totalDuration / longestDay.validDurationCount
-          : 0,
-    },
-    shortestDay: {
-      dayName: shortestDay.dayName,
-      dayIndex: shortestDay.dayIndex,
-      count: shortestDay.count,
-      averageDuration:
-        shortestDay.validDurationCount > 0
-          ? shortestDay.totalDuration / shortestDay.validDurationCount
-          : 0,
-    },
-    highestElevationDay: {
-      dayName: highestElevationDay.dayName,
-      dayIndex: highestElevationDay.dayIndex,
-      count: highestElevationDay.count,
-      averageElevation:
-        highestElevationDay.validElevationCount > 0
-          ? highestElevationDay.totalElevation / highestElevationDay.validElevationCount
-          : 0,
-    },
-    furthestDay: {
-      dayName: furthestDay.dayName,
-      dayIndex: furthestDay.dayIndex,
-      count: furthestDay.count,
-      averageDistance:
-        furthestDay.validDistanceCount > 0
-          ? furthestDay.totalDistance / furthestDay.validDistanceCount
-          : 0,
-    },
+    fastestDay: fastestDay
+      ? {
+          dayName: fastestDay.dayName,
+          dayIndex: fastestDay.dayIndex,
+          count: fastestDay.count,
+          averagePace: fastestDay.totalPace / fastestDay.validPaceCount,
+        }
+      : { ...emptyDay, averagePace: 0 },
+    longestDay: longestDay
+      ? {
+          dayName: longestDay.dayName,
+          dayIndex: longestDay.dayIndex,
+          count: longestDay.count,
+          averageDuration: longestDay.totalDuration / longestDay.validDurationCount,
+        }
+      : { ...emptyDay, averageDuration: 0 },
+    shortestDay: shortestDay
+      ? {
+          dayName: shortestDay.dayName,
+          dayIndex: shortestDay.dayIndex,
+          count: shortestDay.count,
+          averageDuration: shortestDay.totalDuration / shortestDay.validDurationCount,
+        }
+      : { ...emptyDay, averageDuration: 0 },
+    highestElevationDay: highestElevationDay
+      ? {
+          dayName: highestElevationDay.dayName,
+          dayIndex: highestElevationDay.dayIndex,
+          count: highestElevationDay.count,
+          averageElevation:
+            highestElevationDay.totalElevation / highestElevationDay.validElevationCount,
+        }
+      : { ...emptyDay, averageElevation: 0 },
+    furthestDay: furthestDay
+      ? {
+          dayName: furthestDay.dayName,
+          dayIndex: furthestDay.dayIndex,
+          count: furthestDay.count,
+          averageDistance: furthestDay.totalDistance / furthestDay.validDistanceCount,
+        }
+      : { ...emptyDay, averageDistance: 0 },
     dayDistribution,
   };
 };

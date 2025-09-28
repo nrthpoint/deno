@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
   },
   description: {
     color: '#bbb',
-    fontSize: 15,
+    fontSize: 14,
+    lineHeight: 22,
   },
 });
