@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
 
 import { ConfirmAction } from '@/components/ConfirmAction/ConfirmAction';
 import { colors } from '@/config/colors';
@@ -12,7 +11,6 @@ interface DeleteWorkoutProps {
   iconSize?: number;
   iconColor?: string;
   onDelete?: () => void;
-  deleteFunction?: (workout: ExtendedWorkout) => Promise<void>;
 }
 
 export const DeleteWorkout: React.FC<DeleteWorkoutProps> = ({
@@ -20,14 +18,12 @@ export const DeleteWorkout: React.FC<DeleteWorkoutProps> = ({
   iconSize = 24,
   iconColor = colors.error,
   onDelete,
-  deleteFunction,
 }) => {
   const { deleteWorkout: contextDeleteWorkout } = useWorkoutActions();
 
   const handleDelete = async () => {
     try {
-      const deleteFunc = deleteFunction || contextDeleteWorkout;
-      await deleteFunc(workout);
+      await contextDeleteWorkout(workout);
       onDelete?.();
     } catch (error) {
       console.error('Failed to delete workout:', error);
@@ -43,19 +39,11 @@ export const DeleteWorkout: React.FC<DeleteWorkoutProps> = ({
       onConfirm={handleDelete}
       destructive
     >
-      <TouchableOpacity style={styles.deleteButton}>
-        <Ionicons
-          name="trash-outline"
-          size={iconSize}
-          color={iconColor}
-        />
-      </TouchableOpacity>
+      <Ionicons
+        name="trash-outline"
+        size={iconSize}
+        color={iconColor}
+      />
     </ConfirmAction>
   );
 };
-
-const styles = StyleSheet.create({
-  deleteButton: {
-    padding: 8,
-  },
-});

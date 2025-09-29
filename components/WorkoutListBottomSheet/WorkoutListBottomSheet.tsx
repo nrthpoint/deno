@@ -2,9 +2,9 @@ import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/botto
 import { router } from 'expo-router';
 import React, { forwardRef, useCallback, useMemo, useImperativeHandle, useRef } from 'react';
 import { Pressable, StyleSheet, ScrollView, View } from 'react-native';
-import { Text, Portal } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 
-import { DeleteWorkoutPortal } from '@/components/DeleteWorkout/DeleteWorkoutPortal';
+import { DeleteWorkout } from '@/components/DeleteWorkout/DeleteWorkout';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWorkout } from '@/context/Workout';
@@ -27,9 +27,9 @@ export const WorkoutListBottomSheet = forwardRef<
   WorkoutListBottomSheetProps
 >(({ workouts, title = 'All Workouts' }, ref) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { setSelectedWorkout, deleteWorkout } = useWorkout();
+  const { setSelectedWorkout } = useWorkout();
 
-  const snapPoints = useMemo(() => ['60%', '90%'], []);
+  const snapPoints = useMemo(() => ['60%'], []);
 
   useImperativeHandle(ref, () => ({
     open: () => bottomSheetRef.current?.expand(),
@@ -56,70 +56,77 @@ export const WorkoutListBottomSheet = forwardRef<
     [],
   );
 
-  return (
-    <Portal>
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={snapPoints}
-        enablePanDownToClose
-        backdropComponent={renderBackdrop}
-        backgroundStyle={styles.bottomSheetBackground}
-        handleIndicatorStyle={styles.handleIndicator}
+  const Workout = ({ workout, index }: { workout: ExtendedWorkout; index: number }) => (
+    <View
+      key={workout.uuid}
+      style={[styles.workoutItem, index % 2 === 0 && styles.alternateRow]}
+    >
+      <Pressable
+        style={styles.workoutRow}
+        onPress={() => handleWorkoutPress(workout)}
       >
-        <BottomSheetView style={styles.contentContainer}>
-          <Text style={styles.title}>{title}</Text>
-          <ScrollView
-            style={styles.scrollView}
-            showsVerticalScrollIndicator={false}
+        <View style={styles.dateColumn}>
+          <Text
+            style={styles.dateText}
+            numberOfLines={1}
           >
-            {workouts.map((workout, index) => (
-              <View
-                key={workout.uuid}
-                style={[styles.workoutItem, index % 2 === 0 && styles.alternateRow]}
-              >
-                <Pressable
-                  style={styles.workoutRow}
-                  onPress={() => handleWorkoutPress(workout)}
-                >
-                  <View style={styles.dateColumn}>
-                    <Text
-                      style={styles.dateText}
-                      numberOfLines={1}
-                    >
-                      {formatWorkoutDate(workout.startDate)}
-                    </Text>
-                  </View>
-                  <View style={styles.distanceColumn}>
-                    <Text
-                      style={styles.distanceText}
-                      numberOfLines={1}
-                    >
-                      {formatDistance(workout.totalDistance)}
-                    </Text>
-                  </View>
-                  <View style={styles.timeColumn}>
-                    <Text
-                      style={styles.timeText}
-                      numberOfLines={1}
-                    >
-                      {formatDuration(workout.duration)}
-                    </Text>
-                  </View>
-                </Pressable>
-                <View style={styles.deleteColumn}>
-                  <DeleteWorkoutPortal
-                    workout={workout}
-                    iconSize={18}
-                    deleteFunction={deleteWorkout}
-                  />
-                </View>
-              </View>
-            ))}
-          </ScrollView>
-        </BottomSheetView>
-      </BottomSheet>
-    </Portal>
+            {formatWorkoutDate(workout.startDate)}
+          </Text>
+        </View>
+        <View style={styles.distanceColumn}>
+          <Text
+            style={styles.distanceText}
+            numberOfLines={1}
+          >
+            {formatDistance(workout.totalDistance)}
+          </Text>
+        </View>
+        <View style={styles.timeColumn}>
+          <Text
+            style={styles.timeText}
+            numberOfLines={1}
+          >
+            {formatDuration(workout.duration)}
+          </Text>
+        </View>
+      </Pressable>
+
+      <View style={styles.deleteColumn}>
+        <DeleteWorkout
+          workout={workout}
+          iconSize={18}
+        />
+      </View>
+    </View>
+  );
+
+  return (
+    <BottomSheet
+      ref={bottomSheetRef}
+      index={-1}
+      snapPoints={snapPoints}
+      enablePanDownToClose
+      backdropComponent={renderBackdrop}
+      backgroundStyle={styles.bottomSheetBackground}
+      handleIndicatorStyle={styles.handleIndicator}
+    >
+      <BottomSheetView style={styles.contentContainer}>
+        <Text style={styles.title}>{title}</Text>
+
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          {workouts.map((workout, index) => (
+            <Workout
+              key={workout.uuid}
+              workout={workout}
+              index={index}
+            />
+          ))}
+        </ScrollView>
+      </BottomSheetView>
+    </BottomSheet>
   );
 });
 

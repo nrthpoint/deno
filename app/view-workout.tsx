@@ -225,11 +225,6 @@ export default function ViewWorkoutScreen() {
         {/* Header with main stats */}
         <Card>
           <View style={[styles.headerContent]}>
-            {/* <Ionicons
-              name="fitness"
-              size={48}
-              color={colors.neutral}
-            /> */}
             <View style={styles.headerText}>
               <Text style={styles.workoutType}>{formattedWorkoutDate}</Text>
               <Text style={styles.workoutDate}>{selectedWorkout.daysAgo}</Text>

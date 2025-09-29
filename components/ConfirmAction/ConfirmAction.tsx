@@ -26,8 +26,6 @@ export const ConfirmAction: React.FC<ConfirmActionProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  console.log('Rendering ConfirmAction modal:', { isVisible, title });
-
   const handleConfirm = () => {
     setIsVisible(false);
     onConfirm();

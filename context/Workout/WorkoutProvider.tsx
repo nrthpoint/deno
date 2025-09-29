@@ -40,10 +40,12 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchWorkouts = useCallback(async (query: WorkoutQuery) => {
     const queryKey = generateQueryKey(query);
+
     dispatch({ type: WORKOUT_ACTIONS.SET_LOADING, queryKey });
 
     try {
       const authorized = await isProtectedDataAvailable();
+
       if (!authorized) {
         console.error('WorkoutProvider: Authorization not granted.');
         return;
@@ -95,6 +97,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
       await handleAchievementNotifications(parsedWorkouts);
     } catch (error) {
       console.error('Error fetching workouts:', error);
+
       dispatch({
         type: WORKOUT_ACTIONS.SET_WORKOUT_DATA,
         queryKey,
