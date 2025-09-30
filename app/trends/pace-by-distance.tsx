@@ -8,12 +8,10 @@ import { ActivityIndicator } from 'react-native-paper';
 import { RotatePhone } from '@/components/RotatePhone';
 import { PaceDistanceGraph } from '@/components/Trends/Graphs/PaceDistanceGraph';
 import { colors } from '@/config/colors';
-import { useSettings } from '@/context/SettingsContext';
-import { useWorkoutData } from '@/hooks/useWorkoutData';
+import { useWorkout } from '@/context/Workout';
 
 export default function PaceByDistanceScreen() {
   const router = useRouter();
-  const { distanceUnit, timeRangeInDays, activityType } = useSettings();
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
 
   useEffect(() => {
@@ -28,11 +26,8 @@ export default function PaceByDistanceScreen() {
   const { width: screenWidth, height: screenHeight } = screenData;
   const isLandscape = screenWidth > screenHeight;
 
-  const { samples, loading, authorizationStatus } = useWorkoutData({
-    activityType,
-    distanceUnit,
-    timeRangeInDays,
-  });
+  const { workouts, authorizationStatus } = useWorkout();
+  const { samples, loading } = workouts;
 
   // Enable landscape orientation when screen mounts
   useEffect(() => {

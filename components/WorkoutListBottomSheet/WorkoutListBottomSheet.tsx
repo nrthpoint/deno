@@ -4,7 +4,7 @@ import React, { forwardRef, useCallback, useMemo, useImperativeHandle, useRef } 
 import { Pressable, StyleSheet, ScrollView, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-import { DeleteWorkout } from '@/components/DeleteWorkout/DeleteWorkout';
+import { DeleteWorkoutWithModal } from '@/components/DeleteWorkout/DeleteWorkoutWithModal';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWorkout } from '@/context/Workout';
@@ -92,7 +92,7 @@ export const WorkoutListBottomSheet = forwardRef<
       </Pressable>
 
       <View style={styles.deleteColumn}>
-        <DeleteWorkout
+        <DeleteWorkoutWithModal
           workout={workout}
           iconSize={18}
         />

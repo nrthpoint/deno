@@ -1,57 +1,51 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ProfileStatCard } from '@/components/ProfileStatCard/ProfileStatCard';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
+import { useWorkout } from '@/context/Workout';
 import { useWorkoutAnalytics, WorkoutAnalytics } from '@/context/WorkoutAnalytics';
-import { useWorkoutData } from '@/hooks/useWorkoutData';
-import { useWorkoutSelection } from '@/hooks/useWorkoutSelectors';
 
 export default function ProfileScreen() {
-  const { distanceUnit, activityType, timeRangeInDays } = useSettings();
-  const { setSelectedWorkout } = useWorkoutSelection();
+  const { distanceUnit } = useSettings();
   const { getWorkoutAnalytics, isLoading: isStatsLoading } = useWorkoutAnalytics();
   const [cachedStats, setCachedStats] = useState<WorkoutAnalytics | null>(null);
+  const { workouts, setSelectedWorkouts, query } = useWorkout();
 
-  const query = useMemo(
-    () => ({
-      activityType,
-      distanceUnit,
-      timeRangeInDays,
-    }),
-    [activityType, distanceUnit, timeRangeInDays],
-  );
-  const { samples: workouts, loading: workoutsLoading } = useWorkoutData(query);
+  const { samples, loading } = workouts || {
+    samples: [],
+    loading: false,
+  };
 
   useEffect(() => {
     const loadProfileStats = async () => {
-      if (!workoutsLoading && workouts.length > 0) {
+      if (!loading && samples.length > 0) {
         try {
-          const stats = await getWorkoutAnalytics(workouts, query);
+          const stats = await getWorkoutAnalytics(samples, query);
           setCachedStats(stats);
         } catch (error) {
           console.error('Error calculating profile stats:', error);
         }
-      } else if (!workoutsLoading) {
+      } else if (!workouts) {
         setCachedStats(null);
       }
     };
 
     loadProfileStats();
-  }, [workouts, workoutsLoading, getWorkoutAnalytics, query]);
+  }, [getWorkoutAnalytics, loading, query, samples, workouts]);
 
   const handleStatPress = (workout: any) => {
     if (workout) {
-      setSelectedWorkout(workout);
+      setSelectedWorkouts([workout]);
       router.push('/view-workout');
     }
   };
 
-  const isLoading = workoutsLoading || isStatsLoading(query);
+  const isLoading = loading || isStatsLoading(query);
 
   return (
     <View style={styles.screenContainer}>

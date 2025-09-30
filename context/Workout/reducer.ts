@@ -19,12 +19,11 @@ export const workoutReducer = (state: WorkoutState, action: WorkoutAction): Work
 
     case WORKOUT_ACTIONS.SET_WORKOUT_DATA: {
       const newCache = new Map(state.workoutCache);
+
       newCache.set(action.queryKey, { ...action.data, loading: false });
+
       return { ...state, workoutCache: newCache };
     }
-
-    case WORKOUT_ACTIONS.SET_SELECTED_WORKOUT:
-      return { ...state, selectedWorkout: action.workout };
 
     case WORKOUT_ACTIONS.SET_SELECTED_WORKOUTS:
       return { ...state, selectedWorkouts: action.workouts };

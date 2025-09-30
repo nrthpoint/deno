@@ -1,50 +1,42 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { useSettings } from '@/context/SettingsContext';
+import { useWorkout } from '@/context/Workout';
 import { useWorkoutAnalytics } from '@/context/WorkoutAnalytics';
-import { useWorkoutData } from '@/hooks/useWorkoutData';
 
 export default function WeeklyPatternsScreen() {
   const router = useRouter();
-  const { distanceUnit, activityType, timeRangeInDays } = useSettings();
+
   const { getWeeklyTrends, isLoading: isAnalyticsLoading } = useWorkoutAnalytics();
+  const { workouts, query } = useWorkout();
+
   const [weeklyTrends, setWeeklyTrends] = useState<any>(null);
 
-  const query = useMemo(
-    () => ({
-      activityType,
-      distanceUnit,
-      timeRangeInDays,
-    }),
-    [activityType, distanceUnit, timeRangeInDays],
-  );
-
-  const { samples: workouts, loading: workoutsLoading } = useWorkoutData(query);
+  const { samples, loading: isWorkoutsLoading } = workouts;
 
   useEffect(() => {
     const loadWeeklyTrends = async () => {
-      if (!workoutsLoading && workouts.length > 0) {
+      if (!isWorkoutsLoading && samples.length > 0) {
         try {
-          const trends = await getWeeklyTrends(workouts, query);
+          const trends = await getWeeklyTrends(samples, query);
           setWeeklyTrends(trends);
         } catch (error) {
           console.error('Error calculating weekly trends:', error);
         }
-      } else if (!workoutsLoading) {
+      } else if (!isWorkoutsLoading) {
         setWeeklyTrends(null);
       }
     };
 
     loadWeeklyTrends();
-  }, [getWeeklyTrends, query, workouts, workoutsLoading]);
+  }, [getWeeklyTrends, isWorkoutsLoading, query, samples, workouts]);
 
-  const isLoading = workoutsLoading || isAnalyticsLoading(query);
+  const isLoading = isWorkoutsLoading || isAnalyticsLoading(query);
 
   return (
     <View style={styles.container}>

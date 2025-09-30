@@ -3,170 +3,225 @@ import {
   deleteObjects,
   isProtectedDataAvailable,
   queryWorkoutSamples,
+  saveWorkoutSample,
   useHealthkitAuthorization,
 } from '@kingstinct/react-native-healthkit';
-import { createContext, useReducer, ReactNode, useCallback, useEffect } from 'react';
+import { createContext, useReducer, ReactNode, useCallback, useEffect, useMemo } from 'react';
 
 import { SampleTypesToRead, SampleTypesToWrite } from '@/config/sampleIdentifiers';
+import { useSettings } from '@/context/SettingsContext';
 import { handleAchievementNotifications } from '@/services/achievements';
+import { addAppCreatedWorkoutUUID, removeAppCreatedWorkoutUUID } from '@/services/workoutStorage';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { parseWorkoutSamples } from '@/utils/parser';
 
 import { WORKOUT_ACTIONS } from './actions';
 import { workoutReducer } from './reducer';
-import { WorkoutContextType, WorkoutQuery } from './types';
+import { SaveWorkoutParams, WorkoutContextType, WorkoutQuery, WorkoutQueryResult } from './types';
 import { generateQueryKey } from './utils';
 
 export const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
 
+const EMPTY_WORKOUT_GROUP: WorkoutQueryResult = {
+  samples: [],
+  loading: false,
+  meta: {
+    totalRuns: 0,
+    totalDistance: {
+      quantity: 0,
+      unit: 'm',
+    },
+  },
+  lastFetched: 0,
+};
+
 export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
-  const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization(
+  const { activityType, distanceUnit, timeRangeInDays } = useSettings();
+  const [_authorizationStatus, requestAuthorization] = useHealthkitAuthorization(
     SampleTypesToRead,
     SampleTypesToWrite,
   );
 
   const [state, dispatch] = useReducer(workoutReducer, {
     workoutCache: new Map(),
-    selectedWorkout: null,
     selectedWorkouts: [],
-    authorizationStatus: authorizationStatus || AuthorizationRequestStatus.unknown,
+    authorizationStatus: _authorizationStatus || AuthorizationRequestStatus.unknown,
   });
 
   useEffect(() => {
-    if (authorizationStatus !== null) {
-      dispatch({ type: WORKOUT_ACTIONS.SET_AUTHORIZATION_STATUS, status: authorizationStatus });
+    if (_authorizationStatus !== null) {
+      dispatch({ type: WORKOUT_ACTIONS.SET_AUTHORIZATION_STATUS, status: _authorizationStatus });
     }
-  }, [authorizationStatus]);
+  }, [_authorizationStatus]);
 
-  const fetchWorkouts = useCallback(async (query: WorkoutQuery) => {
-    const queryKey = generateQueryKey(query);
-
-    dispatch({ type: WORKOUT_ACTIONS.SET_LOADING, queryKey });
-
-    try {
-      const authorized = await isProtectedDataAvailable();
-
-      if (!authorized) {
-        console.error('WorkoutProvider: Authorization not granted.');
-        return;
-      }
-
-      const startDate = new Date(Date.now() - query.timeRangeInDays * 24 * 60 * 60 * 1000);
-      const endDate = new Date();
-
-      const originalSamples = await queryWorkoutSamples({
-        ascending: false,
-        limit: 10000,
-        filter: {
-          workoutActivityType: query.activityType,
-          startDate,
-          endDate,
-        },
-      });
-
-      const filteredSamples = originalSamples.filter((sample) => {
-        return !query.activityType || sample.workoutActivityType === query.activityType;
-      });
-
-      const meta = {
-        totalRuns: filteredSamples.length,
-        totalDistance: {
-          quantity: filteredSamples.reduce(
-            (acc, sample) => acc + (sample?.totalDistance?.quantity ?? 0),
-            0,
-          ),
-          unit: query.distanceUnit,
-        },
-      };
-
-      const parsedWorkouts = await parseWorkoutSamples({
-        samples: filteredSamples,
-        distanceUnit: query.distanceUnit,
-      });
-
-      dispatch({
-        type: WORKOUT_ACTIONS.SET_WORKOUT_DATA,
-        queryKey,
-        data: {
-          samples: parsedWorkouts,
-          meta,
-          lastFetched: Date.now(),
-        },
-      });
-
-      await handleAchievementNotifications(parsedWorkouts);
-    } catch (error) {
-      console.error('Error fetching workouts:', error);
-
-      dispatch({
-        type: WORKOUT_ACTIONS.SET_WORKOUT_DATA,
-        queryKey,
-        data: {
-          samples: [],
-          meta: { totalRuns: 0, totalDistance: { quantity: 0, unit: query.distanceUnit } },
-          lastFetched: Date.now(),
-        },
-      });
-    }
-  }, []);
-
-  const getWorkoutData = useCallback(
-    (query: WorkoutQuery) => {
-      const queryKey = generateQueryKey(query);
-      return state.workoutCache.get(queryKey) || null;
-    },
-    [state.workoutCache],
+  const defaultQuery = useMemo<WorkoutQuery>(
+    () => ({
+      activityType,
+      distanceUnit,
+      timeRangeInDays,
+    }),
+    [activityType, distanceUnit, timeRangeInDays],
   );
 
-  const setSelectedWorkout = useCallback((workout: ExtendedWorkout | null) => {
-    dispatch({ type: WORKOUT_ACTIONS.SET_SELECTED_WORKOUT, workout });
-  }, []);
+  const fetchWorkouts = useCallback(
+    async (query?: Partial<WorkoutQuery>) => {
+      const fullQuery: WorkoutQuery = {
+        ...defaultQuery,
+        ...query,
+      };
+
+      const queryKey = generateQueryKey(fullQuery);
+      dispatch({ type: WORKOUT_ACTIONS.SET_LOADING, queryKey });
+
+      try {
+        const authorized = await isProtectedDataAvailable();
+
+        if (!authorized) {
+          console.error('WorkoutProvider: Authorization not granted.');
+          return;
+        }
+
+        const startDate = new Date(Date.now() - fullQuery.timeRangeInDays * 24 * 60 * 60 * 1000);
+        const endDate = new Date();
+
+        const originalSamples = await queryWorkoutSamples({
+          ascending: false,
+          limit: 10000,
+          filter: {
+            workoutActivityType: fullQuery.activityType,
+            startDate,
+            endDate,
+          },
+        });
+
+        const filteredSamples = originalSamples.filter((sample) => {
+          return !fullQuery.activityType || sample.workoutActivityType === fullQuery.activityType;
+        });
+
+        const meta = {
+          totalRuns: filteredSamples.length,
+          totalDistance: {
+            quantity: filteredSamples.reduce(
+              (acc, sample) => acc + (sample?.totalDistance?.quantity ?? 0),
+              0,
+            ),
+            unit: fullQuery.distanceUnit,
+          },
+        };
+
+        const parsedWorkouts = await parseWorkoutSamples({
+          samples: filteredSamples,
+          distanceUnit: fullQuery.distanceUnit,
+        });
+
+        dispatch({
+          type: WORKOUT_ACTIONS.SET_WORKOUT_DATA,
+          queryKey,
+          data: {
+            samples: parsedWorkouts,
+            meta,
+            lastFetched: Date.now(),
+          },
+        });
+
+        await handleAchievementNotifications(parsedWorkouts);
+      } catch (error) {
+        console.error('fetchWorkouts: Error fetching workouts:', error);
+
+        dispatch({
+          type: WORKOUT_ACTIONS.SET_WORKOUT_DATA,
+          queryKey,
+          data: {
+            samples: [],
+            meta: { totalRuns: 0, totalDistance: { quantity: 0, unit: fullQuery.distanceUnit } },
+            lastFetched: Date.now(),
+          },
+        });
+      }
+    },
+    [defaultQuery],
+  );
 
   const setSelectedWorkouts = useCallback((workouts: ExtendedWorkout[]) => {
     dispatch({ type: WORKOUT_ACTIONS.SET_SELECTED_WORKOUTS, workouts });
   }, []);
 
-  const deleteWorkout = useCallback(
-    async (workout: ExtendedWorkout): Promise<void> => {
-      try {
-        const resp = await deleteObjects('HKWorkoutTypeIdentifier', { uuid: workout.uuid });
+  const deleteWorkout = useCallback(async (workout: ExtendedWorkout): Promise<void> => {
+    try {
+      const resp = await deleteObjects('HKWorkoutTypeIdentifier', { uuid: workout.uuid });
 
-        if (!resp || resp === 0) {
-          throw new Error(`Failed to delete workout with id: ${workout.uuid}`);
-        }
-
-        if (state.selectedWorkout?.uuid === workout.uuid) {
-          dispatch({ type: WORKOUT_ACTIONS.SET_SELECTED_WORKOUT, workout: null });
-        }
-
-        dispatch({
-          type: WORKOUT_ACTIONS.SET_SELECTED_WORKOUTS,
-          workouts: state.selectedWorkouts.filter((w) => w.uuid !== workout.uuid),
-        });
-
-        dispatch({ type: WORKOUT_ACTIONS.REMOVE_WORKOUT_FROM_CACHE, workoutUuid: workout.uuid });
-      } catch (error) {
-        console.error('Failed to delete workout:', error);
-        throw error;
+      if (!resp || resp === 0) {
+        throw new Error(`Failed to delete workout with id: ${workout.uuid}`);
       }
+
+      await removeAppCreatedWorkoutUUID(workout.uuid);
+
+      dispatch({ type: WORKOUT_ACTIONS.REMOVE_WORKOUT_FROM_CACHE, workoutUuid: workout.uuid });
+
+      console.log(`Successfully deleted workout with id: ${workout.uuid}`);
+    } catch (error) {
+      console.error(`deleteWorkout: Failed to delete workout ${workout.uuid}:`, error);
+
+      throw error;
+    }
+  }, []);
+
+  const saveWorkout = useCallback(
+    async (params: SaveWorkoutParams) => {
+      const { activityType, startDate, durationInMinutes, distance, isIndoor } = params;
+      const { unit: distanceUnit, quantity: distanceValue } = distance;
+
+      const endDate = new Date(startDate.getTime() + durationInMinutes * 60 * 1000);
+      const distanceInMeters =
+        distanceUnit === 'mi' ? distanceValue * 1609.34 : distanceValue * 1000;
+
+      const result = await saveWorkoutSample(
+        activityType,
+        [], // No quantity samples
+        startDate,
+        endDate,
+        {
+          distance: distanceInMeters,
+          energyBurned: undefined,
+        },
+        {
+          HKIndoorWorkout: isIndoor,
+        },
+      );
+
+      await addAppCreatedWorkoutUUID(result);
+      await fetchWorkouts();
+
+      return result;
     },
-    [state.selectedWorkout, state.selectedWorkouts],
+    [fetchWorkouts],
   );
+
+  const workouts = useMemo(() => {
+    const queryKey = generateQueryKey(defaultQuery);
+
+    return state.workoutCache.get(queryKey) || EMPTY_WORKOUT_GROUP;
+  }, [state.workoutCache, defaultQuery]);
+
+  const { selectedWorkouts, authorizationStatus } = state;
 
   return (
     <WorkoutContext.Provider
       value={{
         state,
-        selectedWorkout: state.selectedWorkout,
-        selectedWorkouts: state.selectedWorkouts,
-        authorizationStatus: state.authorizationStatus,
         dispatch,
+        query: defaultQuery,
+
+        authorizationStatus,
         requestAuthorization,
-        setSelectedWorkout,
+
+        selectedWorkouts,
         setSelectedWorkouts,
+
+        workouts,
+        saveWorkout,
         deleteWorkout,
         fetchWorkouts,
-        getWorkoutData,
       }}
     >
       {children}

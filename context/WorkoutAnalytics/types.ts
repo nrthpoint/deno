@@ -55,16 +55,11 @@ export type WorkoutAnalyticsState = {
 };
 
 export interface WorkoutAnalyticsContextType {
+  isLoading: (query: WorkoutQuery) => boolean;
   getWorkoutAnalytics: (
     workouts: ExtendedWorkout[],
     query: WorkoutQuery,
-    force?: boolean,
   ) => Promise<WorkoutAnalytics>;
-  getWeeklyTrends: (
-    workouts: ExtendedWorkout[],
-    query: WorkoutQuery,
-    force?: boolean,
-  ) => Promise<WeeklyTrendStats>;
-  isLoading: (query: WorkoutQuery) => boolean;
-  clearCache: (queryKey?: string) => void;
+  getWeeklyTrends: (workouts: ExtendedWorkout[], query: WorkoutQuery) => Promise<WeeklyTrendStats>;
+  clearCache: () => void;
 }

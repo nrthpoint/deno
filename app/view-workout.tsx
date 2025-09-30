@@ -5,13 +5,13 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { Card } from '@/components/Card/Card';
-import { DeleteWorkout } from '@/components/DeleteWorkout/DeleteWorkout';
+import { DeleteWorkoutWithModal } from '@/components/DeleteWorkout/DeleteWorkoutWithModal';
 import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { AchievementListBadge } from '@/components/StatCard/AchievementListBadge';
 import { WeatherSummary } from '@/components/WeatherSummary/WeatherSummary';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { useWorkoutSelection } from '@/hooks/useWorkoutSelectors';
+import { useWorkout } from '@/context/Workout';
 import { formatDistance } from '@/utils/distance';
 import { subheading } from '@/utils/text';
 import {
@@ -23,7 +23,9 @@ import {
 } from '@/utils/time';
 
 export default function ViewWorkoutScreen() {
-  const { selectedWorkout, setSelectedWorkouts } = useWorkoutSelection();
+  const { selectedWorkouts } = useWorkout();
+
+  const selectedWorkout = selectedWorkouts[0];
 
   if (!selectedWorkout) {
     return (
@@ -176,7 +178,7 @@ export default function ViewWorkoutScreen() {
   const formattedWorkoutDate = formatWorkoutDate(selectedWorkout.endDate);
 
   const handleMapPress = () => {
-    setSelectedWorkouts([selectedWorkout]);
+    // setSelectedWorkouts([selectedWorkout]);
     router.push('/map-detail');
   };
 
@@ -209,7 +211,7 @@ export default function ViewWorkoutScreen() {
             </TouchableOpacity>
           ),
           headerRight: () => (
-            <DeleteWorkout
+            <DeleteWorkoutWithModal
               workout={selectedWorkout}
               onDelete={handleDelete}
               iconSize={24}

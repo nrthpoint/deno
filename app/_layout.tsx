@@ -13,14 +13,13 @@ import { colors } from '@/config/colors';
 import { toastConfig } from '@/config/toast';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { TutorialProvider } from '@/context/TutorialContext';
-import { WorkoutProvider } from '@/context/Workout';
+import { useWorkout, WorkoutProvider } from '@/context/Workout';
 import { WorkoutAnalyticsProvider } from '@/context/WorkoutAnalytics';
-import { useWorkoutAuthorization } from '@/hooks/useWorkoutAuthorization';
 
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
-  const { authorizationStatus, requestAuthorization } = useWorkoutAuthorization();
+  const { authorizationStatus, requestAuthorization } = useWorkout();
 
   // Show loading screen while authorization status is being determined
   if (authorizationStatus === null) {

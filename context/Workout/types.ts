@@ -1,6 +1,7 @@
 import {
   AuthorizationRequestStatus,
   LengthUnit,
+  Quantity,
   WorkoutActivityType,
 } from '@kingstinct/react-native-healthkit';
 
@@ -14,33 +15,45 @@ export type WorkoutQuery = {
   timeRangeInDays: TimeRange;
 };
 
+type WorkoutQueryMeta = {
+  totalRuns: number;
+  totalDistance: { quantity: number; unit: LengthUnit };
+};
+
 export type WorkoutQueryResult = {
   samples: ExtendedWorkout[];
-  meta: {
-    totalRuns: number;
-    totalDistance: { quantity: number; unit: LengthUnit };
-  };
+  meta: WorkoutQueryMeta;
   loading: boolean;
   lastFetched: number;
 };
 
 export type WorkoutState = {
   workoutCache: Map<string, WorkoutQueryResult>;
-  selectedWorkout: ExtendedWorkout | null;
   selectedWorkouts: ExtendedWorkout[];
   authorizationStatus: AuthorizationRequestStatus;
 };
 
+export type SaveWorkoutParams = {
+  startDate: Date;
+  activityType: WorkoutActivityType;
+  durationInMinutes: number;
+  distance: Quantity;
+  isIndoor: boolean;
+};
+
 export interface WorkoutContextType {
   state: WorkoutState;
-  selectedWorkout: ExtendedWorkout | null;
-  selectedWorkouts: ExtendedWorkout[];
-  authorizationStatus: AuthorizationRequestStatus;
   dispatch: React.Dispatch<WorkoutAction>;
-  requestAuthorization: () => void;
-  setSelectedWorkout: (workout: ExtendedWorkout | null) => void;
+  query: WorkoutQuery;
+
+  authorizationStatus: AuthorizationRequestStatus;
+  requestAuthorization: () => Promise<AuthorizationRequestStatus>;
+
+  selectedWorkouts: ExtendedWorkout[];
   setSelectedWorkouts: (workouts: ExtendedWorkout[]) => void;
+
+  workouts: WorkoutQueryResult;
+  fetchWorkouts: (query?: Partial<WorkoutQuery>) => Promise<void>;
   deleteWorkout: (workout: ExtendedWorkout) => Promise<void>;
-  fetchWorkouts: (query: WorkoutQuery) => Promise<void>;
-  getWorkoutData: (query: WorkoutQuery) => WorkoutQueryResult | null;
+  saveWorkout: (params: SaveWorkoutParams) => Promise<string>;
 }

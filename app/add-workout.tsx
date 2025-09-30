@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { WorkoutActivityType, saveWorkoutSample } from '@kingstinct/react-native-healthkit';
+import { WorkoutActivityType } from '@kingstinct/react-native-healthkit';
 import { Stack, router } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
@@ -11,8 +11,7 @@ import { DurationModal } from '@/components/DurationModal/DurationModal';
 import { colors } from '@/config/colors';
 import { LatoFonts, OrelegaOneFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
-import { useWorkoutAuthorization } from '@/hooks/useWorkoutAuthorization';
-import { useWorkoutActions } from '@/hooks/useWorkoutSelectors';
+import { useWorkout } from '@/context/Workout';
 import { subheading } from '@/utils/text';
 import { formatDate, formatTime } from '@/utils/time';
 
@@ -34,13 +33,13 @@ const getActivityTypeLabel = (type: WorkoutActivityType) => {
     { value: WorkoutActivityType.cycling, label: 'Cycling' },
     { value: WorkoutActivityType.walking, label: 'Walking' },
   ];
+
   return activityTypeOptions.find((option) => option.value === type)?.label || 'Other';
 };
 
 export default function AddWorkoutScreen() {
   const { activityType, distanceUnit } = useSettings();
-  const { authorizationStatus, requestAuthorization } = useWorkoutAuthorization();
-  const { refetch } = useWorkoutActions();
+  const { requestAuthorization, authorizationStatus, saveWorkout } = useWorkout();
 
   const [distance, setDistance] = useState('');
   const [duration, setDuration] = useState('');
@@ -63,58 +62,42 @@ export default function AddWorkoutScreen() {
 
   const handleSaveWorkout = async () => {
     const distanceValue = parseFloat(distance);
-    const durationValue = convertDurationToMinutes(duration);
+    const durationInMinutes = convertDurationToMinutes(duration);
 
     if (!distanceValue || distanceValue <= 0) {
       Alert.alert('Invalid Distance', 'Please enter a valid distance greater than 0.');
       return;
     }
 
-    if (!durationValue || durationValue <= 0) {
+    if (!durationInMinutes || durationInMinutes <= 0) {
       Alert.alert('Invalid Duration', 'Please enter a valid duration greater than 0.');
       return;
     }
 
     setIsLoading(true);
+    await saveWorkout({
+      distance: {
+        unit: distanceUnit,
+        quantity: distanceValue,
+      },
+      startDate,
+      isIndoor,
+      durationInMinutes,
+      activityType,
+    });
 
     try {
-      // Calculate end date based on duration (in minutes)
-      const endDate = new Date(startDate.getTime() + durationValue * 60 * 1000);
-
-      // Convert distance to meters if needed
-      const distanceInMeters =
-        distanceUnit === 'mi' ? distanceValue * 1609.34 : distanceValue * 1000;
-
-      await saveWorkoutSample(
-        activityType,
-        [], // No quantity samples
-        startDate,
-        endDate,
-        {
-          distance: distanceInMeters,
-          energyBurned: undefined,
-        },
-        {
-          HKIndoorWorkout: isIndoor, // Add this line
-        },
-      );
-
-      // Refresh the main workout cache with current settings
-      refetch({
-        activityType,
-        distanceUnit,
-        timeRangeInDays: 30, // Use 30 days as default, or could get from context
-      });
-
       Alert.alert('Success', 'Workout saved successfully!', [
         {
           text: 'OK',
           onPress: () => router.back(),
         },
       ]);
+
       resetForm();
     } catch (error) {
       console.error('Error saving workout:', error);
+
       Alert.alert(
         'Error',
         'Failed to save workout. Please ensure you have granted HealthKit permissions.',

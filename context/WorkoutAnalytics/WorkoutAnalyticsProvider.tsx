@@ -20,15 +20,11 @@ export const WorkoutAnalyticsProvider = ({ children }: { children: ReactNode }) 
   });
 
   const getWorkoutAnalytics = useCallback(
-    async (
-      workouts: ExtendedWorkout[],
-      query: WorkoutQuery,
-      force = false,
-    ): Promise<WorkoutAnalytics> => {
+    async (workouts: ExtendedWorkout[], query: WorkoutQuery): Promise<WorkoutAnalytics> => {
       const queryKey = generateQueryKey(query);
       const cached = state.analyticsCache.get(queryKey);
 
-      if (!force && cached && cached.workoutCount === workouts.length) {
+      if (cached && cached.workoutCount === workouts.length) {
         const cacheAge = Date.now() - cached.lastCalculated;
         const maxCacheAge = 5 * 60 * 1000; // 5 minutes
 
@@ -68,12 +64,8 @@ export const WorkoutAnalyticsProvider = ({ children }: { children: ReactNode }) 
   );
 
   const getWeeklyTrends = useCallback(
-    async (
-      workouts: ExtendedWorkout[],
-      query: WorkoutQuery,
-      force = false,
-    ): Promise<WeeklyTrendStats> => {
-      const analytics = await getWorkoutAnalytics(workouts, query, force);
+    async (workouts: ExtendedWorkout[], query: WorkoutQuery): Promise<WeeklyTrendStats> => {
+      const analytics = await getWorkoutAnalytics(workouts, query);
 
       return analytics.weeklyTrends;
     },

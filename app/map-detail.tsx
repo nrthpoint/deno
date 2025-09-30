@@ -8,22 +8,12 @@ import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWorkout } from '@/context/Workout';
-import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 export default function MapDetailScreen() {
-  const { selectedWorkout, selectedWorkouts } = useWorkout();
+  const { selectedWorkouts } = useWorkout();
   const params = useLocalSearchParams();
 
-  // Determine which workouts to show
-  let workoutsToShow = [] as ExtendedWorkout[];
-
-  if (params.mode === 'comparison' && selectedWorkouts.length > 0) {
-    workoutsToShow = selectedWorkouts;
-  } else if (selectedWorkout) {
-    workoutsToShow = [selectedWorkout];
-  }
-
-  if (workoutsToShow.length === 0) {
+  if (selectedWorkouts.length === 0) {
     return (
       <View style={styles.container}>
         <Text style={styles.errorText}>No workout data available</Text>
@@ -68,7 +58,7 @@ export default function MapDetailScreen() {
 
       <View style={styles.container}>
         <RouteMap
-          samples={workoutsToShow}
+          samples={selectedWorkouts}
           previewMode={false}
           maxPoints={100}
         />

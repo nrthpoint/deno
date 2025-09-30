@@ -32,7 +32,7 @@ export const ComparisonTab = () => {
   } = useGroupStats();
 
   const { distanceUnit } = useSettings();
-  const { setSelectedWorkouts } = useWorkout();
+  const { setWorkouts } = useWorkout();
 
   const [comparisonMode, setComparisonMode] = useState<ComparisonMode>('general');
   const [selectedSample1Type, setSelectedSample1Type] = useState<SampleType>('highlight');
@@ -88,7 +88,7 @@ export const ComparisonTab = () => {
   const selectedSample2 = getSelectedSample(selectedSample2Type);
 
   const handleMapPress = () => {
-    setSelectedWorkouts([selectedSample1, selectedSample2]);
+    setWorkouts([selectedSample1, selectedSample2]);
     router.push('/map-detail?mode=comparison');
   };
 
