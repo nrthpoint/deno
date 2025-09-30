@@ -13,17 +13,15 @@ import { useWorkoutAnalytics, WorkoutAnalytics } from '@/context/WorkoutAnalytic
 export default function ProfileScreen() {
   const { distanceUnit } = useSettings();
   const { getWorkoutAnalytics, isLoading: isStatsLoading } = useWorkoutAnalytics();
-  const [cachedStats, setCachedStats] = useState<WorkoutAnalytics | null>(null);
   const { workouts, setSelectedWorkouts, query } = useWorkout();
 
-  const { samples, loading } = workouts || {
-    samples: [],
-    loading: false,
-  };
+  const [cachedStats, setCachedStats] = useState<WorkoutAnalytics | null>(null);
+
+  const { samples, loading: isWorkoutsLoading } = workouts;
 
   useEffect(() => {
     const loadProfileStats = async () => {
-      if (!loading && samples.length > 0) {
+      if (!isWorkoutsLoading && samples.length > 0) {
         try {
           const stats = await getWorkoutAnalytics(samples, query);
           setCachedStats(stats);
@@ -36,7 +34,7 @@ export default function ProfileScreen() {
     };
 
     loadProfileStats();
-  }, [getWorkoutAnalytics, loading, query, samples, workouts]);
+  }, [getWorkoutAnalytics, isWorkoutsLoading, query, samples, workouts]);
 
   const handleStatPress = (workout: any) => {
     if (workout) {
@@ -45,7 +43,7 @@ export default function ProfileScreen() {
     }
   };
 
-  const isLoading = loading || isStatsLoading(query);
+  const isLoading = isWorkoutsLoading || isStatsLoading(query);
 
   return (
     <View style={styles.screenContainer}>
