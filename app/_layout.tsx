@@ -45,10 +45,6 @@ function AppContent() {
     return <LoadingScreen message="Initializing..." />;
   }
 
-  if (workouts.samples.length === 0) {
-    return <NoWorkouts />;
-  }
-
   // Show authorization overlay if permission is needed
   if (authorizationStatus !== AuthorizationRequestStatus.unnecessary) {
     return (
@@ -57,6 +53,11 @@ function AppContent() {
         requestAuthorization={requestAuthorization}
       />
     );
+  }
+
+  // Show no workouts screen if user is authorized but has no workouts
+  if (workouts.samples.length === 0) {
+    return <NoWorkouts />;
   }
 
   return (
