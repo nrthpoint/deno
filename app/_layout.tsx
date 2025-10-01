@@ -18,25 +18,6 @@ import { WorkoutAnalyticsProvider } from '@/context/WorkoutAnalytics';
 
 SplashScreen.preventAutoHideAsync();
 
-function NoWorkouts() {
-  return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="no-workouts" />
-      <Stack.Screen
-        name="add-workout"
-        options={{
-          presentation: 'modal',
-          headerShown: false,
-        }}
-      />
-    </Stack>
-  );
-}
-
 function AppContent() {
   const { authorizationStatus, requestAuthorization, workouts } = useWorkout();
 
@@ -55,18 +36,19 @@ function AppContent() {
     );
   }
 
-  // Show no workouts screen if user is authorized but has no workouts
-  if (workouts.samples.length === 0) {
-    return <NoWorkouts />;
-  }
-
   return (
     <Stack
       screenOptions={{
         headerShown: false,
       }}
+      initialRouteName={workouts.samples.length === 0 ? 'no-workouts' : '(tabs)'}
     >
-      <Stack.Screen name="(tabs)" />
+      <Stack.Screen
+        name="(tabs)"
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stack.Screen
         name="add-workout"
         options={{
@@ -78,6 +60,12 @@ function AppContent() {
         name="view-workout"
         options={{
           presentation: 'modal',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="no-workouts"
+        options={{
           headerShown: false,
         }}
       />
