@@ -2,9 +2,10 @@ import { LengthUnit, WorkoutActivityType } from '@kingstinct/react-native-health
 import { useMemo } from 'react';
 
 import { TimeRange } from '@/config/timeRanges';
+import { useWorkout } from '@/context/Workout';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { groupWorkouts } from '@/grouping-engine/GroupingEngine';
-import { useWorkoutData } from '@/hooks/useWorkoutData';
+import { GroupingConfig } from '@/grouping-engine/types/Grouping';
 import { GroupType } from '@/types/Groups';
 
 type UseGroupedActivityDataParams = {
@@ -12,29 +13,20 @@ type UseGroupedActivityDataParams = {
   distanceUnit: LengthUnit;
   timeRangeInDays: TimeRange;
   groupType: GroupType;
-  enabled: boolean;
-  tolerance?: number;
-  groupSize?: number;
-};
+} & GroupingConfig;
 
 export function useWorkoutGroups({
-  activityType,
   distanceUnit,
   timeRangeInDays,
   groupType,
-  enabled,
   tolerance,
   groupSize,
 }: UseGroupedActivityDataParams) {
-  const { samples, meta, loading, authorizationStatus, requestAuthorization } = useWorkoutData({
-    activityType,
-    distanceUnit,
-    timeRangeInDays,
-  });
+  const { workouts, authorizationStatus, requestAuthorization } = useWorkout();
+  const { samples, loading, meta } = workouts;
 
   const config = GROUPING_CONFIGS[groupType];
 
-  // Memoize the expensive groupWorkouts calculation
   const groups = useMemo(() => {
     if (loading || samples.length === 0) {
       return {};
@@ -43,15 +35,14 @@ export function useWorkoutGroups({
     return groupWorkouts(
       {
         samples,
-        enabled,
-        tolerance: tolerance ?? config.defaultTolerance,
-        groupSize: groupSize ?? config.defaultGroupSize,
+        tolerance,
+        groupSize,
         distanceUnit,
       },
       config,
       timeRangeInDays,
     );
-  }, [samples, enabled, tolerance, groupSize, distanceUnit, config, timeRangeInDays, loading]);
+  }, [samples, tolerance, groupSize, distanceUnit, config, timeRangeInDays, loading]);
 
   return { groups, meta, samples, loading, authorizationStatus, requestAuthorization };
 }

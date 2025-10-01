@@ -1,12 +1,11 @@
 import {
   AuthorizationRequestStatus,
   deleteObjects,
-  isProtectedDataAvailable,
   queryWorkoutSamples,
   saveWorkoutSample,
   useHealthkitAuthorization,
 } from '@kingstinct/react-native-healthkit';
-import { createContext, useReducer, ReactNode, useCallback, useEffect, useMemo } from 'react';
+import { createContext, ReactNode, useCallback, useEffect, useMemo, useReducer } from 'react';
 
 import { SampleTypesToRead, SampleTypesToWrite } from '@/config/sampleIdentifiers';
 import { useSettings } from '@/context/SettingsContext';
@@ -42,17 +41,13 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
     SampleTypesToWrite,
   );
 
-  const [state, dispatch] = useReducer(workoutReducer, {
+  const initialState = {
     workoutCache: new Map(),
     selectedWorkouts: [],
     authorizationStatus: _authorizationStatus || AuthorizationRequestStatus.unknown,
-  });
+  };
 
-  useEffect(() => {
-    if (_authorizationStatus !== null) {
-      dispatch({ type: WORKOUT_ACTIONS.SET_AUTHORIZATION_STATUS, status: _authorizationStatus });
-    }
-  }, [_authorizationStatus]);
+  const [state, dispatch] = useReducer(workoutReducer, initialState);
 
   const defaultQuery = useMemo<WorkoutQuery>(
     () => ({
@@ -71,20 +66,18 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
       };
 
       const queryKey = generateQueryKey(fullQuery);
+
       dispatch({ type: WORKOUT_ACTIONS.SET_LOADING, queryKey });
 
       try {
-        const authorized = await isProtectedDataAvailable();
-
-        if (!authorized) {
+        if (_authorizationStatus !== AuthorizationRequestStatus.unnecessary) {
           console.error('WorkoutProvider: Authorization not granted.');
           return;
         }
 
         const startDate = new Date(Date.now() - fullQuery.timeRangeInDays * 24 * 60 * 60 * 1000);
         const endDate = new Date();
-
-        const originalSamples = await queryWorkoutSamples({
+        const options = {
           ascending: false,
           limit: 10000,
           filter: {
@@ -92,7 +85,9 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
             startDate,
             endDate,
           },
-        });
+        };
+
+        const originalSamples = await queryWorkoutSamples(options);
 
         const filteredSamples = originalSamples.filter((sample) => {
           return !fullQuery.activityType || sample.workoutActivityType === fullQuery.activityType;
@@ -139,7 +134,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
         });
       }
     },
-    [defaultQuery],
+    [_authorizationStatus, defaultQuery],
   );
 
   const setSelectedWorkouts = useCallback((workouts: ExtendedWorkout[]) => {
@@ -189,7 +184,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
         },
       );
 
-      await addAppCreatedWorkoutUUID(result);
+      await addAppCreatedWorkoutUUID(result.uuid);
       await fetchWorkouts();
 
       return result;
@@ -202,6 +197,16 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 
     return state.workoutCache.get(queryKey) || EMPTY_WORKOUT_GROUP;
   }, [state.workoutCache, defaultQuery]);
+
+  useEffect(() => {
+    if (_authorizationStatus !== null) {
+      dispatch({ type: WORKOUT_ACTIONS.SET_AUTHORIZATION_STATUS, status: _authorizationStatus });
+    }
+
+    if (_authorizationStatus === AuthorizationRequestStatus.unnecessary) {
+      void fetchWorkouts();
+    }
+  }, [_authorizationStatus, fetchWorkouts]);
 
   const { selectedWorkouts, authorizationStatus } = state;
 

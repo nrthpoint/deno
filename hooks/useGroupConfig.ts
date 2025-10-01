@@ -35,6 +35,7 @@ export function useGroupConfig() {
     // Only validate tolerance/groupSize if grouping is enabled
     if (config.enabled && config.tolerance !== undefined && config.groupSize !== undefined) {
       const maxTolerance = config.groupSize / 2;
+
       validatedConfig = {
         ...validatedConfig,
         tolerance: Math.min(config.tolerance, maxTolerance),
@@ -62,6 +63,7 @@ export function useGroupConfig() {
    */
   const resetConfig = useCallback((groupType: GroupType) => {
     const defaultConfig = getTabOptionConfig(groupType);
+
     setGroupingConfigs((prev) => ({
       ...prev,
       [groupType]: {
@@ -77,6 +79,7 @@ export function useGroupConfig() {
    */
   const resetAllConfigs = useCallback(() => {
     const groupTypes: GroupType[] = ['distance', 'pace', 'elevation', 'duration'];
+
     const resetConfigs = groupTypes.reduce(
       (acc, groupType) => {
         const config = getTabOptionConfig(groupType);

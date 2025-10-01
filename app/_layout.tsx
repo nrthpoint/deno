@@ -18,12 +18,35 @@ import { WorkoutAnalyticsProvider } from '@/context/WorkoutAnalytics';
 
 SplashScreen.preventAutoHideAsync();
 
+function NoWorkouts() {
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="no-workouts" />
+      <Stack.Screen
+        name="add-workout"
+        options={{
+          presentation: 'modal',
+          headerShown: false,
+        }}
+      />
+    </Stack>
+  );
+}
+
 function AppContent() {
-  const { authorizationStatus, requestAuthorization } = useWorkout();
+  const { authorizationStatus, requestAuthorization, workouts } = useWorkout();
 
   // Show loading screen while authorization status is being determined
-  if (authorizationStatus === null) {
+  if (authorizationStatus === null || authorizationStatus === AuthorizationRequestStatus.unknown) {
     return <LoadingScreen message="Initializing..." />;
+  }
+
+  if (workouts.samples.length === 0) {
+    return <NoWorkouts />;
   }
 
   // Show authorization overlay if permission is needed

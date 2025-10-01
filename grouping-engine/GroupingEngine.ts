@@ -15,16 +15,9 @@ export function groupWorkouts(
   config: GroupConfig,
   timeRangeInDays: TimeRange,
 ): Groups {
-  const { samples, enabled = true } = params;
-
-  // If grouping is disabled, use unit-based grouping (1 mile, 1 km, 10 min, etc.)
-  if (!enabled) {
-    return createUnitGroups(params, config, timeRangeInDays);
-  }
-
+  const { samples, distanceUnit } = params;
   const { tolerance = config.defaultTolerance, groupSize = config.defaultGroupSize } = params;
 
-  // Filter samples if a filter is provided
   const filteredSamples = config.filter ? samples.filter(config.filter) : samples;
 
   if (filteredSamples.length === 0) {
@@ -41,22 +34,19 @@ export function groupWorkouts(
       groups,
       tolerance,
       groupSize,
-      distanceUnit: params.distanceUnit,
+      distanceUnit,
       config,
     });
   }
 
-  // Remove empty groups
   deleteEmptyGroups(groups);
 
-  // Calculate stats for each group using the appropriate calculator
   const statCalculator = createStatCalculator(config);
 
   for (const groupKey in groups) {
     statCalculator.calculateStats(groups[groupKey], filteredSamples, timeRangeInDays);
   }
 
-  // Assign ranks and sort
   assignRankToGroups(groups);
 
   return sortGroupsByKeyInAscending(groups);
@@ -132,7 +122,7 @@ function parseSampleIntoGroup({
 /**
  * Creates unit-based groups (1 mile, 1 km, 10 min, etc.) when grouping is disabled
  */
-function createUnitGroups(
+/* function createUnitGroups(
   params: GroupingParameters,
   config: GroupConfig,
   timeRangeInDays: TimeRange,
@@ -224,7 +214,7 @@ function createUnitGroups(
 
   return sortGroupsByKeyInAscending(groups);
 }
-
+ */
 /**
  * Deletes groups that have no runs
  */

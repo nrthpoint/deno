@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { ConfirmAction } from '@/components/ConfirmAction/ConfirmAction';
 import { colors } from '@/config/colors';
-import { useWorkoutActions } from '@/hooks/useWorkoutSelectors';
+import { useWorkout } from '@/context/Workout';
 import { canDeleteWorkout } from '@/services/workoutStorage';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
@@ -23,7 +23,7 @@ export const DeleteWorkout: React.FC<DeleteWorkoutProps> = ({
   onDelete,
   onShowDeletionInfo,
 }) => {
-  const { deleteWorkout } = useWorkoutActions();
+  const { deleteWorkout } = useWorkout();
   const [canDelete, setCanDelete] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 

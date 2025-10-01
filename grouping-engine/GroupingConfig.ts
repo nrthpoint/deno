@@ -9,7 +9,7 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
   distance: {
     type: 'distance',
     property: 'totalDistance',
-    defaultTolerance: 0.25,
+    defaultTolerance: 0.5,
     defaultGroupSize: 1.0,
     backgroundColor: '#5681FE',
     unitFormatter: (_key, sample) => sample.totalDistance?.unit || 'mi',

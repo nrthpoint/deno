@@ -1,6 +1,5 @@
 import {
   CategoryTypeIdentifierWriteable,
-  CharacteristicTypeIdentifier,
   QuantityTypeIdentifierWriteable,
   SampleTypeIdentifierWriteable,
 } from '@kingstinct/react-native-healthkit';
@@ -73,14 +72,14 @@ export const AllCategorySampleTypeIdentifierInApp: CategoryTypeIdentifierWriteab
   'HKCategoryTypeIdentifierMindfulSession',
 ];
 
-export const AllCharacteristicTypeIdentifierInApp: CharacteristicTypeIdentifier[] = [
+/* export const AllCharacteristicTypeIdentifierInApp: CharacteristicTypeIdentifier[] = [
   'HKCharacteristicTypeIdentifierBiologicalSex',
   'HKCharacteristicTypeIdentifierBloodType',
   'HKCharacteristicTypeIdentifierDateOfBirth',
   'HKCharacteristicTypeIdentifierFitzpatrickSkinType',
   'HKCharacteristicTypeIdentifierWheelchairUse',
   'HKCharacteristicTypeIdentifierActivityMoveMode',
-];
+]; */
 
 export const AllSampleTypesInApp: SampleTypeIdentifierWriteable[] = [
   'HKWorkoutTypeIdentifier',
@@ -94,8 +93,8 @@ export const AllSampleTypesInApp: SampleTypeIdentifierWriteable[] = [
 export const SampleTypesToWrite: SampleTypeIdentifierWriteable[] = [
   'HKWorkoutTypeIdentifier',
   'HKQuantityTypeIdentifierDistanceWalkingRunning',
-  'HKQuantityTypeIdentifierDistanceCycling',
-  'HKQuantityTypeIdentifierActiveEnergyBurned',
+  /*   'HKQuantityTypeIdentifierDistanceCycling',
+   */ 'HKQuantityTypeIdentifierActiveEnergyBurned',
   'HKQuantityTypeIdentifierStepCount',
 ];
 

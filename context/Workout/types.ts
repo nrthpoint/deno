@@ -7,7 +7,7 @@ import {
 
 import { TimeRange } from '@/config/timeRanges';
 import { WorkoutAction } from '@/context/Workout/actions';
-import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { ExtendedWorkout, WorkoutProxy } from '@/types/ExtendedWorkout';
 
 export type WorkoutQuery = {
   activityType: WorkoutActivityType;
@@ -55,5 +55,5 @@ export interface WorkoutContextType {
   workouts: WorkoutQueryResult;
   fetchWorkouts: (query?: Partial<WorkoutQuery>) => Promise<void>;
   deleteWorkout: (workout: ExtendedWorkout) => Promise<void>;
-  saveWorkout: (params: SaveWorkoutParams) => Promise<string>;
+  saveWorkout: (params: SaveWorkoutParams) => Promise<WorkoutProxy>;
 }

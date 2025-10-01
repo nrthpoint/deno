@@ -56,7 +56,6 @@ export default function Index() {
     distanceUnit,
     timeRangeInDays,
     groupType,
-    enabled,
     tolerance,
     groupSize,
   });
