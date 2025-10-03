@@ -63,7 +63,7 @@ const WorkoutItem = ({ workout, index }: WorkoutItemProps) => {
               color="#CCCCCC"
             />
             <Text style={styles.statLabel}>Distance</Text>
-            <Text style={styles.statValue}>{formatDistance(workout.totalDistance)}</Text>
+            <Text style={styles.statValue}>{formatDistance(workout.distance)}</Text>
           </View>
 
           <View style={styles.statItem}>
@@ -83,7 +83,7 @@ const WorkoutItem = ({ workout, index }: WorkoutItemProps) => {
               color="#CCCCCC"
             />
             <Text style={styles.statLabel}>Pace</Text>
-            <Text style={styles.statValue}>{workout.prettyPace}</Text>
+            <Text style={styles.statValue}>{workout.pace.formatted}</Text>
           </View>
         </View>
 

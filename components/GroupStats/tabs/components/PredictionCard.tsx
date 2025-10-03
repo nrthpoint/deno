@@ -5,8 +5,9 @@ import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
 import { useTheme } from '@/context/ThemeContext';
 import { PredictedWorkout } from '@/types/Prediction';
+import { formatPace } from '@/utils/pace';
 import { subheading } from '@/utils/text';
-import { formatDuration, formatPace } from '@/utils/time';
+import { formatDuration } from '@/utils/time';
 
 interface PredictionCardProps {
   prediction: PredictedWorkout;

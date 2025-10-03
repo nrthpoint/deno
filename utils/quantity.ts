@@ -1,11 +1,15 @@
 import { Quantity } from '@kingstinct/react-native-healthkit';
 
-export function newQuantity(quantity = 0, unit: string = 'mi'): Quantity {
+export interface QuantityWithFormat extends Quantity {
+  formatted: string;
+}
+
+export function newQuantity(quantity = 0, unit: string = 'mi'): QuantityWithFormat {
   if (isNaN(quantity) || quantity < 0) {
     throw new Error('newQuantity: Invalid quantity value');
   }
 
-  return { quantity, unit };
+  return { quantity, unit, formatted: `${quantity} ${unit}` };
 }
 
 export function copyQuantity(quantity: Quantity): Quantity {

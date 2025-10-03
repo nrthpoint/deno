@@ -2,12 +2,7 @@ import { addWeeks, differenceInDays } from 'date-fns';
 
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
-import {
-  PredictedWorkout,
-  PerformanceTrend,
-  TrainingRecommendation,
-  PredictionConfidence,
-} from '@/types/Prediction';
+import { PredictedWorkout, PerformanceTrend, PredictionConfidence } from '@/types/Prediction';
 import { newQuantity } from '@/utils/quantity';
 
 /**
@@ -29,7 +24,7 @@ export const calculatePerformanceTrend = (runs: ExtendedWorkout[]): PerformanceT
   // Calculate pace improvements over time
   const paceData = sortedRuns.map((run, index) => ({
     daysSinceFirst: differenceInDays(run.startDate, sortedRuns[0].startDate),
-    pace: run.averagePace.quantity,
+    pace: run.pace.quantity,
     index,
   }));
 
@@ -126,8 +121,8 @@ const calculateLinearRegression = (data: { daysSinceFirst: number; pace: number 
 const calculateRecentTrend = (recentRuns: ExtendedWorkout[]): number => {
   if (recentRuns.length < 2) return 0;
 
-  const firstPace = recentRuns[0].averagePace.quantity;
-  const lastPace = recentRuns[recentRuns.length - 1].averagePace.quantity;
+  const firstPace = recentRuns[0].pace.quantity;
+  const lastPace = recentRuns[recentRuns.length - 1].pace.quantity;
   const daysDiff = differenceInDays(
     recentRuns[recentRuns.length - 1].startDate,
     recentRuns[0].startDate,
@@ -142,7 +137,7 @@ const calculateRecentTrend = (recentRuns: ExtendedWorkout[]): number => {
  * Calculate realism factor to prevent unrealistic predictions
  */
 export const calculateRealismFactor = (currentBest: ExtendedWorkout): number => {
-  const currentPace = currentBest.averagePace.quantity;
+  const currentPace = currentBest.pace.quantity;
 
   // Elite performance benchmarks (min/mi)
   const eliteBenchmarks = {
@@ -156,7 +151,7 @@ export const calculateRealismFactor = (currentBest: ExtendedWorkout): number => 
 
   // Find closest distance benchmark
   const distances = Object.keys(eliteBenchmarks).map(Number);
-  const currentDistance = currentBest.totalDistance.quantity;
+  const currentDistance = currentBest.distance.quantity;
   const closestDistance = distances.reduce((prev, curr) =>
     Math.abs(curr - currentDistance) < Math.abs(prev - currentDistance) ? curr : prev,
   );
@@ -225,106 +220,6 @@ export const calculatePredictionConfidence = (
 };
 
 /**
- * Generate training recommendations based on performance analysis
- */
-export const generateTrainingRecommendations = (
-  group: Group,
-  trend: PerformanceTrend,
-  targetImprovementRate: number,
-): TrainingRecommendation[] => {
-  const recommendations: TrainingRecommendation[] = [];
-  const currentPace = group.highlight.averagePace.quantity;
-  const groupDistance = group.highlight.totalDistance.quantity;
-
-  // Base recommendations on group type and current performance
-  if (groupDistance <= 5) {
-    // Short distance focus
-    if (trend.momentum !== 'improving' || targetImprovementRate > 3) {
-      recommendations.push({
-        workoutType: 'intervals',
-        frequency: 2,
-        intensity: 'hard',
-        reason: 'Improve speed and VO2 max for shorter distances',
-        duration: newQuantity(30, 'min'),
-        targetPace: newQuantity(currentPace * 0.9, 'min/mi'),
-      });
-    }
-
-    recommendations.push({
-      workoutType: 'tempo',
-      frequency: 1,
-      intensity: 'moderate',
-      reason: 'Build lactate threshold for sustained speed',
-      duration: newQuantity(20, 'min'),
-      targetPace: newQuantity(currentPace * 0.95, 'min/mi'),
-    });
-  } else if (groupDistance <= 13) {
-    // Medium distance focus
-    recommendations.push({
-      workoutType: 'tempo',
-      frequency: 2,
-      intensity: 'moderate',
-      reason: 'Improve aerobic capacity and race pace',
-      duration: newQuantity(30, 'min'),
-      targetPace: newQuantity(currentPace * 0.95, 'min/mi'),
-    });
-
-    recommendations.push({
-      workoutType: 'long_run',
-      frequency: 1,
-      intensity: 'easy',
-      reason: 'Build aerobic base and endurance',
-      duration: newQuantity(60, 'min'),
-      targetPace: newQuantity(currentPace * 1.1, 'min/mi'),
-    });
-  } else {
-    // Long distance focus
-    recommendations.push({
-      workoutType: 'long_run',
-      frequency: 1,
-      intensity: 'easy',
-      reason: 'Essential for marathon/ultra endurance',
-      duration: newQuantity(90, 'min'),
-      targetPace: newQuantity(currentPace * 1.15, 'min/mi'),
-    });
-
-    recommendations.push({
-      workoutType: 'tempo',
-      frequency: 1,
-      intensity: 'moderate',
-      reason: 'Maintain speed while building endurance',
-      duration: newQuantity(40, 'min'),
-      targetPace: newQuantity(currentPace * 0.98, 'min/mi'),
-    });
-  }
-
-  // Add recovery based on volatility
-  if (trend.volatility > 10) {
-    recommendations.push({
-      workoutType: 'recovery',
-      frequency: 2,
-      intensity: 'easy',
-      reason: 'High performance variability suggests need for more recovery',
-      duration: newQuantity(30, 'min'),
-      targetPace: newQuantity(currentPace * 1.2, 'min/mi'),
-    });
-  }
-
-  // Add hill training for plateau breaking
-  if (trend.momentum === 'plateauing') {
-    recommendations.push({
-      workoutType: 'hill_training',
-      frequency: 1,
-      intensity: 'hard',
-      reason: 'Break through performance plateau with strength training',
-      duration: newQuantity(25, 'min'),
-    });
-  }
-
-  return recommendations.slice(0, 4); // Limit to 4 recommendations
-};
-
-/**
  * Generate workout prediction for a specific group
  */
 export const generateWorkoutPrediction = (
@@ -344,17 +239,17 @@ export const generateWorkoutPrediction = (
     adjustedImprovementRate * totalImprovementWeeks * (confidence.score / 100);
 
   // Calculate predicted pace (improvement means lower pace value)
-  const currentPace = group.highlight.averagePace.quantity;
+  const currentPace = group.highlight.pace.quantity;
   const predictedPaceReduction = currentPace * (totalImprovement / 100);
   const predictedPace = Math.max(currentPace - predictedPaceReduction, currentPace * 0.85); // Cap at 15% improvement
 
   // Calculate predicted duration for the same distance
-  const distance = group.highlight.totalDistance.quantity;
+  const distance = group.highlight.distance.quantity;
   const predictedDurationMinutes = predictedPace * distance;
   const predictedDuration = predictedDurationMinutes * 60; // Convert to seconds
 
   // Generate training recommendations
-  const recommendations = generateTrainingRecommendations(group, trend, totalImprovement);
+  //const recommendations = generateTrainingRecommendations(group, trend, totalImprovement);
 
   const timeSpanDays =
     group.runs.length > 1
@@ -365,13 +260,12 @@ export const generateWorkoutPrediction = (
     type: 'predicted',
     groupKey: group.title,
     targetDate: addWeeks(new Date(), weeksAhead),
-    predictedPace: newQuantity(Number(predictedPace.toFixed(2)), group.highlight.averagePace.unit),
+    predictedPace: newQuantity(Number(predictedPace.toFixed(2)), group.highlight.pace.unit),
     predictedDuration: newQuantity(Number(predictedDuration.toFixed(2)), 's'),
-    predictedDistance: group.highlight.totalDistance,
+    predictedDistance: group.highlight.distance,
     confidence: Number(confidence.score.toFixed(2)),
     confidenceLevel: confidence.level,
     improvementPercentage: Number(totalImprovement.toFixed(2)),
-    recommendedTraining: recommendations,
     predictionBasis: {
       dataPoints: group.runs.length,
       timeSpanDays,

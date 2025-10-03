@@ -14,13 +14,7 @@ import { LatoFonts } from '@/config/fonts';
 import { useWorkout } from '@/context/Workout';
 import { formatDistance } from '@/utils/distance';
 import { subheading } from '@/utils/text';
-import {
-  formatDate,
-  formatDuration,
-  formatPace,
-  formatTime,
-  formatWorkoutDate,
-} from '@/utils/time';
+import { formatDate, formatDuration, formatTime, formatWorkoutDate } from '@/utils/time';
 
 export default function ViewWorkoutScreen() {
   const { selectedWorkouts } = useWorkout();
@@ -58,12 +52,12 @@ export default function ViewWorkoutScreen() {
           },
           {
             label: 'Distance',
-            value: formatDistance(selectedWorkout.totalDistance),
+            value: formatDistance(selectedWorkout.distance),
             icon: 'map' as keyof typeof Ionicons.glyphMap,
           },
           {
             label: 'Average Pace',
-            value: selectedWorkout.prettyPace,
+            value: selectedWorkout.pace.formatted,
             icon: 'speedometer' as keyof typeof Ionicons.glyphMap,
           },
         ],
@@ -74,7 +68,7 @@ export default function ViewWorkoutScreen() {
         items: [
           {
             label: 'Total Energy Burned',
-            value: `${Math.round(selectedWorkout.totalEnergyBurned?.quantity || 0)} ${selectedWorkout.totalEnergyBurned?.unit || 'kcal'}`,
+            value: `${Math.round(selectedWorkout.averageMETs?.quantity || 0)} ${selectedWorkout.averageMETs?.unit || 'kcal'}`,
             icon: 'flame' as keyof typeof Ionicons.glyphMap,
           },
           {
@@ -99,7 +93,7 @@ export default function ViewWorkoutScreen() {
         items: [
           {
             label: 'Elevation Gain',
-            value: `${Math.round(selectedWorkout.totalElevation?.quantity || 0)} ${selectedWorkout.totalElevation?.unit || 'm'}`,
+            value: `${Math.round(selectedWorkout.elevation?.quantity || 0)} ${selectedWorkout.elevation?.unit || 'm'}`,
             icon: 'trending-up' as keyof typeof Ionicons.glyphMap,
           },
         ],
@@ -173,12 +167,12 @@ export default function ViewWorkoutScreen() {
     );
   };
 
-  const paceWithoutUnit = formatPace(selectedWorkout.averagePace, false);
-  const paceUnit = selectedWorkout.averagePace.unit || 'min/mi';
+  const paceWithoutUnit = selectedWorkout.pace.quantity; //formatPace(selectedWorkout.pace, false);
+  const paceUnit = selectedWorkout.pace.unit;
   const formattedWorkoutDate = formatWorkoutDate(selectedWorkout.endDate);
+  const formattedDuration = formatDuration(selectedWorkout.duration);
 
   const handleMapPress = () => {
-    // setSelectedWorkouts([selectedWorkout]);
     router.push('/map-detail');
   };
 
@@ -248,7 +242,7 @@ export default function ViewWorkoutScreen() {
         {/* Key metrics */}
         <View style={styles.keyMetrics}>
           <Card style={styles.metricCard}>
-            <Text style={styles.metricValue}>{formatDistance(selectedWorkout.totalDistance)}</Text>
+            <Text style={styles.metricValue}>{selectedWorkout.distance.formatted}</Text>
 
             <View style={styles.metricLabelContainer}>
               <Text style={styles.metricLabel}>Distance</Text>
@@ -256,7 +250,7 @@ export default function ViewWorkoutScreen() {
           </Card>
 
           <Card style={styles.metricCard}>
-            <Text style={styles.metricValue}>{formatDuration(selectedWorkout.duration)}</Text>
+            <Text style={styles.metricValue}>{formattedDuration}</Text>
 
             <View style={styles.metricLabelContainer}>
               <Text style={styles.metricLabel}>Duration</Text>

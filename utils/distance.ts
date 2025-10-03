@@ -1,4 +1,6 @@
-import { Quantity } from '@kingstinct/react-native-healthkit';
+import { LengthUnit, Quantity } from '@kingstinct/react-native-healthkit';
+
+import { WorkoutProxy } from '@/types/ExtendedWorkout';
 
 export function metersToMiles(m: Quantity): Quantity {
   const newUnit = {
@@ -115,4 +117,25 @@ export const formatDistance = (distance: Quantity, decimalPlaces: number = 1): s
   const unit = distance.unit || 'm';
 
   return `${value} ${unit}`;
+};
+
+export const retrieveDistanceFromSample = async (
+  sample: WorkoutProxy,
+  distanceUnit: LengthUnit,
+): Promise<Quantity> => {
+  let totalDistanceStat = await sample.getStatistic(
+    'HKQuantityTypeIdentifierDistanceWalkingRunning',
+  );
+
+  if (!totalDistanceStat) {
+    throw new Error('No distance statistic found on workout sample');
+  }
+
+  let { sumQuantity } = totalDistanceStat;
+
+  if (!sumQuantity) {
+    throw new Error('No sumQuantity found on totalDistance statistic');
+  }
+
+  return convertDistanceToUnit(sumQuantity, distanceUnit);
 };

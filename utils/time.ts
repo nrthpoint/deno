@@ -1,33 +1,6 @@
 import { Quantity } from '@kingstinct/react-native-healthkit';
 
 /**
- * Formats a pace Quantity (e.g., {quantity: 6.67, unit: "min/mi"}) into a time format string (e.g., "6:40 min/mi")
- * @param pace - The pace as a Quantity object with decimal minutes and unit
- * @returns Formatted pace string in MM:SS UNIT format (e.g., "6:40 min/mi", "7:30 min/km")
- */
-export const formatPace = (pace: Quantity, includeUnit: boolean = true): string => {
-  if (pace?.quantity === 0) {
-    return `0:00 ${pace.unit}`;
-  }
-
-  if (!pace?.quantity || isNaN(pace.quantity) || pace.quantity < 0) {
-    throw new Error('formatPace: Pace quantity must be a valid non-negative number');
-  }
-
-  if (pace.unit !== 'min/mi' && pace.unit !== 'min/km') {
-    throw new Error('formatPace: Pace must be in "min/mi" or "min/km" format');
-  }
-
-  const minutes = Math.floor(pace.quantity);
-  const seconds = Math.round((pace.quantity % 1) * 60);
-
-  const timeFormatted = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  const unitSuffix = pace.unit ? ` ${pace.unit}` : '';
-
-  return !includeUnit ? timeFormatted : `${timeFormatted}${unitSuffix}`;
-};
-
-/**
  * Formats a duration in seconds into a human-readable string (e.g., "1hr 30min 15s")
  * @param duration - The duration in seconds
  * @returns Formatted duration string
@@ -196,5 +169,9 @@ export const formatDaysAgo = (date: Date): string => {
 
   if (diffDays === 0) return 'today';
   if (diffDays === 1) return '1 day ago';
+
   return `${diffDays} days ago`;
 };
+
+export const getDaysAgo = (date: Date): string =>
+  `${Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24))} days ago`;

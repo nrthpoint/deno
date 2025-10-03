@@ -11,7 +11,7 @@ import { SplitComparison } from '@/components/SplitComparison/SplitComparison';
 import { TabBar, TabOption } from '@/components/TabBar/TabBar';
 import { Warning } from '@/components/Warning';
 import { WeatherComparison } from '@/components/WeatherComparison/WeatherComparison';
-import { colors } from '@/config/colors';
+import { colors, SAMPLE1_COLOR, SAMPLE2_COLOR } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
@@ -32,7 +32,7 @@ export const ComparisonTab = () => {
   } = useGroupStats();
 
   const { distanceUnit } = useSettings();
-  const { setWorkouts } = useWorkout();
+  const { setSelectedWorkouts } = useWorkout();
 
   const [comparisonMode, setComparisonMode] = useState<ComparisonMode>('general');
   const [selectedSample1Type, setSelectedSample1Type] = useState<SampleType>('highlight');
@@ -88,7 +88,7 @@ export const ComparisonTab = () => {
   const selectedSample2 = getSelectedSample(selectedSample2Type);
 
   const handleMapPress = () => {
-    setWorkouts([selectedSample1, selectedSample2]);
+    setSelectedWorkouts([selectedSample1, selectedSample2]);
     router.push('/map-detail?mode=comparison');
   };
 
@@ -98,9 +98,17 @@ export const ComparisonTab = () => {
   const WorkoutSelectors = () => (
     <View style={styles.workoutSelectors}>
       <View style={styles.dropdownRow}>
-        <View style={styles.dropdownLabelContainer}>
+        <View
+          style={[
+            styles.dropdownLabelContainer,
+            {
+              backgroundColor: SAMPLE1_COLOR,
+            },
+          ]}
+        >
           <Text style={styles.dropdownLabel}>1</Text>
         </View>
+
         <View style={styles.dropdownContainer}>
           <SampleDropdown
             options={sampleOptions}
@@ -118,9 +126,10 @@ export const ComparisonTab = () => {
       </View>
 
       <View style={styles.dropdownRow}>
-        <View style={styles.dropdownLabelContainer}>
+        <View style={[styles.dropdownLabelContainer, { backgroundColor: SAMPLE2_COLOR }]}>
           <Text style={styles.dropdownLabel}>2</Text>
         </View>
+
         <View style={styles.dropdownContainer}>
           <SampleDropdown
             options={sampleOptions}
@@ -145,7 +154,14 @@ export const ComparisonTab = () => {
             sample2={selectedSample2}
             sample1Label="1"
             sample2Label="2"
-            propertiesToCompare={['duration', 'averagePace', 'distance', 'elevation', 'humidity']}
+            propertiesToCompare={[
+              'distance',
+              'duration',
+              'averagePace',
+              'elevation',
+              'humidity',
+              'temperature',
+            ]}
           />
         );
       case 'splits':
@@ -181,7 +197,7 @@ export const ComparisonTab = () => {
       <View style={styles.innerContainer}>
         <TabHeader
           title="Compare"
-          description="Compare key runs within this group."
+          description="Put key runs side-by-side to see how you're progressing."
         />
 
         <WorkoutSelectors />
@@ -197,14 +213,16 @@ export const ComparisonTab = () => {
         )}
 
         {!isSameWorkout && (
-          <RouteMap
-            samples={[selectedSample1, selectedSample2]}
-            previewMode={true}
-            onPress={handleMapPress}
-            maxPoints={30}
-            style={{ borderRadius: 8 }}
-            sampleLabels={['Run 1', 'Run 2']}
-          />
+          <View style={styles.mapContainer}>
+            <RouteMap
+              samples={[selectedSample1, selectedSample2]}
+              previewMode={true}
+              onPress={handleMapPress}
+              maxPoints={30}
+              style={{ borderRadius: 8 }}
+              sampleLabels={['Run 1', 'Run 2']}
+            />
+          </View>
         )}
 
         <TabBar
@@ -242,7 +260,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 32,
-    height: 48,
+    height: 40,
     borderTopLeftRadius: 8,
     borderBottomLeftRadius: 8,
   },
@@ -257,11 +275,11 @@ const styles = StyleSheet.create({
   dropdownButtonStyle: {
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
+    borderLeftWidth: 0,
   },
   vsContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    //paddingVertical: 8,
   },
   vsText: {
     fontSize: 16,
@@ -274,5 +292,14 @@ const styles = StyleSheet.create({
   splitContainer: {
     flex: 1,
     marginHorizontal: -10,
+  },
+  mapContainer: {
+    marginVertical: 20,
+    marginBottom: 10,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    paddingVertical: 10,
+    paddingBottom: 20,
+    borderColor: colors.surfaceHighlight,
   },
 });

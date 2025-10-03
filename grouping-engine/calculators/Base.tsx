@@ -5,8 +5,8 @@ import { GroupStatCalculator } from '@/grouping-engine/GroupStatCalculator';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 import { convertShortUnitToLong } from '@/utils/distance';
+import { formatPace } from '@/utils/pace';
 import { calculatePercentage } from '@/utils/quantity';
-import { formatPace } from '@/utils/time';
 import { generateTimeLabel } from '@/utils/timeLabels';
 import {
   getGreatestElevationWorkout,

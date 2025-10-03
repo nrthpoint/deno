@@ -14,7 +14,7 @@ import { useWorkoutSubscription } from '@/hooks/useWorkoutSubscription';
 import { handleAchievementNotifications } from '@/services/achievements';
 import { addAppCreatedWorkoutUUID, removeAppCreatedWorkoutUUID } from '@/services/workoutStorage';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
-import { parseWorkoutSamples } from '@/utils/parser';
+import { parseWorkoutSamples } from '@/utils/parser/parser';
 
 import { WORKOUT_ACTIONS } from './actions';
 import { workoutReducer } from './reducer';

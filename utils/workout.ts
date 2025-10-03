@@ -3,35 +3,6 @@ import { LengthUnit, Quantity } from '@kingstinct/react-native-healthkit';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { newQuantity } from '@/utils/quantity';
 
-import { convertDurationToMinutes } from './time';
-
-/**
- * Calculates the pace from a workout sample in minutes.
- * @param run - The workout sample containing total distance and duration.
- * @returns The pace as a Quantity object with unit and quantity.
- */
-export const calculatePace = (distance: Quantity, duration: Quantity): Quantity => {
-  const distanceValue = distance?.quantity;
-  const durationValue = duration?.quantity;
-
-  const distanceUnit = distance?.unit;
-
-  if (!distanceValue || distanceValue === 0 || !durationValue || durationValue === 0) {
-    return {
-      unit: `min/${distanceUnit || 'undefined'}`,
-      quantity: 0,
-    };
-  }
-
-  const durationMinutes = convertDurationToMinutes(duration);
-  const paceQuantity = (durationMinutes / distanceValue).toFixed(2);
-
-  return {
-    unit: `min/${distanceUnit || 'undefined'}`,
-    quantity: Number(paceQuantity),
-  };
-};
-
 /**
  * Finds the fastest run (lowest pace) from an array of runs
  * @param runs - Array of ExtendedWorkout objects
@@ -44,11 +15,11 @@ export const findFastestRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
     }
 
     // Compare pace values - lower pace is faster
-    if (!prev.averagePace || !curr.averagePace) {
-      return prev.averagePace ? prev : curr;
+    if (!prev.pace || !curr.pace) {
+      return prev.pace ? prev : curr;
     }
 
-    return prev.averagePace.quantity <= curr.averagePace.quantity ? prev : curr;
+    return prev.pace.quantity <= curr.pace.quantity ? prev : curr;
   });
 };
 
@@ -64,11 +35,11 @@ export const findSlowestRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
     }
 
     // Compare pace values - higher pace is slower
-    if (!prev.averagePace || !curr.averagePace) {
-      return prev.averagePace ? prev : curr;
+    if (!prev.pace || !curr.pace) {
+      return prev.pace ? prev : curr;
     }
 
-    return prev.averagePace.quantity >= curr.averagePace.quantity ? prev : curr;
+    return prev.pace.quantity >= curr.pace.quantity ? prev : curr;
   });
 };
 
@@ -77,13 +48,13 @@ export const findSlowestRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
  * @param runs - Array of ExtendedWorkout objects
  * @returns The run with the longest distance, or undefined if no valid runs
  */
-export const findLongestRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
+export const findFurthestRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
   return runs.reduce((prev, curr) => {
-    if (!prev || !curr || !prev.totalDistance || !curr.totalDistance) {
+    if (!prev || !curr || !prev.distance || !curr.distance) {
       return prev || curr;
     }
 
-    return prev.totalDistance.quantity >= curr.totalDistance.quantity ? prev : curr;
+    return prev.distance.quantity >= curr.distance.quantity ? prev : curr;
   });
 };
 
@@ -94,11 +65,11 @@ export const findLongestRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
  */
 export const findShortestRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
   return runs.reduce((prev, curr) => {
-    if (!prev || !curr || !prev.totalDistance || !curr.totalDistance) {
+    if (!prev || !curr || !prev.distance || !curr.distance) {
       return prev || curr;
     }
 
-    return prev.totalDistance.quantity <= curr.totalDistance.quantity ? prev : curr;
+    return prev.distance.quantity <= curr.distance.quantity ? prev : curr;
   });
 };
 
@@ -113,8 +84,8 @@ export const findHighestElevationRun = (runs: ExtendedWorkout[]): ExtendedWorkou
       return prev || curr;
     }
 
-    const prevElevation = prev.totalElevation?.quantity || 0;
-    const currElevation = curr.totalElevation?.quantity || 0;
+    const prevElevation = prev.elevation?.quantity || 0;
+    const currElevation = curr.elevation?.quantity || 0;
 
     return prevElevation >= currElevation ? prev : curr;
   });
@@ -131,8 +102,8 @@ export const findLowestElevationRun = (runs: ExtendedWorkout[]): ExtendedWorkout
       return prev || curr;
     }
 
-    const prevElevation = prev.totalElevation?.quantity || 0;
-    const currElevation = curr.totalElevation?.quantity || 0;
+    const prevElevation = prev.elevation?.quantity || 0;
+    const currElevation = curr.elevation?.quantity || 0;
 
     return prevElevation <= currElevation ? prev : curr;
   });
@@ -143,7 +114,7 @@ export const findLowestElevationRun = (runs: ExtendedWorkout[]): ExtendedWorkout
  * @param runs - Array of ExtendedWorkout objects
  * @returns The run with the longest duration, or undefined if no valid runs
  */
-export const findLongestDurationRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
+export const findLongestRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
   return runs.reduce((prev, curr) => {
     if (!prev || !curr) {
       return prev || curr;
@@ -180,7 +151,7 @@ export const calculateAverageDistance = (
     return newQuantity(0, distanceUnit);
   }
 
-  const total = runs.reduce((sum, run) => sum + run.totalDistance.quantity, 0);
+  const total = runs.reduce((sum, run) => sum + run.distance.quantity, 0);
   return newQuantity(total / runs.length, distanceUnit);
 };
 
@@ -196,10 +167,10 @@ export const getMostFrequentPace = (runs: ExtendedWorkout[]): Quantity => {
 
   // Count frequency of pace values (rounded to nearest second for grouping)
   const paceFrequency = new Map<number, number>();
-  let mostFrequentPace = runs[0].averagePace;
+  let mostFrequentPace = runs[0].pace;
 
   runs.forEach((run) => {
-    const roundedPace = Math.round(run.averagePace.quantity);
+    const roundedPace = Math.round(run.pace.quantity);
     const count = (paceFrequency.get(roundedPace) || 0) + 1;
     paceFrequency.set(roundedPace, count);
   });
@@ -209,9 +180,9 @@ export const getMostFrequentPace = (runs: ExtendedWorkout[]): Quantity => {
   for (const [pace, count] of paceFrequency.entries()) {
     if (count > maxCount) {
       maxCount = count;
-      const matchingRun = runs.find((run) => Math.round(run.averagePace.quantity) === pace);
+      const matchingRun = runs.find((run) => Math.round(run.pace.quantity) === pace);
       if (matchingRun) {
-        mostFrequentPace = matchingRun.averagePace;
+        mostFrequentPace = matchingRun.pace;
       }
     }
   }
@@ -307,10 +278,10 @@ export const getMostFrequentDistance = (runs: ExtendedWorkout[]): Quantity => {
 
   // Count frequency of distance values (rounded to nearest 0.1 mile for grouping)
   const distanceFrequency = new Map<number, number>();
-  let mostFrequentDistance = runs[0].totalDistance;
+  let mostFrequentDistance = runs[0].distance;
 
   runs.forEach((run) => {
-    const roundedDistance = Math.round(run.totalDistance.quantity * 10) / 10; // Round to nearest 0.1
+    const roundedDistance = Math.round(run.distance.quantity * 10) / 10; // Round to nearest 0.1
     const count = (distanceFrequency.get(roundedDistance) || 0) + 1;
     distanceFrequency.set(roundedDistance, count);
   });
@@ -321,10 +292,10 @@ export const getMostFrequentDistance = (runs: ExtendedWorkout[]): Quantity => {
     if (count > maxCount) {
       maxCount = count;
       const matchingRun = runs.find(
-        (run) => Math.round(run.totalDistance.quantity * 10) / 10 === distance,
+        (run) => Math.round(run.distance.quantity * 10) / 10 === distance,
       );
       if (matchingRun) {
-        mostFrequentDistance = matchingRun.totalDistance;
+        mostFrequentDistance = matchingRun.distance;
       }
     }
   }
@@ -339,10 +310,10 @@ export const getMostFrequentElevation = (runs: ExtendedWorkout[]): Quantity => {
 
   // Count frequency of elevation values (rounded to nearest 10 feet for grouping)
   const elevationFrequency = new Map<number, number>();
-  let mostFrequentElevation = runs[0].totalElevation;
+  let mostFrequentElevation = runs[0].elevation;
 
   runs.forEach((run) => {
-    const roundedElevation = Math.round(run.totalElevation.quantity / 10) * 10; // Round to nearest 10 ft
+    const roundedElevation = Math.round(run.elevation.quantity / 10) * 10; // Round to nearest 10 ft
     const count = (elevationFrequency.get(roundedElevation) || 0) + 1;
     elevationFrequency.set(roundedElevation, count);
   });
@@ -353,10 +324,10 @@ export const getMostFrequentElevation = (runs: ExtendedWorkout[]): Quantity => {
     if (count > maxCount) {
       maxCount = count;
       const matchingRun = runs.find(
-        (run) => Math.round(run.totalElevation.quantity / 10) * 10 === elevation,
+        (run) => Math.round(run.elevation.quantity / 10) * 10 === elevation,
       );
       if (matchingRun) {
-        mostFrequentElevation = matchingRun.totalElevation;
+        mostFrequentElevation = matchingRun.elevation;
       }
     }
   }
@@ -388,9 +359,7 @@ export const getOldestWorkout = (runs: ExtendedWorkout[]): ExtendedWorkout => {
  * @returns The workout with the highest elevation
  */
 export const getGreatestElevationWorkout = (runs: ExtendedWorkout[]): ExtendedWorkout => {
-  return runs.reduce((max, run) =>
-    run.totalElevation.quantity > max.totalElevation.quantity ? run : max,
-  );
+  return runs.reduce((max, run) => (run.elevation.quantity > max.elevation.quantity ? run : max));
 };
 
 /**
@@ -399,7 +368,5 @@ export const getGreatestElevationWorkout = (runs: ExtendedWorkout[]): ExtendedWo
  * @returns The workout with the lowest elevation
  */
 export const getLowestElevationWorkout = (runs: ExtendedWorkout[]): ExtendedWorkout => {
-  return runs.reduce((min, run) =>
-    run.totalElevation.quantity < min.totalElevation.quantity ? run : min,
-  );
+  return runs.reduce((min, run) => (run.elevation.quantity < min.elevation.quantity ? run : min));
 };

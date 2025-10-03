@@ -15,14 +15,11 @@ const createMockWorkout = (pace: number, distance: number, daysAgo: number): Ext
     startDate,
     endDate: new Date(startDate.getTime() + duration * 1000),
     duration: newQuantity(duration, 's'),
-    totalDistance: newQuantity(distance, 'mi'),
-    totalElevation: newQuantity(100, 'm'),
+    distance: newQuantity(distance, 'mi'),
+    elevation: newQuantity(100, 'm'),
     humidity: newQuantity(65, '%'),
-    averagePace: newQuantity(pace, 'min/mile'),
+    pace: newQuantity(pace, 'min/mile'),
     daysAgo: `${daysAgo} days ago`,
-    prettyPace: `${Math.floor(pace)}:${Math.round((pace % 1) * 60)
-      .toString()
-      .padStart(2, '0')}`,
     achievements: {
       isAllTimeFastest: false,
       isAllTimeLongest: false,

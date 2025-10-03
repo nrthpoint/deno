@@ -45,7 +45,7 @@ export const workoutReducer = (state: WorkoutState, action: WorkoutAction): Work
               totalRuns: filteredSamples.length,
               totalDistance: {
                 quantity: filteredSamples.reduce(
-                  (acc, sample) => acc + (sample?.totalDistance?.quantity ?? 0),
+                  (acc, sample) => acc + (sample?.distance?.quantity ?? 0),
                   0,
                 ),
                 unit: queryResult.meta.totalDistance.unit,

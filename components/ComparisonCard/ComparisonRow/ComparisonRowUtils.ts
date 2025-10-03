@@ -1,7 +1,7 @@
 import { ComparisonProperty } from '@/components/ComparisonCard/ComparisonCard.types';
 import { StatDisplayData } from '@/components/ComparisonCard/ComparisonRow/ComparisonRow';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
-import { formatDuration, formatPace } from '@/utils/time';
+import { formatDuration } from '@/utils/time';
 
 export const formatPropertyValue = (
   property: ComparisonProperty,
@@ -18,53 +18,60 @@ export const formatPropertyValue = (
       };
 
     case 'averagePace':
-      const paceFormatted = formatPace(workout.averagePace);
+      const paceFormatted = workout.pace.formatted;
       const paceMatch = paceFormatted.match(/^(\d+:\d+)\s*(.*)$/);
 
       if (paceMatch) {
         return {
           displayValue: paceMatch[1],
-          unit: paceMatch[2] || workout.averagePace.unit,
-          numericValue: workout.averagePace.quantity,
+          unit: paceMatch[2] || workout.pace.unit,
+          numericValue: workout.pace.quantity,
         };
       }
 
       return {
         displayValue: paceFormatted,
         unit: '',
-        numericValue: workout.averagePace.quantity,
+        numericValue: workout.pace.quantity,
       };
 
     case 'distance':
+      const distance = workout.distance;
       return {
-        displayValue: workout.totalDistance.quantity.toFixed(2),
-        unit: workout.totalDistance.unit || '',
-        numericValue: workout.totalDistance.quantity,
+        displayValue: distance.formatted,
+        unit: distance.unit || '',
+        numericValue: distance.quantity,
       };
 
     case 'elevation':
-      // Assuming elevation data might be in workout statistics
-      const elevation = workout.totalElevation || { quantity: 0, unit: 'ft' };
+      const elevation = workout.elevation;
+
       return {
-        displayValue: elevation.quantity.toFixed(0),
-        unit: elevation.unit || 'ft',
+        displayValue: elevation.formatted,
+        unit: elevation.unit,
         numericValue: elevation.quantity,
       };
 
     case 'humidity':
-      const humidity = workout.humidity || { quantity: 0, unit: '%' };
+      const humidity = workout.humidity;
+
       return {
-        displayValue: humidity.quantity.toFixed(0),
-        unit: humidity.unit || '%',
+        displayValue: humidity.formatted,
+        unit: humidity.unit,
         numericValue: humidity.quantity,
       };
 
-    default:
+    case 'temperature':
+      const temperature = workout.temperature;
+
       return {
-        displayValue: '0',
-        unit: '',
-        numericValue: 0,
+        displayValue: temperature.formatted,
+        unit: temperature.unit,
+        numericValue: temperature.quantity,
       };
+
+    default:
+      throw new Error(`Unsupported property: ${property}`);
   }
 };
 
@@ -78,6 +85,10 @@ export const getPropertyLabel = (property: ComparisonProperty): string => {
       return 'Distance';
     case 'elevation':
       return 'Elevation';
+    case 'humidity':
+      return 'Humidity';
+    case 'temperature':
+      return 'Temperature';
     default:
       return property;
   }

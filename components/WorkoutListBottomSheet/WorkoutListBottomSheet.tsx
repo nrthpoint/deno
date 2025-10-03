@@ -27,7 +27,7 @@ export const WorkoutListBottomSheet = forwardRef<
   WorkoutListBottomSheetProps
 >(({ workouts, title = 'All Workouts' }, ref) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { setSelectedWorkout } = useWorkout();
+  const { setSelectedWorkouts } = useWorkout();
 
   const snapPoints = useMemo(() => ['60%'], []);
 
@@ -38,11 +38,12 @@ export const WorkoutListBottomSheet = forwardRef<
 
   const handleWorkoutPress = useCallback(
     (workout: ExtendedWorkout) => {
-      setSelectedWorkout(workout);
+      setSelectedWorkouts([workout]);
+
       bottomSheetRef.current?.close();
       router.push('/view-workout');
     },
-    [setSelectedWorkout],
+    [setSelectedWorkouts],
   );
 
   const renderBackdrop = useCallback(
@@ -78,7 +79,7 @@ export const WorkoutListBottomSheet = forwardRef<
             style={styles.distanceText}
             numberOfLines={1}
           >
-            {formatDistance(workout.totalDistance)}
+            {formatDistance(workout.distance)}
           </Text>
         </View>
         <View style={styles.timeColumn}>

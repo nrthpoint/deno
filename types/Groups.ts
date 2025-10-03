@@ -4,19 +4,20 @@ import { ExtendedWorkout } from './ExtendedWorkout';
 import { PredictedWorkout } from './Prediction';
 import { Stat } from './Stat';
 
-export type GroupType = 'distance' | 'pace' | 'elevation' | 'duration';
+export type GroupType = 'distance' | 'pace' | 'elevation' | 'duration' | 'temperature' | 'humidity';
 
 export const GROUP_TYPES = {
   Distance: 'distance' as GroupType,
   Pace: 'pace' as GroupType,
   Elevation: 'elevation' as GroupType,
   Duration: 'duration' as GroupType,
+  Temperature: 'temperature' as GroupType,
+  Humidity: 'humidity' as GroupType,
 };
 
 export type GroupPredictions = {
   prediction4Week: PredictedWorkout | null;
   prediction12Week: PredictedWorkout | null;
-  recommendations: string[];
 };
 
 export type Group = {

@@ -63,8 +63,9 @@ export async function calculateProfileStats(
 
   // Find fastest workout (best average pace)
   const fastestWorkout = workouts.reduce((fastest, current) => {
-    const currentPace = current.averagePace?.quantity || Number.MAX_SAFE_INTEGER;
-    const fastestPace = fastest.averagePace?.quantity || Number.MAX_SAFE_INTEGER;
+    const currentPace = current.pace?.quantity || Number.MAX_SAFE_INTEGER;
+    const fastestPace = fastest.pace?.quantity || Number.MAX_SAFE_INTEGER;
+
     return currentPace < fastestPace ? current : fastest;
   });
 
@@ -84,10 +85,10 @@ export async function calculateProfileStats(
       return currentDuration < shortestDuration ? current : shortest;
     });
 
-  // Find highest elevation workout
   const highestElevationWorkout = workouts.reduce((highest, current) => {
-    const currentElevation = current.totalElevation?.quantity || 0;
-    const highestElevation = highest.totalElevation?.quantity || 0;
+    const currentElevation = current.elevation?.quantity || 0;
+    const highestElevation = highest.elevation?.quantity || 0;
+
     return currentElevation > highestElevation ? current : highest;
   });
 
@@ -104,7 +105,7 @@ export async function calculateProfileStats(
   return {
     fastestWorkout: {
       workout: fastestWorkout,
-      pace: fastestWorkout.prettyPace || 'N/A',
+      pace: fastestWorkout.pace.formatted,
     },
     longestWorkout: {
       workout: longestWorkout,
@@ -120,12 +121,7 @@ export async function calculateProfileStats(
     },
     highestElevationWorkout: {
       workout: highestElevationWorkout,
-      elevation: highestElevationWorkout.totalElevation?.quantity
-        ? formatElevation(
-            highestElevationWorkout.totalElevation.quantity,
-            highestElevationWorkout.totalElevation.unit || 'm',
-          )
-        : 'N/A',
+      elevation: highestElevationWorkout.elevation.formatted,
     },
     fastestSplit,
   };

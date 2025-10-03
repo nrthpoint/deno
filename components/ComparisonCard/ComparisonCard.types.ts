@@ -1,6 +1,12 @@
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
-export type ComparisonProperty = 'duration' | 'averagePace' | 'elevation' | 'distance' | 'humidity';
+export type ComparisonProperty =
+  | 'duration'
+  | 'averagePace'
+  | 'elevation'
+  | 'distance'
+  | 'humidity'
+  | 'temperature';
 
 export type SampleType = 'highlight' | 'worst' | 'mostRecent' | 'previousPersonalBest';
 

@@ -21,7 +21,6 @@ export type PredictedWorkout = {
   confidence: number;
   confidenceLevel: PredictionConfidence;
   improvementPercentage: number;
-  recommendedTraining: TrainingRecommendation[];
   predictionBasis: {
     dataPoints: number;
     timeSpanDays: number;

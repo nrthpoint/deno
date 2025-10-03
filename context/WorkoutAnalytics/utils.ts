@@ -44,8 +44,8 @@ export const calculateWeeklyTrends = (workouts: ExtendedWorkout[]): WeeklyTrendS
 
     dayStat.count++;
 
-    if (workout.averagePace?.quantity) {
-      dayStat.totalPace += workout.averagePace.quantity;
+    if (workout.pace?.quantity) {
+      dayStat.totalPace += workout.pace.quantity;
       dayStat.validPaceCount++;
     }
 
@@ -54,13 +54,13 @@ export const calculateWeeklyTrends = (workouts: ExtendedWorkout[]): WeeklyTrendS
       dayStat.validDurationCount++;
     }
 
-    if (workout.totalElevation?.quantity) {
-      dayStat.totalElevation += workout.totalElevation.quantity;
+    if (workout.elevation?.quantity) {
+      dayStat.totalElevation += workout.elevation.quantity;
       dayStat.validElevationCount++;
     }
 
-    if (workout.totalDistance?.quantity) {
-      dayStat.totalDistance += workout.totalDistance.quantity;
+    if (workout.distance?.quantity) {
+      dayStat.totalDistance += workout.distance.quantity;
       dayStat.validDistanceCount++;
     }
   });

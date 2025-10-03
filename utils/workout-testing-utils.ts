@@ -12,8 +12,8 @@ export const createMockWorkout = ({
   unit?: string;
 }): ExtendedWorkout =>
   ({
-    totalDistance: { unit, quantity: distance } as Quantity,
-    averagePace: averagePace
+    distance: { unit, quantity: distance } as Quantity,
+    pace: averagePace
       ? ({ unit: 'min/mi', quantity: averagePace } as Quantity)
       : ({ unit: 'min/mi', quantity: 8 } as Quantity),
     daysAgo: '1 day ago',
@@ -22,16 +22,16 @@ export const createMockWorkout = ({
 
 export const createMockWorkoutWithoutPace = (): ExtendedWorkout =>
   ({
-    totalDistance: { unit: 'mi', quantity: 3 } as Quantity,
-    averagePace: undefined,
+    distance: { unit: 'mi', quantity: 3 } as Quantity,
+    pace: undefined,
     daysAgo: '1 day ago',
     prettyPace: '',
   }) as unknown as ExtendedWorkout;
 
 export const createMockWorkoutWithoutDistance = (averagePace: number): ExtendedWorkout =>
   ({
-    totalDistance: undefined,
-    averagePace: { unit: 'min/mi', quantity: averagePace } as Quantity,
+    distance: undefined,
+    pace: { unit: 'min/mi', quantity: averagePace } as Quantity,
     daysAgo: '1 day ago',
     prettyPace: `${Math.floor(averagePace)}:${Math.round((averagePace % 1) * 60)
       .toString()

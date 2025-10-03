@@ -41,10 +41,10 @@ export const PaceDistanceGraph: React.FC<PaceDistanceGraphProps> = ({ workouts }
   const chartHeight = Math.min(screenHeight - 180, 400);
 
   const filteredWorkouts = workouts
-    .filter((workout) => workout.totalDistance.quantity > 0 && workout.averagePace.quantity > 0)
+    .filter((workout) => workout.distance.quantity > 0 && workout.pace.quantity > 0)
     .map((workout) => ({
-      distance: workout.totalDistance.quantity,
-      pace: workout.averagePace.quantity, // This should be in minutes per mile
+      distance: workout.distance.quantity,
+      pace: workout.pace.quantity, // This should be in minutes per mile
     }));
 
   // Group by whole distance units and average the pace

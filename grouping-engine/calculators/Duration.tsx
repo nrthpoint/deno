@@ -21,18 +21,15 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
 
     // For duration groups, highlight is the run that went the furthest at this duration
     group.highlight = group.runs.reduce((longest, run) =>
-      run.totalDistance.quantity > longest.totalDistance.quantity ? run : longest,
+      run.distance.quantity > longest.distance.quantity ? run : longest,
     );
     group.worst = group.runs.reduce((shortest, run) =>
-      run.totalDistance.quantity < shortest.totalDistance.quantity ? run : shortest,
+      run.distance.quantity < shortest.distance.quantity ? run : shortest,
     );
 
     // Calculate variance in distance for this duration
-    group.variantDistribution = group.runs.map((run) => run.totalDistance.quantity);
-    group.totalVariation = getAbsoluteDifference(
-      group.worst.totalDistance,
-      group.highlight.totalDistance,
-    );
+    group.variantDistribution = group.runs.map((run) => run.distance.quantity);
+    group.totalVariation = getAbsoluteDifference(group.worst.distance, group.highlight.distance);
 
     this.generateStats(group, timeRangeInDays);
   }
@@ -49,7 +46,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'distance',
             label: 'Distance',
-            value: group.highlight.totalDistance,
+            value: group.highlight.distance,
             workout: group.highlight,
             icon: (
               <Ionicons
@@ -62,7 +59,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'pace',
             label: 'Pace',
-            value: group.highlight.averagePace,
+            value: group.highlight.pace,
             workout: group.highlight,
             icon: (
               <Ionicons
@@ -81,7 +78,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'distance',
             label: 'Distance',
-            value: group.worst.totalDistance,
+            value: group.worst.distance,
             workout: group.worst,
             icon: (
               <Ionicons
@@ -94,7 +91,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'pace',
             label: 'Pace',
-            value: group.worst.averagePace,
+            value: group.worst.pace,
             workout: group.worst,
             icon: (
               <Ionicons
@@ -113,7 +110,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'elevation',
             label: 'Elevation',
-            value: group.greatestElevation.totalElevation,
+            value: group.greatestElevation.elevation,
             workout: group.greatestElevation,
             icon: (
               <Ionicons
@@ -132,7 +129,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'elevation',
             label: 'Elevation',
-            value: group.lowestElevation.totalElevation,
+            value: group.lowestElevation.elevation,
             workout: group.lowestElevation,
             icon: (
               <Ionicons
@@ -151,7 +148,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'distance',
             label: 'Distance',
-            value: group.mostRecent.totalDistance,
+            value: group.mostRecent.distance,
             workout: group.mostRecent,
             icon: (
               <Ionicons
@@ -164,7 +161,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'pace',
             label: 'Pace',
-            value: group.mostRecent.averagePace,
+            value: group.mostRecent.pace,
             workout: group.mostRecent,
             icon: (
               <Ionicons
@@ -177,7 +174,7 @@ export class DurationGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'elevation',
             label: 'Elevation',
-            value: group.mostRecent.totalElevation,
+            value: group.mostRecent.elevation,
             workout: group.mostRecent,
             icon: (
               <Ionicons

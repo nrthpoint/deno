@@ -5,7 +5,6 @@ import { NoPredictionsMessage } from '@/components/GroupStats/tabs/components/No
 import { PredictionCard } from '@/components/GroupStats/tabs/components/PredictionCard';
 import { TabHeader } from '@/components/GroupStats/tabs/components/TabHeader';
 import { useGroupStats } from '@/context/GroupStatsContext';
-// import { TrainingRecommendations } from '@/components/GroupStats/tabs/components/TrainingRecommendations';
 
 export const PredictionsTab: React.FC = () => {
   const { group } = useGroupStats();
@@ -37,8 +36,6 @@ export const PredictionsTab: React.FC = () => {
               subtitle="Months"
             />
           )}
-
-          {/* <TrainingRecommendations recommendations={group.predictions.recommendations} /> */}
         </>
       ) : (
         <NoPredictionsMessage />

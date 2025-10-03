@@ -6,7 +6,7 @@ import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 import { generateWorkoutPrediction } from '@/utils/prediction';
 import { getAbsoluteDifference } from '@/utils/quantity';
-import { formatPace, formatDaysAgo } from '@/utils/time';
+import { formatDaysAgo } from '@/utils/time';
 import { generateTimeLabel } from '@/utils/timeLabels';
 import { findLongestRun, findShortestRun } from '@/utils/workout';
 
@@ -23,13 +23,8 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
 
     group.highlight = findLongestRun(group.runs);
     group.worst = findShortestRun(group.runs);
-
-    // Variation is length of run at this pace
-    group.variantDistribution = group.runs.map((run) => run.totalDistance.quantity);
-    group.totalVariation = getAbsoluteDifference(
-      group.worst.totalDistance,
-      group.highlight.totalDistance,
-    );
+    group.variantDistribution = group.runs.map((run) => run.distance.quantity);
+    group.totalVariation = getAbsoluteDifference(group.worst.distance, group.highlight.distance);
 
     this.generatePredictions(group);
     this.generateStats(group, timeRangeInDays);
@@ -44,7 +39,6 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
         group.predictions = {
           prediction4Week,
           prediction12Week,
-          recommendations: this.generateRecommendations(prediction4Week),
         };
       } catch (error) {
         console.warn(
@@ -55,36 +49,9 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
     }
   }
 
-  private generateRecommendations(prediction4Week: any): string[] {
-    const recommendations: string[] = [];
-
-    if (prediction4Week && prediction4Week.recommendedTraining?.length > 0) {
-      prediction4Week.recommendedTraining.forEach((rec: any) => {
-        const workoutName = rec.workoutType
-          .replace('_', ' ')
-          .replace(/\b\w/g, (l: string) => l.toUpperCase());
-        const frequency = `${rec.frequency}x per week`;
-        const intensity = rec.intensity.toUpperCase();
-
-        let bullet = `${workoutName} (${frequency}, ${intensity} intensity)`;
-
-        if (rec.duration) {
-          bullet += ` - ${rec.duration.quantity} ${rec.duration.unit}`;
-        }
-        if (rec.targetPace) {
-          bullet += ` at ${formatPace(rec.targetPace)}`;
-        }
-
-        bullet += ` - ${rec.reason}`;
-        recommendations.push(bullet);
-      });
-    }
-
-    return recommendations;
-  }
-
   private generateStats(group: Group, timeRangeInDays: TimeRange): void {
     const timeLabel = ` ${generateTimeLabel(timeRangeInDays)}`;
+
     group.stats = [
       {
         title: 'Furthest',
@@ -93,7 +60,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'distance',
             label: 'Distance',
-            value: group.highlight.totalDistance,
+            value: group.highlight.distance,
             workout: group.highlight,
             icon: (
               <Ionicons
@@ -112,7 +79,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'distance',
             label: 'Distance',
-            value: group.worst.totalDistance,
+            value: group.worst.distance,
             workout: group.worst,
             icon: (
               <Ionicons
@@ -131,7 +98,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'elevation',
             label: 'Elevation',
-            value: group.greatestElevation.totalElevation,
+            value: group.greatestElevation.elevation,
             workout: group.greatestElevation,
             icon: (
               <Ionicons
@@ -150,7 +117,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'elevation',
             label: 'Elevation',
-            value: group.lowestElevation.totalElevation,
+            value: group.lowestElevation.elevation,
             workout: group.lowestElevation,
             icon: (
               <Ionicons
@@ -169,7 +136,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'distance',
             label: 'Distance',
-            value: group.mostRecent.totalDistance,
+            value: group.mostRecent.distance,
             workout: group.mostRecent,
             icon: (
               <Ionicons
@@ -195,7 +162,7 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
           {
             type: 'elevation',
             label: 'Elevation',
-            value: group.mostRecent.totalElevation,
+            value: group.mostRecent.elevation,
             workout: group.mostRecent,
             icon: (
               <Ionicons
