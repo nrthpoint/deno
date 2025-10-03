@@ -4,11 +4,13 @@ import {
   queryWorkoutSamples,
   saveWorkoutSample,
   useHealthkitAuthorization,
+  WorkoutQueryOptions,
 } from '@kingstinct/react-native-healthkit';
 import { createContext, ReactNode, useCallback, useEffect, useMemo, useReducer } from 'react';
 
 import { SampleTypesToRead, SampleTypesToWrite } from '@/config/sampleIdentifiers';
 import { useSettings } from '@/context/SettingsContext';
+import { useWorkoutSubscription } from '@/hooks/useWorkoutSubscription';
 import { handleAchievementNotifications } from '@/services/achievements';
 import { addAppCreatedWorkoutUUID, removeAppCreatedWorkoutUUID } from '@/services/workoutStorage';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
@@ -81,16 +83,16 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
           ascending: false,
           limit: 10000,
           filter: {
-            workoutActivityType: fullQuery.activityType,
+            workoutActivityType: 37,
             startDate,
             endDate,
           },
-        };
+        } satisfies WorkoutQueryOptions;
 
         const originalSamples = await queryWorkoutSamples(options);
 
         const filteredSamples = originalSamples.filter((sample) => {
-          return !fullQuery.activityType || sample.workoutActivityType === fullQuery.activityType;
+          return !fullQuery.activityType || sample.workoutActivityType === 37;
         });
 
         const meta = {
@@ -181,6 +183,7 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
         },
         {
           HKIndoorWorkout: isIndoor,
+          HKWasUserEntered: true,
         },
       );
 
@@ -207,6 +210,8 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
       void fetchWorkouts();
     }
   }, [_authorizationStatus, fetchWorkouts]);
+
+  useWorkoutSubscription(fetchWorkouts);
 
   const { selectedWorkouts, authorizationStatus } = state;
 

@@ -1,4 +1,4 @@
-import { LengthUnit, Quantity, WorkoutSample } from '@kingstinct/react-native-healthkit';
+import { LengthUnit, Quantity } from '@kingstinct/react-native-healthkit';
 
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { newQuantity } from '@/utils/quantity';
@@ -10,37 +10,26 @@ import { convertDurationToMinutes } from './time';
  * @param run - The workout sample containing total distance and duration.
  * @returns The pace as a Quantity object with unit and quantity.
  */
-export const calculatePace = (run: WorkoutSample): Quantity => {
-  const distance = run.totalDistance?.quantity;
-  const duration = run.duration?.quantity;
-  const distanceUnit = run.totalDistance?.unit;
+export const calculatePace = (distance: Quantity, duration: Quantity): Quantity => {
+  const distanceValue = distance?.quantity;
+  const durationValue = duration?.quantity;
 
-  if (!distance || distance === 0 || !duration || duration === 0) {
+  const distanceUnit = distance?.unit;
+
+  if (!distanceValue || distanceValue === 0 || !durationValue || durationValue === 0) {
     return {
       unit: `min/${distanceUnit || 'undefined'}`,
       quantity: 0,
     };
   }
 
-  return calculatePaceFromDistanceAndDuration(run.totalDistance, run.duration);
-};
-
-export const calculatePaceFromDistanceAndDuration = (
-  distance: Quantity,
-  duration: Quantity,
-): Quantity => {
-  if (!distance || !duration || distance.quantity === 0) {
-    return { unit: 'min/undefined', quantity: 0 };
-  }
-
   const durationMinutes = convertDurationToMinutes(duration);
-  const paceQuantity = Number((durationMinutes / distance.quantity).toFixed(2));
+  const paceQuantity = (durationMinutes / distanceValue).toFixed(2);
 
-  const res = {
-    unit: `min/${distance.unit}`,
-    quantity: paceQuantity,
+  return {
+    unit: `min/${distanceUnit || 'undefined'}`,
+    quantity: Number(paceQuantity),
   };
-  return res;
 };
 
 /**

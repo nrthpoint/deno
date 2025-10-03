@@ -26,15 +26,8 @@ export const DeletionInfoModal: React.FC<DeletionInfoModalProps> = ({ visible, o
             allows apps to delete workouts they created.
           </Text>
           <Text style={styles.subMessage}>
-            To delete this workout, please use the Health app on your iPhone:
+            To delete this workout, please use the Health app on your iPhone.
           </Text>
-          <View style={styles.stepsList}>
-            <Text style={styles.step}>1. Open the Health app</Text>
-            <Text style={styles.step}>2. Go to Browse → Activity → Workouts</Text>
-            <Text style={styles.step}>3. Find and tap on the workout</Text>
-            <Text style={styles.step}>4. Tap &quot;Delete Workout&quot; at the bottom</Text>
-          </View>
-
           <View style={styles.buttonContainer}>
             <Button
               mode="contained"
@@ -87,17 +80,6 @@ const styles = StyleSheet.create({
     color: colors.lightGray,
     marginBottom: 12,
     textAlign: 'left',
-    lineHeight: 20,
-  },
-  stepsList: {
-    marginBottom: 24,
-    paddingLeft: 8,
-  },
-  step: {
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    color: colors.lightGray,
-    marginBottom: 8,
     lineHeight: 20,
   },
   buttonContainer: {

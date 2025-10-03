@@ -19,14 +19,12 @@ import { WorkoutAnalyticsProvider } from '@/context/WorkoutAnalytics';
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
-  const { authorizationStatus, requestAuthorization, workouts } = useWorkout();
+  const { authorizationStatus, requestAuthorization } = useWorkout();
 
-  // Show loading screen while authorization status is being determined
   if (authorizationStatus === null || authorizationStatus === AuthorizationRequestStatus.unknown) {
     return <LoadingScreen message="Initializing..." />;
   }
 
-  // Show authorization overlay if permission is needed
   if (authorizationStatus !== AuthorizationRequestStatus.unnecessary) {
     return (
       <AuthorizationOverlay
@@ -41,10 +39,15 @@ function AppContent() {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName={workouts.samples.length === 0 ? 'no-workouts' : '(tabs)'}
     >
       <Stack.Screen
         name="(tabs)"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="no-workouts"
         options={{
           headerShown: false,
         }}
@@ -60,12 +63,6 @@ function AppContent() {
         name="view-workout"
         options={{
           presentation: 'modal',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="no-workouts"
-        options={{
           headerShown: false,
         }}
       />

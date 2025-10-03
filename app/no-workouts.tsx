@@ -1,13 +1,20 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts, OrelegaOneFonts } from '@/config/fonts';
+import { useWorkout } from '@/context/Workout';
 
 export default function NoWorkoutsScreen() {
+  const { workouts } = useWorkout();
+
+  if (workouts.samples.length > 0) {
+    return <Redirect href="/(tabs)" />;
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>

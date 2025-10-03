@@ -75,26 +75,20 @@ export default function AddWorkoutScreen() {
     }
 
     setIsLoading(true);
-    await saveWorkout({
-      distance: {
-        unit: distanceUnit,
-        quantity: distanceValue,
-      },
-      startDate,
-      isIndoor,
-      durationInMinutes,
-      activityType,
-    });
 
     try {
-      Alert.alert('Success', 'Workout saved successfully!', [
-        {
-          text: 'OK',
-          onPress: () => router.back(),
+      await saveWorkout({
+        distance: {
+          unit: distanceUnit,
+          quantity: distanceValue,
         },
-      ]);
-
+        startDate,
+        isIndoor,
+        durationInMinutes,
+        activityType,
+      });
       resetForm();
+      router.back();
     } catch (error) {
       console.error('Error saving workout:', error);
 

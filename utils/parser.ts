@@ -2,8 +2,8 @@ import { LengthUnit, Quantity } from '@kingstinct/react-native-healthkit';
 
 import { ExtendedWorkout, WorkoutProxy } from '@/types/ExtendedWorkout';
 import { calculateAchievements } from '@/utils/achievements';
+import { convertDistanceToUnit } from '@/utils/distance';
 
-import { metersToKilometers, metersToMiles } from './distance';
 import { formatPace } from './time';
 import { calculatePace } from './workout';
 
@@ -41,6 +41,30 @@ export const parseWorkoutSamples = async ({
   });
 };
 
+const convertDistance = async (
+  sample: WorkoutProxy,
+  distanceUnit: LengthUnit,
+): Promise<Quantity> => {
+  let totalDistanceStat = await sample.getStatistic(
+    'HKQuantityTypeIdentifierDistanceWalkingRunning',
+  );
+
+  if (!totalDistanceStat) {
+    throw new Error('No totalDistance statistic found on workout sample');
+  }
+
+  let { sumQuantity } = totalDistanceStat;
+
+  if (!sumQuantity) {
+    throw new Error('No sumQuantity found on totalDistance statistic');
+  }
+
+  return convertDistanceToUnit(sumQuantity, distanceUnit);
+};
+
+const getDaysAgo = (date: Date): string =>
+  `${Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24))} days ago`;
+
 const parseWorkoutSample = async ({
   sample,
   distanceUnit,
@@ -49,61 +73,50 @@ const parseWorkoutSample = async ({
   distanceUnit: LengthUnit;
 }): Promise<ExtendedWorkout | null> => {
   try {
-    // Create deep copy to avoid mutation issues with Proxy
-    const plainRun = JSON.parse(JSON.stringify(sample));
+    const { workoutActivityType, duration, uuid, startDate, endDate } = sample;
 
-    // Convert totalDistance to the specified unit
-    let transformedTotalDistance;
-    let totalDistance = plainRun.totalDistance;
+    const totalDistance = await convertDistance(sample, distanceUnit);
 
-    if (!totalDistance) {
-      console.warn('No totalDistance found, using default of 0 m');
-      totalDistance = { quantity: 0, unit: 'm' };
-    }
+    const totalElevation = (sample.metadata?.['HKElevationAscended'] as unknown as Quantity) || {
+      quantity: 0,
+      unit: 'm',
+    };
+    const humidity = (sample.metadata?.['HKWeatherHumidity'] as unknown as Quantity) || {
+      quantity: 0,
+      unit: '%',
+    };
+    const isIndoor = sample.metadata?.['HKIndoorWorkout'] as boolean;
 
-    if (distanceUnit === 'mi') {
-      transformedTotalDistance = metersToMiles(totalDistance);
-    } else if (distanceUnit === 'km') {
-      transformedTotalDistance = metersToKilometers(totalDistance);
-    }
-
-    // Convert startDate and endDate to Date objects
-    const startDate = new Date(plainRun.startDate);
-    const endDate = new Date(plainRun.endDate);
-    const totalElevationAscended = (sample.metadata?.[
-      'HKElevationAscended'
-    ] as unknown as Quantity) || { quantity: 0, unit: 'm' };
-
-    const newRun: ExtendedWorkout = {
-      ...plainRun,
-      totalDistance: transformedTotalDistance,
-      startDate,
-      endDate,
-      proxy: sample,
+    const averagePace = calculatePace(totalDistance, duration);
+    const prettyPace = formatPace(averagePace);
+    const daysAgo = getDaysAgo(startDate);
+    const achievements = {
+      isAllTimeFastest: false,
+      isAllTimeLongest: false,
+      isAllTimeFurthest: false,
+      isAllTimeHighestElevation: false,
     };
 
-    // This has to use newRun to ensure the correct units are used
-    const averagePace = calculatePace(newRun);
-
     return {
-      ...newRun,
+      ...sample,
+      proxy: sample,
+      totalDistance,
+      startDate,
+      endDate,
+      totalElevation,
+      humidity,
       averagePace,
-      totalElevation: totalElevationAscended,
-      humidity: sample.metadata?.['HKWeatherHumidity'] as unknown as Quantity,
-      prettyPace: formatPace(averagePace),
-      daysAgo: `${Math.floor(
-        (Date.now() - newRun.startDate.getTime()) / (1000 * 60 * 60 * 24),
-      )} days ago`,
-      isIndoor: plainRun.metadata?.['HKIndoorWorkout'] === true,
-      achievements: {
-        isAllTimeFastest: false,
-        isAllTimeLongest: false,
-        isAllTimeFurthest: false,
-        isAllTimeHighestElevation: false,
-      },
-    } satisfies ExtendedWorkout;
+      daysAgo,
+      prettyPace,
+      achievements,
+      isIndoor,
+      uuid,
+      workoutActivityType,
+      duration,
+    };
   } catch (error) {
     console.error('Failed to parse workout sample:', error);
+
     return null;
   }
 };

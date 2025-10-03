@@ -113,6 +113,7 @@ export const convertDurationToMinutes = (duration: Quantity, decimalPlaces: numb
   if (!duration || !duration.quantity) return 0;
 
   let result: number;
+
   switch (duration.unit) {
     case 'm':
       result = duration.quantity;

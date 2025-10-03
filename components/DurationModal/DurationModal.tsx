@@ -4,44 +4,46 @@ import { Text, Button } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { uppercase } from '@/utils/text';
 
 interface DurationModalProps {
   visible: boolean;
   value: string;
-  title: string;
   onClose: () => void;
   onChange: (_duration: string) => void;
 }
 
+const parseDuration = (durationString: string) => {
+  const parts = durationString.split(':');
+
+  const minutes = parts[0] ? parseInt(parts[0], 10) : 0;
+  const seconds = parts[1] ? parseInt(parts[1], 10) : 0;
+
+  return { minutes: Math.max(0, minutes), seconds: Math.max(0, Math.min(59, seconds)) };
+};
+
 export const DurationModal: React.FC<DurationModalProps> = ({
   visible,
   value,
-  title,
   onClose,
   onChange,
 }) => {
-  // Parse the current value
-  const parseDuration = (durationString: string) => {
-    const parts = durationString.split(':');
-    const minutes = parts[0] ? parseInt(parts[0], 10) : 0;
-    const seconds = parts[1] ? parseInt(parts[1], 10) : 0;
-    return { minutes: Math.max(0, minutes), seconds: Math.max(0, Math.min(59, seconds)) };
-  };
-
   const { minutes: initialMinutes, seconds: initialSeconds } = parseDuration(value);
+
   const [selectedMinutes, setSelectedMinutes] = useState(initialMinutes);
   const [selectedSeconds, setSelectedSeconds] = useState(initialSeconds);
 
   const handleDone = () => {
     const formattedDuration = `${selectedMinutes.toString().padStart(2, '0')}:${selectedSeconds.toString().padStart(2, '0')}`;
+
     onChange(formattedDuration);
     onClose();
   };
 
   const handleCancel = () => {
-    // Reset to original values
     setSelectedMinutes(initialMinutes);
     setSelectedSeconds(initialSeconds);
+
     onClose();
   };
 
@@ -66,7 +68,12 @@ export const DurationModal: React.FC<DurationModalProps> = ({
         onPress={handleCancel}
       >
         <View style={styles.modalContent}>
-          <Text style={styles.title}>{title}</Text>
+          <View style={styles.previewContainer}>
+            <Text style={styles.previewText}>
+              {selectedMinutes.toString().padStart(2, '0')}:
+              {selectedSeconds.toString().padStart(2, '0')}
+            </Text>
+          </View>
 
           <View style={styles.pickerContainer}>
             <View style={styles.pickerSection}>
@@ -93,13 +100,13 @@ export const DurationModal: React.FC<DurationModalProps> = ({
                   style={styles.quickButton}
                   onPress={() => adjustMinutes(5)}
                 >
-                  <Text style={styles.quickButtonText}>+5</Text>
+                  <Text style={styles.quickButtonText}>+5m</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.quickButton}
                   onPress={() => adjustMinutes(10)}
                 >
-                  <Text style={styles.quickButtonText}>+10</Text>
+                  <Text style={styles.quickButtonText}>+10m</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -130,24 +137,16 @@ export const DurationModal: React.FC<DurationModalProps> = ({
                   style={styles.quickButton}
                   onPress={() => adjustSeconds(15)}
                 >
-                  <Text style={styles.quickButtonText}>+15</Text>
+                  <Text style={styles.quickButtonText}>+15s</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.quickButton}
                   onPress={() => adjustSeconds(30)}
                 >
-                  <Text style={styles.quickButtonText}>+30</Text>
+                  <Text style={styles.quickButtonText}>+30s</Text>
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
-
-          <View style={styles.previewContainer}>
-            <Text style={styles.previewLabel}>Duration:</Text>
-            <Text style={styles.previewText}>
-              {selectedMinutes.toString().padStart(2, '0')}:
-              {selectedSeconds.toString().padStart(2, '0')}
-            </Text>
           </View>
 
           <View style={styles.buttonContainer}>
@@ -195,13 +194,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-  title: {
-    fontSize: 18,
-    fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
   pickerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -213,6 +205,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pickerLabel: {
+    ...uppercase,
     fontSize: 14,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
@@ -221,16 +214,17 @@ const styles = StyleSheet.create({
   valueContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surfaceHighlight,
     borderRadius: 8,
-    padding: 4,
+    padding: 10,
     marginBottom: 8,
+    borderWidth: 1,
+    borderColor: colors.gray,
   },
   adjustButton: {
     width: 36,
     height: 36,
     backgroundColor: colors.primary,
-    borderRadius: 18,
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -258,17 +252,19 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   quickButton: {
+    flex: 1,
     paddingHorizontal: 12,
     paddingVertical: 6,
     backgroundColor: colors.surfaceHighlight,
-    borderRadius: 12,
-    borderWidth: 1,
+    borderRadius: 8,
     borderColor: colors.gray,
   },
   quickButtonText: {
-    fontSize: 12,
+    ...uppercase,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
+    textAlign: 'center',
+    paddingVertical: 5,
   },
   previewContainer: {
     flexDirection: 'row',
@@ -276,23 +272,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
     paddingVertical: 12,
-    backgroundColor: colors.surfaceHighlight,
     borderRadius: 8,
   },
-  previewLabel: {
-    fontSize: 16,
-    fontFamily: LatoFonts.regular,
-    color: colors.neutral,
-    marginRight: 8,
-  },
   previewText: {
-    fontSize: 18,
+    fontSize: 24,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
   },
   buttonContainer: {
     flexDirection: 'row',
     gap: 12,
+    marginTop: 20,
   },
   button: {
     flex: 1,
@@ -302,7 +292,7 @@ const styles = StyleSheet.create({
     borderColor: colors.gray,
   },
   cancelButtonLabel: {
-    fontSize: 16,
+    ...uppercase,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
   },
@@ -310,7 +300,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   doneButtonLabel: {
-    fontSize: 16,
+    ...uppercase,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
   },

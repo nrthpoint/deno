@@ -1,9 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 
 import { colors } from '@/config/colors';
+import { useWorkout } from '@/context/Workout';
 
 export default function TabLayout() {
+  const { workouts } = useWorkout();
+
+  if (workouts.samples.length === 0) {
+    return <Redirect href="/no-workouts" />;
+  }
+
   return (
     <Tabs
       screenOptions={{
@@ -21,7 +28,7 @@ export default function TabLayout() {
               size={size}
               color={color}
             />
-          ), // Metrics icon
+          ),
         }}
       />
       <Tabs.Screen
@@ -35,7 +42,7 @@ export default function TabLayout() {
               size={size}
               color={color}
             />
-          ), // Trends icon
+          ),
         }}
       />
       <Tabs.Screen
@@ -49,7 +56,7 @@ export default function TabLayout() {
               size={size}
               color={color}
             />
-          ), // Profile icon
+          ),
         }}
       />
       <Tabs.Screen
@@ -63,7 +70,7 @@ export default function TabLayout() {
               size={size}
               color={color}
             />
-          ), // Settings icon
+          ),
         }}
       />
     </Tabs>

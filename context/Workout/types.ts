@@ -41,6 +41,8 @@ export type SaveWorkoutParams = {
   isIndoor: boolean;
 };
 
+export type FetchWorkoutsFunction = (query?: Partial<WorkoutQuery>) => Promise<void>;
+
 export interface WorkoutContextType {
   state: WorkoutState;
   dispatch: React.Dispatch<WorkoutAction>;
@@ -53,7 +55,7 @@ export interface WorkoutContextType {
   setSelectedWorkouts: (workouts: ExtendedWorkout[]) => void;
 
   workouts: WorkoutQueryResult;
-  fetchWorkouts: (query?: Partial<WorkoutQuery>) => Promise<void>;
+  fetchWorkouts: FetchWorkoutsFunction;
   deleteWorkout: (workout: ExtendedWorkout) => Promise<void>;
   saveWorkout: (params: SaveWorkoutParams) => Promise<WorkoutProxy>;
 }

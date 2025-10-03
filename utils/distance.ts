@@ -22,6 +22,50 @@ export function metersToKilometers(m: Quantity): Quantity {
   return newUnit;
 }
 
+export function convertDistanceToUnit(quantity: Quantity, desiredUnit: string): Quantity {
+  if (quantity.unit === desiredUnit) {
+    return { ...quantity };
+  }
+
+  const newQuantity = { ...quantity };
+  newQuantity.unit = desiredUnit;
+
+  // Convert from source unit to meters first, then to desired unit
+  let metersValue: number;
+
+  // Convert to meters
+  switch (quantity.unit) {
+    case 'm':
+      metersValue = quantity.quantity;
+      break;
+    case 'km':
+      metersValue = quantity.quantity * 1000;
+      break;
+    case 'mi':
+      metersValue = quantity.quantity / 0.000621371;
+      break;
+    default:
+      throw new Error(`Unsupported source unit: ${quantity.unit}`);
+  }
+
+  // Convert from meters to desired unit
+  switch (desiredUnit) {
+    case 'm':
+      newQuantity.quantity = metersValue;
+      break;
+    case 'km':
+      newQuantity.quantity = metersValue / 1000;
+      break;
+    case 'mi':
+      newQuantity.quantity = metersValue * 0.000621371;
+      break;
+    default:
+      throw new Error(`Unsupported target unit: ${desiredUnit}`);
+  }
+
+  return newQuantity;
+}
+
 export function convertShortUnitToLong({
   unit,
   amount = 1,
