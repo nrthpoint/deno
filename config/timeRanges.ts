@@ -19,5 +19,3 @@ export const TIME_RANGE_LABELS: Record<TimeRange, string> = TIME_RANGE_OPTIONS.r
   (acc, option) => ({ ...acc, [option.value]: option.label }),
   {} as Record<TimeRange, string>,
 );
-
-export const VALID_TIME_RANGES: TimeRange[] = TIME_RANGE_OPTIONS.map((option) => option.value);

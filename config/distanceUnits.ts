@@ -23,7 +23,3 @@ export const DISTANCE_UNIT_SHORT_LABELS: Record<LengthUnit, string> = DISTANCE_U
   (acc, option) => ({ ...acc, [option.value]: option.shortLabel }),
   {} as Record<LengthUnit, string>,
 );
-
-export const VALID_DISTANCE_UNITS: LengthUnit[] = DISTANCE_UNIT_OPTIONS.map(
-  (option) => option.value,
-);

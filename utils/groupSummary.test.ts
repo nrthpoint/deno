@@ -41,7 +41,6 @@ const createMockGroup = (
     predictions: {
       prediction4Week: null,
       prediction12Week: null,
-      recommendations: [],
     },
     highlight: {} as ExtendedWorkout,
     worst: {} as ExtendedWorkout,

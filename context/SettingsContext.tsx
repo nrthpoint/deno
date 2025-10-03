@@ -2,9 +2,7 @@ import { LengthUnit, WorkoutActivityType } from '@kingstinct/react-native-health
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-import { VALID_DISTANCE_UNITS } from '@/config/distanceUnits';
-import { TimeRange, VALID_TIME_RANGES } from '@/config/timeRanges';
-import { validateWorkoutActivityType } from '@/utils/validators';
+import { TimeRange } from '@/config/timeRanges';
 
 interface SettingsContextType {
   distanceUnit: LengthUnit;
@@ -30,47 +28,37 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
 
       if (storedConfig['distanceUnit']) {
         const storedUnit = storedConfig['distanceUnit'] as LengthUnit;
-
-        // Check if the stored unit is valid using configuration
-        if (VALID_DISTANCE_UNITS.includes(storedUnit)) {
-          setDistanceUnitState(storedUnit);
-        }
+        setDistanceUnitState(storedUnit);
       }
 
       if (storedConfig['activityType']) {
-        const activityTypeValue = storedConfig['activityType'] as string;
-        const validActivityType = validateWorkoutActivityType(activityTypeValue);
-
-        // If the activity type is valid, set it
-        if (validActivityType) {
-          setActivityTypeState(validActivityType);
-        }
+        const activityTypeValue = storedConfig['activityType'] as unknown as WorkoutActivityType;
+        setActivityTypeState(activityTypeValue);
       }
 
       if (storedConfig['timeRange']) {
         const timeRangeValue = parseInt(storedConfig['timeRange'] as string);
-
-        // Check if the timeRangeValue is a valid TimeRange
-        if (VALID_TIME_RANGES.includes(timeRangeValue as TimeRange)) {
-          setTimeRangeState(timeRangeValue as TimeRange);
-        }
+        setTimeRangeState(timeRangeValue as TimeRange);
       }
     });
   }, []);
 
   const setDistanceUnit = (val: LengthUnit) => {
     setDistanceUnitState(val);
+
     AsyncStorage.setItem('distanceUnit', val);
   };
 
   const setActivityType = (val: WorkoutActivityType) => {
     setActivityTypeState(val);
+
     // Convert enum value to string for AsyncStorage
     AsyncStorage.setItem('activityType', String(val));
   };
 
   const setTimeRange = (val: TimeRange) => {
     setTimeRangeState(val);
+
     AsyncStorage.setItem('timeRange', val.toString());
   };
 
