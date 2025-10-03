@@ -82,7 +82,7 @@ importers:
         version: 0.32.11(expo@54.0.7)(react-native@0.81.4(@babel/core@7.28.0)(@types/react@19.1.13)(react@19.1.0))(react@19.1.0)
       expo-router:
         specifier: ~6.0.4
-        version: 6.0.4(567b44acba45892635c3efa941031136)
+        version: 6.0.4(epzsah6bm6k2ilwjfwmarmb6nu)
       expo-screen-orientation:
         specifier: ^9.0.7
         version: 9.0.7(expo@54.0.7)(react-native@0.81.4(@babel/core@7.28.0)(@types/react@19.1.13)(react@19.1.0))
@@ -4518,6 +4518,7 @@ packages:
 
   react-native-vector-icons@10.2.0:
     resolution: {integrity: sha512-n5HGcxUuVaTf9QJPs/W22xQpC2Z9u0nb0KgLPnVltP8vdUvOp6+R26gF55kilP/fV4eL4vsAHUqUjewppJMBOQ==}
+    deprecated: react-native-vector-icons package has moved to a new model of per-icon-family packages. See the https://github.com/oblador/react-native-vector-icons/blob/master/MIGRATION.md on how to migrate
     hasBin: true
 
   react-native-web@0.21.1:
@@ -6243,7 +6244,7 @@ snapshots:
       wrap-ansi: 7.0.0
       ws: 8.18.3
     optionalDependencies:
-      expo-router: 6.0.4(567b44acba45892635c3efa941031136)
+      expo-router: 6.0.4(epzsah6bm6k2ilwjfwmarmb6nu)
       react-native: 0.81.4(@babel/core@7.28.0)(@types/react@19.1.13)(react@19.1.0)
     transitivePeerDependencies:
       - bufferutil
@@ -8872,7 +8873,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  expo-router@6.0.4(567b44acba45892635c3efa941031136):
+  expo-router@6.0.4(epzsah6bm6k2ilwjfwmarmb6nu):
     dependencies:
       '@expo/metro-runtime': 5.0.4(react-native@0.81.4(@babel/core@7.28.0)(@types/react@19.1.13)(react@19.1.0))
       '@expo/schema-utils': 0.1.7
