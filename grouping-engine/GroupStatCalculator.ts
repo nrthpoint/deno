@@ -3,7 +3,9 @@ import { BaseGroupStatCalculator } from '@/grouping-engine/calculators/Base';
 import { DistanceGroupStatCalculator } from '@/grouping-engine/calculators/Distance';
 import { DurationGroupStatCalculator } from '@/grouping-engine/calculators/Duration';
 import { ElevationGroupStatCalculator } from '@/grouping-engine/calculators/Elevation';
+import { HumidityGroupStatCalculator } from '@/grouping-engine/calculators/Humidity';
 import { PaceGroupStatCalculator } from '@/grouping-engine/calculators/Pace';
+import { TemperatureGroupStatCalculator } from '@/grouping-engine/calculators/Temperature';
 import { GroupConfig } from '@/grouping-engine/types/GroupConfig';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
@@ -26,6 +28,10 @@ export function createStatCalculator(config: GroupConfig): GroupStatCalculator {
       return new ElevationGroupStatCalculator();
     case 'duration':
       return new DurationGroupStatCalculator();
+    case 'temperature':
+      return new TemperatureGroupStatCalculator();
+    case 'humidity':
+      return new HumidityGroupStatCalculator();
     default:
       return new BaseGroupStatCalculator();
   }

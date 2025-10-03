@@ -6,7 +6,7 @@
     "prepare": "husky",
     "start": "expo start",
     "sim": "expo run:ios --device 'iPhone Air'",
-    "device": "expo run:ios --device",
+    "device": "expo run:ios --device '00008150-001E51923C00401C'",
     "lint": "expo lint .",
     "lint:fix": "expo lint . --fix",
     "test": "jest",

@@ -51,6 +51,10 @@ export const GroupStats: React.FC = () => {
         activeTabId={activeTab}
         onTabPress={handleTabPress}
         activeTabColor={colors.surfaceHighlight}
+        style={{
+          marginTop: 5,
+          marginHorizontal: 10,
+        }}
       />
 
       <View style={styles.tabContentContainer}>{tabContent}</View>
@@ -61,6 +65,8 @@ export const GroupStats: React.FC = () => {
 const styles = StyleSheet.create({
   warningContainer: {
     marginBottom: 10,
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
   statsContainer: {
     marginTop: 10,

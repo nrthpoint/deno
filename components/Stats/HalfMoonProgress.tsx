@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  useAnimatedProps,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 
 import { Card } from '@/components/Card/Card';
 import { ModalProvider } from '@/components/Modal/Modal';
 import { ModalProps } from '@/components/Modal/Modal.types';
+import { AnimatedCounter } from '@/components/Stats/AnimatedCounter';
 import { ThemedGradient } from '@/components/ThemedGradient';
 import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
@@ -16,11 +24,34 @@ interface HalfMoonProgressProps extends ModalProps {
   size: number;
 }
 
+const AnimatedPath = Animated.createAnimatedComponent(Path);
+
 export const HalfMoonProgress = ({ label, size = 120, ...modalProps }: HalfMoonProgressProps) => {
   const { group, meta } = useGroupStats();
   const value = group?.runs?.length ?? 0;
   const total = meta?.totalRuns ?? 0;
   const percentage = total > 0 ? Math.min((value / total) * 100, 100) : 0;
+
+  const animatedPercentage = useSharedValue(0);
+  const containerOpacity = useSharedValue(0);
+  const containerScale = useSharedValue(0.8);
+  const svgTranslateY = useSharedValue(-20);
+  const textTranslateY = useSharedValue(20);
+
+  useEffect(() => {
+    animatedPercentage.value = withTiming(percentage, { duration: 800 });
+    containerOpacity.value = withTiming(1, { duration: 600 });
+    containerScale.value = withSpring(1, { damping: 15 });
+    svgTranslateY.value = withSpring(0, { damping: 12 });
+    textTranslateY.value = withSpring(0, { damping: 12 });
+  }, [
+    percentage,
+    animatedPercentage,
+    containerOpacity,
+    containerScale,
+    svgTranslateY,
+    textTranslateY,
+  ]);
 
   const strokeWidth = 8;
   const radius = (size - strokeWidth) / 2;
@@ -30,22 +61,50 @@ export const HalfMoonProgress = ({ label, size = 120, ...modalProps }: HalfMoonP
   const startY = center;
   const rightX = center + radius;
 
-  const progressAngleDeg = (percentage / 100) * 180;
-  const progressAngleRad = (progressAngleDeg * Math.PI) / 180;
-
-  const angleRad = Math.PI - progressAngleRad;
-
-  const endX = center + radius * Math.cos(angleRad);
-  const endY = center - radius * Math.sin(angleRad);
-
-  const largeArcFlag = progressAngleDeg === 180 ? 1 : 0;
-
   const backgroundPath = `M ${startX} ${startY} A ${radius} ${radius} 0 0 1 ${rightX} ${startY}`;
-  const progressPath = `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
+
+  const animatedProps = useAnimatedProps(() => {
+    const progressAngleDeg = (animatedPercentage.value / 100) * 180;
+    const progressAngleRad = (progressAngleDeg * Math.PI) / 180;
+    const angleRad = Math.PI - progressAngleRad;
+    const endX = center + radius * Math.cos(angleRad);
+    const endY = center - radius * Math.sin(angleRad);
+    const largeArcFlag = progressAngleDeg >= 180 ? 1 : 0;
+    const progressPath = `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
+
+    return {
+      d: progressPath,
+    };
+  });
+
+  const containerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: containerOpacity.value,
+      transform: [{ scale: containerScale.value }],
+    };
+  });
+
+  const svgAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: svgTranslateY.value }],
+    };
+  });
+
+  const textAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: textTranslateY.value }],
+    };
+  });
 
   const content = (
-    <View style={styles.container}>
-      <View style={[styles.svgContainer, { width: size, height: size / 2 + strokeWidth }]}>
+    <Animated.View style={[styles.container, containerAnimatedStyle]}>
+      <Animated.View
+        style={[
+          styles.svgContainer,
+          { width: size, height: size / 2 + strokeWidth },
+          svgAnimatedStyle,
+        ]}
+      >
         <Svg
           width={size}
           height={size / 2 + strokeWidth}
@@ -60,26 +119,30 @@ export const HalfMoonProgress = ({ label, size = 120, ...modalProps }: HalfMoonP
           />
 
           {/* Progress arc */}
-          <Path
-            d={progressPath}
+          <AnimatedPath
+            animatedProps={animatedProps}
             stroke={'#fff'}
             strokeWidth={strokeWidth}
             fill="none"
             strokeLinecap="round"
           />
         </Svg>
-      </View>
+      </Animated.View>
 
-      <View style={styles.textContainer}>
+      <Animated.View style={[styles.textContainer, textAnimatedStyle]}>
         <View style={styles.valueContainer}>
-          <Text style={[styles.valueText, { color: '#fff' }]}>{percentage.toFixed(0)}</Text>
+          <AnimatedCounter
+            value={percentage}
+            style={styles.valueText}
+          />
           <Text style={styles.valueTextUnit}>{`%`}</Text>
         </View>
+
         <Text style={styles.labelText}>{label}</Text>
-      </View>
+      </Animated.View>
 
       <ThemedGradient style={styles.gradient} />
-    </View>
+    </Animated.View>
   );
 
   const modalContent = <Text style={styles.modalValue}>{percentage.toFixed(1)}%</Text>;
@@ -127,6 +190,7 @@ const styles = StyleSheet.create({
   valueText: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: '#ffffff',
     ...getLatoFont('bold'),
   },
   valueTextUnit: {

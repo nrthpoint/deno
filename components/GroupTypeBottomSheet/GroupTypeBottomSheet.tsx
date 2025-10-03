@@ -1,12 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { useCallback, useMemo, useRef } from 'react';
-import { Pressable, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Portal } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { defaultUIConfig, tabLabels } from '@/config/ui';
+import { UIConfig } from '@/config/ui';
 import { GroupType } from '@/types/Groups';
 
 interface GroupTypeOption {
@@ -21,29 +21,6 @@ interface GroupTypeBottomSheetProps {
   onSelect: (groupType: GroupType) => void;
 }
 
-const groupTypeConfig: Record<
-  GroupType,
-  { icon: keyof typeof Ionicons.glyphMap; description: string }
-> = {
-  distance: {
-    icon: 'map-outline',
-    description:
-      'Group workouts by similar distances to track your progress at different run lengths',
-  },
-  pace: {
-    icon: 'speedometer-outline',
-    description: 'Group workouts by pace to analyze your speed patterns and training zones',
-  },
-  elevation: {
-    icon: 'trending-up-outline',
-    description: 'Group workouts by elevation gain to compare flat vs hilly runs',
-  },
-  duration: {
-    icon: 'time-outline',
-    description: 'Group workouts by time duration to track endurance and training volume',
-  },
-};
-
 export interface GroupTypeBottomSheetRef {
   open: () => void;
 }
@@ -54,16 +31,15 @@ export const GroupTypeBottomSheetWithRef = React.forwardRef<
 >(function GroupTypeBottomSheetWithRef({ selectedGroupType, onSelect }, ref) {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  // Get enabled group type options
-  const enabledTabOptions = defaultUIConfig.tabOptions.filter((opt) => opt.enabled);
+  const enabledTabOptions = Object.values(UIConfig.tabOptions).filter((opt) => opt.enabled);
+
   const options: GroupTypeOption[] = enabledTabOptions.map((opt) => ({
     key: opt.key,
-    label: tabLabels[opt.key],
-    icon: groupTypeConfig[opt.key].icon,
-    description: groupTypeConfig[opt.key].description,
+    label: opt.label,
+    icon: opt.icon,
+    description: opt.description,
   }));
 
-  // Define snap points for the bottom sheet
   const snapPoints = useMemo(() => {
     const headerHeight = 60;
     const itemHeight = 85; // Increased to accommodate icon and description
@@ -71,6 +47,7 @@ export const GroupTypeBottomSheetWithRef = React.forwardRef<
     const contentHeight = headerHeight + totalItems * itemHeight;
 
     const maxHeight = Math.min(contentHeight, 500);
+
     return [maxHeight];
   }, [options.length]);
 

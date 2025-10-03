@@ -31,6 +31,7 @@ const createMockGroup = (
     totalDuration: { quantity: 300, unit: 'min' },
     totalElevation: { quantity: 100, unit: 'm' },
     averageHumidity: { quantity: 60, unit: '%' },
+    averageTemperature: { quantity: 20, unit: '°C' },
     averagePace: { quantity: 5, unit: 'min/km' },
     averageDuration: { quantity: 30, unit: 'min' },
     averageElevation: { quantity: 10, unit: 'm' },

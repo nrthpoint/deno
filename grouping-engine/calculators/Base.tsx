@@ -16,6 +16,7 @@ import {
   getMostFrequentElevation,
   getMostFrequentHumidity,
   getMostFrequentPace,
+  getMostFrequentTemperature,
   getMostRecentWorkout,
   getOldestWorkout,
 } from '@/utils/workout';
@@ -42,6 +43,7 @@ export class BaseGroupStatCalculator implements GroupStatCalculator {
     group.averagePace = getMostFrequentPace(group.runs);
     group.averageDuration = getMostFrequentDuration(group.runs);
     group.averageHumidity = getMostFrequentHumidity(group.runs);
+    group.averageTemperature = getMostFrequentTemperature(group.runs);
 
     group.mostRecent = getMostRecentWorkout(group.runs);
     group.oldest = getOldestWorkout(group.runs);
@@ -112,6 +114,18 @@ export class BaseGroupStatCalculator implements GroupStatCalculator {
             icon: (
               <Ionicons
                 name="water-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'temperature',
+            label: 'Temperature',
+            value: group.averageTemperature,
+            icon: (
+              <Ionicons
+                name="thermometer-outline"
                 size={40}
                 color="#FFFFFF"
               />

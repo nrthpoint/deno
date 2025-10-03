@@ -29,7 +29,6 @@ export const GroupCarousel = ({
   itemSuffix,
   groupType,
   groups,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   selectedOption,
   setSelectedOption,
 }: GroupCarouselProps) => {
@@ -86,6 +85,7 @@ export const GroupCarousel = ({
       <BackgroundImage
         groupType={groupType}
         parallaxOffset={parallaxOffset}
+        selectedOption={selectedOption}
       />
 
       <FlyingBirds count={3} />

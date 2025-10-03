@@ -13,7 +13,7 @@ import {
 } from '@/components/GroupTypeBottomSheet/GroupTypeBottomSheet';
 import { TutorialOverlay } from '@/components/Tutorial/TutorialOverlay';
 import { colors } from '@/config/colors';
-import { tabLabels } from '@/config/ui';
+import { UIConfig } from '@/config/ui';
 import { GroupStatsProvider } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { ThemeProvider } from '@/context/ThemeContext';
@@ -128,7 +128,7 @@ export default function Index() {
               activeOpacity={0.7}
             >
               <Text style={styles.headerTitle}>Groups</Text>
-              <Text style={styles.headerSubtitle}>{tabLabels[groupType]}</Text>
+              <Text style={styles.headerSubtitle}>{UIConfig.tabOptions[groupType].label}</Text>
             </TouchableOpacity>
 
             {/* Settings and Add Workout Icons */}

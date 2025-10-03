@@ -95,21 +95,21 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
           return !fullQuery.activityType || sample.workoutActivityType === 37;
         });
 
+        const parsedWorkouts = await parseWorkoutSamples({
+          samples: filteredSamples,
+          distanceUnit: fullQuery.distanceUnit,
+        });
+
         const meta = {
-          totalRuns: filteredSamples.length,
+          totalRuns: parsedWorkouts.length,
           totalDistance: {
-            quantity: filteredSamples.reduce(
-              (acc, sample) => acc + (sample?.totalDistance?.quantity ?? 0),
+            quantity: parsedWorkouts.reduce(
+              (acc, sample) => acc + (sample?.distance?.quantity ?? 0),
               0,
             ),
             unit: fullQuery.distanceUnit,
           },
         };
-
-        const parsedWorkouts = await parseWorkoutSamples({
-          samples: filteredSamples,
-          distanceUnit: fullQuery.distanceUnit,
-        });
 
         dispatch({
           type: WORKOUT_ACTIONS.SET_WORKOUT_DATA,

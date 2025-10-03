@@ -271,6 +271,52 @@ export const getMostFrequentHumidity = (runs: ExtendedWorkout[]): Quantity => {
   return mostFrequentHumidity;
 };
 
+/**
+ * Finds the most frequently occurring temperature among runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The most frequent temperature as a Quantity object
+ */
+export const getMostFrequentTemperature = (runs: ExtendedWorkout[]): Quantity => {
+  if (runs.length === 0) {
+    return newQuantity(20, '°C');
+  }
+
+  // Filter out runs without temperature data
+  const runsWithTemperature = runs.filter(
+    (run) => run.temperature && run.temperature.quantity !== undefined,
+  );
+
+  if (runsWithTemperature.length === 0) {
+    return newQuantity(20, '°C');
+  }
+
+  // Count frequency of temperature values (rounded to nearest 2°C for grouping)
+  const temperatureFrequency = new Map<number, number>();
+  let mostFrequentTemperature = runsWithTemperature[0].temperature;
+
+  runsWithTemperature.forEach((run) => {
+    const roundedTemperature = Math.round(run.temperature.quantity / 2) * 2; // Round to nearest 2°C
+    const count = (temperatureFrequency.get(roundedTemperature) || 0) + 1;
+    temperatureFrequency.set(roundedTemperature, count);
+  });
+
+  // Find the temperature with highest frequency
+  let maxCount = 0;
+  for (const [temperature, count] of temperatureFrequency.entries()) {
+    if (count > maxCount) {
+      maxCount = count;
+      const matchingRun = runsWithTemperature.find(
+        (run) => Math.round(run.temperature.quantity / 2) * 2 === temperature,
+      );
+      if (matchingRun) {
+        mostFrequentTemperature = matchingRun.temperature;
+      }
+    }
+  }
+
+  return mostFrequentTemperature;
+};
+
 export const getMostFrequentDistance = (runs: ExtendedWorkout[]): Quantity => {
   if (runs.length === 0) {
     return newQuantity(0, 'mi');

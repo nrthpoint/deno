@@ -87,10 +87,10 @@ const getPersonalBestProgression = (workouts: ExtendedWorkout[]): ProgressionEnt
 
 const getTotalDistanceProgression = (workouts: ExtendedWorkout[]): ProgressionEntry[] => {
   return createProgressionEntries(workouts, {
-    getValue: (workout) => workout.totalDistance.quantity,
-    getFullQuantity: (workout) => workout.totalDistance,
+    getValue: (workout) => workout.distance.quantity,
+    getFullQuantity: (workout) => workout.distance,
     formatValue: (value) => {
-      const unit = workouts[0]?.totalDistance.unit || 'km';
+      const unit = workouts[0]?.distance.unit || 'km';
       return `${value.toFixed(1)} ${unit}`;
     },
     isImprovement: (current, best) => current > best,

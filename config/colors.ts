@@ -56,6 +56,18 @@ export const tabColors: Record<GroupType, ColorProfile> = {
     gradientStart: '#f57c00',
     gradientEnd: '#ff9800',
   },
+  temperature: {
+    primary: '#4a90e2',
+    secondary: '#2c5aa0',
+    gradientStart: '#3a7bd5',
+    gradientEnd: '#4a90e2',
+  },
+  humidity: {
+    primary: '#50e3c2',
+    secondary: '#00d4aa',
+    gradientStart: '#00b09b',
+    gradientEnd: '#50e3c2',
+  },
 };
 
 export const SAMPLE1_COLOR = '#2196f3';

@@ -92,7 +92,7 @@ export const checkAndNotifyNewAchievements = async (workouts: ExtendedWorkout[])
     if (fastestWorkout) {
       showAchievementNotification(
         '🏃‍♂️ New Personal Best!',
-        `Fastest pace: ${fastestWorkout.prettyPace}`,
+        `Fastest pace: ${fastestWorkout.pace.formatted}`,
         fastestWorkout,
       );
     }
@@ -125,7 +125,7 @@ export const checkAndNotifyNewAchievements = async (workouts: ExtendedWorkout[])
     if (furthestWorkout) {
       showAchievementNotification(
         '🏁 New Personal Best!',
-        `Furthest distance: ${furthestWorkout.totalDistance.quantity.toFixed(2)} ${furthestWorkout.totalDistance.unit}`,
+        `Furthest distance: ${furthestWorkout.distance.quantity.toFixed(2)} ${furthestWorkout.distance.unit}`,
         furthestWorkout,
       );
     }
@@ -142,7 +142,7 @@ export const checkAndNotifyNewAchievements = async (workouts: ExtendedWorkout[])
     if (highestElevationWorkout) {
       showAchievementNotification(
         '🏔️ New Personal Best!',
-        `Highest elevation: ${Math.round(highestElevationWorkout.totalElevation.quantity)} ${highestElevationWorkout.totalElevation.unit}`,
+        `Highest elevation: ${Math.round(highestElevationWorkout.elevation.quantity)} ${highestElevationWorkout.elevation.unit}`,
         highestElevationWorkout,
       );
     }

@@ -4,16 +4,16 @@ import { ExtendedWorkout } from './ExtendedWorkout';
 import { PredictedWorkout } from './Prediction';
 import { Stat } from './Stat';
 
-export type GroupType = 'distance' | 'pace' | 'elevation' | 'duration' | 'temperature' | 'humidity';
-
 export const GROUP_TYPES = {
-  Distance: 'distance' as GroupType,
-  Pace: 'pace' as GroupType,
-  Elevation: 'elevation' as GroupType,
-  Duration: 'duration' as GroupType,
-  Temperature: 'temperature' as GroupType,
-  Humidity: 'humidity' as GroupType,
-};
+  Distance: 'distance',
+  Pace: 'pace',
+  Elevation: 'elevation',
+  Duration: 'duration',
+  Temperature: 'temperature',
+  Humidity: 'humidity',
+} as const;
+
+export type GroupType = (typeof GROUP_TYPES)[keyof typeof GROUP_TYPES];
 
 export type GroupPredictions = {
   prediction4Week: PredictedWorkout | null;
@@ -46,6 +46,7 @@ export type Group = {
 
   // Averages for the group
   averageHumidity: Quantity;
+  averageTemperature: Quantity;
   averagePace: Quantity;
   averageDuration: Quantity;
   averageElevation: Quantity;

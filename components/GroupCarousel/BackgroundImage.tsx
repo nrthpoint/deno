@@ -7,9 +7,34 @@ import { GroupType } from '@/types/Groups';
 interface BackgroundImageProps {
   groupType: GroupType;
   parallaxOffset: SharedValue<number>;
+  selectedOption?: string;
 }
 
-const getImageForGroupType = (groupType: GroupType) => {
+const getTemperatureImage = (temperature: string) => {
+  const temp = parseFloat(temperature);
+
+  if (temp <= 10) {
+    return require('@/assets/images/carousel/ice.jpg');
+  } else if (temp >= 15) {
+    return require('@/assets/images/carousel/hot.jpg');
+  } else {
+    return require('@/assets/images/carousel/normal.jpg');
+  }
+};
+
+const getTemperatureBackgroundColor = (temperature: string) => {
+  const temp = parseFloat(temperature);
+
+  if (temp <= 10) {
+    return '#b0c3f1'; // ice.jpg
+  } else if (temp >= 15) {
+    return '#517bf4'; // hot.jpg
+  } else {
+    return '#4b6fb2'; // normal.jpg
+  }
+};
+
+const getImageForGroupType = (groupType: GroupType, selectedOption?: string) => {
   switch (groupType) {
     case 'distance':
       return require('@/assets/images/carousel/distance.jpg');
@@ -19,14 +44,27 @@ const getImageForGroupType = (groupType: GroupType) => {
       return require('@/assets/images/carousel/elevation.jpg');
     case 'duration':
       return require('@/assets/images/carousel/duration.jpg');
+    case 'temperature':
+      return selectedOption
+        ? getTemperatureImage(selectedOption)
+        : require('@/assets/images/carousel/normal.jpg');
+    case 'humidity':
+      return null; // Use background color only for humidity
     default:
       return null;
   }
 };
 
-export const BackgroundImage = ({ groupType, parallaxOffset }: BackgroundImageProps) => {
-  const image = getImageForGroupType(groupType);
-  const backgroundColor = GROUPING_CONFIGS[groupType].backgroundColor;
+export const BackgroundImage = ({
+  groupType,
+  parallaxOffset,
+  selectedOption,
+}: BackgroundImageProps) => {
+  const image = getImageForGroupType(groupType, selectedOption);
+  const backgroundColor =
+    groupType === 'temperature' && selectedOption
+      ? getTemperatureBackgroundColor(selectedOption)
+      : GROUPING_CONFIGS[groupType].backgroundColor;
 
   const animatedStyle = useAnimatedStyle(() => {
     const translateX = interpolate(parallaxOffset.value, [-100, 0, 100], [-0.1, 0, 0.1]);

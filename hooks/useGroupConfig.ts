@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { getTabOptionConfig } from '@/config/ui';
+import { getTabOptionConfig, UIConfig } from '@/config/ui';
 import { GroupingConfig } from '@/grouping-engine/types/Grouping';
 import { GroupType } from '@/types/Groups';
 
@@ -10,20 +10,16 @@ import { GroupType } from '@/types/Groups';
  */
 export function useGroupConfig() {
   const [groupingConfigs, setGroupingConfigs] = useState<Record<GroupType, GroupingConfig>>(() => {
-    const groupTypes: GroupType[] = ['distance', 'pace', 'elevation', 'duration'];
+    const configs: Record<GroupType, GroupingConfig> = {} as Record<GroupType, GroupingConfig>;
 
-    return groupTypes.reduce(
-      (acc, groupType) => {
-        const config = getTabOptionConfig(groupType);
-        acc[groupType] = {
-          enabled: false,
-          tolerance: config.tolerance,
-          groupSize: config.groupSize,
-        };
-        return acc;
-      },
-      {} as Record<GroupType, GroupingConfig>,
-    );
+    for (const option of Object.values(UIConfig.tabOptions)) {
+      configs[option.key] = {
+        ...option,
+        enabled: false,
+      };
+    }
+
+    return configs;
   });
 
   /**
@@ -74,33 +70,10 @@ export function useGroupConfig() {
     }));
   }, []);
 
-  /**
-   * Reset all configurations to defaults
-   */
-  const resetAllConfigs = useCallback(() => {
-    const groupTypes: GroupType[] = ['distance', 'pace', 'elevation', 'duration'];
-
-    const resetConfigs = groupTypes.reduce(
-      (acc, groupType) => {
-        const config = getTabOptionConfig(groupType);
-        acc[groupType] = {
-          enabled: false,
-          tolerance: config.tolerance,
-          groupSize: config.groupSize,
-        };
-        return acc;
-      },
-      {} as Record<GroupType, GroupingConfig>,
-    );
-
-    setGroupingConfigs(resetConfigs);
-  }, []);
-
   return {
     groupingConfigs,
     updateConfig,
     getConfig,
     resetConfig,
-    resetAllConfigs,
   };
 }

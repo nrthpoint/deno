@@ -11,6 +11,7 @@ type StatType =
   | 'default'
   | 'elevation'
   | 'humidity'
+  | 'temperature'
   | 'prediction'
   | 'training';
 
