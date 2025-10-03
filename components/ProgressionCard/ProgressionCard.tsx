@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   noDataText: {
     color: '#999999',
     fontSize: 14,
-    fontFamily: LatoFonts.regular,
+    fontFamily: LatoFonts.italic,
     fontStyle: 'italic',
   },
   tableContainer: {

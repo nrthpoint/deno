@@ -48,7 +48,7 @@ const getGroupTypeContext = (groupType: GroupType, group: Group): string => {
 const getSummaryAction = (groupType: GroupType): string => {
   switch (groupType) {
     case 'distance':
-      return 'your fastest times';
+      return 'some interesting stats';
     case 'pace':
       return 'your performance';
     case 'duration':
@@ -85,7 +85,7 @@ export const generateGroupSummary = (
   const mostRecentText = formatDaysAgo(group.mostRecent.endDate);
   const oldestText = formatDaysAgo(group.oldest.endDate);
 
-  const firstLine = `Over ${timeRange.label}, here are ${summaryAction} from your **${runCount}** ${groupContext}.`;
+  const firstLine = `Here are ${summaryAction} from your **${runCount}** ${groupContext} over ${timeRange.label}.`;
 
   // Smart timing logic
   let secondLine: string;
@@ -112,8 +112,8 @@ export const generateLowDataWarningMessage = (group: Group, groupType: GroupType
   if (runCount === 0) {
     return `No ${groupContext} found. Complete more workouts to see detailed statistics.`;
   } else if (runCount === 1) {
-    return `Only **1** ${groupContext.replace('runs', 'run')} found. Complete more similar workouts for better insights, or extend the time period to include more data.`;
+    return `Only 1 ${groupContext.replace('runs', 'run')} found. Complete more similar workouts for better insights, or extend the time period to include more data.`;
   } else {
-    return `Only **${runCount}** ${groupContext} found. Complete more similar workouts for more reliable statistics.`;
+    return `Only ${runCount} ${groupContext} found. Complete more similar workouts for more reliable statistics.`;
   }
 };

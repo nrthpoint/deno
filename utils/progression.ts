@@ -90,7 +90,7 @@ const getTotalDistanceProgression = (workouts: ExtendedWorkout[]): ProgressionEn
     getValue: (workout) => workout.distance.quantity,
     getFullQuantity: (workout) => workout.distance,
     formatValue: (value) => {
-      const unit = workouts[0]?.distance.unit || 'km';
+      const unit = workouts[0]?.distance.unit || 'mi';
       return `${value.toFixed(1)} ${unit}`;
     },
     isImprovement: (current, best) => current > best,

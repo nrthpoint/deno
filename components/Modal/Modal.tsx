@@ -19,12 +19,12 @@ export const ModalProvider = ({
   workout,
   color,
 }: { children: React.ReactNode } & ModalProps) => {
-  const { setSelectedWorkout } = useWorkout();
+  const { setSelectedWorkouts } = useWorkout();
   const [modalVisible, setModalVisible] = useState(false);
 
   const handlePress = () => {
     if (workout) {
-      setSelectedWorkout(workout);
+      setSelectedWorkouts([workout]);
       router.push('/view-workout');
     } else if (hasModal) {
       setModalVisible(true);

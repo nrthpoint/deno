@@ -42,8 +42,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fef2f2',
   },
   infoToast: {
-    borderLeftColor: '#3b82f6',
-    backgroundColor: '#eff6ff',
+    borderLeftColor: '#050941',
+    backgroundColor: '#ffcf21',
+    color: '#ffffff',
   },
   contentContainer: {
     paddingHorizontal: 15,
@@ -55,6 +56,15 @@ const styles = StyleSheet.create({
   },
   text2: {
     fontSize: 10,
-    color: '#6b7280',
+    color: '#111111',
   },
+  /*   text1Dark: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  text2Dark: {
+    fontSize: 10,
+    color: '#d1d5db',
+  }, */
 });

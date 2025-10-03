@@ -1,5 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  Easing,
+  useAnimatedProps,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import Svg, { Line, Rect, Text as SvgText } from 'react-native-svg';
 
 import { Card } from '@/components/Card/Card';
@@ -13,6 +19,8 @@ import { formatDistance } from '@/utils/distance';
 import { newQuantity } from '@/utils/quantity';
 import { formatDuration } from '@/utils/time';
 
+const AnimatedLine = Animated.createAnimatedComponent(Line);
+const AnimatedSvgText = Animated.createAnimatedComponent(SvgText);
 interface VariationBarProps extends ModalProps {
   label: string;
   width: number;
@@ -24,11 +32,108 @@ const BAR_Y = 24;
 const LABEL_Y = BAR_Y + BAR_HEIGHT + 35;
 const END_BAR_WIDTH = 4;
 const INTERVAL_BAR_WIDTH = 4;
+const MAX_LINES = 5; // Maximum number of lines we'll ever show
 
 export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...modalProps }) => {
   const { group } = useGroupStats();
   const distribution = group.variantDistribution;
   const groupType = group.type;
+
+  // Create shared values for each possible line (must be at top level)
+  const line0Position = useSharedValue(0);
+  const line1Position = useSharedValue(0);
+  const line2Position = useSharedValue(0);
+  const line3Position = useSharedValue(0);
+  const line4Position = useSharedValue(0);
+  const line0Opacity = useSharedValue(0);
+  const line1Opacity = useSharedValue(0);
+  const line2Opacity = useSharedValue(0);
+  const line3Opacity = useSharedValue(0);
+  const line4Opacity = useSharedValue(0);
+  const line0IsEnd = useSharedValue(0);
+  const line1IsEnd = useSharedValue(0);
+  const line2IsEnd = useSharedValue(0);
+  const line3IsEnd = useSharedValue(0);
+  const line4IsEnd = useSharedValue(0);
+  const minLabelX = useSharedValue(0);
+  const maxLabelX = useSharedValue(0);
+
+  // Arrays for easier access
+  const linePositions = [line0Position, line1Position, line2Position, line3Position, line4Position];
+  const lineOpacities = [line0Opacity, line1Opacity, line2Opacity, line3Opacity, line4Opacity];
+  const lineIsEnd = [line0IsEnd, line1IsEnd, line2IsEnd, line3IsEnd, line4IsEnd];
+
+  // Create animated props for each line at top level
+  const line0AnimatedProps = useAnimatedProps(() => {
+    const isEnd = line0IsEnd.value > 0.5;
+    const lineHeight = isEnd ? 24 : 16;
+    const strokeWidth = isEnd ? END_BAR_WIDTH : INTERVAL_BAR_WIDTH;
+    return {
+      x1: line0Position.value,
+      x2: line0Position.value,
+      y1: BAR_Y + BAR_HEIGHT / 2 - lineHeight / 2,
+      y2: BAR_Y + BAR_HEIGHT / 2 + lineHeight / 2,
+      opacity: line0Opacity.value,
+      strokeWidth,
+    };
+  });
+
+  const line1AnimatedProps = useAnimatedProps(() => {
+    const isEnd = line1IsEnd.value > 0.5;
+    const lineHeight = isEnd ? 24 : 16;
+    const strokeWidth = isEnd ? END_BAR_WIDTH : INTERVAL_BAR_WIDTH;
+    return {
+      x1: line1Position.value,
+      x2: line1Position.value,
+      y1: BAR_Y + BAR_HEIGHT / 2 - lineHeight / 2,
+      y2: BAR_Y + BAR_HEIGHT / 2 + lineHeight / 2,
+      opacity: line1Opacity.value,
+      strokeWidth,
+    };
+  });
+
+  const line2AnimatedProps = useAnimatedProps(() => {
+    const isEnd = line2IsEnd.value > 0.5;
+    const lineHeight = isEnd ? 24 : 16;
+    const strokeWidth = isEnd ? END_BAR_WIDTH : INTERVAL_BAR_WIDTH;
+    return {
+      x1: line2Position.value,
+      x2: line2Position.value,
+      y1: BAR_Y + BAR_HEIGHT / 2 - lineHeight / 2,
+      y2: BAR_Y + BAR_HEIGHT / 2 + lineHeight / 2,
+      opacity: line2Opacity.value,
+      strokeWidth,
+    };
+  });
+
+  const line3AnimatedProps = useAnimatedProps(() => {
+    const isEnd = line3IsEnd.value > 0.5;
+    const lineHeight = isEnd ? 24 : 16;
+    const strokeWidth = isEnd ? END_BAR_WIDTH : INTERVAL_BAR_WIDTH;
+    return {
+      x1: line3Position.value,
+      x2: line3Position.value,
+      y1: BAR_Y + BAR_HEIGHT / 2 - lineHeight / 2,
+      y2: BAR_Y + BAR_HEIGHT / 2 + lineHeight / 2,
+      opacity: line3Opacity.value,
+      strokeWidth,
+    };
+  });
+
+  const line4AnimatedProps = useAnimatedProps(() => {
+    const isEnd = line4IsEnd.value > 0.5;
+    const lineHeight = isEnd ? 24 : 16;
+    const strokeWidth = isEnd ? END_BAR_WIDTH : INTERVAL_BAR_WIDTH;
+    return {
+      x1: line4Position.value,
+      x2: line4Position.value,
+      y1: BAR_Y + BAR_HEIGHT / 2 - lineHeight / 2,
+      y2: BAR_Y + BAR_HEIGHT / 2 + lineHeight / 2,
+      opacity: line4Opacity.value,
+      strokeWidth,
+    };
+  });
+
   // Helper function to format values based on group type
   const formatValue = (value: number): string => {
     if (groupType === 'pace') {
@@ -67,6 +172,44 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
     return { x, value: val };
   });
 
+  // Animate positions when they change
+  useEffect(() => {
+    // Update each line's position and opacity
+    for (let i = 0; i < MAX_LINES; i++) {
+      if (i < positions.length) {
+        linePositions[i].value = withTiming(positions[i].x, {
+          duration: 300,
+          easing: Easing.out(Easing.cubic),
+        });
+        lineOpacities[i].value = withTiming(1, {
+          duration: 300,
+          easing: Easing.out(Easing.cubic),
+        });
+        lineIsEnd[i].value = withTiming(i === 0 || i === positions.length - 1 ? 1 : 0, {
+          duration: 300,
+          easing: Easing.out(Easing.cubic),
+        });
+      } else {
+        lineOpacities[i].value = withTiming(0, {
+          duration: 300,
+          easing: Easing.out(Easing.cubic),
+        });
+      }
+    }
+
+    // Update label positions
+    if (positions.length > 0) {
+      minLabelX.value = withTiming(positions[0].x, {
+        duration: 300,
+        easing: Easing.out(Easing.cubic),
+      });
+      maxLabelX.value = withTiming(positions[positions.length - 1].x, {
+        duration: 300,
+        easing: Easing.out(Easing.cubic),
+      });
+    }
+  }, [positions, min, max]);
+
   const content = (
     <View style={styles.container}>
       <Text style={styles.labelText}>{label}</Text>
@@ -86,30 +229,35 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
         />
 
         {/* Dots */}
-        {positions.map((dot, i) => {
-          const isEnd = i === 0 || i === positions.length - 1;
-          const lineHeight = isEnd ? 24 : 16;
-          const y1 = BAR_Y + BAR_HEIGHT / 2 - lineHeight / 2;
-          const y2 = BAR_Y + BAR_HEIGHT / 2 + lineHeight / 2;
-
-          return (
-            <Line
-              key={i}
-              x1={dot.x}
-              x2={dot.x}
-              y1={y1}
-              y2={y2}
-              stroke={colors.surface}
-              strokeWidth={isEnd ? END_BAR_WIDTH : INTERVAL_BAR_WIDTH}
-              opacity={isEnd ? 1 : 1}
-              strokeLinecap="round"
-            />
-          );
-        })}
+        <AnimatedLine
+          stroke={colors.surface}
+          strokeLinecap="round"
+          animatedProps={line0AnimatedProps}
+        />
+        <AnimatedLine
+          stroke={colors.surface}
+          strokeLinecap="round"
+          animatedProps={line1AnimatedProps}
+        />
+        <AnimatedLine
+          stroke={colors.surface}
+          strokeLinecap="round"
+          animatedProps={line2AnimatedProps}
+        />
+        <AnimatedLine
+          stroke={colors.surface}
+          strokeLinecap="round"
+          animatedProps={line3AnimatedProps}
+        />
+        <AnimatedLine
+          stroke={colors.surface}
+          strokeLinecap="round"
+          animatedProps={line4AnimatedProps}
+        />
 
         {/* Min/Max labels */}
-        <SvgText
-          x={positions[0].x}
+        <AnimatedSvgText
+          x={minLabelX}
           y={LABEL_Y}
           fontSize={10}
           fontWeight={'bold'}
@@ -117,10 +265,10 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
           textAnchor="middle"
         >
           {formatValue(min).toUpperCase()}
-        </SvgText>
+        </AnimatedSvgText>
 
-        <SvgText
-          x={positions[positions.length - 1].x}
+        <AnimatedSvgText
+          x={maxLabelX}
           y={LABEL_Y}
           fontSize={10}
           fontWeight={'bold'}
@@ -128,7 +276,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
           textAnchor="middle"
         >
           {formatValue(max).toUpperCase()}
-        </SvgText>
+        </AnimatedSvgText>
       </Svg>
 
       <ThemedGradient style={styles.gradient} />

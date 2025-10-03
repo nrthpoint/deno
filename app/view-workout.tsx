@@ -234,6 +234,7 @@ export default function ViewWorkoutScreen() {
             previewMode={true}
             onPress={handleMapPress}
             maxPoints={40}
+            style={{ height: 200, borderRadius: 16 }}
           />
         </View>
 
@@ -324,7 +325,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
-    marginBottom: 4,
+    //marginBottom: 4,
     textAlign: 'center',
     padding: 16,
   },

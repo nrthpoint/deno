@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
-import { LowDataWarning } from '@/components/LowDataWarning/LowDataWarning';
 import { TabBar } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 import { groupStatsTabs } from '@/config/ui';
@@ -18,6 +18,18 @@ export const GroupStats: React.FC = () => {
   const { group, groupType } = useGroupStats();
   const showWarning = shouldShowLowDataWarning(group);
   const warningMessage = showWarning ? generateLowDataWarningMessage(group, groupType) : '';
+
+  useEffect(() => {
+    if (showWarning) {
+      Toast.show({
+        type: 'info',
+        text1: 'Low Data Warning',
+        text2: warningMessage,
+        visibilityTime: 4000,
+        topOffset: 60,
+      });
+    }
+  }, [showWarning, warningMessage]);
 
   let tabContent;
 
@@ -40,12 +52,6 @@ export const GroupStats: React.FC = () => {
 
   return (
     <View style={styles.statsContainer}>
-      {showWarning && (
-        <View style={styles.warningContainer}>
-          <LowDataWarning message={warningMessage} />
-        </View>
-      )}
-
       <TabBar
         tabs={groupStatsTabs}
         activeTabId={activeTab}
@@ -63,11 +69,6 @@ export const GroupStats: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  warningContainer: {
-    marginBottom: 10,
-    marginHorizontal: 10,
-    marginVertical: 5,
-  },
   statsContainer: {
     marginTop: 10,
   },

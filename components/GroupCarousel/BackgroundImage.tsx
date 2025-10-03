@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     height: '100%',
     zIndex: -1,
     overflow: 'hidden',
+    borderRadius: 16,
   },
   backgroundColorLayer: {
     position: 'absolute',

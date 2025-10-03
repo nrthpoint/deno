@@ -300,6 +300,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     paddingVertical: 10,
     paddingBottom: 20,
-    borderColor: colors.surfaceHighlight,
+    borderColor: colors.surface,
   },
 });

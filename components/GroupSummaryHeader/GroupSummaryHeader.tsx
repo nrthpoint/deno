@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
+import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { uppercase } from '@/utils/text';
 
@@ -38,7 +39,7 @@ const renderTextWithBold = (text: string) => {
 
 export const GroupSummaryHeader: React.FC<GroupSummaryHeaderProps> = ({ summary }) => {
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.summaryHeading}>Summary</Text>
       <Text style={styles.summaryText}>{renderTextWithBold(summary)}</Text>
     </View>
@@ -46,6 +47,10 @@ export const GroupSummaryHeader: React.FC<GroupSummaryHeaderProps> = ({ summary 
 };
 
 const styles = StyleSheet.create({
+  container: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surface,
+  },
   summaryHeading: {
     ...uppercase,
     fontSize: 14,
@@ -58,6 +63,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: LatoFonts.regular,
     lineHeight: 28,
+    minHeight: 85,
   },
   boldText: {
     fontFamily: LatoFonts.bold,
