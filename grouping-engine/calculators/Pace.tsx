@@ -58,6 +58,19 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
         description: `The longest run at this pace${timeLabel} (${formatDaysAgo(group.highlight.endDate)})`,
         items: [
           {
+            type: 'pace',
+            label: 'Pace',
+            value: group.highlight.pace,
+            workout: group.highlight,
+            icon: (
+              <Ionicons
+                name="speedometer"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
             type: 'distance',
             label: 'Distance',
             value: group.highlight.distance,
@@ -70,12 +83,51 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
               />
             ),
           },
+          {
+            type: 'duration',
+            label: 'Time',
+            value: group.highlight.duration,
+            workout: group.highlight,
+            icon: (
+              <Ionicons
+                name="stopwatch-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.highlight.elevation,
+            workout: group.highlight,
+            icon: (
+              <Ionicons
+                name="triangle-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
         ],
       },
       {
         title: 'Shortest',
         description: `The shortest run at this pace${timeLabel} (${formatDaysAgo(group.worst.endDate)})`,
         items: [
+          {
+            type: 'pace',
+            label: 'Pace',
+            value: group.worst.pace,
+            workout: group.worst,
+            icon: (
+              <Ionicons
+                name="speedometer"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
           {
             type: 'distance',
             label: 'Distance',
@@ -84,6 +136,32 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
             icon: (
               <Ionicons
                 name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'duration',
+            label: 'Time',
+            value: group.worst.duration,
+            workout: group.worst,
+            icon: (
+              <Ionicons
+                name="stopwatch-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.worst.elevation,
+            workout: group.worst,
+            icon: (
+              <Ionicons
+                name="triangle-outline"
                 size={40}
                 color="#FFFFFF"
               />
@@ -134,6 +212,19 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
         description: `Your most recent workout at this pace${timeLabel} (${formatDaysAgo(group.mostRecent.endDate)})`,
         items: [
           {
+            type: 'pace',
+            label: 'Pace',
+            value: group.mostRecent.pace,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="speedometer"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
             type: 'distance',
             label: 'Distance',
             value: group.mostRecent.distance,
@@ -181,11 +272,11 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
         items: [
           {
             type: 'distance',
-            label: 'Distance',
+            label: 'Total Distance',
             value: group.totalDistance,
             icon: (
               <Ionicons
-                name="person-add-outline"
+                name="map-outline"
                 size={40}
                 color="#FFFFFF"
               />
@@ -193,11 +284,23 @@ export class PaceGroupStatCalculator extends BaseGroupStatCalculator {
           },
           {
             type: 'duration',
-            label: 'Duration',
+            label: 'Total Time',
             value: group.totalDuration,
             icon: (
               <Ionicons
                 name="timer-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            label: 'Runs',
+            type: 'default',
+            value: { quantity: group.runs.length, unit: 'runs' },
+            icon: (
+              <Ionicons
+                name="fitness-outline"
                 size={40}
                 color="#FFFFFF"
               />

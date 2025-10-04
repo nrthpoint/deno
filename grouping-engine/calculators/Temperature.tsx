@@ -77,6 +77,19 @@ export class TemperatureGroupStatCalculator extends BaseGroupStatCalculator {
               />
             ),
           },
+          {
+            type: 'distance',
+            label: 'Distance',
+            value: group.highlight.distance,
+            workout: group.highlight,
+            icon: (
+              <Ionicons
+                name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
         ],
       },
       {
@@ -117,6 +130,19 @@ export class TemperatureGroupStatCalculator extends BaseGroupStatCalculator {
             icon: (
               <Ionicons
                 name="thermometer-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'distance',
+            label: 'Distance',
+            value: group.worst.distance,
+            workout: group.worst,
+            icon: (
+              <Ionicons
+                name="map-outline"
                 size={40}
                 color="#FFFFFF"
               />
@@ -167,9 +193,64 @@ export class TemperatureGroupStatCalculator extends BaseGroupStatCalculator {
               />
             ),
           },
+          {
+            type: 'distance',
+            label: 'Distance',
+            value: group.mostRecent.distance,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
         ],
       },
       ...group.stats,
+      {
+        title: 'Cumulative',
+        description: `Total cumulative stats at ${prettyName}${timeLabel}`,
+        items: [
+          {
+            type: 'distance',
+            label: 'Total Distance',
+            value: group.totalDistance,
+            icon: (
+              <Ionicons
+                name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'duration',
+            label: 'Total Time',
+            value: group.totalDuration,
+            icon: (
+              <Ionicons
+                name="timer-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            label: 'Runs',
+            type: 'default',
+            value: { quantity: group.runs.length, unit: 'runs' },
+            icon: (
+              <Ionicons
+                name="fitness-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+        ],
+      },
     ];
   }
 }

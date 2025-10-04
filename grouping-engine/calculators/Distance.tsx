@@ -85,7 +85,6 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
               />
             ),
           },
-          // Distance
           {
             type: 'distance',
             label: 'Distance',
@@ -94,6 +93,19 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
             icon: (
               <Ionicons
                 name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.highlight.elevation,
+            workout: group.highlight,
+            icon: (
+              <Ionicons
+                name="triangle-outline"
                 size={40}
                 color="#FFFFFF"
               />
@@ -131,7 +143,6 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
               />
             ),
           },
-          // Distance
           {
             type: 'distance',
             label: 'Distance',
@@ -140,6 +151,19 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
             icon: (
               <Ionicons
                 name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.worst.elevation,
+            workout: group.worst,
+            icon: (
+              <Ionicons
+                name="triangle-outline"
                 size={40}
                 color="#FFFFFF"
               />
@@ -228,6 +252,19 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
               />
             ),
           },
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.mostRecent.elevation,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="triangle-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
         ],
       },
       ...group.stats,
@@ -237,11 +274,11 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
         items: [
           {
             type: 'distance',
-            label: 'Cumulative Distance',
+            label: 'Total Distance',
             value: group.totalDistance,
             icon: (
               <Ionicons
-                name="person-add-outline"
+                name="map-outline"
                 size={40}
                 color="#FFFFFF"
               />
@@ -249,7 +286,7 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
           },
           {
             type: 'duration',
-            label: 'Cumulative Duration',
+            label: 'Total Time',
             value: group.totalDuration,
             icon: (
               <Ionicons
@@ -261,11 +298,23 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
           },
           {
             type: 'elevation',
-            label: 'Cumulative Elevation',
+            label: 'Total Elevation',
             value: group.totalElevation,
             icon: (
               <Ionicons
                 name="triangle-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            label: 'Runs',
+            type: 'default',
+            value: { quantity: group.runs.length, unit: 'runs' },
+            icon: (
+              <Ionicons
+                name="fitness-outline"
                 size={40}
                 color="#FFFFFF"
               />

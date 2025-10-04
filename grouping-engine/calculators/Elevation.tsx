@@ -84,7 +84,7 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
       },
       {
         title: 'Highest',
-        description: `Your highest workouts at this elevation${timeLabel} (${formatDaysAgo(group.highlight.endDate)})`,
+        description: `Your highest elevation workouts at this elevation${timeLabel} (${formatDaysAgo(group.highlight.endDate)})`,
         items: [
           {
             type: 'elevation',
@@ -99,11 +99,50 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
               />
             ),
           },
+          {
+            type: 'distance',
+            label: 'Distance',
+            value: group.highlight.distance,
+            workout: group.highlight,
+            icon: (
+              <Ionicons
+                name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'pace',
+            label: 'Pace',
+            value: group.highlight.pace,
+            workout: group.highlight,
+            icon: (
+              <Ionicons
+                name="speedometer"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'duration',
+            label: 'Time',
+            value: group.highlight.duration,
+            workout: group.highlight,
+            icon: (
+              <Ionicons
+                name="stopwatch-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
         ],
       },
       {
         title: 'Lowest',
-        description: `Your lowest workouts at this elevation${timeLabel} (${formatDaysAgo(group.worst.endDate)})`,
+        description: `Your lowest elevation workouts at this elevation${timeLabel} (${formatDaysAgo(group.worst.endDate)})`,
         items: [
           {
             type: 'elevation',
@@ -118,16 +157,24 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
               />
             ),
           },
-        ],
-      },
-      {
-        title: 'Pace',
-        items: [
+          {
+            type: 'distance',
+            label: 'Distance',
+            value: group.worst.distance,
+            workout: group.worst,
+            icon: (
+              <Ionicons
+                name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
           {
             type: 'pace',
-            label: 'Best Pace',
-            value: group.highlight.pace,
-            workout: group.highlight,
+            label: 'Pace',
+            value: group.worst.pace,
+            workout: group.worst,
             icon: (
               <Ionicons
                 name="speedometer"
@@ -137,13 +184,13 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
             ),
           },
           {
-            type: 'pace',
-            label: 'Average Pace',
-            value: group.averagePace,
-            workout: group.highlight,
+            type: 'duration',
+            label: 'Time',
+            value: group.worst.duration,
+            workout: group.worst,
             icon: (
               <Ionicons
-                name="speedometer"
+                name="stopwatch-outline"
                 size={40}
                 color="#FFFFFF"
               />
@@ -151,10 +198,24 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
           },
         ],
       },
+
       {
         title: 'Most Recent',
         description: `Your most recent workout at this elevation${timeLabel} (${formatDaysAgo(group.mostRecent.endDate)})`,
         items: [
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.mostRecent.elevation,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="triangle-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
           {
             type: 'distance',
             label: 'Distance',
@@ -189,6 +250,60 @@ export class ElevationGroupStatCalculator extends BaseGroupStatCalculator {
             icon: (
               <Ionicons
                 name="stopwatch-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+        ],
+      },
+      {
+        title: 'Cumulative',
+        description: `Total cumulative stats at this elevation${timeLabel}`,
+        items: [
+          {
+            type: 'elevation',
+            label: 'Total Elevation',
+            value: group.totalElevation,
+            icon: (
+              <Ionicons
+                name="triangle-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'distance',
+            label: 'Total Distance',
+            value: group.totalDistance,
+            icon: (
+              <Ionicons
+                name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'duration',
+            label: 'Total Time',
+            value: group.totalDuration,
+            icon: (
+              <Ionicons
+                name="timer-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            label: 'Runs',
+            type: 'default',
+            value: { quantity: group.runs.length, unit: 'runs' },
+            icon: (
+              <Ionicons
+                name="fitness-outline"
                 size={40}
                 color="#FFFFFF"
               />
