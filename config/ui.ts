@@ -95,5 +95,5 @@ export const getTabOptionConfig = (groupType: GroupType): TabOptionConfig => {
 export const groupStatsTabs: TabOption[] = [
   { id: 'stats', label: 'Stats' },
   { id: 'compare', label: 'Compare' },
-  { id: 'predictions', label: 'Predictions' },
+  { id: 'predictions', label: 'Progression' },
 ];

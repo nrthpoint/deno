@@ -208,7 +208,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
         easing: Easing.out(Easing.cubic),
       });
     }
-  }, [positions, min, max]);
+  }, [positions, min, max, linePositions, lineOpacities, lineIsEnd, minLabelX, maxLabelX]);
 
   const content = (
     <View style={styles.container}>

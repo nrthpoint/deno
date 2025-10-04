@@ -5,7 +5,6 @@ import { Button } from 'react-native-paper';
 import { CollapsibleStatSection } from '@/components/CollapsibleStatSection/CollapsibleStatSection';
 import { VisualCards } from '@/components/GroupStats/GroupHighlights';
 import { GroupSummaryHeader } from '@/components/GroupSummaryHeader/GroupSummaryHeader';
-import { ProgressionCard } from '@/components/ProgressionCard/ProgressionCard';
 import {
   WorkoutListBottomSheet,
   WorkoutListBottomSheetRef,
@@ -13,7 +12,6 @@ import {
 import { colors } from '@/config/colors';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { generateGroupSummary } from '@/utils/groupSummary';
-import { generateProgressionData } from '@/utils/progression';
 
 const getTabColor = (label: string) => {
   switch (label.toLowerCase()) {
@@ -37,7 +35,6 @@ export const StatsTab: React.FC = () => {
 
   const workoutListRef = useRef<WorkoutListBottomSheetRef>(null);
   const summary = generateGroupSummary(group, groupType, timeRangeInDays);
-  const progressionData = generateProgressionData(group, groupType, timeRangeInDays);
 
   const handleViewAllWorkouts = () => {
     workoutListRef.current?.open();
@@ -49,13 +46,6 @@ export const StatsTab: React.FC = () => {
         <GroupSummaryHeader summary={summary} />
         <VisualCards />
       </View>
-
-      <ProgressionCard
-        title={progressionData.title}
-        description={progressionData.description}
-        entries={progressionData.entries}
-        metricLabel={progressionData.metricLabel}
-      />
 
       {group.stats.map((section, index) => (
         <CollapsibleStatSection

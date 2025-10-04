@@ -16,6 +16,8 @@ export interface ProgressionEntry {
   value: string;
   fullQuantity: Quantity;
   isImprovement: boolean;
+  isPredicted?: boolean;
+  distance?: Quantity;
 }
 
 interface ProgressionCardProps {
@@ -97,10 +99,18 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
   }) => (
     <View
       key={index}
-      style={styles.tableRow}
+      style={[styles.tableRow, entry.isPredicted && styles.predictedRow]}
     >
-      <Text style={styles.cell}>{entry.date}</Text>
-      <Text style={styles.cell}>{entry.value}</Text>
+      <Text style={[styles.cell, entry.isPredicted && styles.predictedText]}>
+        {entry.isPredicted ? `${entry.date}` : entry.date}
+      </Text>
+
+      <Text style={[styles.cell, entry.isPredicted && styles.predictedText]}>{entry.value}</Text>
+
+      <Text style={[styles.cell, entry.isPredicted && styles.predictedText]}>
+        {entry.distance ? formatDistance(entry.distance) : '—'}
+      </Text>
+
       <View style={styles.changeCell}>
         {index === entries.length - 1 ? (
           <NoChangeIndicator />
@@ -120,30 +130,21 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
     </View>
   );
 
-  const Header = () => (
-    <TouchableOpacity
-      style={styles.headerContainer}
-      onPress={() => setIsExpanded(!isExpanded)}
-      activeOpacity={0.7}
-    >
-      <View style={[styles.headerContent, isExpanded && styles.headerContentExpanded]}>
-        <Text style={styles.title}>{title}</Text>
-        <Ionicons
-          name={isExpanded ? 'chevron-up' : 'chevron-down'}
-          size={24}
-          color="#FFFFFF"
-          style={styles.chevronIcon}
-        />
-      </View>
-      {isExpanded && <Text style={styles.description}>{description}</Text>}
-    </TouchableOpacity>
-  );
-
   const TableHeader = () => (
     <View style={styles.tableHeader}>
       <View style={styles.spacerCell}></View>
       <Text style={styles.headerCell}>{metricLabel}</Text>
+      <Text style={styles.headerCell}>Distance</Text>
       <Text style={styles.headerCell}>Difference</Text>
+    </View>
+  );
+
+  const Legend = () => (
+    <View style={styles.legendContainer}>
+      <View style={styles.legendItem}>
+        <View style={styles.legendSquare} />
+        <Text style={styles.legendText}>Predicted</Text>
+      </View>
     </View>
   );
 
@@ -164,13 +165,16 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
             />
           ))}
         </View>
+
+        <Legend />
       </View>
     );
 
   return (
     <View style={styles.container}>
-      <Header />
-      {isExpanded && <Content />}
+      {/* <Header />
+      {isExpanded && } */}
+      <Content />
     </View>
   );
 };
@@ -284,5 +288,37 @@ const styles = StyleSheet.create({
   noChangeText: {
     marginTop: 6,
     color: '#666666',
+  },
+  predictedRow: {
+    backgroundColor: 'rgba(74, 175, 79, 0.1)',
+    borderLeftWidth: 3,
+    borderLeftColor: '#4CAF50',
+  },
+  predictedText: {
+    fontStyle: 'italic',
+    color: '#4CAF50',
+  },
+  legendContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 10,
+    paddingTop: 8,
+    paddingBottom: 5,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  legendSquare: {
+    width: 12,
+    height: 12,
+    backgroundColor: '#4CAF50',
+    marginRight: 6,
+  },
+  legendText: {
+    ...uppercase,
+    color: '#CCCCCC',
+    fontSize: 12,
+    fontFamily: LatoFonts.regular,
   },
 });
