@@ -1,14 +1,13 @@
-import { Ionicons } from '@expo/vector-icons';
 import { Quantity } from '@kingstinct/react-native-healthkit';
-import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { formatDistance } from '@/utils/distance';
 import { getAbsoluteDifference } from '@/utils/quantity';
-import { subheading, uppercase } from '@/utils/text';
+import { uppercase } from '@/utils/text';
 import { formatDuration } from '@/utils/time';
 
 export interface ProgressionEntry {
@@ -21,8 +20,6 @@ export interface ProgressionEntry {
 }
 
 interface ProgressionCardProps {
-  title: string;
-  description: string;
   entries: ProgressionEntry[];
   metricLabel: string;
 }
@@ -40,14 +37,7 @@ const calculateDifference = (current: Quantity, previous?: Quantity): string => 
   return formattedDiff;
 };
 
-export const ProgressionCard: React.FC<ProgressionCardProps> = ({
-  title,
-  description,
-  entries,
-  metricLabel,
-}) => {
-  const [isExpanded, setIsExpanded] = useState(true);
-
+export const ProgressionCard: React.FC<ProgressionCardProps> = ({ entries, metricLabel }) => {
   const NoData = () => (
     <View style={styles.noDataContainerWrapper}>
       <View style={styles.noDataContainer}>
@@ -172,8 +162,6 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* <Header />
-      {isExpanded && } */}
       <Content />
     </View>
   );
@@ -182,41 +170,6 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginBottom: 5,
-  },
-  headerContainer: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingBottom: 15,
-  },
-  headerContentExpanded: {
-    paddingBottom: 0,
-  },
-  title: {
-    ...subheading,
-    marginTop: 0,
-    marginBottom: 0,
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontFamily: LatoFonts.bold,
-    textAlign: 'left',
-    flex: 1,
-  },
-  chevronIcon: {
-    marginLeft: 10,
-  },
-  description: {
-    color: '#CCCCCC',
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    marginTop: 5,
-    marginBottom: 15,
-    textAlign: 'left',
   },
   noDataContainerWrapper: {
     paddingBottom: 15,
@@ -240,9 +193,11 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: colors.surface,
-    paddingVertical: 12,
+    backgroundColor: colors.primary,
+    paddingVertical: 14,
     paddingHorizontal: 10,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
   },
   spacerCell: {
     flex: 1,
@@ -250,7 +205,7 @@ const styles = StyleSheet.create({
   headerCell: {
     ...uppercase,
     flex: 1,
-    color: '#CCCCCC',
+    color: '#FFF',
     textAlign: 'center',
   },
   tableRow: {

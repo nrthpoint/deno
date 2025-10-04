@@ -5,8 +5,8 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { useMultipleWeatherData } from '@/hooks/useWeatherData';
-import { WeatherService } from '@/services/weatherService';
+import { useWeatherData } from '@/hooks/useWeatherData';
+import { WeatherService } from '@/services/weather';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { subheading, uppercase } from '@/utils/text';
 
@@ -36,7 +36,8 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
   workout2Label,
 }) => {
   const workouts = useMemo(() => [workout1, workout2], [workout1, workout2]);
-  const weatherDataMap = useMultipleWeatherData(workouts);
+  const weatherDataMap = useWeatherData(workouts);
+
   const weather1Data = weatherDataMap.get(workout1.uuid);
   const weather2Data = weatherDataMap.get(workout2.uuid);
 
@@ -207,33 +208,11 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
     };
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getEnvironmentComparison = (): WeatherMetric => {
-    const isIndoor1 = workout1.isIndoor;
-    const isIndoor2 = workout2.isIndoor;
-    const desc1 = weather1?.weatherDescription || (isIndoor1 ? 'Indoor' : 'Unknown');
-    const desc2 = weather2?.weatherDescription || (isIndoor2 ? 'Indoor' : 'Unknown');
-    const isDifferent = desc1 !== desc2;
-
-    return {
-      label: 'Conditions',
-      icon: 'cloud',
-      workout1Value: desc1,
-      workout2Value: desc2,
-      workout1Raw: isIndoor1 ? 1 : 0,
-      workout2Raw: isIndoor2 ? 1 : 0,
-      difference: isDifferent ? 'Different' : 'Same',
-      color: isDifferent ? '#ff9800' : '#4caf50',
-      isDifferent,
-    };
-  };
-
   const metrics: WeatherMetric[] = [
     getTemperatureComparison(),
     getHumidityComparison(),
     getWindComparison(),
     getPrecipitationComparison(),
-    // getEnvironmentComparison(),
   ];
 
   const renderDifferenceIndicator = (metric: WeatherMetric) => {
@@ -288,17 +267,7 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
   }
 
   return (
-    // <Card>
     <View style={styles.container}>
-      {/* <View style={styles.header}>
-        <Ionicons
-          name="analytics"
-          size={24}
-          color={colors.primary}
-        />
-        <Text style={styles.title}>Weather Comparison</Text>
-      </View> */}
-
       <View style={styles.comparisonTable}>
         <View style={styles.headerRow}>
           <View style={styles.metricColumn}>
@@ -354,7 +323,6 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
         </Text>
       </View>
     </View>
-    // </Card>
   );
 };
 

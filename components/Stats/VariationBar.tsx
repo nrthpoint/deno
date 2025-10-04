@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, {
   Easing,
@@ -58,10 +58,19 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
   const minLabelX = useSharedValue(0);
   const maxLabelX = useSharedValue(0);
 
-  // Arrays for easier access
-  const linePositions = [line0Position, line1Position, line2Position, line3Position, line4Position];
-  const lineOpacities = [line0Opacity, line1Opacity, line2Opacity, line3Opacity, line4Opacity];
-  const lineIsEnd = [line0IsEnd, line1IsEnd, line2IsEnd, line3IsEnd, line4IsEnd];
+  // Arrays for easier access - memoized to prevent useEffect dependency issues
+  const linePositions = useMemo(
+    () => [line0Position, line1Position, line2Position, line3Position, line4Position],
+    [line0Position, line1Position, line2Position, line3Position, line4Position],
+  );
+  const lineOpacities = useMemo(
+    () => [line0Opacity, line1Opacity, line2Opacity, line3Opacity, line4Opacity],
+    [line0Opacity, line1Opacity, line2Opacity, line3Opacity, line4Opacity],
+  );
+  const lineIsEnd = useMemo(
+    () => [line0IsEnd, line1IsEnd, line2IsEnd, line3IsEnd, line4IsEnd],
+    [line0IsEnd, line1IsEnd, line2IsEnd, line3IsEnd, line4IsEnd],
+  );
 
   // Create animated props for each line at top level
   const line0AnimatedProps = useAnimatedProps(() => {
@@ -133,6 +142,15 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
       strokeWidth,
     };
   });
+
+  // Animated props for text elements
+  const minLabelAnimatedProps = useAnimatedProps(() => ({
+    x: [minLabelX.value],
+  }));
+
+  const maxLabelAnimatedProps = useAnimatedProps(() => ({
+    x: [maxLabelX.value],
+  }));
 
   // Helper function to format values based on group type
   const formatValue = (value: number): string => {
@@ -257,23 +275,23 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
 
         {/* Min/Max labels */}
         <AnimatedSvgText
-          x={minLabelX}
           y={LABEL_Y}
           fontSize={10}
           fontWeight={'bold'}
           fill="#fff"
           textAnchor="middle"
+          animatedProps={minLabelAnimatedProps}
         >
           {formatValue(min).toUpperCase()}
         </AnimatedSvgText>
 
         <AnimatedSvgText
-          x={maxLabelX}
           y={LABEL_Y}
           fontSize={10}
           fontWeight={'bold'}
           fill="#fff"
           textAnchor="middle"
+          animatedProps={maxLabelAnimatedProps}
         >
           {formatValue(max).toUpperCase()}
         </AnimatedSvgText>

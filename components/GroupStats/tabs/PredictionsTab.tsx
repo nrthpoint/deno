@@ -71,11 +71,8 @@ export const PredictionsTab: React.FC = () => {
           />
 
           <ProgressionCard
-            title={progressionData.title}
-            description={progressionData.description}
             entries={entriesWithPredictions}
             metricLabel={progressionData.metricLabel}
-            showDistanceColumn={true}
           />
         </>
       ) : (

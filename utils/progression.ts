@@ -52,6 +52,7 @@ const createProgressionEntries = <T>(
     value: config.formatValue(currentBest),
     fullQuantity: config.getFullQuantity(sortedWorkouts[0]),
     isImprovement: true,
+    distance: sortedWorkouts[0].distance,
   });
 
   // Find subsequent improvements
@@ -65,6 +66,7 @@ const createProgressionEntries = <T>(
         value: config.formatValue(workoutValue),
         fullQuantity: config.getFullQuantity(workout),
         isImprovement: true,
+        distance: workout.distance,
       });
 
       currentBest = workoutValue;

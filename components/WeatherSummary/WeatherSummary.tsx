@@ -6,7 +6,7 @@ import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWeatherData } from '@/hooks/useWeatherData';
-import { WeatherService } from '@/services/weatherService';
+import { WeatherService } from '@/services/weather';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
 interface WeatherSummaryProps {
@@ -22,7 +22,9 @@ interface WeatherCondition {
 }
 
 export const WeatherSummary: React.FC<WeatherSummaryProps> = ({ workout }) => {
-  const { weather, loading, error } = useWeatherData(workout);
+  const weatherMap = useWeatherData([workout]);
+
+  const { weather, loading, error } = weatherMap.get(workout.uuid) ?? {};
 
   const getTemperatureData = (): WeatherCondition => {
     const temp = weather?.temperature ?? null;

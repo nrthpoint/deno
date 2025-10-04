@@ -1,5 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 
+import { OpenWeatherHistoricalResponse, OpenWeatherResponse } from '@/types/OpenWeather';
+
 export interface WeatherConditions {
   temperature: number; // Celsius
   humidity: number; // Percentage
@@ -66,7 +68,7 @@ export class WeatherService {
         return null;
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as OpenWeatherHistoricalResponse;
       const weatherData = this.parseHistoricalWeatherData(data);
 
       if (weatherData) {
@@ -112,7 +114,7 @@ export class WeatherService {
         return null;
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as OpenWeatherResponse;
       const weatherData = this.parseCurrentWeatherData(data);
 
       if (weatherData) {
@@ -126,7 +128,9 @@ export class WeatherService {
     }
   }
 
-  private parseHistoricalWeatherData(data: any): WeatherConditions | null {
+  private parseHistoricalWeatherData(
+    data: OpenWeatherHistoricalResponse,
+  ): WeatherConditions | null {
     try {
       const current = data.data[0]; // Get the first (and likely only) data point
 
@@ -148,7 +152,7 @@ export class WeatherService {
     }
   }
 
-  private parseCurrentWeatherData(data: any): WeatherConditions | null {
+  private parseCurrentWeatherData(data: OpenWeatherResponse): WeatherConditions | null {
     try {
       return {
         temperature: Math.round(data.main.temp),
