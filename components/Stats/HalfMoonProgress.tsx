@@ -1,12 +1,6 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Animated, {
-  useAnimatedProps,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 
 import { Card } from '@/components/Card/Card';
@@ -33,25 +27,10 @@ export const HalfMoonProgress = ({ label, size = 120, ...modalProps }: HalfMoonP
   const percentage = total > 0 ? Math.min((value / total) * 100, 100) : 0;
 
   const animatedPercentage = useSharedValue(0);
-  const containerOpacity = useSharedValue(0);
-  const containerScale = useSharedValue(0.8);
-  const svgTranslateY = useSharedValue(-20);
-  const textTranslateY = useSharedValue(20);
 
   useEffect(() => {
     animatedPercentage.value = withTiming(percentage, { duration: 800 });
-    containerOpacity.value = withTiming(1, { duration: 600 });
-    containerScale.value = withSpring(1, { damping: 15 });
-    svgTranslateY.value = withSpring(0, { damping: 12 });
-    textTranslateY.value = withSpring(0, { damping: 12 });
-  }, [
-    percentage,
-    animatedPercentage,
-    containerOpacity,
-    containerScale,
-    svgTranslateY,
-    textTranslateY,
-  ]);
+  }, [percentage, animatedPercentage]);
 
   const strokeWidth = 8;
   const radius = (size - strokeWidth) / 2;
@@ -77,34 +56,9 @@ export const HalfMoonProgress = ({ label, size = 120, ...modalProps }: HalfMoonP
     };
   });
 
-  const containerAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: containerOpacity.value,
-      transform: [{ scale: containerScale.value }],
-    };
-  });
-
-  const svgAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: svgTranslateY.value }],
-    };
-  });
-
-  const textAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: textTranslateY.value }],
-    };
-  });
-
   const content = (
-    <Animated.View style={[styles.container, containerAnimatedStyle]}>
-      <Animated.View
-        style={[
-          styles.svgContainer,
-          { width: size, height: size / 2 + strokeWidth },
-          svgAnimatedStyle,
-        ]}
-      >
+    <View style={styles.container}>
+      <View style={[styles.svgContainer, { width: size, height: size / 2 + strokeWidth }]}>
         <Svg
           width={size}
           height={size / 2 + strokeWidth}
@@ -127,9 +81,9 @@ export const HalfMoonProgress = ({ label, size = 120, ...modalProps }: HalfMoonP
             strokeLinecap="round"
           />
         </Svg>
-      </Animated.View>
+      </View>
 
-      <Animated.View style={[styles.textContainer, textAnimatedStyle]}>
+      <View style={styles.textContainer}>
         <View style={styles.valueContainer}>
           <AnimatedCounter
             value={percentage}
@@ -139,10 +93,10 @@ export const HalfMoonProgress = ({ label, size = 120, ...modalProps }: HalfMoonP
         </View>
 
         <Text style={styles.labelText}>{label}</Text>
-      </Animated.View>
+      </View>
 
       <ThemedGradient style={styles.gradient} />
-    </Animated.View>
+    </View>
   );
 
   const modalContent = <Text style={styles.modalValue}>{percentage.toFixed(1)}%</Text>;

@@ -67,6 +67,7 @@ const formatDaysAgo = (date: Date): string => {
 
   if (diffDays === 0) return 'today';
   if (diffDays === 1) return '1 day ago';
+
   return `${diffDays} days ago`;
 };
 
@@ -87,8 +88,8 @@ export const generateGroupSummary = (
 
   const firstLine = `Here are ${summaryAction} from your **${runCount}** ${groupContext} over ${timeRange.label}.`;
 
-  // Smart timing logic
   let secondLine: string;
+
   if (runCount === 1) {
     secondLine = `Your only workout was **${mostRecentText}**.`;
   } else if (group.mostRecent.endDate.getTime() === group.oldest.endDate.getTime()) {
