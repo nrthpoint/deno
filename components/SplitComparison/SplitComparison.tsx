@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-import { colors } from '@/config/colors';
+import { colors, SAMPLE1_COLOR, SAMPLE2_COLOR } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { uppercase } from '@/utils/text';
@@ -159,10 +159,24 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
           <View style={styles.splitNumberColumn}>
             <Text style={styles.headerText}>Split</Text>
           </View>
-          <View style={styles.dataColumn}>
+          <View
+            style={[
+              styles.dataColumn,
+              {
+                backgroundColor: SAMPLE1_COLOR,
+              },
+            ]}
+          >
             <Text style={styles.headerText}>{sample1Label}</Text>
           </View>
-          <View style={styles.dataColumn}>
+          <View
+            style={[
+              styles.dataColumn,
+              {
+                backgroundColor: SAMPLE2_COLOR,
+              },
+            ]}
+          >
             <Text style={styles.headerText}>{sample2Label}</Text>
           </View>
           <View style={styles.diffColumn}>
@@ -226,8 +240,8 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     backgroundColor: colors.surface,
-    paddingVertical: 12,
     paddingHorizontal: 10,
+    //maxWidth: 200,
   },
   splitRow: {
     flexDirection: 'row',
@@ -240,7 +254,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.surface,
   },
   splitNumberColumn: {
-    width: 50,
+    width: 100,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -262,19 +276,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: LatoFonts.bold,
     textAlign: 'center',
+    paddingVertical: 12,
   },
   splitNumber: {
     fontSize: 13,
     fontFamily: LatoFonts.regular,
     color: '#CCCCCC',
   },
-  // sampleLabel: {
-  //   fontSize: 10,
-  //   fontFamily: LatoFonts.regular,
-  //   color: colors.lightGray,
-  //   marginBottom: 2,
-  //   textAlign: 'center',
-  // },
   timeValue: {
     fontSize: 13,
     fontFamily: LatoFonts.regular,
@@ -286,13 +294,6 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.regular,
     color: '#CCCCCC',
   },
-  // diffLabel: {
-  //   fontSize: 10,
-  //   fontFamily: LatoFonts.regular,
-  //   color: colors.lightGray,
-  //   marginBottom: 2,
-  //   textAlign: 'center',
-  // },
   diffValue: {
     fontSize: 14,
     fontFamily: LatoFonts.bold,

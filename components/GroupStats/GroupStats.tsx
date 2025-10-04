@@ -14,22 +14,25 @@ import { PredictionsTab } from './tabs/PredictionsTab';
 import { StatsTab } from './tabs/StatsTab';
 
 export const GroupStats: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('stats');
   const { group, groupType } = useGroupStats();
-  const showWarning = shouldShowLowDataWarning(group);
-  const warningMessage = showWarning ? generateLowDataWarningMessage(group, groupType) : '';
+
+  const [activeTab, setActiveTab] = useState<TabType>('stats');
 
   useEffect(() => {
+    const showWarning = shouldShowLowDataWarning(group);
+
     if (showWarning) {
+      const warningMessage = generateLowDataWarningMessage(group, groupType);
+
       Toast.show({
         type: 'info',
-        text1: 'Low Data Warning',
+        text1: 'Low Data',
         text2: warningMessage,
         visibilityTime: 4000,
         topOffset: 60,
       });
     }
-  }, [showWarning, warningMessage]);
+  }, [group, groupType]);
 
   let tabContent;
 

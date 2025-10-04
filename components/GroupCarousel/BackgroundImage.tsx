@@ -10,6 +10,7 @@ interface BackgroundImageProps {
   selectedOption?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getTemperatureImage = (temperature: string) => {
   const temp = parseFloat(temperature);
 
@@ -22,6 +23,7 @@ const getTemperatureImage = (temperature: string) => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getTemperatureBackgroundColor = (temperature: string) => {
   const temp = parseFloat(temperature);
 
@@ -34,6 +36,7 @@ const getTemperatureBackgroundColor = (temperature: string) => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getImageForGroupType = (groupType: GroupType, selectedOption?: string) => {
   switch (groupType) {
     case 'distance':
@@ -45,11 +48,12 @@ const getImageForGroupType = (groupType: GroupType, selectedOption?: string) => 
     case 'duration':
       return require('@/assets/images/carousel/duration.jpg');
     case 'temperature':
-      return selectedOption
+      return require('@/assets/images/carousel/ice.jpg');
+    /*  return selectedOption
         ? getTemperatureImage(selectedOption)
-        : require('@/assets/images/carousel/normal.jpg');
+        : require('@/assets/images/carousel/normal.jpg'); */
     case 'humidity':
-      return null; // Use background color only for humidity
+      return require('@/assets/images/carousel/humidity.jpg');
     default:
       return null;
   }
@@ -61,10 +65,11 @@ export const BackgroundImage = ({
   selectedOption,
 }: BackgroundImageProps) => {
   const image = getImageForGroupType(groupType, selectedOption);
-  const backgroundColor =
+  /*   const backgroundColor =
     groupType === 'temperature' && selectedOption
       ? getTemperatureBackgroundColor(selectedOption)
-      : GROUPING_CONFIGS[groupType].backgroundColor;
+      : GROUPING_CONFIGS[groupType].backgroundColor; */
+  const backgroundColor = GROUPING_CONFIGS[groupType].backgroundColor;
 
   const animatedStyle = useAnimatedStyle(() => {
     const translateX = interpolate(parallaxOffset.value, [-100, 0, 100], [-0.1, 0, 0.1]);
@@ -118,7 +123,7 @@ const styles = StyleSheet.create({
     opacity: 0.4,
     backgroundColor: 'red',
     position: 'absolute',
-    bottom: -50,
+    bottom: -10,
     overflow: 'visible',
     alignContent: 'flex-end',
     justifyContent: 'flex-end',

@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { Card } from '@/components/Card/Card';
-import { colors } from '@/config/colors';
+import { colors, SAMPLE1_COLOR, SAMPLE2_COLOR } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWeatherData } from '@/hooks/useWeatherData';
 import { WeatherService } from '@/services/weather';
@@ -54,7 +54,7 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
     let isDifferent = false;
 
     if (temp1 !== null && temp2 !== null) {
-      const diff = temp1 - temp2;
+      const diff = Number((temp1 - temp2).toFixed(1));
       isDifferent = Math.abs(diff) >= 2; // Consider 2°C+ as significant difference
       difference = diff > 0 ? `+${diff}°C` : `${diff}°C`;
 
@@ -148,7 +148,9 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
     const getWindDisplay = (windKmh: number | null, windDir: number | null) => {
       if (windKmh === null) return 'N/A';
       if (windKmh === 0) return 'Calm';
+
       const direction = windDir !== null ? WeatherService.getWindDirection(windDir) : '';
+
       return `${windKmh} km/h ${direction}`.trim();
     };
 
@@ -245,15 +247,6 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
     return (
       <Card>
         <View style={styles.container}>
-          <View style={styles.header}>
-            <Ionicons
-              name="analytics"
-              size={24}
-              color={colors.primary}
-            />
-            <Text style={styles.title}>Weather Comparison</Text>
-          </View>
-
           <View style={styles.loadingContainer}>
             <ActivityIndicator
               size="large"
@@ -273,10 +266,20 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
           <View style={styles.metricColumn}>
             <Text style={styles.conditionHeaderText}></Text>
           </View>
-          <View style={styles.valueColumn}>
+          <View
+            style={[
+              styles.valueColumn,
+              {
+                backgroundColor: SAMPLE1_COLOR,
+                paddingVertical: 12,
+              },
+            ]}
+          >
             <Text style={styles.headerText}>{workout1Label}</Text>
           </View>
-          <View style={styles.valueColumn}>
+          <View
+            style={[styles.valueColumn, { backgroundColor: SAMPLE2_COLOR, paddingVertical: 12 }]}
+          >
             <Text style={styles.headerText}>{workout2Label}</Text>
           </View>
           <View style={styles.differenceColumn}>
@@ -333,17 +336,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingHorizontal: 15,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 18,
-    fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-    marginLeft: 8,
-  },
   comparisonTable: {
     borderWidth: 1,
     borderColor: colors.surface,
@@ -353,7 +345,6 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     backgroundColor: colors.surface,
-    paddingVertical: 12,
     paddingHorizontal: 10,
   },
   metricRow: {
@@ -412,7 +403,6 @@ const styles = StyleSheet.create({
   differenceIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surfaceHighlight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -420,7 +410,6 @@ const styles = StyleSheet.create({
   similarIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surfaceHighlight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,

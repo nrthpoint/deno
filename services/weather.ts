@@ -3,16 +3,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { OpenWeatherHistoricalResponse, OpenWeatherResponse } from '@/types/OpenWeather';
 
 export interface WeatherConditions {
-  temperature: number; // Celsius
-  humidity: number; // Percentage
-  windSpeed: number; // m/s
-  windDirection: number; // Degrees
-  precipitation: number; // mm/h
-  cloudCover: number; // Percentage
-  pressure: number; // hPa
-  visibility: number; // km
-  weatherDescription: string; // "Clear sky", "Light rain", etc.
-  weatherIcon: string; // Weather condition code
+  temperature?: number; // Celsius
+  humidity?: number; // Percentage
+  windSpeed?: number; // m/s
+  windDirection?: number; // Degrees
+  precipitation?: number; // mm/h
+  cloudCover?: number; // Percentage
+  pressure?: number; // hPa
+  visibility?: number; // km
+  weatherDescription?: string; // "Clear sky", "Light rain", etc.
+  weatherIcon?: string; // Weather condition code
 }
 
 export interface WeatherServiceConfig {

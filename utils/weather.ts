@@ -15,12 +15,6 @@ export function createWeatherFromHealthKit(workout: ExtendedWorkout): WeatherCon
   return {
     temperature,
     humidity,
-    windSpeed: 0,
-    windDirection: 0,
-    precipitation: 0,
-    cloudCover: 50,
-    pressure: 1013,
-    visibility: 10,
     weatherDescription: workout.isIndoor ? 'Indoor workout' : 'n/a',
     weatherIcon: workout.isIndoor ? '01d' : '02d',
   };

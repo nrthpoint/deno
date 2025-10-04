@@ -9,6 +9,7 @@ interface CreateQuantityOptions {
   defaultUnit?: string;
   unitOverride?: string;
   formatter?: (value: number, unit: string) => string;
+  quantityFormatter?: (value: number) => number;
 }
 
 export function createQuantityWithFormat({
@@ -16,6 +17,7 @@ export function createQuantityWithFormat({
   defaultQuantity = 0,
   defaultUnit = '',
   unitOverride,
+  quantityFormatter,
   formatter,
 }: CreateQuantityOptions): QuantityWithFormat {
   let quantity = defaultQuantity;
@@ -25,7 +27,11 @@ export function createQuantityWithFormat({
     const maybeQuantity = q as unknown as Quantity;
 
     if (typeof maybeQuantity.quantity === 'number') {
-      quantity = maybeQuantity.quantity;
+      if (quantityFormatter) {
+        quantity = quantityFormatter(maybeQuantity.quantity);
+      } else {
+        quantity = maybeQuantity.quantity;
+      }
     }
 
     if (unitOverride) {
@@ -56,6 +62,7 @@ export function normalizeTemperatureC({ q }: { q?: ValueType }): QuantityWithFor
     defaultUnit: '°C',
     unitOverride: '°C', // converts degC to C
     formatter: (value) => `${value.toFixed(1)}°C`,
+    quantityFormatter: (value) => Number(value.toFixed(1)), // ensure one decimal place
   });
 }
 

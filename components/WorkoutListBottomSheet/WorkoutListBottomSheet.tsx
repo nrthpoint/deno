@@ -29,7 +29,7 @@ export const WorkoutListBottomSheet = forwardRef<
   const bottomSheetRef = useRef<BottomSheet>(null);
   const { setSelectedWorkouts } = useWorkout();
 
-  const snapPoints = useMemo(() => ['60%'], []);
+  const snapPoints = useMemo(() => ['20%'], []);
 
   useImperativeHandle(ref, () => ({
     open: () => bottomSheetRef.current?.expand(),
