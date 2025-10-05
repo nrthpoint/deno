@@ -23,7 +23,7 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     defaultGroupSize: 0.5,
     backgroundColor: '#5c96eb',
     unitFormatter: () => 'min/mile',
-    titleFormatter: (key) => `${key}`,
+    titleFormatter: ({ key }) => `${key}`,
     suffixFormatter: () => 'min/mile',
     valueExtractor: ({ pace }) => pace,
   },
@@ -35,7 +35,7 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     backgroundColor: '#6283f7',
     useRange: true,
     unitFormatter: () => 'meters',
-    titleFormatter: (key, _sample, _distanceUnit, groupSize) => {
+    titleFormatter: ({ key, groupSize }) => {
       if (groupSize) {
         const start = Number(key);
         const end = start + groupSize;
@@ -58,10 +58,10 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     useRange: true,
     unitFormatter: () => 'min',
     suffixFormatter: () => 'minutes',
-    titleFormatter: (key, _sample, _distanceUnit, groupSize) => {
+    titleFormatter: ({ key, groupSize }) => {
       if (groupSize) {
-        const startMinutes = Math.round(Number(key) / 60);
-        const endMinutes = Math.round((Number(key) + groupSize) / 60);
+        const startMinutes = Math.round(Number(key));
+        const endMinutes = Math.round(Number(key) + groupSize);
 
         return `${startMinutes}-${endMinutes}`;
       }
@@ -78,7 +78,7 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     backgroundColor: '#b0c3f1',
     useRange: true,
     unitFormatter: () => '°C',
-    titleFormatter: (key, _sample, _distanceUnit, groupSize) => {
+    titleFormatter: ({ key, groupSize }) => {
       if (groupSize) {
         const start = Number(key);
         const end = start + groupSize;
@@ -99,7 +99,7 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     backgroundColor: '#ced0de',
     useRange: true,
     unitFormatter: () => '% humidity',
-    titleFormatter: (key, _sample, _distanceUnit, groupSize) => {
+    titleFormatter: ({ key, groupSize }) => {
       if (groupSize) {
         const start = Number(key);
         const end = start + groupSize;

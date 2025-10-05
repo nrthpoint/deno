@@ -53,6 +53,28 @@ export function groupWorkouts(
 }
 
 /**
+ * Determines if a workout should be included in a group based on tolerance settings
+ */
+function shouldIncludeWorkoutInGroup(
+  value: number,
+  nearestGroup: number,
+  groupSize: number,
+  tolerance: number,
+  useBidirectionalTolerance: boolean = false,
+): boolean {
+  if (useBidirectionalTolerance) {
+    // Bidirectional: nearestGroup ± tolerance to (nearestGroup + groupSize) ± tolerance
+    const lowerBound = nearestGroup - tolerance;
+    const upperBound = nearestGroup + groupSize + tolerance;
+
+    return value >= lowerBound && value <= upperBound;
+  } else {
+    // Original: nearestGroup to (nearestGroup + groupSize) + tolerance
+    return value >= nearestGroup && value <= nearestGroup + groupSize + tolerance;
+  }
+}
+
+/**
  * Parses a single sample into the appropriate group
  */
 function parseSampleIntoGroup({
@@ -79,10 +101,14 @@ function parseSampleIntoGroup({
   const indoorSuffix = sample.isIndoor ? '-indoor' : '-outdoor';
   const groupKey = baseGroupKey + indoorSuffix;
 
-  // Check if the sample is within the group range (nearestGroup to nearestGroup + groupSize)
-  // and within tolerance of the nearestGroup
-  const isCloseEnough =
-    value.quantity >= nearestGroup && value.quantity <= nearestGroup + groupSize + tolerance;
+  // Check if the sample should be included using the extracted logic
+  const isCloseEnough = shouldIncludeWorkoutInGroup(
+    value.quantity,
+    nearestGroup,
+    groupSize,
+    tolerance,
+    config.useBidirectionalTolerance,
+  );
 
   // Create or get the group for the current sample
   const group =
@@ -95,8 +121,12 @@ function parseSampleIntoGroup({
   }
 
   if (!isCloseEnough) {
+    const rangeDescription = config.useBidirectionalTolerance
+      ? `${nearestGroup - tolerance}-${nearestGroup + groupSize + tolerance}`
+      : `${nearestGroup}-${nearestGroup + groupSize + tolerance}`;
+
     console.warn(
-      `Run with ${config.property} ${value.quantity} ${value.unit} is not within the group range ${nearestGroup}-${nearestGroup + groupSize} ${value.unit} with tolerance ${tolerance}. Skipping.`,
+      `Run with ${config.property} ${value.quantity} ${value.unit} is not within the group range ${rangeDescription} ${value.unit}. Skipping.`,
     );
 
     group.skipped = (group.skipped || 0) + 1;

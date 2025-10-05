@@ -13,13 +13,15 @@ export interface GroupConfig {
   defaultGroupSize: number;
   backgroundColor: string;
   useRange?: boolean;
+  useBidirectionalTolerance?: boolean;
   unitFormatter: (key: string, sample: ExtendedWorkout, distanceUnit: LengthUnit) => string;
-  titleFormatter?: (
-    key: string,
-    sample: ExtendedWorkout,
-    distanceUnit: LengthUnit,
-    groupSize?: number,
-  ) => string;
+  titleFormatter?: (params: {
+    key: string;
+    sample: ExtendedWorkout;
+    distanceUnit: LengthUnit;
+    groupSize?: number;
+    useBidirectionalTolerance?: boolean;
+  }) => string;
   suffixFormatter: (distanceUnit: LengthUnit) => string;
   valueExtractor: (sample: ExtendedWorkout) => Quantity;
   filter?: (sample: ExtendedWorkout) => boolean;

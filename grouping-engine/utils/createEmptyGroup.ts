@@ -19,7 +19,14 @@ export function createEmptyGroup(
     key,
     type: config.type,
     unit: config.unitFormatter(key, sample, distanceUnit),
-    title: config.titleFormatter?.(key, sample, distanceUnit, groupSize) ?? key,
+    title:
+      config.titleFormatter?.({
+        key,
+        sample,
+        distanceUnit,
+        groupSize,
+        useBidirectionalTolerance: config.useBidirectionalTolerance,
+      }) ?? key,
     suffix: config.suffixFormatter(distanceUnit),
     rank: 0,
     skipped: 0,
