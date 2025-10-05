@@ -1,5 +1,3 @@
-import { GroupType } from '@/types/Groups';
-
 export const colors = {
   neutral: '#FFFFFF',
   lightGray: '#c2c2c2ff',
@@ -22,52 +20,6 @@ export const colors = {
 
   // Status Colors
   error: '#ff4444',
-};
-
-export type ColorProfile = {
-  primary: string;
-  secondary: string;
-  gradientStart: string;
-  gradientEnd: string;
-};
-
-export const tabColors: Record<GroupType, ColorProfile> = {
-  distance: {
-    primary: '#1e3c72',
-    secondary: '#152a50ff',
-    gradientStart: '#1e3c72',
-    gradientEnd: '#2a5298',
-  },
-  pace: {
-    primary: '#be31b7ff',
-    secondary: '#A0299A',
-    gradientStart: '#8e0a85',
-    gradientEnd: '#be31b7ff',
-  },
-  elevation: {
-    primary: '#6cea12ff',
-    secondary: '#184c16ff',
-    gradientStart: '#4ca50c',
-    gradientEnd: '#6cea12ff',
-  },
-  duration: {
-    primary: '#ff9800',
-    secondary: '#e65100',
-    gradientStart: '#f57c00',
-    gradientEnd: '#ff9800',
-  },
-  temperature: {
-    primary: '#4a90e2',
-    secondary: '#2c5aa0',
-    gradientStart: '#3a7bd5',
-    gradientEnd: '#4a90e2',
-  },
-  humidity: {
-    primary: '#50e3c2',
-    secondary: '#00d4aa',
-    gradientStart: '#00b09b',
-    gradientEnd: '#50e3c2',
-  },
 };
 
 export const SAMPLE1_COLOR = '#2196f3';

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { getTabOptionConfig, UIConfig } from '@/config/ui';
+import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { GroupingConfig } from '@/grouping-engine/types/Grouping';
 import { GroupType } from '@/types/Groups';
 
@@ -12,10 +12,11 @@ export function useGroupConfig() {
   const [groupingConfigs, setGroupingConfigs] = useState<Record<GroupType, GroupingConfig>>(() => {
     const configs: Record<GroupType, GroupingConfig> = {} as Record<GroupType, GroupingConfig>;
 
-    for (const option of Object.values(UIConfig.tabOptions)) {
-      configs[option.key] = {
-        ...option,
+    for (const [key, config] of Object.entries(GROUPING_CONFIGS)) {
+      configs[key as GroupType] = {
         enabled: false,
+        tolerance: config.defaultTolerance,
+        groupSize: config.defaultGroupSize,
       };
     }
 
@@ -58,14 +59,14 @@ export function useGroupConfig() {
    * Reset configuration for a specific group type to defaults
    */
   const resetConfig = useCallback((groupType: GroupType) => {
-    const defaultConfig = getTabOptionConfig(groupType);
+    const defaultConfig = GROUPING_CONFIGS[groupType];
 
     setGroupingConfigs((prev) => ({
       ...prev,
       [groupType]: {
         enabled: false,
-        tolerance: defaultConfig.tolerance,
-        groupSize: defaultConfig.groupSize,
+        tolerance: defaultConfig.defaultTolerance,
+        groupSize: defaultConfig.defaultGroupSize,
       },
     }));
   }, []);

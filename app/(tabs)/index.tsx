@@ -14,11 +14,11 @@ import {
 } from '@/components/GroupTypeBottomSheet/GroupTypeBottomSheet';
 import { TutorialOverlay } from '@/components/Tutorial/TutorialOverlay';
 import { colors } from '@/config/colors';
-import { UIConfig } from '@/config/ui';
 import { GroupStatsProvider } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { useTutorialContext } from '@/context/TutorialContext';
+import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { useGroupConfig } from '@/hooks/useGroupConfig';
 import { useWorkoutGroups } from '@/hooks/useWorkoutGroups';
 import { GroupType } from '@/types/Groups';
@@ -47,7 +47,7 @@ export default function Index() {
   // Load persisted group type on mount
   useEffect(() => {
     AsyncStorage.getItem('selectedGroupType').then((storedGroupType) => {
-      if (storedGroupType && Object.keys(UIConfig.tabOptions).includes(storedGroupType)) {
+      if (storedGroupType && Object.keys(GROUPING_CONFIGS).includes(storedGroupType)) {
         setGroupingType(storedGroupType as GroupType);
       }
     });
@@ -155,7 +155,7 @@ export default function Index() {
               activeOpacity={0.7}
             >
               <Text style={styles.headerTitle}>Groups</Text>
-              <Text style={styles.headerSubtitle}>{UIConfig.tabOptions[groupType].label}</Text>
+              <Text style={styles.headerSubtitle}>{GROUPING_CONFIGS[groupType].label}</Text>
             </TouchableOpacity>
 
             {/* Settings and Add Workout Icons */}

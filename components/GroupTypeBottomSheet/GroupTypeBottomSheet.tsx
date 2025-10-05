@@ -6,7 +6,7 @@ import { Portal } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { UIConfig } from '@/config/ui';
+import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { GroupType } from '@/types/Groups';
 
 interface GroupTypeOption {
@@ -31,13 +31,13 @@ export const GroupTypeBottomSheetWithRef = React.forwardRef<
 >(function GroupTypeBottomSheetWithRef({ selectedGroupType, onSelect }, ref) {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const enabledTabOptions = Object.values(UIConfig.tabOptions).filter((opt) => opt.enabled);
+  const enabledConfigs = Object.entries(GROUPING_CONFIGS).filter(([, config]) => config.enabled);
 
-  const options: GroupTypeOption[] = enabledTabOptions.map((opt) => ({
-    key: opt.key,
-    label: opt.label,
-    icon: opt.icon,
-    description: opt.description,
+  const options: GroupTypeOption[] = enabledConfigs.map(([key, config]) => ({
+    key: key as GroupType,
+    label: config.label,
+    icon: config.icon,
+    description: config.description,
   }));
 
   const snapPoints = useMemo(() => {

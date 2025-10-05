@@ -1,6 +1,7 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, ReactNode, useContext } from 'react';
 
-import { tabColors, ColorProfile } from '@/config/colors';
+import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
+import { ColorProfile } from '@/grouping-engine/types/GroupConfig';
 import { GroupType } from '@/types/Groups';
 
 interface ThemeContextType {
@@ -17,7 +18,7 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, groupType }) => {
-  const colorProfile = tabColors[groupType];
+  const colorProfile = GROUPING_CONFIGS[groupType].colorProfile;
   const gradientColors: [string, string] = [colorProfile.gradientStart, colorProfile.gradientEnd];
 
   return (

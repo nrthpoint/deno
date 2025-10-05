@@ -11,7 +11,7 @@ import Svg, { Line, Rect, Text as SvgText } from 'react-native-svg';
 import { Card } from '@/components/Card/Card';
 import { ModalProvider } from '@/components/Modal/Modal';
 import { ModalProps } from '@/components/Modal/Modal.types';
-import { ThemedGradient } from '@/components/ThemedGradient';
+import { ThemedGradient } from '@/components/ThemedGradient/ThemedGradient';
 import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
 import { useGroupStats } from '@/context/GroupStatsContext';

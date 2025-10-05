@@ -1,1 +1,0 @@
-export { ThemedGradient } from './ThemedGradient';

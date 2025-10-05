@@ -7,7 +7,7 @@ import { Card } from '@/components/Card/Card';
 import { ModalProvider } from '@/components/Modal/Modal';
 import { ModalProps } from '@/components/Modal/Modal.types';
 import { AnimatedCounter } from '@/components/Stats/AnimatedCounter';
-import { ThemedGradient } from '@/components/ThemedGradient';
+import { ThemedGradient } from '@/components/ThemedGradient/ThemedGradient';
 import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
 import { useGroupStats } from '@/context/GroupStatsContext';
