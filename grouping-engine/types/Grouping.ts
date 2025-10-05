@@ -5,7 +5,6 @@ import { Group, Groups } from '@/types/Groups';
 
 export interface GroupingConfig {
   enabled?: boolean;
-  tolerance: number;
   groupSize: number;
 }
 

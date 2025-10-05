@@ -16,7 +16,7 @@ export function groupWorkouts(
   timeRangeInDays: TimeRange,
 ): Groups {
   const { samples, distanceUnit } = params;
-  const { tolerance = config.defaultTolerance, groupSize = config.defaultGroupSize } = params;
+  const { groupSize = config.defaultGroupSize } = params;
 
   const filteredSamples = config.filter ? samples.filter(config.filter) : samples;
 
@@ -27,12 +27,11 @@ export function groupWorkouts(
 
   const groups: Groups = {};
 
-  // Group all samples
+  // Group all samples - every sample will be placed in exactly one group
   for (const sample of filteredSamples) {
     parseSampleIntoGroup({
       sample,
       groups,
-      tolerance,
       groupSize,
       distanceUnit,
       config,
@@ -53,62 +52,48 @@ export function groupWorkouts(
 }
 
 /**
- * Determines if a workout should be included in a group based on tolerance settings
+ * Calculates the nearest group key and creates a unique group identifier
  */
-function shouldIncludeWorkoutInGroup(
+function calculateGroupKey(
   value: number,
-  nearestGroup: number,
   groupSize: number,
-  tolerance: number,
-  useBidirectionalTolerance: boolean = false,
-): boolean {
-  if (useBidirectionalTolerance) {
-    // Bidirectional: nearestGroup ± tolerance to (nearestGroup + groupSize) ± tolerance
-    const lowerBound = nearestGroup - tolerance;
-    const upperBound = nearestGroup + groupSize + tolerance;
+  isIndoor: boolean,
+): {
+  nearestGroup: number;
+  baseGroupKey: string;
+  groupKey: string;
+} {
+  // Calculate the nearest group based on groupSize, rounding down
+  const nearestGroup = Math.floor(value / groupSize) * groupSize;
 
-    return value >= lowerBound && value <= upperBound;
-  } else {
-    // Original: nearestGroup to (nearestGroup + groupSize) + tolerance
-    return value >= nearestGroup && value <= nearestGroup + groupSize + tolerance;
-  }
+  // Create a string key for the group INCLUDING indoor/outdoor designation
+  const baseGroupKey = nearestGroup % 1 === 0 ? nearestGroup.toString() : nearestGroup.toFixed(1);
+  const indoorSuffix = isIndoor ? '-indoor' : '-outdoor';
+  const groupKey = baseGroupKey + indoorSuffix;
+
+  return { nearestGroup, baseGroupKey, groupKey };
 }
 
 /**
  * Parses a single sample into the appropriate group
+ * Every sample is guaranteed to be placed in exactly one group based on its calculated group key
  */
 function parseSampleIntoGroup({
   sample,
   groups,
-  tolerance,
   groupSize,
   distanceUnit,
   config,
-}: IndividualSampleParserParams & { config: GroupConfig }): void {
+}: Omit<IndividualSampleParserParams, 'tolerance'> & { config: GroupConfig }): void {
   const value = config.valueExtractor(sample);
 
   if (!value || value.quantity === undefined) {
     console.warn(`Sample missing ${config.property}, skipping`);
-
     return;
   }
 
-  // Calculate the nearest group based on groupSize, rounding down
-  const nearestGroup = Math.floor(value.quantity / groupSize) * groupSize;
-
-  // Create a string key for the group INCLUDING indoor/outdoor designation
-  const baseGroupKey = nearestGroup % 1 === 0 ? nearestGroup.toString() : nearestGroup.toFixed(1);
-  const indoorSuffix = sample.isIndoor ? '-indoor' : '-outdoor';
-  const groupKey = baseGroupKey + indoorSuffix;
-
-  // Check if the sample should be included using the extracted logic
-  const isCloseEnough = shouldIncludeWorkoutInGroup(
-    value.quantity,
-    nearestGroup,
-    groupSize,
-    tolerance,
-    config.useBidirectionalTolerance,
-  );
+  // Calculate group key and nearest group value
+  const { baseGroupKey, groupKey } = calculateGroupKey(value.quantity, groupSize, sample.isIndoor);
 
   // Create or get the group for the current sample
   const group =
@@ -120,21 +105,7 @@ function parseSampleIntoGroup({
     group.isIndoor = sample.isIndoor;
   }
 
-  if (!isCloseEnough) {
-    const rangeDescription = config.useBidirectionalTolerance
-      ? `${nearestGroup - tolerance}-${nearestGroup + groupSize + tolerance}`
-      : `${nearestGroup}-${nearestGroup + groupSize + tolerance}`;
-
-    console.warn(
-      `Run with ${config.property} ${value.quantity} ${value.unit} is not within the group range ${rangeDescription} ${value.unit}. Skipping.`,
-    );
-
-    group.skipped = (group.skipped || 0) + 1;
-
-    return;
-  }
-
-  // Add the sample to the group
+  // Add the sample to the group - every sample is always included
   group.runs.push(sample);
 
   // Aggregate the totals

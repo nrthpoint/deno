@@ -6,7 +6,7 @@ import { GroupType } from '@/types/Groups';
 
 /**
  * Hook to manage grouping configurations for different group types.
- * Provides state management and update methods for tolerance and groupSize settings.
+ * Provides state management and update methods for groupSize settings.
  */
 export function useGroupConfig() {
   const [groupingConfigs, setGroupingConfigs] = useState<Record<GroupType, GroupingConfig>>(() => {
@@ -15,7 +15,6 @@ export function useGroupConfig() {
     for (const [key, config] of Object.entries(GROUPING_CONFIGS)) {
       configs[key as GroupType] = {
         enabled: false,
-        tolerance: config.defaultTolerance,
         groupSize: config.defaultGroupSize,
       };
     }
@@ -27,21 +26,9 @@ export function useGroupConfig() {
    * Update configuration for a specific group type
    */
   const updateConfig = useCallback((groupType: GroupType, config: GroupingConfig) => {
-    let validatedConfig = { ...config };
-
-    // Only validate tolerance/groupSize if grouping is enabled
-    if (config.enabled && config.tolerance !== undefined && config.groupSize !== undefined) {
-      const maxTolerance = config.groupSize / 2;
-
-      validatedConfig = {
-        ...validatedConfig,
-        tolerance: Math.min(config.tolerance, maxTolerance),
-      };
-    }
-
     setGroupingConfigs((prev) => ({
       ...prev,
-      [groupType]: validatedConfig,
+      [groupType]: config,
     }));
   }, []);
 
@@ -65,7 +52,6 @@ export function useGroupConfig() {
       ...prev,
       [groupType]: {
         enabled: false,
-        tolerance: defaultConfig.defaultTolerance,
         groupSize: defaultConfig.defaultGroupSize,
       },
     }));

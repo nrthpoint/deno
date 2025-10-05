@@ -21,11 +21,9 @@ export interface GroupConfig {
   // Core grouping properties
   type: GroupType;
   property: keyof ExtendedWorkout;
-  defaultTolerance: number;
   defaultGroupSize: number;
   backgroundColor: string;
   useRange?: boolean;
-  useBidirectionalTolerance?: boolean;
 
   // Business logic functions
   unitFormatter: (key: string, sample: ExtendedWorkout, distanceUnit: LengthUnit) => string;
@@ -34,7 +32,6 @@ export interface GroupConfig {
     sample: ExtendedWorkout;
     distanceUnit: LengthUnit;
     groupSize?: number;
-    useBidirectionalTolerance?: boolean;
   }) => string;
   suffixFormatter: (distanceUnit: LengthUnit) => string;
   valueExtractor: (sample: ExtendedWorkout) => Quantity;
@@ -45,9 +42,7 @@ export interface GroupConfig {
   label: string;
   icon: keyof typeof Ionicons.glyphMap;
   description: string;
-  /*   tolerance: number; // User-configurable tolerance
-  groupSize: number; // User-configurable group size
- */
+
   // Color properties (merged from tabColors)
   colorProfile: ColorProfile;
 }
@@ -59,7 +54,6 @@ export type TabOptionConfig = {
   key: GroupType;
   enabled: boolean;
   label: string;
-  tolerance: number;
   groupSize: number;
   icon: keyof typeof Ionicons.glyphMap;
   description: string;

@@ -62,7 +62,7 @@ export default function Index() {
   /*
    * Get the grouping configuration for the selected group type
    */
-  const { enabled, tolerance, groupSize } = getConfig(groupType);
+  const { enabled, groupSize } = getConfig(groupType);
 
   /*
    * 3. Fetch workout groups based on the current configuration
@@ -72,7 +72,6 @@ export default function Index() {
     distanceUnit,
     timeRangeInDays,
     groupType,
-    tolerance,
     groupSize,
   });
 
@@ -127,7 +126,7 @@ export default function Index() {
           onDismiss={() => setConfigModalVisible(false)}
           groupType={groupType}
           distanceUnit={distanceUnit}
-          config={{ enabled, tolerance, groupSize }}
+          config={{ enabled, groupSize }}
           onConfigChange={(config) => updateConfig(groupType, config)}
         />
 

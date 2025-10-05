@@ -19,7 +19,6 @@ export function useWorkoutGroups({
   distanceUnit,
   timeRangeInDays,
   groupType,
-  tolerance,
   groupSize,
 }: UseGroupedActivityDataParams) {
   const { workouts, authorizationStatus, requestAuthorization } = useWorkout();
@@ -35,14 +34,13 @@ export function useWorkoutGroups({
     return groupWorkouts(
       {
         samples,
-        tolerance,
         groupSize,
         distanceUnit,
       },
       config,
       timeRangeInDays,
     );
-  }, [samples, tolerance, groupSize, distanceUnit, config, timeRangeInDays, loading]);
+  }, [samples, groupSize, distanceUnit, config, timeRangeInDays, loading]);
 
   return { groups, meta, samples, loading, authorizationStatus, requestAuthorization };
 }

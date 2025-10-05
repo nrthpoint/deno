@@ -25,7 +25,6 @@ export function createEmptyGroup(
         sample,
         distanceUnit,
         groupSize,
-        useBidirectionalTolerance: config.useBidirectionalTolerance,
       }) ?? key,
     suffix: config.suffixFormatter(distanceUnit),
     rank: 0,

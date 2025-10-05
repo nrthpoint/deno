@@ -10,7 +10,6 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
   distance: {
     type: 'distance',
     property: 'distance',
-    defaultTolerance: 0.5,
     defaultGroupSize: 1.0,
     backgroundColor: '#5681FE',
     unitFormatter: (_key, { distance }) => distance?.unit,
@@ -19,8 +18,6 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     // UI properties (merged from UIConfig)
     enabled: true,
     label: 'Distance',
-    /*     tolerance: 0,
-    groupSize: 1, */
     icon: 'walk',
     description: 'Distance run or walked',
     // Color properties
@@ -34,7 +31,6 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
   pace: {
     type: 'pace',
     property: 'pace',
-    defaultTolerance: 0.25,
     defaultGroupSize: 0.5,
     backgroundColor: '#5c96eb',
     unitFormatter: () => 'min/mile',
@@ -44,8 +40,6 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     // UI properties (merged from UIConfig)
     enabled: true,
     label: 'Pace',
-    /*     tolerance: 0.25,
-    groupSize: 0.5, */
     icon: 'speedometer',
     description: 'Average pace',
     // Color properties
@@ -59,7 +53,6 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
   elevation: {
     type: 'elevation',
     property: 'elevation',
-    defaultTolerance: 50,
     defaultGroupSize: 100,
     backgroundColor: '#6283f7',
     useRange: true,
@@ -80,8 +73,6 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     // UI properties (merged from UIConfig)
     enabled: true,
     label: 'Elevation',
-    /*     tolerance: 50,
-    groupSize: 100, */
     icon: 'bar-chart',
     description: 'Elevation climbed',
     // Color properties
@@ -95,8 +86,7 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
   duration: {
     type: 'duration',
     property: 'duration',
-    defaultTolerance: 5, // 5 minutes tolerance
-    defaultGroupSize: 10, // 15 minute increments
+    defaultGroupSize: 10, // 10 minute increments
     backgroundColor: '#7eadec',
     useRange: true,
     unitFormatter: () => 'min',
@@ -126,7 +116,6 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
   temperature: {
     type: 'temperature',
     property: 'temperature',
-    defaultTolerance: 2,
     defaultGroupSize: 5,
     backgroundColor: '#b0c3f1',
     useRange: true,
@@ -146,8 +135,6 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     // UI properties (merged from UIConfig)
     enabled: true,
     label: 'Temperature',
-    /*     tolerance: 2.5,
-    groupSize: 5, */
     icon: 'thermometer',
     description: 'Temperature during workout',
     // Color properties
@@ -161,7 +148,6 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
   humidity: {
     type: 'humidity',
     property: 'humidity',
-    defaultTolerance: 5,
     defaultGroupSize: 10,
     backgroundColor: '#ced0de',
     useRange: true,
@@ -181,8 +167,6 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     // UI properties (merged from UIConfig)
     enabled: true,
     label: 'Humidity',
-    /*     tolerance: 5,
-    groupSize: 10, */
     icon: 'cloud-outline',
     description: 'Humidity during workout',
     // Color properties
