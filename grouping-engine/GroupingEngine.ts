@@ -74,15 +74,6 @@ function parseSampleIntoGroup({
   // Calculate the nearest group based on groupSize, rounding down
   const nearestGroup = Math.floor(value.quantity / groupSize) * groupSize;
 
-  console.log(
-    `Sample ${config.property}:`,
-    value.quantity,
-    value.unit,
-    '-> Nearest group:',
-    nearestGroup,
-    groupSize,
-  );
-
   // Create a string key for the group INCLUDING indoor/outdoor designation
   const baseGroupKey = nearestGroup % 1 === 0 ? nearestGroup.toString() : nearestGroup.toFixed(1);
   const indoorSuffix = sample.isIndoor ? '-indoor' : '-outdoor';
@@ -96,7 +87,7 @@ function parseSampleIntoGroup({
   // Create or get the group for the current sample
   const group =
     groups[groupKey] ||
-    (groups[groupKey] = createEmptyGroup(baseGroupKey, sample, config, distanceUnit));
+    (groups[groupKey] = createEmptyGroup(baseGroupKey, sample, config, distanceUnit, groupSize));
 
   // Add indoor/outdoor designation to the group
   if (!group.isIndoor) {

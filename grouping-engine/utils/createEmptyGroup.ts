@@ -13,12 +13,13 @@ export function createEmptyGroup(
   sample: ExtendedWorkout,
   config: GroupConfig,
   distanceUnit: LengthUnit,
+  groupSize: number,
 ): Group {
   return {
     key,
     type: config.type,
     unit: config.unitFormatter(key, sample, distanceUnit),
-    title: config.titleFormatter(key, sample, distanceUnit),
+    title: config.titleFormatter?.(key, sample, distanceUnit, groupSize) ?? key,
     suffix: config.suffixFormatter(distanceUnit),
     rank: 0,
     skipped: 0,
@@ -40,6 +41,7 @@ export function createEmptyGroup(
     averageDuration: newQuantity(0, 's'),
     averageDistance: newQuantity(0, distanceUnit),
     averageElevation: newQuantity(0, 'm'),
+    averageTemperature: newQuantity(0, '°C'),
     prettyPace: '',
     prettyName: ``,
     variantDistribution: [],
@@ -47,7 +49,6 @@ export function createEmptyGroup(
     predictions: {
       prediction4Week: null,
       prediction12Week: null,
-      recommendations: [],
     },
   } satisfies Group;
 }

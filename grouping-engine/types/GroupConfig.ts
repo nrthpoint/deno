@@ -12,8 +12,14 @@ export interface GroupConfig {
   defaultTolerance: number;
   defaultGroupSize: number;
   backgroundColor: string;
+  useRange?: boolean;
   unitFormatter: (key: string, sample: ExtendedWorkout, distanceUnit: LengthUnit) => string;
-  titleFormatter: (key: string, sample: ExtendedWorkout, distanceUnit: LengthUnit) => string;
+  titleFormatter?: (
+    key: string,
+    sample: ExtendedWorkout,
+    distanceUnit: LengthUnit,
+    groupSize?: number,
+  ) => string;
   suffixFormatter: (distanceUnit: LengthUnit) => string;
   valueExtractor: (sample: ExtendedWorkout) => Quantity;
   filter?: (sample: ExtendedWorkout) => boolean;

@@ -22,8 +22,6 @@ export function useGroupConfig() {
     return configs;
   });
 
-  console.log('Grouping Configs:', groupingConfigs);
-
   /**
    * Update configuration for a specific group type
    */

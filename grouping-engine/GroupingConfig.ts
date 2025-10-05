@@ -12,10 +12,9 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     defaultTolerance: 0.5,
     defaultGroupSize: 1.0,
     backgroundColor: '#5681FE',
-    unitFormatter: (_key, sample) => sample.distance?.unit || 'mi',
-    titleFormatter: (key, sample) => `${key}${sample.distance?.unit}`,
+    unitFormatter: (_key, { distance }) => distance?.unit,
     suffixFormatter: (distanceUnit) => distanceUnit,
-    valueExtractor: (sample) => sample.distance,
+    valueExtractor: ({ distance }) => distance,
   },
   pace: {
     type: 'pace',
@@ -24,9 +23,9 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     defaultGroupSize: 0.5,
     backgroundColor: '#5c96eb',
     unitFormatter: () => 'min/mile',
-    titleFormatter: (key) => `${key} min/mile`,
+    titleFormatter: (key) => `${key}`,
     suffixFormatter: () => 'min/mile',
-    valueExtractor: (sample) => sample.pace,
+    valueExtractor: ({ pace }) => pace,
   },
   elevation: {
     type: 'elevation',
@@ -34,10 +33,20 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     defaultTolerance: 50,
     defaultGroupSize: 100,
     backgroundColor: '#6283f7',
-    unitFormatter: () => 'm',
-    titleFormatter: (key) => `${key}m elevation`,
+    useRange: true,
+    unitFormatter: () => 'meters',
+    titleFormatter: (key, _sample, _distanceUnit, groupSize) => {
+      if (groupSize) {
+        const start = Number(key);
+        const end = start + groupSize;
+
+        return `${start}-${end}`;
+      }
+
+      return `${key}`;
+    },
     suffixFormatter: () => 'm',
-    valueExtractor: (sample) => sample.elevation,
+    valueExtractor: ({ elevation }) => elevation,
     filter: (sample) => sample.elevation && sample.elevation.quantity > 0,
   },
   duration: {
@@ -46,9 +55,19 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     defaultTolerance: 300, // 5 minutes tolerance
     defaultGroupSize: 900, // 15 minute increments
     backgroundColor: '#7eadec',
-    unitFormatter: () => 'minutes',
+    useRange: true,
+    unitFormatter: () => 'min',
     suffixFormatter: () => 'minutes',
-    titleFormatter: (key) => `${Math.round(Number(key) / 60)} min`,
+    titleFormatter: (key, _sample, _distanceUnit, groupSize) => {
+      if (groupSize) {
+        const startMinutes = Math.round(Number(key) / 60);
+        const endMinutes = Math.round((Number(key) + groupSize) / 60);
+
+        return `${startMinutes}-${endMinutes}`;
+      }
+
+      return `${Math.round(Number(key) / 60)}`;
+    },
     valueExtractor: (sample) => convertDurationToMinutesQuantity(sample.duration),
   },
   temperature: {
@@ -57,10 +76,20 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     defaultTolerance: 2,
     defaultGroupSize: 5,
     backgroundColor: '#b0c3f1',
+    useRange: true,
     unitFormatter: () => '°C',
-    titleFormatter: (key) => `${key}°C`,
+    titleFormatter: (key, _sample, _distanceUnit, groupSize) => {
+      if (groupSize) {
+        const start = Number(key);
+        const end = start + groupSize;
+
+        return `${start}-${end}`;
+      }
+
+      return `${key}`;
+    },
     suffixFormatter: () => '°C',
-    valueExtractor: (sample) => sample.temperature,
+    valueExtractor: ({ temperature }) => temperature,
   },
   humidity: {
     type: 'humidity',
@@ -68,9 +97,19 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     defaultTolerance: 5,
     defaultGroupSize: 10,
     backgroundColor: '#ced0de',
-    unitFormatter: () => '%',
-    titleFormatter: (key) => `${key}% humidity`,
+    useRange: true,
+    unitFormatter: () => '% humidity',
+    titleFormatter: (key, _sample, _distanceUnit, groupSize) => {
+      if (groupSize) {
+        const start = Number(key);
+        const end = start + groupSize;
+
+        return `${start}-${end}`;
+      }
+
+      return `${key}`;
+    },
     suffixFormatter: () => '%',
-    valueExtractor: (sample) => sample.humidity,
+    valueExtractor: ({ humidity }) => humidity,
   },
 };

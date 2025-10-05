@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -43,6 +44,21 @@ export default function Index() {
   const [groupType, setGroupingType] = useState<GroupType>('distance');
   const [configModalVisible, setConfigModalVisible] = useState(false);
 
+  // Load persisted group type on mount
+  useEffect(() => {
+    AsyncStorage.getItem('selectedGroupType').then((storedGroupType) => {
+      if (storedGroupType && Object.keys(UIConfig.tabOptions).includes(storedGroupType)) {
+        setGroupingType(storedGroupType as GroupType);
+      }
+    });
+  }, []);
+
+  // Persist group type when it changes
+  const handleGroupTypeChange = (newGroupType: GroupType) => {
+    setGroupingType(newGroupType);
+    AsyncStorage.setItem('selectedGroupType', newGroupType);
+  };
+
   /*
    * Get the grouping configuration for the selected group type
    */
@@ -66,17 +82,28 @@ export default function Index() {
   const options = Object.keys(groups);
   const [selectedOption, setSelectedOption] = useState<string>('');
 
-  // Update selectedOption when options change and selectedOption is not valid
+  // Load persisted selected option on mount and when groupType changes
   useEffect(() => {
-    if (options.length > 0 && !options.includes(selectedOption)) {
-      setSelectedOption(options[0]);
-    }
-  }, [options, selectedOption]);
+    const storageKey = `selectedOption_${groupType}`;
+    AsyncStorage.getItem(storageKey).then((storedOption) => {
+      if (storedOption && options.includes(storedOption)) {
+        setSelectedOption(storedOption);
+      } else if (options.length > 0) {
+        setSelectedOption(options[0]);
+      }
+    });
+  }, [groupType, options]);
+
+  // Persist selected option when it changes
+  const handleSelectedOptionChange = (newOption: string) => {
+    setSelectedOption(newOption);
+    const storageKey = `selectedOption_${groupType}`;
+    AsyncStorage.setItem(storageKey, newOption);
+  };
 
   const selectedGroup = groups[selectedOption];
   const isAuthorized = authorizationStatus === 2;
   const noData = !loading && !selectedGroup && !isAuthorized;
-  const itemSuffix = selectedGroup?.suffix || '';
 
   return (
     <ThemeProvider groupType={groupType}>
@@ -107,7 +134,7 @@ export default function Index() {
         <GroupTypeBottomSheetWithRef
           ref={groupTypeBottomSheetRef}
           selectedGroupType={groupType}
-          onSelect={setGroupingType}
+          onSelect={handleGroupTypeChange}
         />
 
         <View
@@ -158,10 +185,9 @@ export default function Index() {
 
             <GroupCarousel
               options={options}
-              itemSuffix={itemSuffix}
               groupType={groupType}
               selectedOption={selectedOption}
-              setSelectedOption={setSelectedOption}
+              setSelectedOption={handleSelectedOptionChange}
               groups={groups}
             />
           </Animated.View>

@@ -18,7 +18,6 @@ const PADDING = 40;
 interface GroupCarouselProps {
   options: string[];
   selectedOption: string;
-  itemSuffix: string;
   groupType: GroupType;
   groups: Record<string, any>;
   setSelectedOption: (_option: string) => void;
@@ -26,7 +25,6 @@ interface GroupCarouselProps {
 
 export const GroupCarousel = ({
   options,
-  itemSuffix,
   groupType,
   groups,
   selectedOption,
@@ -40,13 +38,13 @@ export const GroupCarousel = ({
 
   type CardProps = {
     isIndoor: boolean;
-    item: string;
-    itemSuffix: string;
+    title: string;
+    unit: string;
     skippedCount: number;
     backgroundColor: string;
   };
 
-  const Card = ({ isIndoor, item, itemSuffix, skippedCount, backgroundColor }: CardProps) => (
+  const Card = ({ isIndoor, title, unit, skippedCount, backgroundColor }: CardProps) => (
     <>
       <CardBackground />
 
@@ -62,14 +60,14 @@ export const GroupCarousel = ({
             styles.carouselText,
             {
               color: backgroundColor,
-              fontSize: item.length > 3 ? 60 : item.length > 2 ? 70 : 80,
+              fontSize: title.length > 6 ? 30 : title.length >= 5 ? 50 : 80,
             },
           ]}
         >
-          {item.replace(/-indoor|-outdoor/, '')}
+          {title}
         </Text>
 
-        <Text style={[styles.carouselSubText, { color: backgroundColor }]}>{itemSuffix}</Text>
+        <Text style={[styles.carouselSubText, { color: backgroundColor }]}>{unit}</Text>
       </View>
 
       {skippedCount > 0 && (
@@ -114,14 +112,16 @@ export const GroupCarousel = ({
           const group = groups[item];
           const isIndoor = group?.isIndoor || false;
           const skippedCount = group?.skipped || 0;
+          const title = group?.title || item;
+          const unit = group?.unit || '';
 
           return (
             <View style={styles.carouselItemContainer}>
               <View style={styles.carouselItem}>
                 <Card
                   isIndoor={isIndoor}
-                  item={item}
-                  itemSuffix={itemSuffix}
+                  title={title}
+                  unit={unit}
                   skippedCount={skippedCount}
                   backgroundColor={backgroundColor}
                 />

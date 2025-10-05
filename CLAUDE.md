@@ -15,8 +15,10 @@ This project uses `pnpm` as the package manager.
 ### Core Development
 
 - `pnpm start` - Start Expo development server
-- `pnpm sim` - Run on iOS simulator
-- `pnpm device` - Run on specific physical device (configured for UUID: 00008120-001E04C00EE0C01E)
+- `pnpm sim` - Run on iOS simulator (iPhone Air)
+- `pnpm device` - Run on specific physical device (configured for UUID: 00008150-001E51923C00401C)
+- `pnpm ios` - Run on iOS (generic)
+- `pnpm android` - Run on Android
 
 ### Testing
 
@@ -33,12 +35,21 @@ This project uses `pnpm` as the package manager.
 
 ### Build & Deployment (EAS)
 
-- `pnpm build` - Development build for iOS
-- `pnpm build:production` - Production build for App Store
-- `pnpm build:local` - Local development build
-- `pnpm update` - Push EAS update to preview channel (rapid iteration)
-- `pnpm update:dev` - Push to development channel
-- `pnpm update:production` - Push to production channel
+- `pnpm build` - Production build for App Store
+- `pnpm submit` - Submit to App Store
+- `pnpm update` - Push EAS update to production channel
+
+### EAS Update Workflow (Rapid Iteration)
+
+The project uses EAS Update for instant over-the-air updates without full rebuilds:
+
+1. **Initial Setup**: Build and install a development build once
+2. **Daily Development**: Push instant updates with `pnpm update`
+3. **Update Channels**:
+   - `development` - Local development with debug features
+   - `production` - Live app users (default for `pnpm update`)
+
+This enables rapid iteration by pushing code changes in seconds rather than rebuilding the entire app.
 
 ### Utilities
 
@@ -70,7 +81,8 @@ This project uses `pnpm` as the package manager.
 
 - Uses `@kingstinct/react-native-healthkit` for HealthKit integration
 - `ExtendedWorkout` type extends HealthKit data with additional properties
-- Context-based state management for selected workouts
+- Context-based state management using reducer pattern in `context/Workout/`
+- Modular architecture with separate files for actions, reducer, hooks, and types
 
 #### Grouping Engine
 
@@ -116,12 +128,18 @@ This project uses `pnpm` as the package manager.
 
 Tests are configured for the `utils/` directory only using Jest and ts-jest. Coverage reports are generated in the `coverage/` directory.
 
+### Running Specific Tests
+
+- `pnpm test <file>` - Run specific test file (e.g., `pnpm test workoutSplits.test.ts`)
+- `pnpm test:watch` - Run tests in watch mode for active development
+- `pnpm test:coverage` - Generate coverage reports
+
 ## Key Dependencies
 
 ### Core Framework
 
-- React Native 0.79.5 with React 19
-- Expo SDK ~53.0.22 with Expo Router for navigation
+- React Native 0.81.4 with React 19.1.0
+- Expo SDK ~54.0.12 with Expo Router for navigation
 
 ### Fitness & Health
 
@@ -144,3 +162,9 @@ Tests are configured for the `utils/` directory only using Jest and ts-jest. Cov
 - EAS for builds and over-the-air updates
 - Husky for git hooks
 - ESLint + Prettier for code quality
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
