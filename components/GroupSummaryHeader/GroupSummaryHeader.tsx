@@ -48,6 +48,7 @@ export const GroupSummaryHeader: React.FC<GroupSummaryHeaderProps> = ({ summary 
 
 const styles = StyleSheet.create({
   container: {
+    paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: colors.surface,
   },

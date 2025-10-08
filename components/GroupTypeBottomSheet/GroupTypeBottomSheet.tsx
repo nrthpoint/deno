@@ -158,7 +158,7 @@ export const GroupTypeBottomSheetWithRef = React.forwardRef<
 
 const styles = StyleSheet.create({
   bottomSheetBackground: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.background,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
   },
@@ -195,7 +195,8 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.gray + '20',
   },
   selectedOptionItem: {
-    backgroundColor: colors.neutral + '10',
+    backgroundColor: colors.surface,
+    borderRadius: 8,
   },
   optionContent: {
     flexDirection: 'row',
@@ -229,12 +230,12 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.neutral,
     alignItems: 'center',
     justifyContent: 'center',
   },
   checkmarkText: {
-    color: 'white',
+    color: colors.background,
     fontSize: 12,
     fontFamily: LatoFonts.bold,
   },

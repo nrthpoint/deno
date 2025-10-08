@@ -10,7 +10,7 @@ import { CardBackground } from '@/components/GroupCarousel/CardBackground';
 import { colors } from '@/config/colors';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { GroupType } from '@/types/Groups';
-import { subheading, uppercase } from '@/utils/text';
+import { subheading } from '@/utils/text';
 
 const VISIBLE_ITEMS = 2.5;
 const PADDING = 40;
@@ -23,6 +23,12 @@ interface GroupCarouselProps {
   setSelectedOption: (_option: string) => void;
 }
 
+type CardProps = {
+  isIndoor: boolean;
+  title: string;
+  unit: string;
+};
+
 export const GroupCarousel = ({
   options,
   groupType,
@@ -32,19 +38,32 @@ export const GroupCarousel = ({
 }: GroupCarouselProps) => {
   const carouselRef = useRef<any>(null);
   const parallaxOffset = useSharedValue(0);
-  const backgroundColor = GROUPING_CONFIGS[groupType].backgroundColor;
+
   const deviceWidth = Dimensions.get('window').width;
   const itemWidth = (deviceWidth - PADDING) / VISIBLE_ITEMS;
+  const textColor = GROUPING_CONFIGS[groupType].foregroundColor;
 
-  type CardProps = {
-    isIndoor: boolean;
-    title: string;
-    unit: string;
-    skippedCount: number;
-    backgroundColor: string;
+  const getFontSize = (size: number) => {
+    if (size === 1) {
+      return 80;
+    }
+
+    if (size < 5) {
+      return 50;
+    }
+
+    if (size < 6) {
+      return 40;
+    }
+
+    if (size < 7) {
+      return 30;
+    }
+
+    return 20;
   };
 
-  const Card = ({ isIndoor, title, unit, skippedCount, backgroundColor }: CardProps) => (
+  const Card = ({ isIndoor, title, unit }: CardProps) => (
     <>
       <CardBackground />
 
@@ -59,22 +78,16 @@ export const GroupCarousel = ({
           style={[
             styles.carouselText,
             {
-              color: backgroundColor,
-              fontSize: title.length > 6 ? 30 : title.length >= 5 ? 50 : 80,
+              color: textColor,
+              fontSize: getFontSize(title.length),
             },
           ]}
         >
           {title}
         </Text>
 
-        <Text style={[styles.carouselSubText, { color: backgroundColor }]}>{unit}</Text>
+        <Text style={[styles.carouselSubText, { color: textColor }]}>{unit}</Text>
       </View>
-
-      {skippedCount > 0 && (
-        <View style={styles.excludedIndicator}>
-          <Text style={styles.excludedIndicatorText}>{skippedCount} excluded</Text>
-        </View>
-      )}
     </>
   );
 
@@ -111,7 +124,6 @@ export const GroupCarousel = ({
         renderItem={({ item }) => {
           const group = groups[item];
           const isIndoor = group?.isIndoor || false;
-          const skippedCount = group?.skipped || 0;
           const title = group?.title || item;
           const unit = group?.unit || '';
 
@@ -122,8 +134,6 @@ export const GroupCarousel = ({
                   isIndoor={isIndoor}
                   title={title}
                   unit={unit}
-                  skippedCount={skippedCount}
-                  backgroundColor={backgroundColor}
                 />
               </View>
             </View>
@@ -172,20 +182,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 1,
-  },
-  excludedIndicator: {
-    marginTop: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  excludedIndicatorText: {
-    ...uppercase,
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.8)',
-    textAlign: 'center',
   },
   carouselText: {
     verticalAlign: 'middle',

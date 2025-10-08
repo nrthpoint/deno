@@ -8,174 +8,179 @@ import { convertDurationToMinutesQuantity } from '@/utils/time';
  */
 export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
   distance: {
-    type: 'distance',
-    property: 'distance',
-    defaultGroupSize: 1.0,
-    backgroundColor: '#5681FE',
-    unitFormatter: (_key, { distance }) => distance?.unit,
-    suffixFormatter: (distanceUnit) => distanceUnit,
-    valueExtractor: ({ distance }) => distance,
-    // UI properties (merged from UIConfig)
     enabled: true,
-    label: 'Distance',
-    icon: 'walk',
-    description: 'Distance run or walked',
-    // Color properties
+
+    backgroundColor: '#5681FE',
     colorProfile: {
+      gradientEnd: '#4F75E5',
+      gradientStart: '#6291FF',
       primary: '#5681FE',
       secondary: '#4566CB',
-      gradientStart: '#6291FF',
-      gradientEnd: '#4F75E5',
     },
+    defaultGroupSize: 1.0,
+    description: 'Distance covered',
+    foregroundColor: '#5681FE',
+    icon: 'walk',
+    label: 'Distance',
+    property: 'distance',
+    type: 'distance',
+
+    suffixFormatter: (distanceUnit) => distanceUnit,
+    unitFormatter: (_key, { distance }) => distance?.unit,
+    valueExtractor: ({ distance }) => distance,
   },
+
   pace: {
-    type: 'pace',
-    property: 'pace',
-    defaultGroupSize: 0.5,
-    backgroundColor: '#5c96eb',
-    unitFormatter: () => 'min/mile',
-    titleFormatter: ({ key }) => `${key}`,
-    suffixFormatter: () => 'min/mile',
-    valueExtractor: ({ pace }) => pace,
-    // UI properties (merged from UIConfig)
     enabled: true,
-    label: 'Pace',
-    icon: 'speedometer',
-    description: 'Average pace',
-    // Color properties
+
+    backgroundColor: '#5c96eb',
     colorProfile: {
+      gradientEnd: '#5287D4',
+      gradientStart: '#6FA5FF',
       primary: '#5c96eb',
       secondary: '#4A78BC',
-      gradientStart: '#6FA5FF',
-      gradientEnd: '#5287D4',
     },
+    defaultGroupSize: 0.5,
+    description: 'Average pace',
+    foregroundColor: '#5c96eb',
+    icon: 'speedometer',
+    label: 'Pace',
+    property: 'pace',
+    type: 'pace',
+
+    suffixFormatter: () => 'min/mile',
+    titleFormatter: ({ key }) => `${key}`,
+    unitFormatter: () => 'min/mile',
+    valueExtractor: ({ pace }) => pace,
   },
+
   elevation: {
-    type: 'elevation',
-    property: 'elevation',
-    defaultGroupSize: 100,
-    backgroundColor: '#6283f7',
+    enabled: true,
     useRange: true,
-    unitFormatter: () => 'meters',
+
+    backgroundColor: '#6283f7',
+    colorProfile: {
+      gradientEnd: '#5876E0',
+      gradientStart: '#7594FF',
+      primary: '#6283f7',
+      secondary: '#4E69C5',
+    },
+    defaultGroupSize: 100,
+    description: 'Elevation climbed',
+    foregroundColor: '#6283f7',
+    icon: 'bar-chart',
+    label: 'Elevation',
+    property: 'elevation',
+    type: 'elevation',
+
+    filter: (sample) => sample.elevation && sample.elevation.quantity > 0,
+    suffixFormatter: () => 'm',
     titleFormatter: ({ key, groupSize }) => {
       if (groupSize) {
         const start = Number(key);
         const end = start + groupSize;
-
         return `${start}-${end}`;
       }
-
       return `${key}`;
     },
-    suffixFormatter: () => 'm',
+    unitFormatter: () => 'meters',
     valueExtractor: ({ elevation }) => elevation,
-    filter: (sample) => sample.elevation && sample.elevation.quantity > 0,
-    // UI properties (merged from UIConfig)
-    enabled: true,
-    label: 'Elevation',
-    icon: 'bar-chart',
-    description: 'Elevation climbed',
-    // Color properties
-    colorProfile: {
-      primary: '#6283f7',
-      secondary: '#4E69C5',
-      gradientStart: '#7594FF',
-      gradientEnd: '#5876E0',
-    },
   },
+
   duration: {
-    type: 'duration',
-    property: 'duration',
-    defaultGroupSize: 10, // 10 minute increments
-    backgroundColor: '#7eadec',
+    enabled: true,
     useRange: true,
-    unitFormatter: () => 'min',
+
+    backgroundColor: '#7eadec',
+    colorProfile: {
+      gradientEnd: '#719CD5',
+      gradientStart: '#8BBEFF',
+      primary: '#7eadec',
+      secondary: '#658ABC',
+    },
+    defaultGroupSize: 10,
+    description: 'Workout duration',
+    foregroundColor: '#7eadec',
+    icon: 'time',
+    label: 'Duration',
+    property: 'duration',
+    type: 'duration',
+
     suffixFormatter: () => 'minutes',
     titleFormatter: ({ key, groupSize }) => {
       if (groupSize) {
         const startMinutes = Math.round(Number(key));
         const endMinutes = Math.round(Number(key) + groupSize);
-
         return `${startMinutes}-${endMinutes}`;
       }
-
       return `${Math.round(Number(key) / 60)}`;
     },
+    unitFormatter: () => 'min',
     valueExtractor: (sample) => convertDurationToMinutesQuantity(sample.duration),
-    enabled: true,
-    label: 'Duration',
-    icon: 'time',
-    description: 'Workout duration',
-    colorProfile: {
-      primary: '#7eadec',
-      secondary: '#658ABC',
-      gradientStart: '#8BBEFF',
-      gradientEnd: '#719CD5',
-    },
   },
+
   temperature: {
-    type: 'temperature',
-    property: 'temperature',
-    defaultGroupSize: 5,
-    backgroundColor: '#b0c3f1',
-    useRange: true,
-    unitFormatter: () => '°C',
-    titleFormatter: ({ key, groupSize }) => {
-      if (groupSize) {
-        const start = Number(key);
-        const end = start + groupSize;
-
-        return `${start}-${end}`;
-      }
-
-      return `${key}`;
-    },
-    suffixFormatter: () => '°C',
-    valueExtractor: ({ temperature }) => temperature,
-    // UI properties (merged from UIConfig)
     enabled: true,
-    label: 'Temperature',
-    icon: 'thermometer',
-    description: 'Temperature during workout',
-    // Color properties
+    useRange: true,
+
+    backgroundColor: '#b0c3f1',
     colorProfile: {
+      gradientEnd: '#9EB0D9',
+      gradientStart: '#C2D5FF',
       primary: '#b0c3f1',
       secondary: '#8D9CC1',
-      gradientStart: '#C2D5FF',
-      gradientEnd: '#9EB0D9',
     },
-  },
-  humidity: {
-    type: 'humidity',
-    property: 'humidity',
-    defaultGroupSize: 10,
-    backgroundColor: '#ced0de',
-    useRange: true,
-    unitFormatter: () => '% humidity',
+    defaultGroupSize: 5,
+    description: 'Temperature during workout',
+    foregroundColor: '#616c87ff',
+    icon: 'thermometer',
+    label: 'Temperature',
+    property: 'temperature',
+    type: 'temperature',
+
+    suffixFormatter: () => '°C',
     titleFormatter: ({ key, groupSize }) => {
       if (groupSize) {
         const start = Number(key);
         const end = start + groupSize;
-
         return `${start}-${end}`;
       }
-
       return `${key}`;
     },
-    suffixFormatter: () => '%',
-    valueExtractor: ({ humidity }) => humidity,
-    // UI properties (merged from UIConfig)
+    unitFormatter: () => '°C',
+    valueExtractor: ({ temperature }) => temperature,
+  },
+
+  humidity: {
     enabled: true,
-    label: 'Humidity',
-    icon: 'cloud-outline',
-    description: 'Humidity during workout',
-    // Color properties
+    useRange: true,
+
+    backgroundColor: '#ced0de',
     colorProfile: {
+      gradientEnd: '#B9BBC7',
+      gradientStart: '#E3E5F4',
       primary: '#ced0de',
       secondary: '#A5A6B1',
-      gradientStart: '#E3E5F4',
-      gradientEnd: '#B9BBC7',
     },
+    defaultGroupSize: 10,
+    description: 'Humidity during workout',
+    foregroundColor: '#575c82ff',
+    icon: 'cloud-outline',
+    label: 'Humidity',
+    property: 'humidity',
+    type: 'humidity',
+
+    suffixFormatter: () => '%',
+    titleFormatter: ({ key, groupSize }) => {
+      if (groupSize) {
+        const start = Number(key);
+        const end = start + groupSize;
+        return `${start}-${end}`;
+      }
+      return `${key}`;
+    },
+    unitFormatter: () => '% humidity',
+    valueExtractor: ({ humidity }) => humidity,
   },
 };
 

@@ -8,43 +8,38 @@ import { GroupType } from '@/types/Groups';
  * Color profile for theming
  */
 export type ColorProfile = {
+  gradientEnd: string;
+  gradientStart: string;
   primary: string;
   secondary: string;
-  gradientStart: string;
-  gradientEnd: string;
 };
 
 /**
  * Configuration for each grouping type, including both business logic and UI properties
  */
 export interface GroupConfig {
-  // Core grouping properties
-  type: GroupType;
-  property: keyof ExtendedWorkout;
-  defaultGroupSize: number;
   backgroundColor: string;
+  colorProfile: ColorProfile;
+  defaultGroupSize: number;
+  enabled: boolean;
+  foregroundColor: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  description: string;
+  property: keyof ExtendedWorkout;
+  type: GroupType;
   useRange?: boolean;
 
-  // Business logic functions
-  unitFormatter: (key: string, sample: ExtendedWorkout, distanceUnit: LengthUnit) => string;
+  filter?: (sample: ExtendedWorkout) => boolean;
+  suffixFormatter: (distanceUnit: LengthUnit) => string;
   titleFormatter?: (params: {
     key: string;
     sample: ExtendedWorkout;
     distanceUnit: LengthUnit;
     groupSize?: number;
   }) => string;
-  suffixFormatter: (distanceUnit: LengthUnit) => string;
+  unitFormatter: (key: string, sample: ExtendedWorkout, distanceUnit: LengthUnit) => string;
   valueExtractor: (sample: ExtendedWorkout) => Quantity;
-  filter?: (sample: ExtendedWorkout) => boolean;
-
-  // UI properties (merged from UIConfig)
-  enabled: boolean;
-  label: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  description: string;
-
-  // Color properties (merged from tabColors)
-  colorProfile: ColorProfile;
 }
 
 /**

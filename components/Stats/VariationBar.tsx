@@ -278,7 +278,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
           y={LABEL_Y}
           fontSize={10}
           fontWeight={'bold'}
-          fill="#fff"
+          fill={colors.background}
           textAnchor="middle"
           animatedProps={minLabelAnimatedProps}
         >
@@ -289,7 +289,7 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
           y={LABEL_Y}
           fontSize={10}
           fontWeight={'bold'}
-          fill="#fff"
+          fill={colors.background}
           textAnchor="middle"
           animatedProps={maxLabelAnimatedProps}
         >
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontSize: 12,
-    color: '#ffffff',
+    color: colors.background,
     textAlign: 'center',
     textTransform: 'uppercase',
     letterSpacing: 2,

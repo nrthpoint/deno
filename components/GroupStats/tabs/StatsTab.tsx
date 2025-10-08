@@ -53,6 +53,7 @@ export const StatsTab: React.FC = () => {
           section={section}
           getTabColor={getTabColor}
           alternatingBackground={index % 2 === 0}
+          initialExpanded={index === 0 || index === 1}
         />
       ))}
 
