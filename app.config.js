@@ -16,7 +16,7 @@ export default {
     githubUrl: 'https://github.com/nrthpoint/deno',
     ios: {
       supportsTablet: false,
-      bundleIdentifier: 'com.nrthpoint.deno.fit',
+      bundleIdentifier: 'com.nrthpoint.deno.app',
       backgroundModes: ['fetch', 'processing'],
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
@@ -31,7 +31,7 @@ export default {
       },
     },
     android: {
-      package: 'com.nrthpoint.deno.fit',
+      package: 'com.nrthpoint.deno.app',
     },
     plugins: [
       [

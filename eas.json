@@ -24,9 +24,9 @@
   "submit": {
     "production": {
       "ios": {
-        "appleId": "harry@deno.fit",
-        "ascAppId": "6751291131",
-        "appleTeamId": "X9X569V5YH"
+        "appleId": "harry@nrthpoint.com",
+        "ascAppId": "6753758039", // "6751291131",
+        "appleTeamId": "4K857K4T8P" // "X9X569V5YH"
       }
     }
   }
