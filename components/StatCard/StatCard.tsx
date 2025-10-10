@@ -1,3 +1,4 @@
+import { GlassView } from 'expo-glass-effect';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -42,7 +43,9 @@ export const StatCard = ({
     <Card backgroundColor={darkerBackground ? colors.background : colors.surface}>
       <View style={styles.innerContainer}>
         <View style={[styles.accentStrip, { backgroundColor: accentColor || primary }]}>
-          <View style={styles.iconContainer}>{icon}</View>
+          <GlassView style={styles.glassOverlay}>
+            <View style={styles.iconContainer}>{icon}</View>
+          </GlassView>
         </View>
 
         <View style={styles.content}>
@@ -74,6 +77,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 20,
+    borderRadius: 8,
+  },
+  glassOverlay: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 8,
   },
   content: {

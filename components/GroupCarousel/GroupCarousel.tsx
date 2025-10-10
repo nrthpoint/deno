@@ -149,6 +149,8 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: '100%',
     height: '100%',
+    borderWidth: 1,
+    borderColor: 'red',
   },
   carousel: {
     marginTop: 200,
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     borderRadius: 20,
     alignItems: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: 'transparent',
     shadowColor: '#555555',
     shadowOffset: {
       width: 2,

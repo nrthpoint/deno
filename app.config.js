@@ -18,6 +18,7 @@ export default {
       supportsTablet: false,
       bundleIdentifier: 'com.nrthpoint.deno.app',
       backgroundModes: ['fetch', 'processing'],
+      deploymentTarget: '16.0',
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
         NSHealthShareUsageDescription:
@@ -67,6 +68,7 @@ export default {
     ],
     experiments: {
       typedRoutes: true,
+      nativeBottomTabs: true,
     },
     extra: {
       router: {},
