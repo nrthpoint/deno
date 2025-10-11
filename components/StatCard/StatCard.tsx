@@ -43,7 +43,10 @@ export const StatCard = ({
     <Card backgroundColor={darkerBackground ? colors.background : colors.surface}>
       <View style={styles.innerContainer}>
         <View style={[styles.accentStrip, { backgroundColor: accentColor || primary }]}>
-          <GlassView style={styles.glassOverlay}>
+          <GlassView
+            style={styles.glassOverlay}
+            glassEffectStyle="clear"
+          >
             <View style={styles.iconContainer}>{icon}</View>
           </GlassView>
         </View>

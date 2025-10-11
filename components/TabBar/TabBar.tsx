@@ -1,3 +1,4 @@
+import { GlassView } from 'expo-glass-effect';
 import React, { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -42,7 +43,6 @@ export const TabBar: React.FC<TabBarProps> = ({
       return;
     }
 
-    // Animate to the active tab position for subsequent changes
     Animated.timing(animatedValue, {
       toValue: activeTabIndex,
       duration: 250,
@@ -50,56 +50,82 @@ export const TabBar: React.FC<TabBarProps> = ({
     }).start();
   }, [activeTabIndex, animatedValue]);
 
+  const AnimatedGlassView = Animated.createAnimatedComponent(GlassView);
+
+  const BackgroundSlider = () => (
+    <AnimatedGlassView
+      //glassEffectStyle="clear"
+      style={[
+        styles.slidingIndicator,
+        {
+          backgroundColor: activeTabColor,
+          width: `${100 / tabs.length}%`,
+          transform: [
+            {
+              translateX: animatedValue.interpolate({
+                inputRange: [0, tabs.length - 1],
+                outputRange: ['0%', `${(tabs.length - 1) * 100}%`],
+              }),
+            },
+          ],
+        },
+      ]}
+    />
+  );
+
+  const TabItem = ({
+    tab,
+    index,
+    isActive,
+    isDisabled,
+  }: {
+    tab: TabOption;
+    index: number;
+    isActive: boolean;
+    isDisabled: boolean;
+  }) => (
+    <TouchableOpacity
+      key={tab.id}
+      style={[
+        styles.tab,
+        index === 0 && styles.firstTab,
+        index === tabs.length - 1 && styles.lastTab,
+        isDisabled && styles.disabledTab,
+      ]}
+      onPress={() => !isDisabled && onTabPress(tab.id)}
+      activeOpacity={isDisabled ? 1 : 0.7}
+      disabled={isDisabled}
+    >
+      <Text
+        style={[
+          styles.tabText,
+          isActive && styles.activeTabText,
+          !isActive && styles.inactiveTabText,
+          isDisabled && styles.disabledTabText,
+        ]}
+      >
+        {tab.label}
+      </Text>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={[styles.container, style]}>
       <View style={styles.tabContainer}>
-        {/* Sliding background indicator */}
-        <Animated.View
-          style={[
-            styles.slidingIndicator,
-            {
-              backgroundColor: activeTabColor,
-              width: `${100 / tabs.length}%`,
-              transform: [
-                {
-                  translateX: animatedValue.interpolate({
-                    inputRange: [0, tabs.length - 1],
-                    outputRange: ['0%', `${(tabs.length - 1) * 100}%`],
-                  }),
-                },
-              ],
-            },
-          ]}
-        />
+        <BackgroundSlider />
 
         {tabs.map((tab, index) => {
           const isActive = tab.id === activeTabId;
           const isDisabled = tab.disabled;
 
           return (
-            <TouchableOpacity
+            <TabItem
+              tab={tab}
+              index={index}
+              isActive={isActive}
+              isDisabled={isDisabled ?? false}
               key={tab.id}
-              style={[
-                styles.tab,
-                index === 0 && styles.firstTab,
-                index === tabs.length - 1 && styles.lastTab,
-                isDisabled && styles.disabledTab,
-              ]}
-              onPress={() => !isDisabled && onTabPress(tab.id)}
-              activeOpacity={isDisabled ? 1 : 0.7}
-              disabled={isDisabled}
-            >
-              <Text
-                style={[
-                  styles.tabText,
-                  isActive && styles.activeTabText,
-                  !isActive && styles.inactiveTabText,
-                  isDisabled && styles.disabledTabText,
-                ]}
-              >
-                {tab.label}
-              </Text>
-            </TouchableOpacity>
+            />
           );
         })}
       </View>

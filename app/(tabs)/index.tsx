@@ -157,6 +157,9 @@ export default function Index() {
 
       <Animated.ScrollView
         style={styles.container}
+        contentContainerStyle={{ paddingBottom: 0, paddingTop: 0 }}
+        contentInsetAdjustmentBehavior="never"
+        contentInset={{ top: -68, bottom: 0 }}
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
           useNativeDriver: true,
         })}
