@@ -32,7 +32,7 @@ export default function ConfigurationScreen() {
     {
       id: 'general',
       title: 'General',
-      subtitle: 'Distance units, activity type, and time range',
+      subtitle: 'Distance units, activity type, age, and time range',
       icon: 'settings-outline',
       onPress: () => setCurrentSection('general'),
     },

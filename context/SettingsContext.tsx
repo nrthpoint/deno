@@ -8,9 +8,11 @@ interface SettingsContextType {
   distanceUnit: LengthUnit;
   activityType: WorkoutActivityType;
   timeRangeInDays: TimeRange;
+  age: number | null;
   setDistanceUnit: (unit: LengthUnit) => void;
   setActivityType: (type: WorkoutActivityType) => void;
   setTimeRange: (range: TimeRange) => void;
+  setAge: (age: number | null) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -21,9 +23,10 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
     WorkoutActivityType.running,
   );
   const [timeRangeInDays, setTimeRangeState] = useState<TimeRange>(30); // Default to 1 month
+  const [age, setAgeState] = useState<number | null>(null);
 
   useEffect(() => {
-    AsyncStorage.multiGet(['distanceUnit', 'activityType', 'timeRange']).then((values) => {
+    AsyncStorage.multiGet(['distanceUnit', 'activityType', 'timeRange', 'age']).then((values) => {
       const storedConfig = Object.fromEntries(values);
 
       if (storedConfig['distanceUnit']) {
@@ -39,6 +42,11 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
       if (storedConfig['timeRange']) {
         const timeRangeValue = parseInt(storedConfig['timeRange'] as string);
         setTimeRangeState(timeRangeValue as TimeRange);
+      }
+
+      if (storedConfig['age']) {
+        const ageValue = parseInt(storedConfig['age'] as string);
+        setAgeState(ageValue);
       }
     });
   }, []);
@@ -62,15 +70,27 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
     AsyncStorage.setItem('timeRange', val.toString());
   };
 
+  const setAge = (val: number | null) => {
+    setAgeState(val);
+
+    if (val !== null) {
+      AsyncStorage.setItem('age', val.toString());
+    } else {
+      AsyncStorage.removeItem('age');
+    }
+  };
+
   return (
     <SettingsContext.Provider
       value={{
         distanceUnit,
         activityType,
         timeRangeInDays,
+        age,
         setDistanceUnit,
         setActivityType,
         setTimeRange,
+        setAge,
       }}
     >
       {children}

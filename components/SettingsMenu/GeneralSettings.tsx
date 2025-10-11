@@ -1,7 +1,7 @@
 import { LengthUnit, WorkoutActivityType } from '@kingstinct/react-native-healthkit';
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Text, TextInput } from 'react-native-paper';
 
 import { CardSlider } from '@/components/CardSlider/CardSlider';
 import { TabBar } from '@/components/TabBar/TabBar';
@@ -16,10 +16,26 @@ export const GeneralSettings: React.FC = () => {
     distanceUnit,
     activityType,
     timeRangeInDays: timeRange,
+    age,
     setDistanceUnit,
     setActivityType,
     setTimeRange,
+    setAge,
   } = useSettings();
+
+  const [ageInput, setAgeInput] = useState(age?.toString() || '');
+
+  const handleAgeChange = (text: string) => {
+    setAgeInput(text);
+
+    // Validate and save age
+    const numericAge = parseInt(text, 10);
+    if (!isNaN(numericAge) && numericAge > 0 && numericAge <= 120) {
+      setAge(numericAge);
+    } else if (text === '') {
+      setAge(null);
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -58,6 +74,41 @@ export const GeneralSettings: React.FC = () => {
         onTabPress={(value) => setActivityType(value as unknown as WorkoutActivityType)}
         activeTabColor={colors.primary}
       />
+
+      <Text
+        variant="titleLarge"
+        style={styles.heading}
+      >
+        Age
+      </Text>
+      <Text style={styles.subheading}>
+        Enter your age to compare your performance against runners in your age group.
+      </Text>
+
+      <View style={styles.ageInputContainer}>
+        <TextInput
+          mode="outlined"
+          value={ageInput}
+          onChangeText={handleAgeChange}
+          placeholder="Enter your age"
+          keyboardType="numeric"
+          maxLength={3}
+          style={styles.ageInput}
+          theme={{
+            colors: {
+              primary: colors.primary,
+              outline: colors.surface,
+              onSurfaceVariant: colors.neutral,
+              surface: colors.background,
+            },
+          }}
+          contentStyle={styles.ageInputContent}
+          outlineStyle={styles.ageInputOutline}
+        />
+        {age && (
+          <Text style={styles.ageConfirmation}>Performance comparisons enabled for age {age}</Text>
+        )}
+      </View>
 
       <View>
         <Text
@@ -108,5 +159,27 @@ const styles = StyleSheet.create({
     marginTop: -10,
     marginBottom: 10,
     lineHeight: 22,
+  },
+  ageInputContainer: {
+    marginBottom: 10,
+  },
+  ageInput: {
+    width: 120,
+    marginBottom: 8,
+  },
+  ageInputContent: {
+    fontSize: 16,
+    fontFamily: LatoFonts.regular,
+    color: colors.neutral,
+  },
+  ageInputOutline: {
+    borderColor: colors.surface,
+    borderRadius: 8,
+  },
+  ageConfirmation: {
+    fontSize: 14,
+    fontFamily: LatoFonts.regular,
+    color: colors.primary,
+    fontStyle: 'italic',
   },
 });
