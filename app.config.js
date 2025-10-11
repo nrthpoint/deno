@@ -15,6 +15,7 @@ export default {
     platforms: ['ios'],
     githubUrl: 'https://github.com/nrthpoint/deno',
     ios: {
+      icon: './assets/Deno.icon',
       supportsTablet: false,
       bundleIdentifier: 'com.nrthpoint.deno.app',
       backgroundModes: ['fetch', 'processing'],
