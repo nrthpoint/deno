@@ -1,3 +1,4 @@
+import { GlassView } from 'expo-glass-effect';
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -58,44 +59,48 @@ export const HalfMoonProgress = ({ label, size = 120, ...modalProps }: HalfMoonP
 
   const content = (
     <View style={styles.container}>
-      <View style={[styles.svgContainer, { width: size, height: size / 2 + strokeWidth }]}>
-        <Svg
-          width={size}
-          height={size / 2 + strokeWidth}
-        >
-          {/* Background half circle */}
-          <Path
-            d={backgroundPath}
-            stroke={colors.surface}
-            strokeWidth={strokeWidth}
-            fill="none"
-            strokeLinecap="round"
-          />
+      <ThemedGradient style={styles.gradient} />
+      <GlassView
+        style={styles.glassOverlay}
+        glassEffectStyle="clear"
+      >
+        <View style={[styles.svgContainer, { width: size, height: size / 2 + strokeWidth }]}>
+          <Svg
+            width={size}
+            height={size / 2 + strokeWidth}
+          >
+            {/* Background half circle */}
+            <Path
+              d={backgroundPath}
+              stroke={colors.surface}
+              strokeWidth={strokeWidth}
+              fill="none"
+              strokeLinecap="round"
+            />
 
-          {/* Progress arc */}
-          <AnimatedPath
-            animatedProps={animatedProps}
-            stroke={'#fff'}
-            strokeWidth={strokeWidth}
-            fill="none"
-            strokeLinecap="round"
-          />
-        </Svg>
-      </View>
-
-      <View style={styles.textContainer}>
-        <View style={styles.valueContainer}>
-          <AnimatedCounter
-            value={percentage}
-            style={styles.valueText}
-          />
-          <Text style={styles.valueTextUnit}>{`%`}</Text>
+            {/* Progress arc */}
+            <AnimatedPath
+              animatedProps={animatedProps}
+              stroke={'#fff'}
+              strokeWidth={strokeWidth}
+              fill="none"
+              strokeLinecap="round"
+            />
+          </Svg>
         </View>
 
-        <Text style={styles.labelText}>{label}</Text>
-      </View>
+        <View style={styles.textContainer}>
+          <View style={styles.valueContainer}>
+            <AnimatedCounter
+              value={percentage}
+              style={styles.valueText}
+            />
+            <Text style={styles.valueTextUnit}>{`%`}</Text>
+          </View>
 
-      <ThemedGradient style={styles.gradient} />
+          <Text style={styles.labelText}>{label}</Text>
+        </View>
+      </GlassView>
     </View>
   );
 
@@ -127,8 +132,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    paddingVertical: 15,
     borderRadius: 8,
+  },
+  glassOverlay: {
+    paddingVertical: 15,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    backgroundColor: 'transparent',
   },
   svgContainer: {
     overflow: 'hidden',

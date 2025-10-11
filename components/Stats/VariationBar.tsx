@@ -1,3 +1,4 @@
+import { GlassView } from 'expo-glass-effect';
 import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, {
@@ -230,74 +231,78 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
 
   const content = (
     <View style={styles.container}>
-      <Text style={styles.labelText}>{label}</Text>
-
-      <Svg
-        width={width}
-        height={70}
-      >
-        {/* Bar */}
-        <Rect
-          x={MARGIN}
-          y={BAR_Y}
-          width={barWidth}
-          height={BAR_HEIGHT}
-          fill={colors.surface}
-          rx={BAR_HEIGHT / 2}
-        />
-
-        {/* Dots */}
-        <AnimatedLine
-          stroke={colors.surface}
-          strokeLinecap="round"
-          animatedProps={line0AnimatedProps}
-        />
-        <AnimatedLine
-          stroke={colors.surface}
-          strokeLinecap="round"
-          animatedProps={line1AnimatedProps}
-        />
-        <AnimatedLine
-          stroke={colors.surface}
-          strokeLinecap="round"
-          animatedProps={line2AnimatedProps}
-        />
-        <AnimatedLine
-          stroke={colors.surface}
-          strokeLinecap="round"
-          animatedProps={line3AnimatedProps}
-        />
-        <AnimatedLine
-          stroke={colors.surface}
-          strokeLinecap="round"
-          animatedProps={line4AnimatedProps}
-        />
-
-        {/* Min/Max labels */}
-        <AnimatedSvgText
-          y={LABEL_Y}
-          fontSize={10}
-          fontWeight={'bold'}
-          fill={colors.background}
-          textAnchor="middle"
-          animatedProps={minLabelAnimatedProps}
-        >
-          {formatValue(min).toUpperCase()}
-        </AnimatedSvgText>
-
-        <AnimatedSvgText
-          y={LABEL_Y}
-          fontSize={10}
-          fontWeight={'bold'}
-          fill={colors.background}
-          textAnchor="middle"
-          animatedProps={maxLabelAnimatedProps}
-        >
-          {formatValue(max).toUpperCase()}
-        </AnimatedSvgText>
-      </Svg>
-
       <ThemedGradient style={styles.gradient} />
+      <GlassView
+        style={styles.glassOverlay}
+        glassEffectStyle="clear"
+      >
+        <Text style={styles.labelText}>{label}</Text>
+
+        <Svg
+          width={width}
+          height={70}
+        >
+          {/* Bar */}
+          <Rect
+            x={MARGIN}
+            y={BAR_Y}
+            width={barWidth}
+            height={BAR_HEIGHT}
+            fill={colors.surface}
+            rx={BAR_HEIGHT / 2}
+          />
+
+          {/* Dots */}
+          <AnimatedLine
+            stroke={colors.surface}
+            strokeLinecap="round"
+            animatedProps={line0AnimatedProps}
+          />
+          <AnimatedLine
+            stroke={colors.surface}
+            strokeLinecap="round"
+            animatedProps={line1AnimatedProps}
+          />
+          <AnimatedLine
+            stroke={colors.surface}
+            strokeLinecap="round"
+            animatedProps={line2AnimatedProps}
+          />
+          <AnimatedLine
+            stroke={colors.surface}
+            strokeLinecap="round"
+            animatedProps={line3AnimatedProps}
+          />
+          <AnimatedLine
+            stroke={colors.surface}
+            strokeLinecap="round"
+            animatedProps={line4AnimatedProps}
+          />
+
+          {/* Min/Max labels */}
+          <AnimatedSvgText
+            y={LABEL_Y}
+            fontSize={10}
+            fontWeight={'bold'}
+            fill={colors.background}
+            textAnchor="middle"
+            animatedProps={minLabelAnimatedProps}
+          >
+            {formatValue(min).toUpperCase()}
+          </AnimatedSvgText>
+
+          <AnimatedSvgText
+            y={LABEL_Y}
+            fontSize={10}
+            fontWeight={'bold'}
+            fill={colors.background}
+            textAnchor="middle"
+            animatedProps={maxLabelAnimatedProps}
+          >
+            {formatValue(max).toUpperCase()}
+          </AnimatedSvgText>
+        </Svg>
+      </GlassView>
     </View>
   );
 
@@ -323,8 +328,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
     overflow: 'visible',
-    paddingVertical: 10,
     borderRadius: 8,
+  },
+  glassOverlay: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    paddingVertical: 10,
   },
   labelText: {
     fontSize: 12,

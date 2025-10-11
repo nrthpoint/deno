@@ -84,6 +84,7 @@ export default function Index() {
   // Load persisted selected option on mount and when groupType changes
   useEffect(() => {
     const storageKey = `selectedOption_${groupType}`;
+
     AsyncStorage.getItem(storageKey).then((storedOption) => {
       if (storedOption && options.includes(storedOption)) {
         setSelectedOption(storedOption);
@@ -103,6 +104,45 @@ export default function Index() {
   const selectedGroup = groups[selectedOption];
   const isAuthorized = authorizationStatus === 2;
   const noData = !loading && !selectedGroup && !isAuthorized;
+
+  const Header = () => (
+    <TouchableOpacity
+      style={styles.header}
+      onPress={() => groupTypeBottomSheetRef.current?.open()}
+      activeOpacity={0.7}
+    >
+      <Text style={styles.headerTitle}>Groups</Text>
+      <Text style={styles.headerSubtitle}>{GROUPING_CONFIGS[groupType].label}</Text>
+    </TouchableOpacity>
+  );
+
+  const Settings = () => (
+    <View style={styles.settingsContainer}>
+      <IconButton
+        icon="plus"
+        size={32}
+        iconColor={colors.neutral}
+        onPress={() => router.push('/add-workout')}
+      />
+      <IconButton
+        icon="cog"
+        size={32}
+        iconColor={colors.neutral}
+        onPress={() => setConfigModalVisible(true)}
+        onLongPress={startTutorial}
+      />
+    </View>
+  );
+
+  const ActivityIcon = () => (
+    <View style={styles.activityIconContainer}>
+      <IconButton
+        icon={getActivityIcon(activityType)}
+        size={24}
+        iconColor="#fff"
+      />
+    </View>
+  );
 
   return (
     <ThemeProvider groupType={groupType}>
@@ -148,39 +188,9 @@ export default function Index() {
               transform: [{ translateY: scrollY }],
             }}
           >
-            <TouchableOpacity
-              style={styles.header}
-              onPress={() => groupTypeBottomSheetRef.current?.open()}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.headerTitle}>Groups</Text>
-              <Text style={styles.headerSubtitle}>{GROUPING_CONFIGS[groupType].label}</Text>
-            </TouchableOpacity>
-
-            {/* Settings and Add Workout Icons */}
-            <View style={styles.settingsContainer}>
-              <IconButton
-                icon="plus"
-                size={32}
-                iconColor={colors.neutral}
-                onPress={() => router.push('/add-workout')}
-              />
-              <IconButton
-                icon="cog"
-                size={32}
-                iconColor={colors.neutral}
-                onPress={() => setConfigModalVisible(true)}
-                onLongPress={startTutorial}
-              />
-            </View>
-
-            <View style={styles.activityIconContainer}>
-              <IconButton
-                icon={getActivityIcon(activityType)}
-                size={24}
-                iconColor="#fff"
-              />
-            </View>
+            <Header />
+            <Settings />
+            <ActivityIcon />
 
             <GroupCarousel
               options={options}
