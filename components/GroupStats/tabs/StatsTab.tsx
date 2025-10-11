@@ -4,14 +4,13 @@ import { Button } from 'react-native-paper';
 
 import { CollapsibleStatSection } from '@/components/CollapsibleStatSection/CollapsibleStatSection';
 import { VisualCards } from '@/components/GroupStats/GroupHighlights';
-import { GroupSummaryHeader } from '@/components/GroupSummaryHeader/GroupSummaryHeader';
+import { GroupSummaryStats } from '@/components/GroupSummaryHeader/GroupSummaryStats';
 import {
   WorkoutListBottomSheet,
   WorkoutListBottomSheetRef,
 } from '@/components/WorkoutListBottomSheet/WorkoutListBottomSheet';
 import { colors } from '@/config/colors';
 import { useGroupStats } from '@/context/GroupStatsContext';
-import { generateGroupSummary } from '@/utils/groupSummary';
 
 const getTabColor = (label: string) => {
   switch (label.toLowerCase()) {
@@ -34,7 +33,6 @@ export const StatsTab: React.FC = () => {
   const { group, groupType, timeRangeInDays } = useGroupStats();
 
   const workoutListRef = useRef<WorkoutListBottomSheetRef>(null);
-  const summary = generateGroupSummary(group, groupType, timeRangeInDays);
 
   const handleViewAllWorkouts = () => {
     workoutListRef.current?.open();
@@ -43,7 +41,11 @@ export const StatsTab: React.FC = () => {
   return (
     <>
       <View style={styles.headingContainer}>
-        <GroupSummaryHeader summary={summary} />
+        <GroupSummaryStats
+          group={group}
+          groupType={groupType}
+          timeRangeInDays={timeRangeInDays}
+        />
         <VisualCards />
       </View>
 
