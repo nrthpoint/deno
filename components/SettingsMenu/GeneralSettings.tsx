@@ -17,10 +17,12 @@ export const GeneralSettings: React.FC = () => {
     activityType,
     timeRangeInDays: timeRange,
     age,
+    gender,
     setDistanceUnit,
     setActivityType,
     setTimeRange,
     setAge,
+    setGender,
   } = useSettings();
 
   const [ageInput, setAgeInput] = useState(age?.toString() || '');
@@ -109,6 +111,27 @@ export const GeneralSettings: React.FC = () => {
           <Text style={styles.ageConfirmation}>Performance comparisons enabled for age {age}</Text>
         )}
       </View>
+
+      <Text
+        variant="titleLarge"
+        style={styles.heading}
+      >
+        Gender
+      </Text>
+      <Text style={styles.subheading}>
+        Select your gender for more accurate performance comparisons.
+      </Text>
+
+      <TabBar
+        tabs={[
+          { id: 'Male', label: 'Male' },
+          { id: 'Female', label: 'Female' },
+          { id: 'Other', label: 'Other' },
+        ]}
+        activeTabId={gender || ''}
+        onTabPress={(id) => setGender(id as 'Male' | 'Female' | 'Other')}
+        activeTabColor={colors.primary}
+      />
 
       <View>
         <Text
