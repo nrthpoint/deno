@@ -44,11 +44,6 @@ export const rankingService = {
       body: JSON.stringify(request),
     });
 
-    console.log('URL:', `${BASE_URL}/ranking`);
-    console.log('Request Body:', JSON.stringify(request));
-    console.log('Response Status:', response.status);
-    console.log('Response Text:', await response.text());
-
     if (!response.ok) {
       throw new Error(`Failed to fetch ranking: ${response.statusText}`);
     }

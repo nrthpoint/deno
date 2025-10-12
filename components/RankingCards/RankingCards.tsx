@@ -54,7 +54,6 @@ export const RankingCards: React.FC<RankingCardsProps> = ({
           time: timeInSeconds,
           gender,
         });
-
         setRanking(rankingResult);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to get ranking');
@@ -66,6 +65,7 @@ export const RankingCards: React.FC<RankingCardsProps> = ({
     fetchRanking();
   }, [highlightedWorkout, age, gender, distanceUnit, timeInSeconds, distanceInUserUnit, ranking]);
 
+  console.log('Ranking:', ranking);
   if (!highlightedWorkout) {
     return (
       <View style={styles.container}>
