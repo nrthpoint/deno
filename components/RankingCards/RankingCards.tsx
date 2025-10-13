@@ -260,6 +260,7 @@ const styles = StyleSheet.create({
   levelContainer: {
     flexDirection: 'column',
     alignItems: 'flex-start',
+    paddingHorizontal: 5,
     //gap: 8,
   },
   levelIcon: {
