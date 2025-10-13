@@ -1,3 +1,4 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -13,6 +14,71 @@ import {
   RankingResponse,
   rankingService,
 } from '@/services/rankingService';
+import { uppercase } from '@/utils/text';
+
+const getRankingIcon = (level: string): keyof typeof MaterialCommunityIcons.glyphMap => {
+  switch (level) {
+    case 'Elite':
+      return 'crown';
+    case 'Advanced':
+      return 'medal';
+    case 'Intermediate':
+      return 'trophy-variant';
+    case 'Beginner':
+      return 'star';
+    default:
+      return 'run';
+  }
+};
+
+interface LevelCardProps {
+  level: LevelData;
+  isUserLevel: boolean;
+  distanceUnit: string;
+}
+
+const LevelCard: React.FC<LevelCardProps> = ({ level, isUserLevel, distanceUnit }) => {
+  const levelColor = getLevelColor(level.level);
+  const intensity = getLevelIntensity(level.level);
+
+  return (
+    <Card
+      style={[
+        styles.levelCard,
+        {
+          backgroundColor: `${levelColor}${Math.round(intensity * 255)
+            .toString(16)
+            .padStart(2, '0')}`,
+          borderColor: levelColor,
+          borderWidth: 2,
+        },
+      ]}
+    >
+      <Card.Content style={styles.levelCardContent}>
+        <View style={styles.levelHeader}>
+          <View style={styles.levelInfo}>
+            <Text style={styles.levelName}>
+              {level.level}
+              {isUserLevel && ' (You)'}
+            </Text>
+            <Text style={styles.levelRange}>
+              {level.minTime} - {level.maxTime}
+            </Text>
+            <Text style={styles.paceRange}>
+              Pace: {level.minPace.toFixed(2)} - {level.maxPace.toFixed(2)} min/{distanceUnit}
+            </Text>
+          </View>
+          <MaterialCommunityIcons
+            name={getRankingIcon(level.level)}
+            size={38}
+            color={colors.background}
+            style={styles.levelIcon}
+          />
+        </View>
+      </Card.Content>
+    </Card>
+  );
+};
 
 export default function RankingLevelsModal() {
   const router = useRouter();
@@ -23,7 +89,9 @@ export default function RankingLevelsModal() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const distance = parseFloat(params.distance as string);
+  const distance = Array.isArray(params.distance)
+    ? parseFloat(params.distance[0])
+    : parseFloat(params.distance as string);
   const ranking: RankingResponse = JSON.parse(params.ranking as string);
 
   useEffect(() => {
@@ -75,20 +143,20 @@ export default function RankingLevelsModal() {
           ]}
         >
           <Card.Content style={styles.cardContent}>
-            <Text style={styles.yourPerformanceTitle}>Your Performance</Text>
-            <View style={styles.performanceRow}>
-              <Text style={styles.levelText}>{ranking.level}</Text>
-              <Text style={styles.rankText}>Rank #{ranking.rank}</Text>
-            </View>
-            <View style={styles.statsRow}>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Your Time</Text>
-                <Text style={styles.statValue}>{ranking.your_time}</Text>
+            <View style={styles.performanceContainer}>
+              <View style={styles.performanceInfo}>
+                <Text style={styles.levelText}>{ranking.level}</Text>
+                <Text style={styles.rankText}>RANK #{ranking.rank}</Text>
+                <Text style={styles.percentileText}>
+                  Top {(100 - ranking.better_than_percent).toFixed(1)}%
+                </Text>
               </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Better Than</Text>
-                <Text style={styles.statValue}>{ranking.better_than_percent}%</Text>
-              </View>
+              <MaterialCommunityIcons
+                name={getRankingIcon(ranking.level)}
+                size={38}
+                color={colors.background}
+                style={styles.performanceIcon}
+              />
             </View>
           </Card.Content>
         </Card>
@@ -113,43 +181,14 @@ export default function RankingLevelsModal() {
         ) : levels ? (
           <View style={styles.levelsContainer}>
             {levels.map((level) => {
-              console.log(level);
               const isUserLevel = level.level.toLowerCase() === ranking.level.toLowerCase();
-              const levelColor = getLevelColor(level.level);
-              const intensity = getLevelIntensity(level.level);
-
               return (
-                <Card
+                <LevelCard
                   key={level.level}
-                  style={[
-                    styles.levelCard,
-                    isUserLevel && styles.userLevelCard,
-                    {
-                      backgroundColor: `${levelColor}${Math.round(intensity * 255)
-                        .toString(16)
-                        .padStart(2, '0')}`,
-                      borderColor: isUserLevel ? levelColor : 'transparent',
-                    },
-                  ]}
-                >
-                  <Card.Content style={styles.levelCardContent}>
-                    <View style={styles.levelHeader}>
-                      <Text style={[styles.levelName, isUserLevel && styles.userLevelName]}>
-                        {level.level}
-                        {isUserLevel && ' (You)'}
-                      </Text>
-                    </View>
-
-                    <View style={styles.levelDetails}>
-                      <Text style={styles.levelRange}>
-                        {level.minTime} - {level.maxTime}
-                      </Text>
-                      <Text style={styles.paceRange}>
-                        Pace: {level.minPace.toFixed(2)} - {level.maxPace.toFixed(2)} min/km
-                      </Text>
-                    </View>
-                  </Card.Content>
-                </Card>
+                  level={level}
+                  isUserLevel={isUserLevel}
+                  distanceUnit={distanceUnit === 'km' ? 'km' : 'mi'}
+                />
               );
             })}
           </View>
@@ -177,57 +216,49 @@ const styles = StyleSheet.create({
   yourPerformanceCard: {
     marginBottom: 24,
     borderWidth: 2,
-    borderRadius: 16,
-    elevation: 4,
+    borderRadius: 12,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   cardContent: {
-    padding: 20,
+    paddingVertical: 16,
+    paddingHorizontal: 12,
   },
-  yourPerformanceTitle: {
-    fontSize: 18,
-    fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  performanceRow: {
+  performanceContainer: {
+    alignItems: 'flex-start',
+    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
+    width: '100%',
+  },
+  performanceInfo: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
   levelText: {
     fontSize: 24,
     fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-  },
-  rankText: {
-    fontSize: 18,
-    fontFamily: LatoFonts.semiBold,
-    color: colors.neutral,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  statItem: {
-    alignItems: 'center',
-  },
-  statLabel: {
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    color: colors.neutral,
-    opacity: 0.8,
+    color: colors.background,
     marginBottom: 4,
   },
-  statValue: {
-    fontSize: 16,
+  rankText: {
+    ...uppercase,
+    fontSize: 14,
     fontFamily: LatoFonts.bold,
-    color: colors.neutral,
+    color: colors.background,
+    marginBottom: 6,
+  },
+  percentileText: {
+    fontSize: 14,
+    fontFamily: LatoFonts.regular,
+    color: colors.background,
+    opacity: 0.8,
+  },
+  performanceIcon: {
+    marginRight: 4,
   },
   sectionTitle: {
     fontSize: 20,
@@ -261,47 +292,46 @@ const styles = StyleSheet.create({
   },
   levelCard: {
     borderRadius: 12,
-    elevation: 2,
+    elevation: 3,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  userLevelCard: {
-    borderWidth: 2,
-    elevation: 4,
-    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   levelCardContent: {
-    padding: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 12,
   },
   levelHeader: {
+    alignItems: 'flex-start',
+    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+    width: '100%',
+  },
+  levelInfo: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
   levelName: {
-    fontSize: 18,
+    fontSize: 24,
     fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-  },
-  userLevelName: {
-    fontSize: 18,
-    fontFamily: LatoFonts.bold,
-  },
-  levelDetails: {
-    gap: 8,
+    color: colors.background,
+    marginBottom: 4,
   },
   levelRange: {
-    fontSize: 16,
-    fontFamily: LatoFonts.semiBold,
-    color: colors.neutral,
+    fontSize: 14,
+    fontFamily: LatoFonts.bold,
+    color: colors.background,
+    marginBottom: 6,
   },
   paceRange: {
     fontSize: 14,
     fontFamily: LatoFonts.regular,
-    color: colors.neutral,
+    color: colors.background,
     opacity: 0.8,
+  },
+  levelIcon: {
+    marginRight: 4,
   },
 });

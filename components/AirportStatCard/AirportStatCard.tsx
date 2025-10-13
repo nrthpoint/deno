@@ -10,32 +10,65 @@ import { LatoFonts } from '@/config/fonts';
 import { uppercase } from '@/utils/text';
 
 interface AirportStatCardProps {
-  label: string;
+  label?: string;
   value: string | number;
   unit?: string;
+  backgroundColor?: string;
+  inverted?: boolean;
 }
 
-export const AirportStatCard: React.FC<AirportStatCardProps> = ({ label, value, unit }) => {
+export const AirportStatCard: React.FC<AirportStatCardProps> = ({
+  label,
+  value,
+  unit,
+  backgroundColor,
+  inverted,
+}) => {
   const isNumeric = typeof value === 'number';
 
   return (
-    <View style={styles.container}>
-      <ThemedGradient style={styles.gradient} />
+    <View
+      style={[
+        styles.container,
+        { height: label ? 80 : 70, backgroundColor: backgroundColor || 'transparent' },
+      ]}
+    >
+      {!backgroundColor && <ThemedGradient style={styles.gradient} />}
+
       <GlassView
         style={styles.glassOverlay}
         glassEffectStyle="clear"
       >
-        <Text style={styles.cardLabel}>{label}</Text>
+        {label && (
+          <Text
+            style={[styles.cardLabel, { color: inverted ? colors.neutral : colors.background }]}
+          >
+            {label}
+          </Text>
+        )}
         <View style={styles.cardValueContainer}>
           {isNumeric ? (
             <AnimatedCounter
               value={value}
-              style={styles.cardValue}
+              style={[
+                styles.cardValue,
+                { fontSize: label ? 20 : 30, color: inverted ? colors.neutral : colors.background },
+              ]}
             />
           ) : (
-            <Text style={styles.cardValue}>{value}</Text>
+            <Text
+              style={[styles.cardValue, { color: inverted ? colors.neutral : colors.background }]}
+            >
+              {value}
+            </Text>
           )}
-          {unit && <Text style={styles.cardUnit}>{unit}</Text>}
+          {unit && (
+            <Text
+              style={[styles.cardUnit, { color: inverted ? colors.neutral : colors.background }]}
+            >
+              {unit}
+            </Text>
+          )}
         </View>
       </GlassView>
     </View>
@@ -45,7 +78,7 @@ export const AirportStatCard: React.FC<AirportStatCardProps> = ({ label, value, 
 const styles = StyleSheet.create({
   container: {
     width: '48%',
-    height: 100,
+    height: 70,
     borderRadius: 8,
     marginBottom: 12,
     position: 'relative',
@@ -79,19 +112,16 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   cardLabel: {
-    ...uppercase,
     fontSize: 12,
     color: colors.background,
     marginBottom: 8,
-    letterSpacing: 1.5,
-    fontFamily: LatoFonts.bold,
   },
   cardValueContainer: {
     flexDirection: 'row',
     alignItems: 'baseline',
   },
   cardValue: {
-    fontSize: 40,
+    fontSize: 30,
     color: colors.background,
     fontFamily: LatoFonts.bold,
     letterSpacing: -0.5,

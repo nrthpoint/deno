@@ -1,10 +1,13 @@
+import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { AirportStatCard } from '@/components/AirportStatCard/AirportStatCard';
+import { RankingCards } from '@/components/RankingCards/RankingCards';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { RankingResponse } from '@/services/rankingService';
 import { Group, GroupType } from '@/types/Groups';
 import { uppercase } from '@/utils/text';
 
@@ -22,18 +25,18 @@ const formatDaysAgo = (date: Date): number => {
 
 const getTimeRangeParts = (timeRangeInDays: number): { value: number | string; unit: string } => {
   if (timeRangeInDays <= 7) {
-    return { value: 'THIS', unit: 'WEEK' };
+    return { value: 'this', unit: 'week' };
   } else if (timeRangeInDays <= 30) {
-    return { value: 'THIS', unit: 'MONTH' };
+    return { value: 'this', unit: 'month' };
   } else if (timeRangeInDays <= 90) {
     const months = Math.round(timeRangeInDays / 30);
-    return { value: months, unit: months > 1 ? 'MONTHS' : 'MONTH' };
+    return { value: months, unit: months > 1 ? 'months' : 'month' };
   } else if (timeRangeInDays <= 365) {
     const months = Math.round(timeRangeInDays / 30);
-    return { value: months, unit: 'MONTHS' };
+    return { value: months, unit: 'months' };
   } else {
     const years = Math.round(timeRangeInDays / 365);
-    return { value: years, unit: years > 1 ? 'YEARS' : 'YEAR' };
+    return { value: years, unit: years > 1 ? 'years' : 'year' };
   }
 };
 
@@ -47,32 +50,51 @@ export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({
   const firstRunDaysAgo = formatDaysAgo(group.oldest.endDate);
   const lastRunDaysAgo = formatDaysAgo(group.mostRecent.endDate);
 
+  const handleRankingPress = (ranking: RankingResponse) => {
+    router.push({
+      pathname: '/ranking-levels',
+      params: {
+        ranking: JSON.stringify(ranking),
+        distance: group.highlight.distance.quantity.toFixed(2),
+        duration: group.highlight.duration.quantity.toFixed(2),
+      },
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>SUMMARY</Text>
 
+      <RankingCards
+        workout={group.highlight}
+        onRankingPress={handleRankingPress}
+      />
+
       <View style={styles.cardGrid}>
         <AirportStatCard
-          label="TOTAL RUNS"
+          unit="runs"
           value={runCount}
         />
 
         <AirportStatCard
-          label="TIME PERIOD"
           value={timeRangeParts.value}
           unit={timeRangeParts.unit}
         />
 
         <AirportStatCard
-          label="FIRST RUN"
-          value={firstRunDaysAgo}
+          label="Most Recent"
+          value={lastRunDaysAgo}
           unit="DAYS AGO"
+          backgroundColor={colors.background}
+          inverted
         />
 
         <AirportStatCard
-          label="LAST RUN"
-          value={lastRunDaysAgo}
+          label="Oldest"
+          value={firstRunDaysAgo}
           unit="DAYS AGO"
+          backgroundColor={colors.background}
+          inverted
         />
       </View>
     </View>

@@ -65,15 +65,20 @@ export const rankingService = {
 export const getLevelColor = (level: string): string => {
   switch (level.toLowerCase()) {
     case 'elite':
-      return '#FFD700'; // Gold
+      return '#FF6B35'; // Vibrant Orange-Red
+    case 'advanced':
+      return '#F7931E'; // Bright Orange
+    case 'intermediate':
+      return '#FFD23F'; // Bright Yellow
+    case 'beginner':
+      return '#06FFA5'; // Bright Mint Green
+    // Legacy support for old level names
     case 'sub-elite':
       return '#C0C0C0'; // Silver
     case 'competitive':
       return '#CD7F32'; // Bronze
     case 'recreational':
       return '#4CAF50'; // Green
-    case 'beginner':
-      return '#2196F3'; // Blue
     default:
       return '#9E9E9E'; // Gray
   }
@@ -82,15 +87,20 @@ export const getLevelColor = (level: string): string => {
 export const getLevelIntensity = (level: string): number => {
   switch (level.toLowerCase()) {
     case 'elite':
-      return 1.0;
+      return 0.9; // High intensity for vibrant orange-red
+    case 'advanced':
+      return 0.8; // High intensity for bright orange
+    case 'intermediate':
+      return 0.7; // Good intensity for bright yellow
+    case 'beginner':
+      return 0.8; // High intensity for bright mint green
+    // Legacy support for old level names
     case 'sub-elite':
       return 0.8;
     case 'competitive':
       return 0.6;
     case 'recreational':
       return 0.4;
-    case 'beginner':
-      return 0.2;
     default:
       return 0.1;
   }

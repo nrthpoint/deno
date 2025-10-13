@@ -1,4 +1,3 @@
-import { router } from 'expo-router';
 import React, { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
@@ -6,14 +5,12 @@ import { Button } from 'react-native-paper';
 import { CollapsibleStatSection } from '@/components/CollapsibleStatSection/CollapsibleStatSection';
 import { VisualCards } from '@/components/GroupStats/GroupHighlights';
 import { GroupSummaryStats } from '@/components/GroupSummaryHeader/GroupSummaryStats';
-import { RankingCards } from '@/components/RankingCards/RankingCards';
 import {
   WorkoutListBottomSheet,
   WorkoutListBottomSheetRef,
 } from '@/components/WorkoutListBottomSheet/WorkoutListBottomSheet';
 import { colors } from '@/config/colors';
 import { useGroupStats } from '@/context/GroupStatsContext';
-import { RankingResponse } from '@/services/rankingService';
 
 const getTabColor = (label: string) => {
   switch (label.toLowerCase()) {
@@ -41,13 +38,6 @@ export const StatsTab: React.FC = () => {
     workoutListRef.current?.open();
   };
 
-  const handleRankingPress = (ranking: RankingResponse) => {
-    router.push({
-      pathname: '/ranking-levels',
-      params: { ranking: JSON.stringify(ranking) },
-    });
-  };
-
   return (
     <>
       <View style={styles.headingContainer}>
@@ -57,11 +47,6 @@ export const StatsTab: React.FC = () => {
           timeRangeInDays={timeRangeInDays}
         />
         <VisualCards />
-        <RankingCards
-          workouts={group.runs}
-          highlightedWorkout={group.highlight}
-          onRankingPress={handleRankingPress}
-        />
       </View>
 
       {group.stats.map((section, index) => (
