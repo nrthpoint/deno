@@ -10,20 +10,19 @@ export interface RankingResponse {
   level: string;
   rank: number;
   percentile: number;
-  total_athletes: number;
-  your_time: string;
-  average_time: string;
-  your_pace: number;
-  average_pace: number;
-  better_than_percent: number;
+  totalAthletes: number;
+  yourTime: string;
+  averageTime: string;
+  yourPace: number;
+  averagePace: number;
+  betterThanPercent: number;
 }
 
 export interface LevelData {
   level: string;
-  minTime: number;
-  maxTime: number;
-  minPace: number;
-  maxPace: number;
+  expectedPace: number; // in seconds per unit
+  expectedTime: string; // formatted time string
+  ageRange: string;
 }
 
 export interface LevelsResponse {

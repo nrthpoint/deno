@@ -120,7 +120,7 @@ export const RankingCards: React.FC<RankingCardsProps> = ({ workout, onRankingPr
 
         <Text style={styles.rankText}>Rank #{ranking.rank}</Text>
         <Text style={styles.percentileText}>
-          Top {(100 - ranking.better_than_percent).toFixed(1)}%
+          Top {(100 - ranking.betterThanPercent).toFixed(1)}%
         </Text>
       </View>
       <View style={{}}>

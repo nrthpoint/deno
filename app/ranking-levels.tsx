@@ -1,9 +1,10 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Appbar, Card, Text } from 'react-native-paper';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Text } from 'react-native-paper';
 
+import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
@@ -43,31 +44,28 @@ const LevelCard: React.FC<LevelCardProps> = ({ level, isUserLevel, distanceUnit 
 
   return (
     <Card
-      style={[
-        styles.levelCard,
-        {
-          backgroundColor: `${levelColor}${Math.round(intensity * 255)
-            .toString(16)
-            .padStart(2, '0')}`,
-          borderColor: levelColor,
-          borderWidth: 2,
-        },
-      ]}
+      style={{
+        ...styles.levelCard,
+        backgroundColor: `${levelColor}${Math.round(intensity * 255)
+          .toString(16)
+          .padStart(2, '0')}`,
+        borderColor: levelColor,
+        borderWidth: 2,
+      }}
     >
-      <Card.Content style={styles.levelCardContent}>
+      <View style={styles.levelCardContent}>
         <View style={styles.levelHeader}>
           <View style={styles.levelInfo}>
             <Text style={styles.levelName}>
               {level.level}
               {isUserLevel && ' (You)'}
             </Text>
-            <Text style={styles.levelRange}>
-              {level.minTime} - {level.maxTime}
-            </Text>
+            <Text style={styles.levelRange}>{level.expectedTime}</Text>
             <Text style={styles.paceRange}>
-              Pace: {level.minPace.toFixed(2)} - {level.maxPace.toFixed(2)} min/{distanceUnit}
+              Pace: {level.expectedPace.toFixed(2)} min/{distanceUnit}
             </Text>
           </View>
+
           <MaterialCommunityIcons
             name={getRankingIcon(level.level)}
             size={38}
@@ -75,7 +73,7 @@ const LevelCard: React.FC<LevelCardProps> = ({ level, isUserLevel, distanceUnit 
             style={styles.levelIcon}
           />
         </View>
-      </Card.Content>
+      </View>
     </Card>
   );
 };
@@ -116,39 +114,54 @@ export default function RankingLevelsModal() {
 
   return (
     <>
-      <Appbar.Header style={styles.header}>
-        <Appbar.BackAction onPress={() => router.back()} />
-        <Appbar.Content
-          title={`${distance}K Performance Levels`}
-          titleStyle={styles.headerTitle}
-        />
-      </Appbar.Header>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerTitle: `${distance}K Performance Levels`,
+          headerStyle: { backgroundColor: colors.background },
+          headerTitleStyle: {
+            color: colors.neutral,
+            fontFamily: LatoFonts.bold,
+            fontSize: 18,
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={styles.backButton}
+            >
+              <Ionicons
+                name="chevron-back"
+                size={24}
+                color={colors.neutral}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
 
       <ScrollView
         style={styles.container}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={styles.contentContainer}
       >
         {/* Your Performance Card */}
         <Card
-          style={[
-            styles.yourPerformanceCard,
-            {
-              backgroundColor: `${getLevelColor(ranking.level)}${Math.round(
-                getLevelIntensity(ranking.level) * 255,
-              )
-                .toString(16)
-                .padStart(2, '0')}`,
-              borderColor: getLevelColor(ranking.level),
-            },
-          ]}
+          style={{
+            ...styles.yourPerformanceCard,
+            backgroundColor: `${getLevelColor(ranking.level)}${Math.round(
+              getLevelIntensity(ranking.level) * 255,
+            )
+              .toString(16)
+              .padStart(2, '0')}`,
+            borderColor: getLevelColor(ranking.level),
+          }}
         >
-          <Card.Content style={styles.cardContent}>
+          <View style={styles.cardContent}>
             <View style={styles.performanceContainer}>
               <View style={styles.performanceInfo}>
                 <Text style={styles.levelText}>{ranking.level}</Text>
                 <Text style={styles.rankText}>RANK #{ranking.rank}</Text>
                 <Text style={styles.percentileText}>
-                  Top {(100 - ranking.better_than_percent).toFixed(1)}%
+                  Top {(100 - ranking.betterThanPercent).toFixed(1)}%
                 </Text>
               </View>
               <MaterialCommunityIcons
@@ -158,7 +171,7 @@ export default function RankingLevelsModal() {
                 style={styles.performanceIcon}
               />
             </View>
-          </Card.Content>
+          </View>
         </Card>
 
         {/* All Levels */}
@@ -174,9 +187,9 @@ export default function RankingLevelsModal() {
           </View>
         ) : error ? (
           <Card style={styles.errorCard}>
-            <Card.Content>
+            <View style={styles.cardContent}>
               <Text style={styles.errorText}>{error}</Text>
-            </Card.Content>
+            </View>
           </Card>
         ) : levels ? (
           <View style={styles.levelsContainer}>
@@ -199,19 +212,16 @@ export default function RankingLevelsModal() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: colors.background,
-  },
-  headerTitle: {
-    color: colors.neutral,
-    fontFamily: LatoFonts.bold,
+  backButton: {
+    marginLeft: 8,
+    padding: 8,
   },
   container: {
     flex: 1,
     backgroundColor: colors.background,
   },
-  content: {
-    padding: 20,
+  contentContainer: {
+    padding: 16,
   },
   yourPerformanceCard: {
     marginBottom: 24,
