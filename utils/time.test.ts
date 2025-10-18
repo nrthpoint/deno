@@ -1,6 +1,11 @@
 import { Quantity } from '@kingstinct/react-native-healthkit';
 
-import { formatDuration, formatDurationSeparate, convertDurationToMinutes } from './time';
+import {
+  formatDuration,
+  formatDurationSeparate,
+  convertDurationToMinutes,
+  formatTimeMMSS,
+} from './time';
 
 describe('Time Utilities', () => {
   describe('formatDuration', () => {
@@ -175,6 +180,29 @@ describe('Time Utilities', () => {
       expect(consoleSpy).toHaveBeenCalledWith('Unsupported duration unit:', 'unknown');
 
       consoleSpy.mockRestore();
+    });
+  });
+
+  describe('formatTimeMMSS', () => {
+    it('should format time correctly in MM:SS format', () => {
+      expect(formatTimeMMSS(125)).toBe('2:05');
+      expect(formatTimeMMSS(60)).toBe('1:00');
+      expect(formatTimeMMSS(59)).toBe('0:59');
+      expect(formatTimeMMSS(0)).toBe('0:00');
+    });
+
+    it('should handle large numbers correctly', () => {
+      expect(formatTimeMMSS(3661)).toBe('61:01'); // 1 hour 1 minute 1 second
+    });
+
+    it('should handle edge cases', () => {
+      expect(formatTimeMMSS(-5)).toBe('0:00');
+      expect(formatTimeMMSS(NaN)).toBe('0:00');
+    });
+
+    it('should pad seconds with leading zero', () => {
+      expect(formatTimeMMSS(65)).toBe('1:05');
+      expect(formatTimeMMSS(5)).toBe('0:05');
     });
   });
 });

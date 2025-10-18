@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Card, Text } from 'react-native-paper';
+import { Card, Text } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
@@ -14,6 +14,10 @@ import {
 } from '@/services/rankingService';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { uppercase } from '@/utils/text';
+
+import { ErrorState } from './ErrorState';
+import { HighlightedWorkout } from './HighlightedWorkout';
+import { LoadingState } from './LoadingState';
 
 interface RankingCardsProps {
   workout?: ExtendedWorkout;
@@ -152,34 +156,17 @@ export const RankingCards: React.FC<RankingCardsProps> = ({ workout, onRankingPr
         <Card.Content style={styles.cardContent}>
           <View style={styles.dataContainer}>
             {loading ? (
-              <>
-                <Text style={styles.titleText}>Getting Ranking...</Text>
-                <ActivityIndicator
-                  size="small"
-                  color={colors.neutral}
-                />
-              </>
+              <LoadingState />
             ) : error ? (
-              <>
-                <Text style={styles.titleText}>Error</Text>
-                <Text style={styles.errorText}>{error}</Text>
-              </>
+              <ErrorState error={error} />
             ) : ranking ? (
-              <>
-                <RankingDisplay ranking={ranking} />
-              </>
+              <RankingDisplay ranking={ranking} />
             ) : (
-              <>
-                <Text style={styles.titleText}>Highlighted Workout</Text>
-                <Text style={styles.timeText}>
-                  {Math.floor(timeInSeconds / 60)}:
-                  {(timeInSeconds % 60).toFixed(0).padStart(2, '0')}
-                </Text>
-                <Text style={styles.distanceText}>
-                  {distanceInUserUnit.toFixed(2)}
-                  {distanceUnit}
-                </Text>
-              </>
+              <HighlightedWorkout
+                timeInSeconds={timeInSeconds}
+                distanceInUserUnit={distanceInUserUnit}
+                distanceUnit={distanceUnit}
+              />
             )}
           </View>
         </Card.Content>
@@ -215,23 +202,7 @@ const styles = StyleSheet.create({
   dataContainer: {
     alignItems: 'center',
   },
-  titleText: {
-    fontSize: 14,
-    fontFamily: LatoFonts.bold,
-    color: colors.background,
-    marginBottom: 8,
-  },
-  timeText: {
-    fontSize: 24,
-    fontFamily: LatoFonts.bold,
-    color: colors.background,
-    marginBottom: 4,
-  },
-  distanceText: {
-    fontSize: 16,
-    fontFamily: LatoFonts.regular,
-    color: colors.background,
-  },
+
   levelText: {
     fontSize: 24,
     fontFamily: LatoFonts.bold,
@@ -251,12 +222,7 @@ const styles = StyleSheet.create({
     color: colors.background,
     opacity: 0.8,
   },
-  errorText: {
-    fontSize: 12,
-    fontFamily: LatoFonts.regular,
-    color: '#f32121',
-    textAlign: 'center',
-  },
+
   levelContainer: {
     flexDirection: 'column',
     alignItems: 'flex-start',

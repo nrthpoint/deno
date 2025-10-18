@@ -82,36 +82,36 @@ export const rankingService = {
 export const getLevelColor = (level: string): string => {
   switch (level.toLowerCase()) {
     case 'wr':
-      return '#FF6B35'; // Vibrant Orange-Red
+      return '#FF0080'; // Bright Magenta/Pink - Ultimate achievement
     case 'elite':
-      return '#F7931E'; // Bright Orange
+      return '#FF4500'; // Bright Red-Orange - Elite performance
     case 'advanced':
-      return '#FFD23F'; // Bright Yellow
+      return '#FFD700'; // Bright Gold - Advanced skill
     case 'intermediate':
-      return '#06FFA5'; // Bright Mint Green
+      return '#00FF00'; // Bright Lime Green - Solid intermediate
     case 'novice':
-      return '#CD7F32'; // Bronze
+      return '#00BFFF'; // Bright Sky Blue - Learning stage
     case 'beginner':
-      return '#4CAF50'; // Green
+      return '#9966FF'; // Bright Purple - Starting point
     default:
-      return '#9E9E9E'; // Gray
+      return '#808080'; // Gray
   }
 };
 
 export const getLevelIntensity = (level: string): number => {
   switch (level.toLowerCase()) {
     case 'wr':
-      return 0.9; // High intensity for vibrant orange-red
+      return 0.9; // Maximum intensity for world record
     case 'elite':
-      return 0.8; // High intensity for bright orange
+      return 0.85; // Very high intensity for elite
     case 'advanced':
-      return 0.7; // Good intensity for bright yellow
+      return 0.8; // High intensity for advanced
     case 'intermediate':
-      return 0.8; // High intensity for bright mint green
+      return 0.75; // Good intensity for intermediate
     case 'novice':
-      return 0.6;
+      return 0.7; // Moderate intensity for novice
     case 'beginner':
-      return 0.4;
+      return 0.65; // Lower intensity for beginner
     default:
       return 0.1;
   }

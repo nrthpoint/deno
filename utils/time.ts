@@ -175,3 +175,19 @@ export const formatDaysAgo = (date: Date): string => {
 
 export const getDaysAgo = (date: Date): string =>
   `${Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24))} days ago`;
+
+/**
+ * Formats time in seconds to MM:SS format
+ * @param timeInSeconds - The time in seconds
+ * @returns Formatted time string in MM:SS format
+ */
+export const formatTimeMMSS = (timeInSeconds: number): string => {
+  if (isNaN(timeInSeconds) || timeInSeconds < 0) {
+    return '0:00';
+  }
+
+  const minutes = Math.floor(timeInSeconds / 60);
+  const seconds = Math.floor(timeInSeconds % 60);
+
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};
