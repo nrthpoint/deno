@@ -11,6 +11,7 @@ import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { colors } from '@/config/colors';
 import { toastConfig } from '@/config/toast';
+import { QueryProvider } from '@/context/QueryContext';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { TutorialProvider } from '@/context/TutorialContext';
 import { useWorkout, WorkoutProvider } from '@/context/Workout';
@@ -97,18 +98,20 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
-      <PaperProvider>
-        <SettingsProvider>
-          <TutorialProvider>
-            <WorkoutProvider>
-              <WorkoutAnalyticsProvider>
-                <AppContent />
-              </WorkoutAnalyticsProvider>
-            </WorkoutProvider>
-          </TutorialProvider>
-        </SettingsProvider>
-        <Toast config={toastConfig} />
-      </PaperProvider>
+      <QueryProvider>
+        <PaperProvider>
+          <SettingsProvider>
+            <TutorialProvider>
+              <WorkoutProvider>
+                <WorkoutAnalyticsProvider>
+                  <AppContent />
+                </WorkoutAnalyticsProvider>
+              </WorkoutProvider>
+            </TutorialProvider>
+          </SettingsProvider>
+          <Toast config={toastConfig} />
+        </PaperProvider>
+      </QueryProvider>
     </GestureHandlerRootView>
   );
 }

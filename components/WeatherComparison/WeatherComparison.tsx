@@ -1,8 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { Card } from '@/components/Card/Card';
+import { WeatherLoadingSpinner } from '@/components/WeatherLoadingSpinner';
 import { colors, SAMPLE1_COLOR, SAMPLE2_COLOR } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useWeatherData } from '@/hooks/useWeatherData';
@@ -248,11 +249,10 @@ export const WeatherComparison: React.FC<WeatherComparisonProps> = ({
       <Card>
         <View style={styles.container}>
           <View style={styles.loadingContainer}>
-            <ActivityIndicator
+            <WeatherLoadingSpinner
               size="large"
-              color={colors.primary}
+              message="Loading weather data..."
             />
-            <Text style={styles.loadingText}>Loading weather data...</Text>
           </View>
         </View>
       </Card>
@@ -424,12 +424,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 32,
   },
-  loadingText: {
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    color: colors.lightGray,
-    marginTop: 12,
-  },
+
   legend: {
     padding: 8,
     paddingVertical: 12,

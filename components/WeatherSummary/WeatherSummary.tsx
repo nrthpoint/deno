@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { Card } from '@/components/Card/Card';
+import { WeatherLoadingSpinner } from '@/components/WeatherLoadingSpinner';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { useWeatherData } from '@/hooks/useWeatherData';
+import { useWorkoutWeatherQuery } from '@/hooks/useWeatherQuery';
 import { WeatherService } from '@/services/weather';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 
@@ -22,9 +23,7 @@ interface WeatherCondition {
 }
 
 export const WeatherSummary: React.FC<WeatherSummaryProps> = ({ workout }) => {
-  const weatherMap = useWeatherData([workout]);
-
-  const { weather, loading, error } = weatherMap.get(workout.uuid) ?? {};
+  const { data: weather, isLoading: loading, error } = useWorkoutWeatherQuery(workout);
 
   const getTemperatureData = (): WeatherCondition => {
     const temp = weather?.temperature ?? null;
@@ -205,11 +204,10 @@ export const WeatherSummary: React.FC<WeatherSummaryProps> = ({ workout }) => {
           </View>
 
           <View style={styles.loadingContainer}>
-            <ActivityIndicator
+            <WeatherLoadingSpinner
               size="large"
-              color={colors.primary}
+              message="Loading weather data..."
             />
-            <Text style={styles.loadingText}>Loading weather data...</Text>
           </View>
         </View>
       </Card>
@@ -243,7 +241,7 @@ export const WeatherSummary: React.FC<WeatherSummaryProps> = ({ workout }) => {
                 size={32}
                 color={colors.lightGray}
               />
-              <Text style={styles.errorText}>{error}</Text>
+              <Text style={styles.errorText}>{error.message || 'Failed to load weather data'}</Text>
             </View>
           )}
 
@@ -361,12 +359,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 32,
   },
-  loadingText: {
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    color: colors.lightGray,
-    marginTop: 12,
-  },
+
   warningIcon: {
     marginLeft: 8,
   },

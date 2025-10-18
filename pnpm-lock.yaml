@@ -35,6 +35,9 @@ importers:
       '@react-navigation/native':
         specifier: ^7.1.6
         version: 7.1.14(react-native@0.81.4(@babel/core@7.28.0)(@types/react@19.1.13)(react@19.1.0))(react@19.1.0)
+      '@tanstack/react-query':
+        specifier: ^5.90.5
+        version: 5.90.5(react@19.1.0)
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1537,6 +1540,14 @@ packages:
 
   '@sinonjs/fake-timers@10.3.0':
     resolution: {integrity: sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==}
+
+  '@tanstack/query-core@5.90.5':
+    resolution: {integrity: sha512-wLamYp7FaDq6ZnNehypKI5fNvxHPfTYylE0m/ZpuuzJfJqhR5Pxg9gvGBHZx4n7J+V5Rg5mZxHHTlv25Zt5u+w==}
+
+  '@tanstack/react-query@5.90.5':
+    resolution: {integrity: sha512-pN+8UWpxZkEJ/Rnnj2v2Sxpx1WFlaa9L6a4UO89p6tTQbeo+m0MS8oYDjbggrR8QcTyjKoYWKS3xJQGr3ExT8Q==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@tsconfig/node10@1.0.11':
     resolution: {integrity: sha512-DcRjDCujK/kCk/cUe8Xz8ZSpm8mS3mNNpta+jGCA6USEDfktlNvm1+IuZ9eTcDbNk41BHwpHHeW+N1lKCz4zOw==}
@@ -7296,6 +7307,13 @@ snapshots:
   '@sinonjs/fake-timers@10.3.0':
     dependencies:
       '@sinonjs/commons': 3.0.1
+
+  '@tanstack/query-core@5.90.5': {}
+
+  '@tanstack/react-query@5.90.5(react@19.1.0)':
+    dependencies:
+      '@tanstack/query-core': 5.90.5
+      react: 19.1.0
 
   '@tsconfig/node10@1.0.11': {}
 

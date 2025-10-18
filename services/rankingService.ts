@@ -31,47 +31,52 @@ export interface LevelsResponse {
   levels: LevelData[];
 }
 
+export interface GetLevelsRequest {
+  distance: number;
+  unit: 'mile' | 'km';
+  age: number;
+  gender: 'Male' | 'Female' | 'Other';
+}
+
 const BASE_URL = process.env.EXPO_PUBLIC_RANKING_API_BASE_URL || 'https://api.deno.fit';
 
+const fetchRanking = async (request: RankingRequest): Promise<RankingResponse> => {
+  const response = await fetch(`${BASE_URL}/ranking`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ranking: ${response.statusText}`);
+  }
+
+  return response.json();
+};
+
+const fetchLevels = async ({
+  distance,
+  unit,
+  age,
+  gender,
+}: GetLevelsRequest): Promise<LevelsResponse> => {
+  const response = await fetch(
+    `${BASE_URL}/levels?distance=${distance}&unit=${unit}&age=${age}&gender=${gender}`,
+  );
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch levels: ${data.message}`);
+  }
+
+  return data;
+};
+
 export const rankingService = {
-  async getRanking(request: RankingRequest): Promise<RankingResponse> {
-    const response = await fetch(`${BASE_URL}/ranking`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ranking: ${response.statusText}`);
-    }
-
-    return response.json();
-  },
-
-  async getLevels({
-    distance,
-    unit,
-    age,
-    gender,
-  }: {
-    distance: number;
-    unit: 'mile' | 'km';
-    age: number;
-    gender: 'Male' | 'Female' | 'Other';
-  }): Promise<LevelsResponse> {
-    const response = await fetch(
-      `${BASE_URL}/levels?distance=${distance}&unit=${unit}&age=${age}&gender=${gender}`,
-    );
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch levels: ${data.message}`);
-    }
-
-    return data;
-  },
+  getRanking: fetchRanking,
+  getLevels: fetchLevels,
 };
 
 export const getLevelColor = (level: string): string => {
