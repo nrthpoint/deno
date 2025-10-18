@@ -7,7 +7,7 @@ export interface RankingRequest {
 }
 
 export interface RankingResponse {
-  level: string;
+  level: 'Beginner' | 'Novice' | 'Intermediate' | 'Advanced' | 'Elite' | 'WR';
   rank: number;
   percentile: number;
   totalAthletes: number;
@@ -50,33 +50,43 @@ export const rankingService = {
     return response.json();
   },
 
-  async getLevels(distance: number, unit: 'mile' | 'km' = 'mile'): Promise<LevelsResponse> {
-    const response = await fetch(`${BASE_URL}/levels?distance=${distance}&unit=${unit}`);
+  async getLevels({
+    distance,
+    unit,
+    age,
+    gender,
+  }: {
+    distance: number;
+    unit: 'mile' | 'km';
+    age: number;
+    gender: 'Male' | 'Female' | 'Other';
+  }): Promise<LevelsResponse> {
+    const response = await fetch(
+      `${BASE_URL}/levels?distance=${distance}&unit=${unit}&age=${age}&gender=${gender}`,
+    );
+    const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch levels: ${response.statusText}`);
+      throw new Error(`Failed to fetch levels: ${data.message}`);
     }
 
-    return response.json();
+    return data;
   },
 };
 
 export const getLevelColor = (level: string): string => {
   switch (level.toLowerCase()) {
-    case 'elite':
+    case 'wr':
       return '#FF6B35'; // Vibrant Orange-Red
-    case 'advanced':
+    case 'elite':
       return '#F7931E'; // Bright Orange
-    case 'intermediate':
+    case 'advanced':
       return '#FFD23F'; // Bright Yellow
-    case 'beginner':
+    case 'intermediate':
       return '#06FFA5'; // Bright Mint Green
-    // Legacy support for old level names
-    case 'sub-elite':
-      return '#C0C0C0'; // Silver
-    case 'competitive':
+    case 'novice':
       return '#CD7F32'; // Bronze
-    case 'recreational':
+    case 'beginner':
       return '#4CAF50'; // Green
     default:
       return '#9E9E9E'; // Gray
@@ -85,20 +95,17 @@ export const getLevelColor = (level: string): string => {
 
 export const getLevelIntensity = (level: string): number => {
   switch (level.toLowerCase()) {
-    case 'elite':
+    case 'wr':
       return 0.9; // High intensity for vibrant orange-red
-    case 'advanced':
+    case 'elite':
       return 0.8; // High intensity for bright orange
-    case 'intermediate':
+    case 'advanced':
       return 0.7; // Good intensity for bright yellow
-    case 'beginner':
+    case 'intermediate':
       return 0.8; // High intensity for bright mint green
-    // Legacy support for old level names
-    case 'sub-elite':
-      return 0.8;
-    case 'competitive':
+    case 'novice':
       return 0.6;
-    case 'recreational':
+    case 'beginner':
       return 0.4;
     default:
       return 0.1;

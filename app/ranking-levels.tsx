@@ -19,12 +19,16 @@ import { uppercase } from '@/utils/text';
 
 const getRankingIcon = (level: string): keyof typeof MaterialCommunityIcons.glyphMap => {
   switch (level) {
+    case 'WR':
+      return 'crown';
     case 'Elite':
       return 'crown';
     case 'Advanced':
       return 'medal';
     case 'Intermediate':
       return 'trophy-variant';
+    case 'Novice':
+      return 'trophy';
     case 'Beginner':
       return 'star';
     default:
@@ -81,7 +85,7 @@ const LevelCard: React.FC<LevelCardProps> = ({ level, isUserLevel, distanceUnit 
 export default function RankingLevelsModal() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { distanceUnit } = useSettings();
+  const { distanceUnit, age, gender } = useSettings();
 
   const [levels, setLevels] = useState<LevelData[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -94,13 +98,34 @@ export default function RankingLevelsModal() {
 
   useEffect(() => {
     const loadLevels = async () => {
+      if (!distance || isNaN(distance)) {
+        setError('Invalid distance parameter');
+        setLoading(false);
+        return;
+      }
+
+      if (!age || isNaN(age)) {
+        setError('Invalid age in settings');
+        setLoading(false);
+        return;
+      }
+
+      if (!gender) {
+        setError('Invalid gender in settings');
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
-        // Using the provided Elite level data
-        const levels = await rankingService.getLevels(
+
+        const levels = await rankingService.getLevels({
           distance,
-          distanceUnit === 'km' ? 'km' : 'mile',
-        );
+          unit: distanceUnit === 'km' ? 'km' : 'mile',
+          age,
+          gender,
+        });
+
         setLevels(levels.levels);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load levels');
@@ -110,7 +135,7 @@ export default function RankingLevelsModal() {
     };
 
     loadLevels();
-  }, [distance, distanceUnit]);
+  }, [age, distance, distanceUnit, gender]);
 
   return (
     <>
@@ -143,7 +168,6 @@ export default function RankingLevelsModal() {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-        {/* Your Performance Card */}
         <Card
           style={{
             ...styles.yourPerformanceCard,
