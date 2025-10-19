@@ -11,6 +11,7 @@ export const formatDuration = (duration: Quantity, limit?: number) => {
   }
 
   if (duration.unit !== 's') {
+    console.log('Duration unit error:', duration.unit);
     throw new Error('formatDuration: Duration must be in seconds (unit: "s")');
   }
 

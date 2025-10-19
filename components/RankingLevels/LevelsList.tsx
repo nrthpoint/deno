@@ -7,7 +7,6 @@ import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useLevels } from '@/hooks/useLevels';
-import { useRanking } from '@/hooks/useRanking';
 import { Level } from '@/services/rankingService/types';
 import { getLevelColor, getLevelIntensity, getRankingIcon } from '@/services/rankingService/utils';
 import { formatPace } from '@/utils/pace';
@@ -15,11 +14,11 @@ import { formatDuration } from '@/utils/time';
 
 interface LevelCardProps {
   level: Level;
-  isUserLevel: boolean;
+  isUserLevel?: boolean;
   distanceUnit: string;
 }
 
-const LevelCard: React.FC<LevelCardProps> = ({ level, isUserLevel, distanceUnit }) => {
+const LevelCard: React.FC<LevelCardProps> = ({ level, isUserLevel }) => {
   const levelColor = getLevelColor(level.level);
   const intensity = getLevelIntensity(level.level);
 
@@ -42,9 +41,7 @@ const LevelCard: React.FC<LevelCardProps> = ({ level, isUserLevel, distanceUnit 
               {isUserLevel && ' (You)'}
             </Text>
             <Text style={styles.levelRange}>{formatDuration(level.expectedTime)}</Text>
-            <Text style={styles.paceRange}>
-              Pace: {formatPace(level.expectedPace)} min/{distanceUnit}
-            </Text>
+            <Text style={styles.paceRange}>Pace: {formatPace(level.expectedPace)}</Text>
           </View>
 
           <MaterialCommunityIcons
@@ -73,7 +70,6 @@ export const LevelsList: React.FC<LevelsListProps> = ({
   unit,
   age,
   gender,
-  time,
   distanceUnit,
 }) => {
   const {
@@ -87,20 +83,8 @@ export const LevelsList: React.FC<LevelsListProps> = ({
     gender,
   });
 
-  const {
-    data: ranking,
-    isLoading: rankingLoading,
-    error: rankingError,
-  } = useRanking({
-    distance,
-    unit,
-    age,
-    gender,
-    time,
-  });
-
-  const loading = levelsLoading || rankingLoading;
-  const error = levelsError || rankingError;
+  const loading = levelsLoading;
+  const error = levelsError;
 
   if (loading) {
     return (
@@ -124,19 +108,19 @@ export const LevelsList: React.FC<LevelsListProps> = ({
     );
   }
 
-  if (!levels || !ranking) {
+  if (!levels) {
     return null;
   }
 
   return (
     <View style={styles.levelsContainer}>
       {levels.levels.map((level) => {
-        const isUserLevel = level.level.toLowerCase() === ranking.level.toLowerCase();
+        //const isUserLevel = level.level.toLowerCase() === ranking.level.toLowerCase();
         return (
           <LevelCard
             key={level.level}
             level={level}
-            isUserLevel={isUserLevel}
+            //isUserLevel={isUserLevel}
             distanceUnit={distanceUnit === 'km' ? 'km' : 'mi'}
           />
         );

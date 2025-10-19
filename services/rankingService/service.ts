@@ -14,7 +14,12 @@ export const fetchRanking = async (request: RankingRequest): Promise<Ranking> =>
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch ranking: ${response.statusText}`);
+    const data = (await response.json()) as {
+      error: string;
+      message: string;
+    };
+
+    throw new Error(`Failed to fetch ranking: ${data.message}`);
   }
 
   const rawRankingResponse: RawRankingResponse = await response.json();
@@ -25,8 +30,8 @@ export const fetchRanking = async (request: RankingRequest): Promise<Ranking> =>
     rank: rawRankingResponse.rank,
     percentile: rawRankingResponse.percentile,
     totalAthletes: rawRankingResponse.totalAthletes,
-    yourTime: { quantity: parseFloat(rawRankingResponse.yourTime), unit: 'sec' },
-    averageTime: { quantity: parseFloat(rawRankingResponse.averageTime), unit: 'sec' },
+    yourTime: { quantity: parseFloat(rawRankingResponse.yourTime), unit: 's' },
+    averageTime: { quantity: parseFloat(rawRankingResponse.averageTime), unit: 's' },
     yourPace: { quantity: rawRankingResponse.yourPace, unit: `min/${request.unit}` },
     averagePace: { quantity: rawRankingResponse.averagePace, unit: `min/${request.unit}` },
     betterThanPercent: rawRankingResponse.betterThanPercent,
@@ -61,7 +66,7 @@ export const fetchLevels = async ({
     levels: rawLevelsResponse.levels.map((rawLevel) => ({
       level: rawLevel.level,
       expectedPace: { quantity: rawLevel.expectedPace, unit: `min/${unit}` },
-      expectedTime: { quantity: parseFloat(rawLevel.expectedTime), unit: 'sec' },
+      expectedTime: { quantity: parseFloat(rawLevel.expectedTime), unit: 's' },
       ageRange: rawLevel.ageRange,
     })),
   };

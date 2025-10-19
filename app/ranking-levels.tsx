@@ -15,7 +15,7 @@ export default function RankingLevelsModal() {
 
   const unit = (params.unit || 'km') as 'km' | 'mile';
   const distance = Number(params.distance) || 5;
-  const time = Number(params.time) || 0;
+  const time = Number(params.duration) || 0;
   const distanceUnit = unit === 'km' ? 'km' : 'mi';
 
   const { age, gender } = useSettings();
