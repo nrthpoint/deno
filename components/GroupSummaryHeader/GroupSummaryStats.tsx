@@ -67,6 +67,7 @@ export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({
 
       <RankingCards
         workout={group.highlight}
+        group={group}
         onRankingPress={handleRankingPress}
       />
 

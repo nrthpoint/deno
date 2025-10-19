@@ -1,18 +1,15 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card, Text } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
-import {
-  RankingResponse,
-  getLevelColor,
-  getLevelIntensity,
-  rankingService,
-} from '@/services/rankingService';
+import { useRanking } from '@/hooks/useRanking';
+import { RankingResponse, getLevelColor, getLevelIntensity } from '@/services/rankingService';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { Group } from '@/types/Groups';
 import { uppercase } from '@/utils/text';
 
 import { ErrorState } from './ErrorState';
@@ -21,6 +18,7 @@ import { LoadingState } from './LoadingState';
 
 interface RankingCardsProps {
   workout?: ExtendedWorkout;
+  group?: Group;
   onRankingPress: (ranking: RankingResponse) => void;
 }
 
@@ -39,49 +37,42 @@ const getRankingIcon = (level: string): keyof typeof MaterialCommunityIcons.glyp
   }
 };
 
-export const RankingCards: React.FC<RankingCardsProps> = ({ workout, onRankingPress }) => {
+export const RankingCards: React.FC<RankingCardsProps> = ({ workout, group, onRankingPress }) => {
   const { age, gender, distanceUnit } = useSettings();
-  const [loading, setLoading] = useState(false);
-  const [ranking, setRanking] = useState<RankingResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const rankingMutation = useRanking(group);
 
   const timeInSeconds = workout?.duration?.quantity || 0;
   const distanceInUserUnit = workout?.distance.quantity || 0;
 
   useEffect(() => {
-    const fetchRanking = async () => {
-      if (
-        !workout ||
-        !age ||
-        !gender ||
-        ranking ||
-        timeInSeconds === 0 ||
-        distanceInUserUnit === 0
-      ) {
-        return;
-      }
+    const shouldFetchRanking =
+      workout &&
+      age &&
+      gender &&
+      timeInSeconds > 0 &&
+      distanceInUserUnit > 0 &&
+      !rankingMutation.data &&
+      !rankingMutation.isPending;
 
-      setLoading(true);
-      setError(null);
-
-      try {
-        const rankingResult = await rankingService.getRanking({
-          age,
-          distance: distanceInUserUnit,
-          unit: distanceUnit === 'mi' ? 'mile' : 'km',
-          time: timeInSeconds,
-          gender,
-        });
-        setRanking(rankingResult);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to get ranking');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRanking();
-  }, [workout, age, gender, distanceUnit, timeInSeconds, distanceInUserUnit, ranking]);
+    if (shouldFetchRanking) {
+      rankingMutation.mutate({
+        age,
+        distance: distanceInUserUnit,
+        unit: distanceUnit === 'mi' ? 'mile' : 'km',
+        time: timeInSeconds,
+        gender,
+      });
+    }
+  }, [
+    workout,
+    age,
+    gender,
+    distanceUnit,
+    timeInSeconds,
+    distanceInUserUnit,
+    group?.key,
+    rankingMutation,
+  ]);
 
   if (!workout) {
     return (
@@ -100,13 +91,15 @@ export const RankingCards: React.FC<RankingCardsProps> = ({ workout, onRankingPr
   }
 
   const handlePress = () => {
-    if (ranking) {
-      onRankingPress(ranking);
+    if (rankingMutation.data) {
+      onRankingPress(rankingMutation.data);
     }
   };
 
-  const levelColor = ranking ? getLevelColor(ranking.level) : colors.surface;
-  const intensity = ranking ? getLevelIntensity(ranking.level) : 0.1;
+  const levelColor = rankingMutation.data
+    ? getLevelColor(rankingMutation.data.level)
+    : colors.surface;
+  const intensity = rankingMutation.data ? getLevelIntensity(rankingMutation.data.level) : 0.1;
 
   const RankingDisplay = ({ ranking }: { ranking: RankingResponse }) => (
     <View
@@ -143,7 +136,7 @@ export const RankingCards: React.FC<RankingCardsProps> = ({ workout, onRankingPr
       <Card
         style={[
           styles.card,
-          ranking && {
+          rankingMutation.data && {
             backgroundColor: `${levelColor}${Math.round(intensity * 255)
               .toString(16)
               .padStart(2, '0')}`,
@@ -155,12 +148,12 @@ export const RankingCards: React.FC<RankingCardsProps> = ({ workout, onRankingPr
       >
         <Card.Content style={styles.cardContent}>
           <View style={styles.dataContainer}>
-            {loading ? (
+            {rankingMutation.isPending ? (
               <LoadingState />
-            ) : error ? (
-              <ErrorState error={error} />
-            ) : ranking ? (
-              <RankingDisplay ranking={ranking} />
+            ) : rankingMutation.error ? (
+              <ErrorState error={rankingMutation.error.message} />
+            ) : rankingMutation.data ? (
+              <RankingDisplay ranking={rankingMutation.data} />
             ) : (
               <HighlightedWorkout
                 timeInSeconds={timeInSeconds}

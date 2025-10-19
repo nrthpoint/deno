@@ -4,6 +4,7 @@ export interface RankingRequest {
   unit: 'mile' | 'km';
   time: number; // in seconds
   gender: 'Male' | 'Female' | 'Other';
+  groupKey?: string; // Optional group identifier for context-specific rankings
 }
 
 export interface RankingResponse {

@@ -1,11 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { rankingService, type RankingRequest } from '@/services/rankingService';
+import { Group } from '@/types/Groups';
 
-export const useRanking = () => {
+export const useRanking = (group?: Group) => {
   return useMutation({
-    mutationFn: rankingService.getRanking,
-    mutationKey: ['ranking'],
+    mutationFn: (request: Omit<RankingRequest, 'groupKey'>) =>
+      rankingService.getRanking({
+        ...request,
+        groupKey: group?.key,
+      }),
+    mutationKey: ['ranking', group?.key],
   });
 };
 
