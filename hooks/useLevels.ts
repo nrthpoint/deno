@@ -1,15 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { rankingService, type GetLevelsRequest } from '@/services/rankingService';
+import { GetLevelsRequest } from '@/services/rankingService/requestTypes';
+import { fetchLevels } from '@/services/rankingService/service';
 
-export const useLevels = (request: GetLevelsRequest, enabled = true) => {
+export const useLevels = (request: GetLevelsRequest) => {
   return useQuery({
     queryKey: ['levels', request.distance, request.unit, request.age, request.gender],
-    queryFn: () => rankingService.getLevels(request),
-    enabled,
-    staleTime: 24 * 60 * 60 * 1000, // 24 hours - levels don't change frequently
-    gcTime: 7 * 24 * 60 * 60 * 1000, // 7 days
+    queryFn: () => fetchLevels(request),
   });
 };
-
-export type { GetLevelsRequest };

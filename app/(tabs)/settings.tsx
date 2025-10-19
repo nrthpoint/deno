@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: colors.background,
+    paddingBottom: 60,
   },
   header: {
     paddingTop: 80,

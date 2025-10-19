@@ -4,10 +4,10 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { AirportStatCard } from '@/components/AirportStatCard/AirportStatCard';
-import { RankingCards } from '@/components/RankingCards/RankingCards';
+import { RankCard } from '@/components/RankCard/RankCard';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { RankingResponse } from '@/services/rankingService';
+import { Ranking } from '@/services/rankingService/types';
 import { Group, GroupType } from '@/types/Groups';
 import { uppercase } from '@/utils/text';
 
@@ -50,7 +50,7 @@ export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({
   const firstRunDaysAgo = formatDaysAgo(group.oldest.endDate);
   const lastRunDaysAgo = formatDaysAgo(group.mostRecent.endDate);
 
-  const handleRankingPress = (ranking: RankingResponse) => {
+  const handleRankingPress = (ranking: Ranking) => {
     router.push({
       pathname: '/ranking-levels',
       params: {
@@ -65,9 +65,8 @@ export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({
     <View style={styles.container}>
       <Text style={styles.heading}>SUMMARY</Text>
 
-      <RankingCards
+      <RankCard
         workout={group.highlight}
-        group={group}
         onRankingPress={handleRankingPress}
       />
 

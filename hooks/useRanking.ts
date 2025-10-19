@@ -1,17 +1,14 @@
-import { useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
-import { rankingService, type RankingRequest } from '@/services/rankingService';
-import { Group } from '@/types/Groups';
+import { RankingRequest } from '@/services/rankingService/requestTypes';
+import { fetchRanking } from '@/services/rankingService/service';
 
-export const useRanking = (group?: Group) => {
-  return useMutation({
-    mutationFn: (request: Omit<RankingRequest, 'groupKey'>) =>
-      rankingService.getRanking({
+export const useRanking = (request: RankingRequest) => {
+  return useQuery({
+    queryFn: () =>
+      fetchRanking({
         ...request,
-        groupKey: group?.key,
       }),
-    mutationKey: ['ranking', group?.key],
+    queryKey: ['ranking', request.distance, request.unit, request.age, request.gender],
   });
 };
-
-export type { RankingRequest };

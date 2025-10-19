@@ -1,141 +1,28 @@
-import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { ActivityIndicator, Text } from 'react-native-paper';
+import React from 'react';
+import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text } from 'react-native-paper';
 
-import { Card } from '@/components/Card/Card';
+import { LevelsList, YourPerformanceCard } from '@/components/RankingLevels';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
-import {
-  getLevelColor,
-  getLevelIntensity,
-  LevelData,
-  RankingResponse,
-  rankingService,
-} from '@/services/rankingService';
-import { uppercase } from '@/utils/text';
-
-const getRankingIcon = (level: string): keyof typeof MaterialCommunityIcons.glyphMap => {
-  switch (level) {
-    case 'WR':
-      return 'crown';
-    case 'Elite':
-      return 'crown';
-    case 'Advanced':
-      return 'medal';
-    case 'Intermediate':
-      return 'trophy-variant';
-    case 'Novice':
-      return 'trophy';
-    case 'Beginner':
-      return 'star';
-    default:
-      return 'run';
-  }
-};
-
-interface LevelCardProps {
-  level: LevelData;
-  isUserLevel: boolean;
-  distanceUnit: string;
-}
-
-const LevelCard: React.FC<LevelCardProps> = ({ level, isUserLevel, distanceUnit }) => {
-  const levelColor = getLevelColor(level.level);
-  const intensity = getLevelIntensity(level.level);
-
-  return (
-    <Card
-      style={{
-        ...styles.levelCard,
-        backgroundColor: `${levelColor}${Math.round(intensity * 255)
-          .toString(16)
-          .padStart(2, '0')}`,
-        borderColor: levelColor,
-        borderWidth: 2,
-      }}
-    >
-      <View style={styles.levelCardContent}>
-        <View style={styles.levelHeader}>
-          <View style={styles.levelInfo}>
-            <Text style={styles.levelName}>
-              {level.level}
-              {isUserLevel && ' (You)'}
-            </Text>
-            <Text style={styles.levelRange}>{level.expectedTime}</Text>
-            <Text style={styles.paceRange}>
-              Pace: {level.expectedPace.toFixed(2)} min/{distanceUnit}
-            </Text>
-          </View>
-
-          <MaterialCommunityIcons
-            name={getRankingIcon(level.level)}
-            size={38}
-            color={colors.background}
-            style={styles.levelIcon}
-          />
-        </View>
-      </View>
-    </Card>
-  );
-};
 
 export default function RankingLevelsModal() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { distanceUnit, age, gender } = useSettings();
 
-  const [levels, setLevels] = useState<LevelData[] | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const unit = (params.unit || 'km') as 'km' | 'mile';
+  const distance = Number(params.distance) || 5;
+  const time = Number(params.time) || 0;
+  const distanceUnit = unit === 'km' ? 'km' : 'mi';
 
-  const distance = Array.isArray(params.distance)
-    ? parseFloat(params.distance[0])
-    : parseFloat(params.distance as string);
-  const ranking: RankingResponse = JSON.parse(params.ranking as string);
+  const { age, gender } = useSettings();
 
-  useEffect(() => {
-    const loadLevels = async () => {
-      if (!distance || isNaN(distance)) {
-        setError('Invalid distance parameter');
-        setLoading(false);
-        return;
-      }
-
-      if (!age || isNaN(age)) {
-        setError('Invalid age in settings');
-        setLoading(false);
-        return;
-      }
-
-      if (!gender) {
-        setError('Invalid gender in settings');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-
-        const levels = await rankingService.getLevels({
-          distance,
-          unit: distanceUnit === 'km' ? 'km' : 'mile',
-          age,
-          gender,
-        });
-
-        setLevels(levels.levels);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load levels');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadLevels();
-  }, [age, distance, distanceUnit, gender]);
+  if (age === null || gender === null) {
+    throw new Error('Age and gender must be set in settings to view ranking levels.');
+  }
 
   return (
     <>
@@ -168,68 +55,25 @@ export default function RankingLevelsModal() {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-        <Card
-          style={{
-            ...styles.yourPerformanceCard,
-            backgroundColor: `${getLevelColor(ranking.level)}${Math.round(
-              getLevelIntensity(ranking.level) * 255,
-            )
-              .toString(16)
-              .padStart(2, '0')}`,
-            borderColor: getLevelColor(ranking.level),
-          }}
-        >
-          <View style={styles.cardContent}>
-            <View style={styles.performanceContainer}>
-              <View style={styles.performanceInfo}>
-                <Text style={styles.levelText}>{ranking.level}</Text>
-                <Text style={styles.rankText}>RANK #{ranking.rank}</Text>
-                <Text style={styles.percentileText}>
-                  Top {(100 - ranking.betterThanPercent).toFixed(1)}%
-                </Text>
-              </View>
-              <MaterialCommunityIcons
-                name={getRankingIcon(ranking.level)}
-                size={38}
-                color={colors.background}
-                style={styles.performanceIcon}
-              />
-            </View>
-          </View>
-        </Card>
+        <YourPerformanceCard
+          distance={distance}
+          unit={unit}
+          age={age}
+          gender={gender}
+          time={time}
+        />
 
         {/* All Levels */}
         <Text style={styles.sectionTitle}>Performance Levels</Text>
 
-        {loading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator
-              size="large"
-              color={colors.primary}
-            />
-            <Text style={styles.loadingText}>Loading performance levels...</Text>
-          </View>
-        ) : error ? (
-          <Card style={styles.errorCard}>
-            <View style={styles.cardContent}>
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
-          </Card>
-        ) : levels ? (
-          <View style={styles.levelsContainer}>
-            {levels.map((level) => {
-              const isUserLevel = level.level.toLowerCase() === ranking.level.toLowerCase();
-              return (
-                <LevelCard
-                  key={level.level}
-                  level={level}
-                  isUserLevel={isUserLevel}
-                  distanceUnit={distanceUnit === 'km' ? 'km' : 'mi'}
-                />
-              );
-            })}
-          </View>
-        ) : null}
+        <LevelsList
+          distance={distance}
+          unit={unit}
+          age={age}
+          gender={gender}
+          time={time}
+          distanceUnit={distanceUnit}
+        />
       </ScrollView>
     </>
   );
@@ -247,125 +91,11 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 16,
   },
-  yourPerformanceCard: {
-    marginBottom: 24,
-    borderWidth: 2,
-    borderRadius: 12,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  cardContent: {
-    paddingVertical: 16,
-    paddingHorizontal: 12,
-  },
-  performanceContainer: {
-    alignItems: 'flex-start',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  performanceInfo: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-  },
-  levelText: {
-    fontSize: 24,
-    fontFamily: LatoFonts.bold,
-    color: colors.background,
-    marginBottom: 4,
-  },
-  rankText: {
-    ...uppercase,
-    fontSize: 14,
-    fontFamily: LatoFonts.bold,
-    color: colors.background,
-    marginBottom: 6,
-  },
-  percentileText: {
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    color: colors.background,
-    opacity: 0.8,
-  },
-  performanceIcon: {
-    marginRight: 4,
-  },
+
   sectionTitle: {
     fontSize: 20,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
     marginBottom: 16,
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    paddingVertical: 40,
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    fontFamily: LatoFonts.regular,
-    color: colors.neutral,
-    opacity: 0.7,
-  },
-  errorCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-  },
-  errorText: {
-    fontSize: 16,
-    fontFamily: LatoFonts.regular,
-    color: colors.neutral,
-    textAlign: 'center',
-  },
-  levelsContainer: {
-    gap: 12,
-  },
-  levelCard: {
-    borderRadius: 12,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  levelCardContent: {
-    paddingVertical: 16,
-    paddingHorizontal: 12,
-  },
-  levelHeader: {
-    alignItems: 'flex-start',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  levelInfo: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-  },
-  levelName: {
-    fontSize: 24,
-    fontFamily: LatoFonts.bold,
-    color: colors.background,
-    marginBottom: 4,
-  },
-  levelRange: {
-    fontSize: 14,
-    fontFamily: LatoFonts.bold,
-    color: colors.background,
-    marginBottom: 6,
-  },
-  paceRange: {
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    color: colors.background,
-    opacity: 0.8,
-  },
-  levelIcon: {
-    marginRight: 4,
   },
 });
