@@ -1,22 +1,25 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LengthUnit } from '@kingstinct/react-native-healthkit';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { Text } from 'react-native-paper';
 
-import { LevelsList, YourPerformanceCard } from '@/components/RankingLevels';
+import { LevelsList } from '@/components/RankingLevels/LevelsList';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
 
 export default function RankingLevelsModal() {
   const router = useRouter();
-  const params = useLocalSearchParams();
+  const params = useLocalSearchParams<{
+    distance?: string;
+    duration?: string;
+    unit?: LengthUnit;
+  }>();
 
-  const unit = (params.unit || 'km') as 'km' | 'mile';
   const distance = Number(params.distance) || 5;
   const time = Number(params.duration) || 0;
-  const distanceUnit = unit === 'km' ? 'km' : 'mi';
+  const unit = params.unit || 'km';
 
   const { age, gender } = useSettings();
 
@@ -55,24 +58,12 @@ export default function RankingLevelsModal() {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-        <YourPerformanceCard
-          distance={distance}
-          unit={unit}
-          age={age}
-          gender={gender}
-          time={time}
-        />
-
-        {/* All Levels */}
-        <Text style={styles.sectionTitle}>Performance Levels</Text>
-
         <LevelsList
           distance={distance}
           unit={unit}
           age={age}
           gender={gender}
           time={time}
-          distanceUnit={distanceUnit}
         />
       </ScrollView>
     </>
@@ -90,12 +81,5 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 16,
-  },
-
-  sectionTitle: {
-    fontSize: 20,
-    fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-    marginBottom: 16,
   },
 });

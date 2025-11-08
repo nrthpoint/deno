@@ -1,9 +1,9 @@
-import { Quantity } from '@kingstinct/react-native-healthkit';
+import { LengthUnit, Quantity } from '@kingstinct/react-native-healthkit';
 
 // Processed Level Data with Quantity types
 export interface Levels {
   distance: number;
-  unit: 'mile' | 'km';
+  unit: LengthUnit;
   age: number;
   gender: 'Male' | 'Female' | 'Other';
   levels: Level[];
@@ -13,7 +13,6 @@ export interface Level {
   level: string;
   expectedPace: Quantity;
   expectedTime: Quantity;
-  ageRange: string;
 }
 
 export interface Ranking {

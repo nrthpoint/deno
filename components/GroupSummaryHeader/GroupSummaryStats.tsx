@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { AirportStatCard } from '@/components/AirportStatCard/AirportStatCard';
-import { RankCard } from '@/components/RankCard/RankCard';
+import { WorkoutPerformanceCard } from '@/components/RankingLevels/WorkoutPerformanceCard';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { Ranking } from '@/services/rankingService/types';
@@ -23,7 +23,7 @@ const formatDaysAgo = (date: Date): number => {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 };
 
-const getTimeRangeParts = (timeRangeInDays: number): { value: number | string; unit: string } => {
+/* const getTimeRangeParts = (timeRangeInDays: number): { value: number | string; unit: string } => {
   if (timeRangeInDays <= 7) {
     return { value: 'this', unit: 'week' };
   } else if (timeRangeInDays <= 30) {
@@ -39,14 +39,10 @@ const getTimeRangeParts = (timeRangeInDays: number): { value: number | string; u
     return { value: years, unit: years > 1 ? 'years' : 'year' };
   }
 };
-
-export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({
-  group,
-  groupType: _groupType,
-  timeRangeInDays,
-}) => {
+ */
+export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({ group }) => {
   const runCount = group.runs.length;
-  const timeRangeParts = getTimeRangeParts(timeRangeInDays);
+  // const timeRangeParts = getTimeRangeParts(timeRangeInDays);
   const firstRunDaysAgo = formatDaysAgo(group.oldest.endDate);
   const lastRunDaysAgo = formatDaysAgo(group.mostRecent.endDate);
 
@@ -57,6 +53,7 @@ export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({
         ranking: JSON.stringify(ranking),
         distance: group.highlight.distance.quantity.toFixed(2),
         duration: group.highlight.duration.quantity.toFixed(2),
+        unit: group.highlight.distance.unit,
       },
     });
   };
@@ -65,22 +62,23 @@ export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({
     <View style={styles.container}>
       <Text style={styles.heading}>SUMMARY</Text>
 
-      <RankCard
+      <WorkoutPerformanceCard
         workout={group.highlight}
-        onRankingPress={handleRankingPress}
+        onPress={handleRankingPress}
       />
 
       <View style={styles.cardGrid}>
         <AirportStatCard
           unit="runs"
+          label="Total"
           value={runCount}
         />
 
-        <AirportStatCard
+        {/*   <AirportStatCard
           value={timeRangeParts.value}
           unit={timeRangeParts.unit}
         />
-
+ */}
         <AirportStatCard
           label="Most Recent"
           value={lastRunDaysAgo}
@@ -89,13 +87,15 @@ export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({
           inverted
         />
 
-        <AirportStatCard
-          label="Oldest"
-          value={firstRunDaysAgo}
-          unit="DAYS AGO"
-          backgroundColor={colors.background}
-          inverted
-        />
+        {lastRunDaysAgo !== firstRunDaysAgo && (
+          <AirportStatCard
+            label="First"
+            value={firstRunDaysAgo}
+            unit="DAYS AGO"
+            backgroundColor={colors.background}
+            inverted
+          />
+        )}
       </View>
     </View>
   );
@@ -105,12 +105,13 @@ const styles = StyleSheet.create({
   container: {
     borderBottomWidth: 1,
     borderBottomColor: colors.surface,
+    marginBottom: 10,
   },
   heading: {
     ...uppercase,
     fontSize: 14,
     color: colors.neutral,
-    marginBottom: 20,
+    marginBottom: 10,
     marginTop: 10,
     letterSpacing: 2,
     fontFamily: LatoFonts.bold,

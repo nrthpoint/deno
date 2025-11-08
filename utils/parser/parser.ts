@@ -22,6 +22,11 @@ export const parseWorkoutSamples = async ({
 
   const parsedWorkouts = parsedResults.filter((run): run is ExtendedWorkout => run !== null);
 
+  // If no workouts, return empty array
+  if (parsedWorkouts.length === 0) {
+    return [];
+  }
+
   const fastestWorkout = findFastestRun(parsedWorkouts);
   const longestWorkout = findLongestRun(parsedWorkouts);
   const furthestWorkout = findFurthestRun(parsedWorkouts);

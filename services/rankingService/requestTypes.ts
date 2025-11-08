@@ -1,15 +1,17 @@
+import { LengthUnit } from '@kingstinct/react-native-healthkit';
+
 // Request payload for fetching ranking data
 export interface RankingRequest {
   age: number;
   distance: number;
-  unit: 'mile' | 'km';
+  unit: LengthUnit;
   time: number; // in seconds
   gender: 'Male' | 'Female' | 'Other';
 }
 
 export interface GetLevelsRequest {
   distance: number;
-  unit: 'mile' | 'km';
+  unit: LengthUnit;
   age: number;
   gender: 'Male' | 'Female' | 'Other';
 }

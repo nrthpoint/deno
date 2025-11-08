@@ -67,7 +67,6 @@ export const fetchLevels = async ({
       level: rawLevel.level,
       expectedPace: { quantity: rawLevel.expectedPace, unit: `min/${unit}` },
       expectedTime: { quantity: parseFloat(rawLevel.expectedTime), unit: 's' },
-      ageRange: rawLevel.ageRange,
     })),
   };
 

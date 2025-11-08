@@ -5,10 +5,7 @@ import { fetchRanking } from '@/services/rankingService/service';
 
 export const useRanking = (request: RankingRequest) => {
   return useQuery({
-    queryFn: () =>
-      fetchRanking({
-        ...request,
-      }),
+    queryFn: () => fetchRanking(request),
     queryKey: ['ranking', request.distance, request.unit, request.age, request.gender],
   });
 };

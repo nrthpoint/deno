@@ -77,7 +77,7 @@ export const AirportStatCard: React.FC<AirportStatCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: '48%',
+    width: '49%',
     height: 70,
     borderRadius: 8,
     marginBottom: 12,

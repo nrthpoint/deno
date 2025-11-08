@@ -15,11 +15,11 @@ export const getLevelColor = (level: string): string => {
     case 'beginner':
       return '#9966FF'; // Bright Purple - Starting point
     default:
-      return '#808080'; // Gray
+      return '#FFFFFF'; // White
   }
 };
 
-export const getLevelIntensity = (level: string): number => {
+/* export const getLevelIntensity = (level: string): number => {
   switch (level.toLowerCase()) {
     case 'wr':
       return 0.9; // Maximum intensity for world record
@@ -37,7 +37,7 @@ export const getLevelIntensity = (level: string): number => {
       return 0.1;
   }
 };
-
+ */
 export const getRankingIcon = (level: string): keyof typeof MaterialCommunityIcons.glyphMap => {
   switch (level) {
     case 'WR':
