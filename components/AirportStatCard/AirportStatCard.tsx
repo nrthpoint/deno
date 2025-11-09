@@ -21,7 +21,7 @@ export const AirportStatCard: React.FC<AirportStatCardProps> = ({ icon, value, l
         <MaterialCommunityIcons
           name={icon}
           size={24}
-          color={colors.background}
+          color={colors.neutral}
           style={styles.icon}
         />
         <Text style={styles.value}>{value}</Text>
@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginBottom: 14,
-    backgroundColor: colors.neutral,
-    borderRadius: '50%',
+    backgroundColor: colors.accent,
+    borderRadius: 12,
     padding: 12,
   },
   value: {

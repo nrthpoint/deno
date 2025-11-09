@@ -9,7 +9,7 @@ import { LatoFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
 import { useRanking } from '@/hooks/useRanking';
 import { Ranking } from '@/services/rankingService/types';
-import { getRankingIcon } from '@/services/rankingService/utils';
+import { getRankingIcon, getLevelColor } from '@/services/rankingService/utils';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { subheading } from '@/utils/text';
 
@@ -41,13 +41,12 @@ export const WorkoutPerformanceCard: React.FC<WorkoutPerformanceCardProps> = ({
 
   if (isLoading) {
     return (
-      <Card style={styles.loadingCard}>
+      <Card style={styles.yourPerformanceCard}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator
             size="small"
-            color={colors.primary}
+            color={colors.neutral}
           />
-          <Text style={styles.loadingText}>Loading your performance...</Text>
         </View>
       </Card>
     );
@@ -77,7 +76,7 @@ export const WorkoutPerformanceCard: React.FC<WorkoutPerformanceCardProps> = ({
             name={getRankingIcon(ranking.level)}
             size={24}
             color={colors.background}
-            style={styles.performanceIcon}
+            style={[styles.performanceIcon, { backgroundColor: getLevelColor(ranking.level) }]}
           />
           <Text style={styles.levelText}>{ranking.level}</Text>
           <Text style={styles.subheading}>Rank</Text>
@@ -93,18 +92,16 @@ const styles = StyleSheet.create({
     color: colors.neutral,
     paddingVertical: 16,
   },
-  loadingCard: {},
-  errorCard: {},
+  errorCard: {
+    backgroundColor: 'transparent',
+    marginTop: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+  },
   loadingContainer: {
     alignItems: 'center',
-    paddingVertical: 20,
-  },
-  loadingText: {
-    marginTop: 8,
-    fontSize: 14,
-    fontFamily: LatoFonts.regular,
-    color: colors.neutral,
-    opacity: 0.7,
+    paddingVertical: 40,
+    paddingLeft: 10,
   },
   errorText: {
     marginVertical: 10,
@@ -112,21 +109,24 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.regular,
     color: colors.neutral,
     textAlign: 'center',
+    lineHeight: 18,
   },
   performanceInfo: {
     flexDirection: 'column',
     alignItems: 'center',
   },
   levelText: {
-    fontSize: 20,
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
+    fontSize: 16,
     fontFamily: LatoFonts.bold,
     color: colors.neutral,
+    marginTop: 4,
     marginBottom: 4,
   },
   performanceIcon: {
     marginBottom: 14,
-    backgroundColor: colors.neutral,
-    borderRadius: '50%',
+    borderRadius: 12,
     padding: 12,
   },
   subheading: {
