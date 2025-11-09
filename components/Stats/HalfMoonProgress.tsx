@@ -12,7 +12,6 @@ import { ThemedGradient } from '@/components/ThemedGradient/ThemedGradient';
 import { colors } from '@/config/colors';
 import { getLatoFont, LatoFonts } from '@/config/fonts';
 import { useGroupStats } from '@/context/GroupStatsContext';
-import { subheading } from '@/utils/text';
 
 interface HalfMoonProgressProps extends ModalProps {
   label: string;
