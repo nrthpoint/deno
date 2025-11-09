@@ -10,7 +10,7 @@ import { ModalProps } from '@/components/Modal/Modal.types';
 import { AnimatedCounter } from '@/components/Stats/AnimatedCounter';
 import { ThemedGradient } from '@/components/ThemedGradient/ThemedGradient';
 import { colors } from '@/config/colors';
-import { getLatoFont } from '@/config/fonts';
+import { getLatoFont, LatoFonts } from '@/config/fonts';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { subheading } from '@/utils/text';
 
@@ -25,7 +25,7 @@ export const HalfMoonProgress = ({ label, size = 120, ...modalProps }: HalfMoonP
   const { group, meta } = useGroupStats();
   const value = group?.runs?.length ?? 0;
   const total = meta?.totalRuns ?? 0;
-  const percentage = total > 0 ? Math.min((value / total) * 100, 100) : 0;
+  const percentage = total > 0 ? Math.round(Math.min((value / total) * 100, 100)) : 0;
 
   const animatedPercentage = useSharedValue(0);
 
@@ -104,7 +104,7 @@ export const HalfMoonProgress = ({ label, size = 120, ...modalProps }: HalfMoonP
     </View>
   );
 
-  const modalContent = <Text style={styles.modalValue}>{percentage.toFixed(1)}%</Text>;
+  const modalContent = <Text style={styles.modalValue}>{percentage}%</Text>;
 
   return (
     <>
@@ -166,9 +166,11 @@ const styles = StyleSheet.create({
     color: colors.background,
   },
   labelText: {
-    ...subheading,
+    //...subheading,
+    marginTop: 10,
     color: colors.background,
     textAlign: 'center',
+    fontFamily: LatoFonts.regular,
     marginBottom: 0,
   },
   modalValue: {

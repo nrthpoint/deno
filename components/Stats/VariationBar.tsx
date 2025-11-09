@@ -153,14 +153,22 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
     x: [maxLabelX.value],
   }));
 
-  // Helper function to format values based on group type
-  const formatValue = (value: number): string => {
+  // Helper function to format relative differences based on group type
+  const formatRelativeDifference = (value: number, reference: number): string => {
+    if (min === max) {
+      return '0';
+    }
+
+    const diff = value - reference;
+    const absDiff = Math.abs(diff);
+    const sign = diff < 0 ? '-' : '+';
+
     if (groupType === 'pace') {
       // TODO: Unit here will be wrong if switching to KM.
-      return formatDistance(newQuantity(value, 'mi'));
+      return `${sign}${formatDistance(newQuantity(absDiff, 'mi'))}`;
     } else {
       // For distance and elevation groups, the distribution values are durations in seconds
-      return formatDuration(newQuantity(Math.round(value), 's'), 1);
+      return `${sign}${formatDuration(newQuantity(Math.round(absDiff), 's'), 1)}`;
     }
   };
 
@@ -184,6 +192,9 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
   const min = Math.min(...values);
   const max = Math.max(...values);
   const barWidth = width - 2 * MARGIN;
+
+  // Calculate reference point (median of the distribution)
+  const reference = values.length > 0 ? values[Math.floor(values.length / 2)] : 0;
 
   // Map selected values to x positions
   const positions = selected.map((val) => {
@@ -283,24 +294,24 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
           <AnimatedSvgText
             y={LABEL_Y}
             fontSize={12}
-            fontFamily={getLatoFont('bold').fontFamily}
+            fontFamily={getLatoFont('regular').fontFamily}
             fill={colors.background}
             textAnchor="middle"
             animatedProps={minLabelAnimatedProps}
           >
-            {formatValue(min).toUpperCase()}
+            {formatRelativeDifference(min, reference)}
           </AnimatedSvgText>
 
           {max !== min && (
             <AnimatedSvgText
               y={LABEL_Y}
               fontSize={12}
-              fontFamily={getLatoFont('bold').fontFamily}
+              fontFamily={getLatoFont('regular').fontFamily}
               fill={colors.background}
               textAnchor="middle"
               animatedProps={maxLabelAnimatedProps}
             >
-              {formatValue(max).toUpperCase()}
+              {formatRelativeDifference(max, reference)}
             </AnimatedSvgText>
           )}
         </Svg>
@@ -341,12 +352,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   labelText: {
-    fontSize: 12,
+    fontSize: 14,
     color: colors.background,
     textAlign: 'center',
-    textTransform: 'uppercase',
-    letterSpacing: 2,
+    // textTransform: 'uppercase',
+    // letterSpacing: 2,
     marginTop: 4,
-    ...getLatoFont('bold'),
+    ...getLatoFont('regular'),
   },
 });
