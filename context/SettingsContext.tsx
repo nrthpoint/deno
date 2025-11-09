@@ -10,11 +10,13 @@ interface SettingsContextType {
   timeRangeInDays: TimeRange;
   age: number | null;
   gender: 'Male' | 'Female' | 'Other' | null;
+  advancedGroupingEnabled: boolean;
   setDistanceUnit: (unit: LengthUnit) => void;
   setActivityType: (type: WorkoutActivityType) => void;
   setTimeRange: (range: TimeRange) => void;
   setAge: (age: number | null) => void;
   setGender: (gender: 'Male' | 'Female' | 'Other' | null) => void;
+  setAdvancedGroupingEnabled: (enabled: boolean) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -27,38 +29,49 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
   const [timeRangeInDays, setTimeRangeState] = useState<TimeRange>(30); // Default to 1 month
   const [age, setAgeState] = useState<number | null>(null);
   const [gender, setGenderState] = useState<'Male' | 'Female' | 'Other' | null>(null);
+  const [advancedGroupingEnabled, setAdvancedGroupingEnabledState] = useState<boolean>(false);
 
   useEffect(() => {
-    AsyncStorage.multiGet(['distanceUnit', 'activityType', 'timeRange', 'age', 'gender']).then(
-      (values) => {
-        const storedConfig = Object.fromEntries(values);
+    AsyncStorage.multiGet([
+      'distanceUnit',
+      'activityType',
+      'timeRange',
+      'age',
+      'gender',
+      'advancedGroupingEnabled',
+    ]).then((values) => {
+      const storedConfig = Object.fromEntries(values);
 
-        if (storedConfig['distanceUnit']) {
-          const storedUnit = storedConfig['distanceUnit'] as LengthUnit;
-          setDistanceUnitState(storedUnit);
-        }
+      if (storedConfig['distanceUnit']) {
+        const storedUnit = storedConfig['distanceUnit'] as LengthUnit;
+        setDistanceUnitState(storedUnit);
+      }
 
-        if (storedConfig['activityType']) {
-          const activityTypeValue = storedConfig['activityType'] as unknown as WorkoutActivityType;
-          setActivityTypeState(activityTypeValue);
-        }
+      if (storedConfig['activityType']) {
+        const activityTypeValue = storedConfig['activityType'] as unknown as WorkoutActivityType;
+        setActivityTypeState(activityTypeValue);
+      }
 
-        if (storedConfig['timeRange']) {
-          const timeRangeValue = parseInt(storedConfig['timeRange'] as string);
-          setTimeRangeState(timeRangeValue as TimeRange);
-        }
+      if (storedConfig['timeRange']) {
+        const timeRangeValue = parseInt(storedConfig['timeRange'] as string);
+        setTimeRangeState(timeRangeValue as TimeRange);
+      }
 
-        if (storedConfig['age']) {
-          const ageValue = parseInt(storedConfig['age'] as string);
-          setAgeState(ageValue);
-        }
+      if (storedConfig['age']) {
+        const ageValue = parseInt(storedConfig['age'] as string);
+        setAgeState(ageValue);
+      }
 
-        if (storedConfig['gender']) {
-          const genderValue = storedConfig['gender'] as 'Male' | 'Female' | 'Other' | null;
-          setGenderState(genderValue);
-        }
-      },
-    );
+      if (storedConfig['gender']) {
+        const genderValue = storedConfig['gender'] as 'Male' | 'Female' | 'Other' | null;
+        setGenderState(genderValue);
+      }
+
+      if (storedConfig['advancedGroupingEnabled']) {
+        const advancedGroupingValue = storedConfig['advancedGroupingEnabled'] === 'true';
+        setAdvancedGroupingEnabledState(advancedGroupingValue);
+      }
+    });
   }, []);
 
   const setDistanceUnit = (val: LengthUnit) => {
@@ -100,6 +113,11 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
     }
   };
 
+  const setAdvancedGroupingEnabled = (val: boolean) => {
+    setAdvancedGroupingEnabledState(val);
+    AsyncStorage.setItem('advancedGroupingEnabled', val.toString());
+  };
+
   return (
     <SettingsContext.Provider
       value={{
@@ -108,11 +126,13 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
         timeRangeInDays,
         age,
         gender,
+        advancedGroupingEnabled,
         setDistanceUnit,
         setActivityType,
         setTimeRange,
         setAge,
         setGender,
+        setAdvancedGroupingEnabled,
       }}
     >
       {children}

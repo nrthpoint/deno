@@ -1,15 +1,11 @@
 import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
 
 import { AirportStatCard } from '@/components/AirportStatCard/AirportStatCard';
 import { WorkoutPerformanceCard } from '@/components/RankingLevels/WorkoutPerformanceCard';
-import { colors } from '@/config/colors';
-import { LatoFonts } from '@/config/fonts';
 import { Ranking } from '@/services/rankingService/types';
 import { Group, GroupType } from '@/types/Groups';
-import { uppercase } from '@/utils/text';
 
 interface GroupSummaryStatsProps {
   group: Group;
@@ -23,27 +19,8 @@ const formatDaysAgo = (date: Date): number => {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 };
 
-/* const getTimeRangeParts = (timeRangeInDays: number): { value: number | string; unit: string } => {
-  if (timeRangeInDays <= 7) {
-    return { value: 'this', unit: 'week' };
-  } else if (timeRangeInDays <= 30) {
-    return { value: 'this', unit: 'month' };
-  } else if (timeRangeInDays <= 90) {
-    const months = Math.round(timeRangeInDays / 30);
-    return { value: months, unit: months > 1 ? 'months' : 'month' };
-  } else if (timeRangeInDays <= 365) {
-    const months = Math.round(timeRangeInDays / 30);
-    return { value: months, unit: 'months' };
-  } else {
-    const years = Math.round(timeRangeInDays / 365);
-    return { value: years, unit: years > 1 ? 'years' : 'year' };
-  }
-};
- */
 export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({ group }) => {
   const runCount = group.runs.length;
-  // const timeRangeParts = getTimeRangeParts(timeRangeInDays);
-  const firstRunDaysAgo = formatDaysAgo(group.oldest.endDate);
   const lastRunDaysAgo = formatDaysAgo(group.mostRecent.endDate);
 
   const handleRankingPress = (ranking: Ranking) => {
@@ -51,75 +28,49 @@ export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({ group }) =
       pathname: '/ranking-levels',
       params: {
         ranking: JSON.stringify(ranking),
-        distance: group.highlight.distance.quantity.toFixed(2),
-        duration: group.highlight.duration.quantity.toFixed(2),
+        distance: group.highlight.distance.quantity,
+        duration: group.highlight.duration.quantity,
         unit: group.highlight.distance.unit,
       },
     });
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>SUMMARY</Text>
-
-      <WorkoutPerformanceCard
-        workout={group.highlight}
-        onPress={handleRankingPress}
-      />
-
+    <View>
       <View style={styles.cardGrid}>
-        <AirportStatCard
-          unit="runs"
-          label="Total"
-          value={runCount}
-        />
-
-        {/*   <AirportStatCard
-          value={timeRangeParts.value}
-          unit={timeRangeParts.unit}
-        />
- */}
-        <AirportStatCard
-          label="Most Recent"
-          value={lastRunDaysAgo}
-          unit="DAYS AGO"
-          backgroundColor={colors.background}
-          inverted
-        />
-
-        {lastRunDaysAgo !== firstRunDaysAgo && (
-          <AirportStatCard
-            label="First"
-            value={firstRunDaysAgo}
-            unit="DAYS AGO"
-            backgroundColor={colors.background}
-            inverted
+        <View style={styles.cardItem}>
+          <WorkoutPerformanceCard
+            workout={group.highlight}
+            onPress={handleRankingPress}
           />
-        )}
+        </View>
+
+        <View style={styles.cardItem}>
+          <AirportStatCard
+            icon="run-fast"
+            label={runCount === 1 ? 'Run' : 'Runs'}
+            value={runCount}
+          />
+        </View>
+
+        <View style={styles.cardItem}>
+          <AirportStatCard
+            icon="clock-time-four-outline"
+            label={lastRunDaysAgo === 1 ? 'Day Ago' : 'Days Ago'}
+            value={lastRunDaysAgo}
+          />
+        </View>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surface,
-    marginBottom: 10,
-  },
-  heading: {
-    ...uppercase,
-    fontSize: 14,
-    color: colors.neutral,
-    marginBottom: 10,
-    marginTop: 10,
-    letterSpacing: 2,
-    fontFamily: LatoFonts.bold,
-  },
   cardGrid: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 10,
+    gap: 8,
+  },
+  cardItem: {
+    flex: 1,
   },
 });

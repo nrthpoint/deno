@@ -28,13 +28,22 @@ export const fetchRanking = async (request: RankingRequest): Promise<Ranking> =>
   const ranking: Ranking = {
     level: rawRankingResponse.level,
     rank: rawRankingResponse.rank,
-    percentile: rawRankingResponse.percentile,
-    totalAthletes: rawRankingResponse.totalAthletes,
+    percentile: parseFloat(rawRankingResponse.percentile.toFixed(2)),
     yourTime: { quantity: parseFloat(rawRankingResponse.yourTime), unit: 's' },
     averageTime: { quantity: parseFloat(rawRankingResponse.averageTime), unit: 's' },
-    yourPace: { quantity: rawRankingResponse.yourPace, unit: `min/${request.unit}` },
-    averagePace: { quantity: rawRankingResponse.averagePace, unit: `min/${request.unit}` },
-    betterThanPercent: rawRankingResponse.betterThanPercent,
+    yourPace: {
+      quantity: parseFloat(rawRankingResponse.yourPace.toFixed(2)),
+      unit: `min/${rawRankingResponse.unit}`,
+    },
+    averagePace: {
+      quantity: parseFloat(rawRankingResponse.averagePace.toFixed(2)),
+      unit: `min/${rawRankingResponse.unit}`,
+    },
+    betterThanPercent: parseFloat(rawRankingResponse.betterThanPercent.toFixed(2)),
+    distanceDifference: {
+      quantity: parseFloat(rawRankingResponse.distanceDiff.toFixed(2)),
+      unit: rawRankingResponse.unit,
+    },
   };
 
   return ranking;

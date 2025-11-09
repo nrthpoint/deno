@@ -1,10 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { HalfMoonProgress } from '@/components/Stats/HalfMoonProgress';
 import { VariationBar } from '@/components/Stats/VariationBar';
 import { useGroupStats } from '@/context/GroupStatsContext';
-import { subheading } from '@/utils/text';
 import { formatDuration } from '@/utils/time';
 
 export const VisualCards = () => {
@@ -12,7 +11,6 @@ export const VisualCards = () => {
 
   return (
     <View>
-      <Text style={styles.headerText}>Key Stats</Text>
       <View style={[styles.row]}>
         <View style={styles.column}>
           <HalfMoonProgress
@@ -53,13 +51,6 @@ export const VisualCards = () => {
 };
 
 const styles = StyleSheet.create({
-  headerText: {
-    ...subheading,
-    fontSize: 14,
-    color: '#FFFFFF',
-    marginBottom: 10,
-    marginTop: 10,
-  },
   row: {
     display: 'flex',
     flexDirection: 'row',

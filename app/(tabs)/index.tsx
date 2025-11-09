@@ -1,9 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Animated,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import { IconButton, Text } from 'react-native-paper';
 
+import { CardSlider } from '@/components/CardSlider/CardSlider';
 import { getActivityIcon } from '@/components/GroupCarousel/getActivityIcon';
 import { GroupCarousel } from '@/components/GroupCarousel/GroupCarousel';
 import { GroupingConfigModal } from '@/components/GroupConfigurator/GroupConfigurator';
@@ -14,6 +22,7 @@ import {
 } from '@/components/GroupTypeBottomSheet/GroupTypeBottomSheet';
 import { TutorialOverlay } from '@/components/Tutorial/TutorialOverlay';
 import { colors } from '@/config/colors';
+import { TIME_RANGE_LABELS, TIME_RANGE_OPTIONS, TimeRange } from '@/config/timeRanges';
 import { GroupStatsProvider } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { ThemeProvider } from '@/context/ThemeContext';
@@ -25,7 +34,14 @@ import { GroupType } from '@/types/Groups';
 import { subheading } from '@/utils/text';
 
 export default function Index() {
-  const { distanceUnit, timeRangeInDays, activityType } = useSettings();
+  const {
+    distanceUnit,
+    timeRangeInDays,
+    activityType,
+    advancedGroupingEnabled,
+    setTimeRange,
+    setAdvancedGroupingEnabled,
+  } = useSettings();
   const { getConfig, updateConfig } = useGroupConfig();
   const {
     isVisible: tutorialVisible,
@@ -43,6 +59,8 @@ export default function Index() {
 
   const [groupType, setGroupingType] = useState<GroupType>('distance');
   const [configModalVisible, setConfigModalVisible] = useState(false);
+  const [timeRangeModalVisible, setTimeRangeModalVisible] = useState(false);
+  const [tempTimeRange, setTempTimeRange] = useState<TimeRange>(timeRangeInDays);
 
   // Load persisted group type on mount
   useEffect(() => {
@@ -53,10 +71,23 @@ export default function Index() {
     });
   }, []);
 
+  // Sync temp time range when modal opens
+  useEffect(() => {
+    if (timeRangeModalVisible) {
+      setTempTimeRange(timeRangeInDays);
+    }
+  }, [timeRangeModalVisible, timeRangeInDays]);
+
   // Persist group type when it changes
   const handleGroupTypeChange = (newGroupType: GroupType) => {
     setGroupingType(newGroupType);
     AsyncStorage.setItem('selectedGroupType', newGroupType);
+  };
+
+  // Handle time range modal close and commit changes
+  const handleTimeRangeModalClose = () => {
+    setTimeRange(tempTimeRange);
+    setTimeRangeModalVisible(false);
   };
 
   /*
@@ -125,12 +156,21 @@ export default function Index() {
         onPress={() => router.push('/add-workout')}
       />
       <IconButton
-        icon="cog"
+        icon="clock-outline"
         size={32}
         iconColor={colors.neutral}
-        onPress={() => setConfigModalVisible(true)}
-        onLongPress={startTutorial}
+        onPress={() => setTimeRangeModalVisible(true)}
+        onLongPress={() => setAdvancedGroupingEnabled(!advancedGroupingEnabled)}
       />
+      {advancedGroupingEnabled && (
+        <IconButton
+          icon="cog"
+          size={32}
+          iconColor={colors.neutral}
+          onPress={() => setConfigModalVisible(true)}
+          onLongPress={startTutorial}
+        />
+      )}
     </View>
   );
 
@@ -164,14 +204,61 @@ export default function Index() {
           useNativeDriver: true,
         })}
       >
-        <GroupingConfigModal
-          visible={configModalVisible}
-          onDismiss={() => setConfigModalVisible(false)}
-          groupType={groupType}
-          distanceUnit={distanceUnit}
-          config={{ enabled, groupSize }}
-          onConfigChange={(config) => updateConfig(groupType, config)}
-        />
+        {advancedGroupingEnabled && (
+          <GroupingConfigModal
+            visible={configModalVisible}
+            onDismiss={() => setConfigModalVisible(false)}
+            groupType={groupType}
+            distanceUnit={distanceUnit}
+            config={{ enabled, groupSize }}
+            onConfigChange={(config) => updateConfig(groupType, config)}
+          />
+        )}
+
+        {/* Time Range Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={timeRangeModalVisible}
+          onRequestClose={handleTimeRangeModalClose}
+        >
+          <TouchableWithoutFeedback onPress={handleTimeRangeModalClose}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.timeRangeModalContent}>
+                <CardSlider
+                  title={TIME_RANGE_LABELS[tempTimeRange]}
+                  value={Math.max(
+                    0,
+                    TIME_RANGE_OPTIONS.findIndex((option) => option.value === tempTimeRange),
+                  )}
+                  minimumValue={0}
+                  maximumValue={TIME_RANGE_OPTIONS.length - 1}
+                  step={1}
+                  onValueChange={(sliderValue) => {
+                    const index = Math.round(sliderValue);
+                    if (index >= 0 && index < TIME_RANGE_OPTIONS.length) {
+                      setTempTimeRange(TIME_RANGE_OPTIONS[index].value);
+                    }
+                  }}
+                  minimumLabel={TIME_RANGE_OPTIONS[0].label}
+                  maximumLabel={TIME_RANGE_OPTIONS[TIME_RANGE_OPTIONS.length - 1].label}
+                  thumbColor={colors.primary}
+                  minimumTrackColor={colors.neutral}
+                  maximumTrackColor="#121212"
+                  formatValue={() => ''}
+                  style={styles.slider}
+                />
+
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={handleTimeRangeModalClose}
+                >
+                  <Text style={styles.closeButtonText}>Done</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
 
         <GroupTypeBottomSheetWithRef
           ref={groupTypeBottomSheetRef}
@@ -284,5 +371,49 @@ export const styles = StyleSheet.create({
     zIndex: 10,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    height: 500,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  timeRangeModalContent: {
+    backgroundColor: colors.background,
+    borderRadius: 12,
+    padding: 20,
+    width: '90%',
+    maxWidth: 400,
+  },
+  slider: {
+    height: 120,
+  },
+  /*   modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.neutral,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: colors.lightGray,
+    textAlign: 'center',
+    marginBottom: 20,
+    lineHeight: 20,
+  }, */
+  closeButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  closeButtonText: {
+    color: colors.neutral,
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

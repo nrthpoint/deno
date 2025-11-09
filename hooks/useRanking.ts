@@ -4,6 +4,10 @@ import { RankingRequest } from '@/services/rankingService/requestTypes';
 import { fetchRanking } from '@/services/rankingService/service';
 
 export const useRanking = (request: RankingRequest) => {
+  if (!request.distance || !request.unit || !request.age || !request.gender || !request.time) {
+    throw new Error('All parameters are required to fetch ranking data.');
+  }
+
   return useQuery({
     queryFn: () => fetchRanking(request),
     queryKey: ['ranking', request.distance, request.unit, request.age, request.gender],

@@ -1,136 +1,63 @@
-import { GlassView } from 'expo-glass-effect';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-import { AnimatedCounter } from '@/components/Stats/AnimatedCounter';
-import { ThemedGradient } from '@/components/ThemedGradient/ThemedGradient';
+import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { uppercase } from '@/utils/text';
+import { subheading } from '@/utils/text';
 
 interface AirportStatCardProps {
-  label?: string;
-  value: string | number;
-  unit?: string;
-  backgroundColor?: string;
-  inverted?: boolean;
+  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  label: string;
+  value?: string | number;
 }
 
-export const AirportStatCard: React.FC<AirportStatCardProps> = ({
-  label,
-  value,
-  unit,
-  backgroundColor,
-  inverted,
-}) => {
-  const isNumeric = typeof value === 'number';
-
+export const AirportStatCard: React.FC<AirportStatCardProps> = ({ icon, value, label }) => {
   return (
-    <View
-      style={[
-        styles.container,
-        { height: label ? 80 : 70, backgroundColor: backgroundColor || 'transparent' },
-      ]}
-    >
-      {!backgroundColor && <ThemedGradient style={styles.gradient} />}
-
-      <GlassView
-        style={styles.glassOverlay}
-        glassEffectStyle="clear"
-      >
-        {label && (
-          <Text
-            style={[styles.cardLabel, { color: inverted ? colors.neutral : colors.background }]}
-          >
-            {label}
-          </Text>
-        )}
-        <View style={styles.cardValueContainer}>
-          {isNumeric ? (
-            <AnimatedCounter
-              value={value}
-              style={[
-                styles.cardValue,
-                { fontSize: label ? 20 : 30, color: inverted ? colors.neutral : colors.background },
-              ]}
-            />
-          ) : (
-            <Text
-              style={[styles.cardValue, { color: inverted ? colors.neutral : colors.background }]}
-            >
-              {value}
-            </Text>
-          )}
-          {unit && (
-            <Text
-              style={[styles.cardUnit, { color: inverted ? colors.neutral : colors.background }]}
-            >
-              {unit}
-            </Text>
-          )}
-        </View>
-      </GlassView>
-    </View>
+    <Card style={styles.card}>
+      <View style={styles.content}>
+        <MaterialCommunityIcons
+          name={icon}
+          size={24}
+          color={colors.background}
+          style={styles.icon}
+        />
+        <Text style={styles.value}>{value}</Text>
+        <Text style={styles.label}>{label}</Text>
+      </View>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: '49%',
-    height: 70,
-    borderRadius: 8,
-    marginBottom: 12,
-    position: 'relative',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
-    overflow: 'hidden',
-  },
-  gradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: -1,
-    borderRadius: 8,
-  },
-  glassOverlay: {
-    padding: 16,
-    width: '100%',
-    height: '100%',
-    justifyContent: 'space-between',
-    borderRadius: 8,
+  card: {
     backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    color: colors.neutral,
+    paddingVertical: 16,
   },
-  cardLabel: {
-    fontSize: 12,
-    color: colors.background,
-    marginBottom: 8,
+  content: {
+    flexDirection: 'column',
+    alignItems: 'center',
   },
-  cardValueContainer: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
+  icon: {
+    marginBottom: 14,
+    backgroundColor: colors.neutral,
+    borderRadius: '50%',
+    padding: 12,
   },
-  cardValue: {
-    fontSize: 30,
-    color: colors.background,
+  value: {
+    fontSize: 20,
     fontFamily: LatoFonts.bold,
-    letterSpacing: -0.5,
+    color: colors.neutral,
+    marginBottom: 4,
   },
-  cardUnit: {
-    ...uppercase,
-    fontSize: 12,
-    color: colors.background,
-    marginLeft: 10,
-    fontFamily: LatoFonts.bold,
+  label: {
+    ...subheading,
+    marginTop: 5,
+    fontFamily: LatoFonts.light,
+    color: colors.neutral,
+    marginBottom: 4,
   },
 });

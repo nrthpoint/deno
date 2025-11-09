@@ -4,10 +4,12 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
+import { ComparisonHeader } from '@/components/RankingLevels/ComparisonHeader';
 import { LevelsList } from '@/components/RankingLevels/LevelsList';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
+import { useRanking } from '@/hooks/useRanking';
 
 export default function RankingLevelsModal() {
   const router = useRouter();
@@ -19,20 +21,27 @@ export default function RankingLevelsModal() {
 
   const distance = Number(params.distance) || 5;
   const time = Number(params.duration) || 0;
-  const unit = params.unit || 'km';
 
-  const { age, gender } = useSettings();
+  const { distanceUnit, age, gender } = useSettings();
 
   if (age === null || gender === null) {
     throw new Error('Age and gender must be set in settings to view ranking levels.');
   }
+
+  const { data: ranking } = useRanking({
+    distance,
+    unit: distanceUnit,
+    age,
+    gender,
+    time,
+  });
 
   return (
     <>
       <Stack.Screen
         options={{
           headerShown: true,
-          headerTitle: `${distance}K Performance Levels`,
+          headerTitle: `All Levels`,
           headerStyle: { backgroundColor: colors.background },
           headerTitleStyle: {
             color: colors.neutral,
@@ -58,11 +67,13 @@ export default function RankingLevelsModal() {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
+        <ComparisonHeader
+          userDistance={distance}
+          ranking={ranking}
+          unit={distanceUnit}
+        />
         <LevelsList
           distance={distance}
-          unit={unit}
-          age={age}
-          gender={gender}
           time={time}
         />
       </ScrollView>

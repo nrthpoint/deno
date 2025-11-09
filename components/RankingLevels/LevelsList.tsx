@@ -1,4 +1,3 @@
-import { LengthUnit } from '@kingstinct/react-native-healthkit';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
@@ -6,6 +5,7 @@ import { ActivityIndicator, Text } from 'react-native-paper';
 import { Card } from '@/components/Card/Card';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { useSettings } from '@/context/SettingsContext';
 import { useLevels } from '@/hooks/useLevels';
 import { useRanking } from '@/hooks/useRanking';
 
@@ -13,13 +13,11 @@ import { LevelsBarChart } from './LevelsBarChart';
 
 interface LevelsListProps {
   distance: number;
-  unit: LengthUnit;
-  age: number;
-  gender: 'Male' | 'Female' | 'Other';
   time: number;
 }
 
-export const LevelsList: React.FC<LevelsListProps> = ({ distance, unit, age, gender, time }) => {
+export const LevelsList: React.FC<LevelsListProps> = ({ distance, time }) => {
+  const { distanceUnit: unit, age, gender } = useSettings();
   const {
     data: levels,
     isLoading: levelsLoading,
@@ -31,7 +29,6 @@ export const LevelsList: React.FC<LevelsListProps> = ({ distance, unit, age, gen
     gender,
   });
 
-  // Get user's ranking data to show their pace on the chart
   const {
     data: ranking,
     isLoading: rankingLoading,
@@ -69,26 +66,23 @@ export const LevelsList: React.FC<LevelsListProps> = ({ distance, unit, age, gen
     );
   }
 
-  if (!levels) {
+  if (!levels || !ranking) {
     return null;
   }
 
   return (
     <View style={styles.levelsContainer}>
-      {/* Vertical Bar Chart */}
       <LevelsBarChart
         levels={levels.levels}
-        userPace={ranking?.yourPace}
-        height={600}
+        userPace={ranking.yourPace}
+        height={500}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  levelsContainer: {
-    gap: 16,
-  },
+  levelsContainer: {},
   loadingContainer: {
     alignItems: 'center',
     paddingVertical: 40,

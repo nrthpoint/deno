@@ -108,6 +108,8 @@ const styles = StyleSheet.create({
     fontFamily: LatoFonts.regular,
     marginTop: 3,
     marginBottom: 10,
+    maxWidth: '90%',
+    lineHeight: 24,
   },
   sectionContentWrapper: {
     paddingBottom: 15,

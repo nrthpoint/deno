@@ -3,24 +3,20 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 
-import { CardSlider } from '@/components/CardSlider/CardSlider';
 import { TabBar } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 import { DISTANCE_UNIT_OPTIONS } from '@/config/distanceUnits';
 import { LatoFonts } from '@/config/fonts';
-import { TIME_RANGE_LABELS, TIME_RANGE_OPTIONS } from '@/config/timeRanges';
 import { useSettings } from '@/context/SettingsContext';
 
 export const GeneralSettings: React.FC = () => {
   const {
     distanceUnit,
     activityType,
-    timeRangeInDays: timeRange,
     age,
     gender,
     setDistanceUnit,
     setActivityType,
-    setTimeRange,
     setAge,
     setGender,
   } = useSettings();
@@ -32,6 +28,7 @@ export const GeneralSettings: React.FC = () => {
 
     // Validate and save age
     const numericAge = parseInt(text, 10);
+
     if (!isNaN(numericAge) && numericAge > 0 && numericAge <= 120) {
       setAge(numericAge);
     } else if (text === '') {
@@ -132,34 +129,6 @@ export const GeneralSettings: React.FC = () => {
         onTabPress={(id) => setGender(id as 'Male' | 'Female' | 'Other')}
         activeTabColor={colors.primary}
       />
-
-      <View>
-        <Text
-          variant="titleLarge"
-          style={[styles.heading]}
-        >
-          Time Range
-        </Text>
-        <Text style={styles.subheading}>The amount of time from now, to fetch workout data.</Text>
-
-        <CardSlider
-          title={TIME_RANGE_LABELS[timeRange]}
-          value={TIME_RANGE_OPTIONS.findIndex((option) => option.value === timeRange)}
-          minimumValue={0}
-          maximumValue={TIME_RANGE_OPTIONS.length - 1}
-          step={1}
-          onValueChange={(sliderValue) => {
-            const index = Math.round(sliderValue);
-            setTimeRange(TIME_RANGE_OPTIONS[index].value);
-          }}
-          minimumLabel={TIME_RANGE_OPTIONS[0].label}
-          maximumLabel={TIME_RANGE_OPTIONS[TIME_RANGE_OPTIONS.length - 1].label}
-          thumbColor="#424bff"
-          minimumTrackColor={colors.neutral}
-          maximumTrackColor="#121212"
-          formatValue={() => ''}
-        />
-      </View>
     </ScrollView>
   );
 };

@@ -4,8 +4,8 @@ import { LengthUnit, Quantity } from '@kingstinct/react-native-healthkit';
 export interface Levels {
   distance: number;
   unit: LengthUnit;
-  age: number;
-  gender: 'Male' | 'Female' | 'Other';
+  age: number | null;
+  gender: 'Male' | 'Female' | 'Other' | null;
   levels: Level[];
 }
 
@@ -19,10 +19,10 @@ export interface Ranking {
   level: string;
   rank: number;
   percentile: number;
-  totalAthletes: number;
   yourTime: Quantity;
   averageTime: Quantity;
   yourPace: Quantity;
   averagePace: Quantity;
   betterThanPercent: number;
+  distanceDifference?: Quantity;
 }

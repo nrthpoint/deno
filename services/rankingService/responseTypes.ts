@@ -1,14 +1,17 @@
 // Response structure for ranking data
 export interface RawRankingResponse {
+  distance: number;
+  distanceLabel: string;
+  unit: string;
   level: 'Beginner' | 'Novice' | 'Intermediate' | 'Advanced' | 'Elite' | 'WR';
   rank: number;
   percentile: number;
-  totalAthletes: number;
+  betterThanPercent: number;
+  averagePace: number;
+  yourPace: number;
   yourTime: string;
   averageTime: string;
-  yourPace: number;
-  averagePace: number;
-  betterThanPercent: number;
+  distanceDiff: number;
 }
 
 export interface RawLevelData {

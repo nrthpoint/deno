@@ -282,8 +282,8 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
           {/* Min/Max labels */}
           <AnimatedSvgText
             y={LABEL_Y}
-            fontSize={10}
-            fontWeight={'bold'}
+            fontSize={12}
+            fontFamily={getLatoFont('bold').fontFamily}
             fill={colors.background}
             textAnchor="middle"
             animatedProps={minLabelAnimatedProps}
@@ -291,16 +291,18 @@ export const VariationBar: React.FC<VariationBarProps> = ({ label, width, ...mod
             {formatValue(min).toUpperCase()}
           </AnimatedSvgText>
 
-          <AnimatedSvgText
-            y={LABEL_Y}
-            fontSize={10}
-            fontWeight={'bold'}
-            fill={colors.background}
-            textAnchor="middle"
-            animatedProps={maxLabelAnimatedProps}
-          >
-            {formatValue(max).toUpperCase()}
-          </AnimatedSvgText>
+          {max !== min && (
+            <AnimatedSvgText
+              y={LABEL_Y}
+              fontSize={12}
+              fontFamily={getLatoFont('bold').fontFamily}
+              fill={colors.background}
+              textAnchor="middle"
+              animatedProps={maxLabelAnimatedProps}
+            >
+              {formatValue(max).toUpperCase()}
+            </AnimatedSvgText>
+          )}
         </Svg>
       </GlassView>
     </View>
