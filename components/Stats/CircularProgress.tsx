@@ -1,77 +1,102 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 
-import { ModalProvider } from '@/components/Modal/Modal';
-import { ModalProps } from '@/components/Modal/Modal.types';
 import { AnimatedCounter } from '@/components/Stats/AnimatedCounter';
 import { ThemedGradient } from '@/components/ThemedGradient/ThemedGradient';
 import { colors } from '@/config/colors';
 import { getLatoFont } from '@/config/fonts';
-import { useGroupStats } from '@/context/GroupStatsContext';
+import { createCirclePath, createProgressPath } from '@/utils/circularProgress';
 import { subheading } from '@/utils/text';
-
-interface HalfMoonProgressProps extends ModalProps {
-  label: string;
-}
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const CIRCLE_SIZE = 42;
-const strokeWidth = 5;
+const STROKE_WIDTH = 5;
 
-export const HalfMoonProgress = ({ label, ...modalProps }: HalfMoonProgressProps) => {
-  const { group, meta } = useGroupStats();
-  const value = group?.runs?.length ?? 0;
-  const total = meta?.totalRuns ?? 0;
-  const percentage = total > 0 ? Math.round(Math.min((value / total) * 100, 100)) : 0;
+export interface CircularProgressProps {
+  /**
+   * The progress percentage to display (0-100)
+   */
+  percentage: number;
 
+  /**
+   * Label text displayed below the percentage
+   */
+  label: string;
+
+  /**
+   * Optional gradient colors for the background
+   * If not provided, uses default themed gradient
+   */
+  gradientColors?: { start: string; end: string };
+
+  /**
+   * Optional gradient opacity (0-1)
+   * If not provided, gradient will use default opacity
+   */
+  gradientOpacity?: number;
+}
+
+/**
+ * CircularProgress - A reusable circular progress indicator with animated percentage
+ *
+ * Displays a circular progress ring with:
+ * - Animated percentage counter
+ * - Customizable gradient background
+ * - Smooth animation on value changes
+ * - SVG-based circular progress path
+ *
+ * @example
+ * ```tsx
+ * <CircularProgress
+ *   percentage={75}
+ *   label="Progress"
+ *   gradientColors={{ start: '#4CAF50', end: '#388E3C' }}
+ *   gradientOpacity={0.8}
+ * />
+ * ```
+ */
+export const CircularProgress = ({
+  percentage,
+  label,
+  gradientColors,
+  gradientOpacity,
+}: CircularProgressProps) => {
   const animatedPercentageRef = useRef(useSharedValue(0));
   const animatedPercentage = animatedPercentageRef.current;
 
   useEffect(() => {
     animatedPercentage.value = withTiming(percentage, { duration: 800 });
   }, [percentage, animatedPercentage]);
-  const radius = (CIRCLE_SIZE - strokeWidth) / 2;
+
+  const radius = (CIRCLE_SIZE - STROKE_WIDTH) / 2;
   const center = CIRCLE_SIZE / 2;
 
   // Full circle path (background)
-  const backgroundPath = `
-    M ${center} ${strokeWidth / 2}
-    A ${radius} ${radius} 0 1 1 ${center} ${CIRCLE_SIZE - strokeWidth / 2}
-    A ${radius} ${radius} 0 1 1 ${center} ${strokeWidth / 2}
-  `;
+  const backgroundPath = createCirclePath(center, radius, STROKE_WIDTH);
 
   const animatedProps = useAnimatedProps(() => {
     'worklet';
-    // Cap at 99.9% to avoid completing a full circle (which would result in no visible arc)
-    const cappedPercentage = Math.min(animatedPercentage.value, 99.9);
-    const progressAngleDeg = (cappedPercentage / 100) * 360;
-    const progressAngleRad = (progressAngleDeg * Math.PI) / 180;
-
-    const workletRadius = (CIRCLE_SIZE - strokeWidth) / 2;
-    const workletCenter = CIRCLE_SIZE / 2;
-
-    // Start at top of circle (12 o'clock position)
-    const startX = workletCenter;
-    const startY = strokeWidth / 2;
-
-    // Calculate end point based on progress
-    const endX = workletCenter + workletRadius * Math.sin(progressAngleRad);
-    const endY = workletCenter - workletRadius * Math.cos(progressAngleRad);
-
-    const largeArcFlag = progressAngleDeg > 180 ? 1 : 0;
-    const progressPath = `M ${startX} ${startY} A ${workletRadius} ${workletRadius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
-
     return {
-      d: progressPath,
+      d: createProgressPath(animatedPercentage.value, center, radius, STROKE_WIDTH),
     };
   });
 
-  const content = (
+  return (
     <View style={styles.container}>
-      <ThemedGradient style={styles.gradient} />
+      {gradientColors ? (
+        <LinearGradient
+          colors={[gradientColors.start, gradientColors.end]}
+          style={[styles.gradient, gradientOpacity !== undefined && { opacity: gradientOpacity }]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        />
+      ) : (
+        <ThemedGradient style={styles.gradient} />
+      )}
 
       <View style={styles.circleRow}>
         <Svg
@@ -81,7 +106,7 @@ export const HalfMoonProgress = ({ label, ...modalProps }: HalfMoonProgressProps
           <Path
             d={backgroundPath}
             stroke={colors.surface}
-            strokeWidth={strokeWidth}
+            strokeWidth={STROKE_WIDTH}
             fill="none"
             strokeLinecap="round"
           />
@@ -89,38 +114,25 @@ export const HalfMoonProgress = ({ label, ...modalProps }: HalfMoonProgressProps
           <AnimatedPath
             animatedProps={animatedProps}
             stroke={'#fff'}
-            strokeWidth={strokeWidth}
+            strokeWidth={STROKE_WIDTH}
             fill="none"
             strokeLinecap="round"
           />
         </Svg>
 
         <View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={styles.percentageRow}>
             <AnimatedCounter
               value={percentage}
               style={styles.valueText}
             />
-            <Text style={{ color: colors.background, marginLeft: 3, marginBottom: -10 }}>%</Text>
+            <Text style={styles.percentageSymbol}>%</Text>
           </View>
 
           <Text style={styles.title}>{label}</Text>
         </View>
       </View>
     </View>
-  );
-
-  const modalContent = <Text style={styles.modalValue}>{percentage}%</Text>;
-
-  return (
-    <>
-      <ModalProvider
-        {...modalProps}
-        modalChildren={modalContent}
-      >
-        {content}
-      </ModalProvider>
-    </>
   );
 };
 
@@ -146,6 +158,10 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     width: '100%',
   },
+  percentageRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   valueText: {
     ...getLatoFont('bold'),
     fontSize: 20,
@@ -155,20 +171,19 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginTop: 5,
   },
+  percentageSymbol: {
+    color: colors.background,
+    marginLeft: 3,
+    marginBottom: -10,
+  },
   title: {
     ...subheading,
     flex: 1,
     fontSize: 10,
-    marginLeft: 19,
+    marginLeft: 16,
     letterSpacing: 1,
     marginTop: 5,
     color: colors.background,
     wordWrap: 'break-word',
-  },
-  modalValue: {
-    ...getLatoFont('bold'),
-    color: '#FFFFFF',
-    fontSize: 28,
-    marginBottom: 16,
   },
 });

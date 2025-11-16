@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { ConsistencyModalContent } from '@/components/Stats/ConsistencyModalContent';
 import { ConsistencyScore } from '@/components/Stats/ConsistencyScore';
-import { HalfMoonProgress } from '@/components/Stats/HalfMoonProgress';
+import { RunPercentage } from '@/components/Stats/RunPercentage';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { getConsistencyMetricLabel } from '@/grouping-engine/services/consistencyValueExtractor';
 
@@ -15,7 +15,7 @@ export const VisualCards = () => {
     <View>
       <View style={[styles.row]}>
         <View style={styles.column}>
-          <HalfMoonProgress
+          <RunPercentage
             label="Of All Runs"
             hasModal={true}
             modalIcon="moon"

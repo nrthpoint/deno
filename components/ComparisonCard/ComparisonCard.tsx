@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { ComparisonRow } from '@/components/ComparisonCard/ComparisonRow/ComparisonRow';
+import { formatPropertyValue } from '@/components/ComparisonCard/ComparisonRow/ComparisonRowUtils';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { uppercase } from '@/utils/text';
@@ -16,6 +17,14 @@ import { SampleComparisonCardProps } from './ComparisonCard.types';
 export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
   const { sample1, sample2, sample1Label, sample2Label, propertiesToCompare } = props;
 
+  // Filter out properties where both values are 0
+  const filteredProperties = propertiesToCompare.filter((property) => {
+    const sample1Data = formatPropertyValue(property, sample1);
+    const sample2Data = sample2 ? formatPropertyValue(property, sample2) : undefined;
+
+    return sample1Data.numericValue !== 0 || (sample2Data && sample2Data.numericValue !== 0);
+  });
+
   return (
     <View style={styles.container}>
       <View style={styles.labelContainer}>
@@ -24,7 +33,7 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
       </View>
 
       <View style={styles.comparisonRowsContainer}>
-        {propertiesToCompare.map((property, index) => (
+        {filteredProperties.map((property, index) => (
           <ComparisonRow
             key={property}
             property={property}

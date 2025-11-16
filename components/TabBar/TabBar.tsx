@@ -130,7 +130,12 @@ export const TabBar: React.FC<TabBarProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: 4,
+    overflow: 'hidden',
+  },
   tabContainer: {
     flexDirection: 'row',
     padding: 4,
@@ -141,7 +146,7 @@ const styles = StyleSheet.create({
     top: 4,
     bottom: 4,
     left: 4,
-    borderRadius: 12,
+    borderRadius: 8,
     shadowColor: '#252525',
     shadowOffset: {
       width: 0,
@@ -183,7 +188,7 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: colors.surface,
   },
   inactiveTabText: {
     fontWeight: '600',

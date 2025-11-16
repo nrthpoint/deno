@@ -1,10 +1,11 @@
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { useCallback, useMemo, useRef } from 'react';
-import { Pressable, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Portal } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { uppercase } from '@/utils/text';
 
 import { SampleOption, SampleType } from './ComparisonCard.types';
 
@@ -144,12 +145,12 @@ const styles = StyleSheet.create({
     borderColor: colors.gray,
     borderRadius: 8,
     paddingHorizontal: 12,
-    paddingVertical: 12,
+    paddingVertical: 16,
     minWidth: 120,
     width: '100%',
   },
   dropdownText: {
-    fontSize: 14,
+    ...uppercase,
     fontFamily: LatoFonts.regular,
     color: colors.neutral,
     flex: 1,

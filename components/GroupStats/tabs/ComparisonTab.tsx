@@ -5,8 +5,8 @@ import { StyleSheet, View, Text } from 'react-native';
 import { ComparisonCard } from '@/components/ComparisonCard/ComparisonCard';
 import { SampleOption, SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
 import { SampleDropdown } from '@/components/ComparisonCard/SampleDropdown';
-import { TabHeader } from '@/components/GroupStats/tabs/components/TabHeader';
-import { RouteMap } from '@/components/RouteMap/RouteMap';
+/* import { TabHeader } from '@/components/GroupStats/tabs/components/TabHeader';
+ */ import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { SplitComparison } from '@/components/SplitComparison/SplitComparison';
 import { TabBar, TabOption } from '@/components/TabBar/TabBar';
 import { Warning } from '@/components/Warning';
@@ -16,6 +16,7 @@ import { LatoFonts } from '@/config/fonts';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { useWorkout } from '@/context/Workout';
+import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 
 type ComparisonMode = 'general' | 'splits' | 'weather';
 
@@ -28,11 +29,13 @@ const comparisonTabs: TabOption[] = [
 
 export const ComparisonTab = () => {
   const {
-    group: { highlight, worst, mostRecent },
+    group: { highlight, worst, mostRecent, type },
   } = useGroupStats();
 
   const { distanceUnit } = useSettings();
   const { setSelectedWorkouts } = useWorkout();
+
+  const activeTabColor = GROUPING_CONFIGS[type]?.colorProfile?.gradientStart || colors.primary;
 
   const [comparisonMode, setComparisonMode] = useState<ComparisonMode>('general');
   const [selectedSample1Type, setSelectedSample1Type] = useState<SampleType>('highlight');
@@ -121,9 +124,6 @@ export const ComparisonTab = () => {
           />
         </View>
       </View>
-      <View style={styles.vsContainer}>
-        <Text style={styles.vsText}>vs.</Text>
-      </View>
 
       <View style={styles.dropdownRow}>
         <View style={[styles.dropdownLabelContainer, { backgroundColor: SAMPLE2_COLOR }]}>
@@ -195,10 +195,10 @@ export const ComparisonTab = () => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <TabHeader
+        {/* <TabHeader
           title="Compare"
           description="Put key runs side-by-side to see how you're progressing."
-        />
+        /> */}
 
         <WorkoutSelectors />
 
@@ -206,7 +206,7 @@ export const ComparisonTab = () => {
           <Warning
             title="Same Workout Selected"
             iconColor={colors.neutral}
-            style={{ marginTop: 20, marginBottom: 10, backgroundColor: colors.secondary }}
+            style={{ marginTop: 20, backgroundColor: colors.primary }}
             labelStyle={{ color: colors.neutral }}
             message="You're comparing the same workout to itself. Select different workouts to see meaningful comparisons."
           />
@@ -230,7 +230,7 @@ export const ComparisonTab = () => {
           activeTabId={comparisonMode}
           onTabPress={(tabId) => setComparisonMode(tabId as ComparisonMode)}
           style={styles.tabBar}
-          activeTabColor={colors.primary}
+          activeTabColor={activeTabColor}
         />
       </View>
 
@@ -259,8 +259,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceHighlight,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 32,
-    height: 40,
+    width: 40,
+    height: 48,
     borderTopLeftRadius: 8,
     borderBottomLeftRadius: 8,
   },
@@ -277,16 +277,8 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderLeftWidth: 0,
   },
-  vsContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  vsText: {
-    fontSize: 16,
-    fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-  },
   tabBar: {
+    marginTop: 20,
     marginVertical: 10,
   },
   splitContainer: {
@@ -295,9 +287,9 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     marginVertical: 20,
-    marginBottom: 10,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
+    marginBottom: 0,
+    //borderTopWidth: 1,
+    //borderBottomWidth: 1,
     paddingVertical: 10,
     paddingBottom: 20,
     borderColor: colors.surface,
