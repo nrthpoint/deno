@@ -54,7 +54,11 @@ export const ModalProvider = ({
             style={styles.modalOverlay}
             onTouchEnd={() => setModalVisible(false)}
           >
-            <View style={styles.modalContent}>
+            <View
+              style={styles.modalContent}
+              onStartShouldSetResponder={() => true}
+              onTouchEnd={(e) => e.stopPropagation()}
+            >
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>{modalTitle}</Text>
               </View>

@@ -82,10 +82,10 @@ export const StatsTab: React.FC = () => {
 const styles = StyleSheet.create({
   headingContainer: {
     marginHorizontal: 15,
-    marginTop: 5,
+    marginTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: colors.surface,
-    paddingBottom: 30,
+    paddingBottom: 25,
     gap: 15,
   },
   buttonContainer: {
