@@ -75,6 +75,13 @@ export type Group = {
   // Variance
   variantDistribution: number[];
 
+  // Consistency Score (0-100)
+  consistencyScore: number;
+  consistencyMean: number;
+  consistencyMedian: number;
+  consistencyStandardDeviation: number;
+  consistencyCoefficientOfVariation: number;
+
   isIndoor?: boolean;
 };
 

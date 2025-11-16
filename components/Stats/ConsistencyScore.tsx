@@ -12,7 +12,7 @@ import { getLatoFont } from '@/config/fonts';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { subheading } from '@/utils/text';
 
-interface HalfMoonProgressProps extends ModalProps {
+interface ConsistencyScoreProps extends ModalProps {
   label: string;
 }
 
@@ -21,18 +21,49 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 const CIRCLE_SIZE = 50;
 const strokeWidth = 4;
 
-export const HalfMoonProgress = ({ label, ...modalProps }: HalfMoonProgressProps) => {
-  const { group, meta } = useGroupStats();
-  const value = group?.runs?.length ?? 0;
-  const total = meta?.totalRuns ?? 0;
-  const percentage = total > 0 ? Math.round(Math.min((value / total) * 100, 100)) : 0;
+/**
+ * Gets the background opacity based on consistency score
+ * Higher consistency = more opaque background
+ */
+function getBackgroundOpacity(score: number): number {
+  // Map 0-100 score to 0.3-0.8 opacity
+  return 0.3 + (score / 100) * 0.5;
+}
+
+/**
+ * Gets the gradient colors based on consistency score
+ * Green hues for high consistency, yellow/orange for medium, red for low
+ */
+function getConsistencyColors(score: number): { start: string; end: string } {
+  if (score >= 80) {
+    // High consistency - green
+    return { start: 'rgba(76, 175, 80, 0.8)', end: 'rgba(56, 142, 60, 0.9)' };
+  } else if (score >= 60) {
+    // Medium-high consistency - light green
+    return { start: 'rgba(139, 195, 74, 0.8)', end: 'rgba(104, 159, 56, 0.9)' };
+  } else if (score >= 40) {
+    // Medium consistency - yellow/orange
+    return { start: 'rgba(255, 193, 7, 0.8)', end: 'rgba(251, 140, 0, 0.9)' };
+  } else if (score >= 20) {
+    // Low-medium consistency - orange
+    return { start: 'rgba(255, 152, 0, 0.8)', end: 'rgba(245, 124, 0, 0.9)' };
+  } else {
+    // Low consistency - red
+    return { start: 'rgba(244, 67, 54, 0.8)', end: 'rgba(211, 47, 47, 0.9)' };
+  }
+}
+
+export const ConsistencyScore = ({ label, ...modalProps }: ConsistencyScoreProps) => {
+  const { group } = useGroupStats();
+  const score = group?.consistencyScore ?? 0;
 
   const animatedPercentageRef = useRef(useSharedValue(0));
   const animatedPercentage = animatedPercentageRef.current;
 
   useEffect(() => {
-    animatedPercentage.value = withTiming(percentage, { duration: 800 });
-  }, [percentage, animatedPercentage]);
+    animatedPercentage.value = withTiming(score, { duration: 800 });
+  }, [score, animatedPercentage]);
+
   const radius = (CIRCLE_SIZE - strokeWidth) / 2;
   const center = CIRCLE_SIZE / 2;
 
@@ -69,9 +100,15 @@ export const HalfMoonProgress = ({ label, ...modalProps }: HalfMoonProgressProps
     };
   });
 
+  const consistencyColors = getConsistencyColors(score);
+
   const content = (
     <View style={styles.container}>
-      <ThemedGradient style={styles.gradient} />
+      <ThemedGradient
+        style={styles.gradient}
+        colors={[consistencyColors.start, consistencyColors.end]}
+        opacity={getBackgroundOpacity(score)}
+      />
 
       <View style={styles.circleRow}>
         <Svg
@@ -98,7 +135,7 @@ export const HalfMoonProgress = ({ label, ...modalProps }: HalfMoonProgressProps
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <AnimatedCounter
-              value={percentage}
+              value={score}
               style={styles.valueText}
             />
             <Text style={{ color: colors.background, marginLeft: 3, marginBottom: -10 }}>%</Text>
@@ -110,16 +147,9 @@ export const HalfMoonProgress = ({ label, ...modalProps }: HalfMoonProgressProps
     </View>
   );
 
-  const modalContent = <Text style={styles.modalValue}>{percentage}%</Text>;
-
   return (
     <>
-      <ModalProvider
-        {...modalProps}
-        modalChildren={modalContent}
-      >
-        {content}
-      </ModalProvider>
+      <ModalProvider {...modalProps}>{content}</ModalProvider>
     </>
   );
 };
@@ -164,11 +194,5 @@ const styles = StyleSheet.create({
     marginTop: 5,
     color: colors.background,
     wordWrap: 'break-word',
-  },
-  modalValue: {
-    ...getLatoFont('bold'),
-    color: '#FFFFFF',
-    fontSize: 28,
-    marginBottom: 16,
   },
 });

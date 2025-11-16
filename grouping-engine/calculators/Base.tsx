@@ -2,6 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { TimeRange } from '@/config/timeRanges';
 import { GroupStatCalculator } from '@/grouping-engine/GroupStatCalculator';
+import { calculateConsistency } from '@/grouping-engine/services/consistencyCalculator';
+import { extractConsistencyValues } from '@/grouping-engine/services/consistencyValueExtractor';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 import { convertShortUnitToLong } from '@/utils/distance';
@@ -51,6 +53,15 @@ export class BaseGroupStatCalculator implements GroupStatCalculator {
     group.lowestElevation = getLowestElevationWorkout(group.runs);
     group.averageDistance = getMostFrequentDistance(group.runs);
     group.averageElevation = getMostFrequentElevation(group.runs);
+
+    // Calculate consistency score
+    const consistencyValues = extractConsistencyValues(group.runs, group.type);
+    const consistencyResult = calculateConsistency(consistencyValues);
+    group.consistencyScore = consistencyResult.score;
+    group.consistencyMean = consistencyResult.mean;
+    group.consistencyMedian = consistencyResult.median;
+    group.consistencyStandardDeviation = consistencyResult.standardDeviation;
+    group.consistencyCoefficientOfVariation = consistencyResult.coefficientOfVariation;
 
     // Initialize empty stats array
     const timeLabel = timeRangeInDays ? ` ${generateTimeLabel(timeRangeInDays)}` : '';

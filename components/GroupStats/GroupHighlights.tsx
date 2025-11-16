@@ -1,21 +1,22 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { ConsistencyModalContent } from '@/components/Stats/ConsistencyModalContent';
+import { ConsistencyScore } from '@/components/Stats/ConsistencyScore';
 import { HalfMoonProgress } from '@/components/Stats/HalfMoonProgress';
-import { VariationBar } from '@/components/Stats/VariationBar';
 import { useGroupStats } from '@/context/GroupStatsContext';
-import { formatDuration } from '@/utils/time';
+import { getConsistencyMetricLabel } from '@/grouping-engine/services/consistencyValueExtractor';
 
 export const VisualCards = () => {
   const { group, meta } = useGroupStats();
+  const metricLabel = getConsistencyMetricLabel(group.type);
 
   return (
     <View>
       <View style={[styles.row]}>
         <View style={styles.column}>
           <HalfMoonProgress
-            label="of Workouts"
-            size={100}
+            label="Of All Runs"
             hasModal={true}
             modalIcon="moon"
             modalTitle="Workout Distribution"
@@ -29,20 +30,12 @@ export const VisualCards = () => {
         </View>
 
         <View style={styles.column}>
-          <VariationBar
-            label="Variation"
-            width={150}
+          <ConsistencyScore
+            label="Consistency"
             hasModal={true}
-            modalTitle={group.type === 'pace' ? 'Distance Variation' : 'Duration Variation'}
-            modalDescription={
-              group.type === 'pace'
-                ? 'The range and distribution of workout distances in this group. Each dot is a workout.'
-                : 'The range and distribution of workout durations in this group. Each dot is a workout.'
-            }
-            modalInfo={[
-              { label: 'Best Time', value: formatDuration(group.highlight.duration) },
-              { label: 'Worst Time', value: formatDuration(group.worst.duration) },
-            ]}
+            modalIcon="stats-chart"
+            modalTitle={`${metricLabel} Consistency`}
+            modalChildren={<ConsistencyModalContent />}
           />
         </View>
       </View>
@@ -55,9 +48,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     gap: 15,
+    flex: 1,
   },
   column: {
     flex: 1,
-    justifyContent: 'center',
+    height: '100%',
+    width: '100%',
   },
 });

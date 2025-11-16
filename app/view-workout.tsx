@@ -9,8 +9,10 @@ import { DeleteWorkoutWithModal } from '@/components/DeleteWorkout/DeleteWorkout
 import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { AchievementListBadge } from '@/components/StatCard/AchievementListBadge';
 import { WeatherSummary } from '@/components/WeatherSummary/WeatherSummary';
+import { WorkoutSplits } from '@/components/WorkoutSplits/WorkoutSplits';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { useSettings } from '@/context/SettingsContext';
 import { useWorkout } from '@/context/Workout';
 import { formatDistance } from '@/utils/distance';
 import { subheading } from '@/utils/text';
@@ -18,6 +20,7 @@ import { formatDate, formatDuration, formatTime, formatWorkoutDate } from '@/uti
 
 export default function ViewWorkoutScreen() {
   const { selectedWorkouts } = useWorkout();
+  const { distanceUnit } = useSettings();
 
   const selectedWorkout = selectedWorkouts[0];
 
@@ -268,6 +271,11 @@ export default function ViewWorkoutScreen() {
         </View>
 
         {renderStatsTable()}
+
+        <WorkoutSplits
+          workout={selectedWorkout}
+          distanceUnit={distanceUnit}
+        />
 
         <WeatherSummary workout={selectedWorkout} />
       </ScrollView>

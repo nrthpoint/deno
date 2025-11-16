@@ -51,6 +51,11 @@ export function createEmptyGroup(
     prettyPace: '',
     prettyName: ``,
     variantDistribution: [],
+    consistencyScore: 0,
+    consistencyMean: 0,
+    consistencyMedian: 0,
+    consistencyStandardDeviation: 0,
+    consistencyCoefficientOfVariation: 0,
     stats: [],
     predictions: {
       prediction4Week: null,
