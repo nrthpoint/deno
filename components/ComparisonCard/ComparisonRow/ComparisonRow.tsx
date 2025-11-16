@@ -5,7 +5,7 @@ import {
   formatPropertyValue,
   getPropertyLabel,
 } from '@/components/ComparisonCard/ComparisonRow/ComparisonRowUtils';
-import { colors, SAMPLE1_COLOR, SAMPLE2_COLOR } from '@/config/colors';
+import { SAMPLE1_COLOR, SAMPLE2_COLOR } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { uppercase } from '@/utils/text';
 
@@ -92,13 +92,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textTransform: 'uppercase',
     fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-    fontWeight: '600',
   },
   unitText: {
     fontSize: 12,
     fontFamily: LatoFonts.regular,
-    color: '#888',
+    color: '#fff',
     marginTop: 2,
   },
 });

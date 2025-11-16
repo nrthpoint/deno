@@ -165,21 +165,23 @@ export const ConsistencyModalContent: React.FC = () => {
           onPress={() => setIsMethodExpanded(!isMethodExpanded)}
           activeOpacity={0.7}
         >
-          <View style={styles.methodHeader}>
-            <Text style={styles.sectionTitle}>How It&apos;s Calculated</Text>
-            <Ionicons
-              name={isMethodExpanded ? 'chevron-up' : 'chevron-down'}
-              size={18}
-              color={colors.neutral}
-            />
+          <View style={{ padding: 20 }}>
+            <View style={styles.methodHeader}>
+              <Text style={styles.sectionTitle}>How It&apos;s Calculated</Text>
+              <Ionicons
+                name={isMethodExpanded ? 'chevron-up' : 'chevron-down'}
+                size={18}
+                color={colors.neutral}
+              />
+            </View>
+            {isMethodExpanded && (
+              <Text style={styles.methodText}>
+                The consistency score uses the coefficient of variation (CV), which is the standard
+                deviation divided by the mean. A lower CV indicates more consistent performance. The
+                score is calculated as: 100 - (CV × 100), clamped between 0-100.
+              </Text>
+            )}
           </View>
-          {isMethodExpanded && (
-            <Text style={styles.methodText}>
-              The consistency score uses the coefficient of variation (CV), which is the standard
-              deviation divided by the mean. A lower CV indicates more consistent performance. The
-              score is calculated as: 100 - (CV × 100), clamped between 0-100.
-            </Text>
-          )}
         </TouchableOpacity>
 
         <View style={styles.statsSection}>
@@ -202,6 +204,7 @@ export const ConsistencyModalContent: React.FC = () => {
 
         <View style={styles.workoutsSection}>
           <Text style={styles.sectionTitle}>Example Workouts</Text>
+          <Text style={styles.tapHint}>Tap on a workout to view details</Text>
 
           {lowestVariation && (
             <WorkoutRow
@@ -221,8 +224,6 @@ export const ConsistencyModalContent: React.FC = () => {
             />
           )}
         </View>
-
-        <Text style={styles.tapHint}>Tap on a workout to view details</Text>
       </View>
     </ScrollView>
   );
@@ -236,26 +237,24 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   description: {
+    ...getLatoFont('regular'),
     fontSize: 14,
-    fontFamily: getLatoFont('regular'),
     color: colors.neutral,
     marginBottom: 20,
     lineHeight: 22,
   },
   methodSection: {
     marginBottom: 20,
-    padding: 12,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.background,
     borderRadius: 8,
   },
   methodHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
   },
   methodText: {
+    ...getLatoFont('regular'),
     fontSize: 13,
-    fontFamily: getLatoFont('regular'),
     color: colors.lightGray,
     lineHeight: 20,
     marginTop: 8,
@@ -265,26 +264,23 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     ...uppercase,
-    fontSize: 12,
-    fontFamily: getLatoFont('bold'),
     color: colors.neutral,
-    marginBottom: 12,
   },
   statRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    marginTop: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.surface,
   },
   statLabel: {
+    ...getLatoFont('regular'),
     fontSize: 13,
-    fontFamily: getLatoFont('regular'),
     color: colors.lightGray,
   },
   statValue: {
+    ...getLatoFont('bold'),
     fontSize: 14,
-    fontFamily: getLatoFont('bold'),
     color: colors.neutral,
   },
   workoutsSection: {
@@ -296,36 +292,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderRadius: 8,
-    paddingVertical: 16,
+    //paddingVertical: 16,
+    marginTop: 12,
     marginBottom: 8,
   },
   workoutInfo: {
     flex: 1,
   },
   workoutLabel: {
+    ...getLatoFont('bold'),
     fontSize: 13,
-    fontFamily: getLatoFont('bold'),
     color: colors.neutral,
     marginBottom: 4,
   },
   workoutDate: {
+    ...getLatoFont('regular'),
     fontSize: 11,
-    fontFamily: getLatoFont('regular'),
     color: colors.lightGray,
   },
   workoutValue: {
-    marginLeft: 16,
+    //marginLeft: 16,
   },
   workoutValueText: {
-    fontSize: 16,
-    fontFamily: getLatoFont('bold'),
+    ...uppercase,
+    ...getLatoFont('bold'),
     color: colors.neutral,
   },
   tapHint: {
+    ...getLatoFont('regular'),
     fontSize: 11,
-    fontFamily: getLatoFont('regular'),
     color: colors.lightGray,
-    textAlign: 'center',
     fontStyle: 'italic',
     marginTop: 8,
   },

@@ -101,7 +101,7 @@ export const ModalProvider = ({
 export const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -110,7 +110,7 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 24,
     margin: 20,
-    maxWidth: 320,
+    maxWidth: 360,
     width: '90%',
   },
   modalHeader: {
@@ -119,19 +119,17 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   modalTitle: {
-    ...subheading,
     ...getLatoFont('bold'),
     color: '#FFFFFF',
     fontSize: 18,
     flex: 1,
-    textAlign: 'center',
   },
   modalDescription: {
+    ...getLatoFont('regular'),
     color: '#CCCCCC',
     fontSize: 14,
     lineHeight: 20,
     marginBottom: 16,
-    ...getLatoFont('regular'),
   },
   additionalInfoContainer: {
     marginBottom: 20,
@@ -145,15 +143,14 @@ export const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   infoLabel: {
-    ...subheading,
     color: '#CCCCCC',
     marginTop: 0,
     marginBottom: 4,
   },
   infoValue: {
+    ...getLatoFont('bold'),
     color: '#FFFFFF',
     fontSize: 14,
-    ...getLatoFont('bold'),
   },
   closeButton: {
     marginTop: 8,

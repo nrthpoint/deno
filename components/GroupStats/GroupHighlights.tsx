@@ -19,7 +19,7 @@ export const VisualCards = () => {
             label="Of All Runs"
             hasModal={true}
             modalIcon="moon"
-            modalTitle="Workout Distribution"
+            modalTitle="Percentage of All Runs"
             modalDescription="This shows what percentage of your total workouts fall into this specific group, for the selected time period."
             modalInfo={[
               { label: 'Total Workouts in Group', value: group.runs.length.toString() },

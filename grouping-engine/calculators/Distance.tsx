@@ -56,6 +56,64 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
 
     group.stats = [
       {
+        title: 'Most Recent',
+        description: `Your most recent workout for ${prettyName}${timeLabel} (${formatDaysAgo(group.mostRecent.endDate)})`,
+        items: [
+          {
+            type: 'pace',
+            label: 'Pace',
+            value: group.mostRecent.pace,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="speedometer"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'duration',
+            label: 'Time',
+            value: group.mostRecent.duration,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="stopwatch-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'distance',
+            label: 'Distance',
+            value: group.mostRecent.distance,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="map-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+          {
+            type: 'elevation',
+            label: 'Elevation',
+            value: group.mostRecent.elevation,
+            workout: group.mostRecent,
+            icon: (
+              <Ionicons
+                name="triangle-outline"
+                size={40}
+                color="#FFFFFF"
+              />
+            ),
+          },
+        ],
+      },
+      {
         title: 'Fastest',
         description: `Your best performance for ${prettyName}${timeLabel} (${formatDaysAgo(group.highlight.endDate)})`,
         items: [
@@ -209,64 +267,7 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
           },
         ],
       },
-      {
-        title: 'Most Recent',
-        description: `Your most recent workout for ${prettyName}${timeLabel} (${formatDaysAgo(group.mostRecent.endDate)})`,
-        items: [
-          {
-            type: 'pace',
-            label: 'Pace',
-            value: group.mostRecent.pace,
-            workout: group.mostRecent,
-            icon: (
-              <Ionicons
-                name="speedometer"
-                size={40}
-                color="#FFFFFF"
-              />
-            ),
-          },
-          {
-            type: 'duration',
-            label: 'Time',
-            value: group.mostRecent.duration,
-            workout: group.mostRecent,
-            icon: (
-              <Ionicons
-                name="stopwatch-outline"
-                size={40}
-                color="#FFFFFF"
-              />
-            ),
-          },
-          {
-            type: 'distance',
-            label: 'Distance',
-            value: group.mostRecent.distance,
-            workout: group.mostRecent,
-            icon: (
-              <Ionicons
-                name="map-outline"
-                size={40}
-                color="#FFFFFF"
-              />
-            ),
-          },
-          {
-            type: 'elevation',
-            label: 'Elevation',
-            value: group.mostRecent.elevation,
-            workout: group.mostRecent,
-            icon: (
-              <Ionicons
-                name="triangle-outline"
-                size={40}
-                color="#FFFFFF"
-              />
-            ),
-          },
-        ],
-      },
+
       ...group.stats,
       {
         title: 'Cumulative',
