@@ -1,7 +1,8 @@
 import { Quantity } from '@kingstinct/react-native-healthkit';
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native-paper';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
@@ -38,6 +39,23 @@ const calculateDifference = (current: Quantity, previous?: Quantity): string => 
 };
 
 export const ProgressionCard: React.FC<ProgressionCardProps> = ({ entries, metricLabel }) => {
+  const [showPredicted, setShowPredicted] = useState(true);
+  const legendOpacity = useSharedValue(1);
+
+  const filteredEntries = showPredicted ? entries : entries.filter((entry) => !entry.isPredicted);
+
+  const togglePredicted = () => {
+    const newShowPredicted = !showPredicted;
+    setShowPredicted(newShowPredicted);
+
+    // Animate legend opacity based on showPredicted state
+    legendOpacity.value = withTiming(newShowPredicted ? 1 : 0.3, { duration: 300 });
+  };
+
+  const legendAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: legendOpacity.value,
+  }));
+
   const NoData = () => (
     <View style={styles.noDataContainerWrapper}>
       <View style={styles.noDataContainer}>
@@ -130,12 +148,17 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({ entries, metri
   );
 
   const Legend = () => (
-    <View style={styles.legendContainer}>
-      <View style={styles.legendItem}>
-        <View style={styles.legendSquare} />
-        <Text style={styles.legendText}>Predicted</Text>
-      </View>
-    </View>
+    <TouchableOpacity
+      onPress={togglePredicted}
+      activeOpacity={0.7}
+    >
+      <Animated.View style={[styles.legendContainer, legendAnimatedStyle]}>
+        <View style={styles.legendItem}>
+          <View style={styles.legendSquare} />
+          <Text style={styles.legendText}>Predicted</Text>
+        </View>
+      </Animated.View>
+    </TouchableOpacity>
   );
 
   const Content = () =>
@@ -146,11 +169,11 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({ entries, metri
         <TableHeader />
 
         <View style={styles.table}>
-          {entries.map((entry, index) => (
+          {filteredEntries.map((entry, index) => (
             <Row
               key={index}
               entry={entry}
-              previousEntry={entries[index + 1]}
+              previousEntry={filteredEntries[index + 1]}
               index={index}
             />
           ))}
