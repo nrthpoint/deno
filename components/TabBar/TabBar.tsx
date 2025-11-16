@@ -1,4 +1,3 @@
-import { GlassView } from 'expo-glass-effect';
 import React, { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -50,11 +49,8 @@ export const TabBar: React.FC<TabBarProps> = ({
     }).start();
   }, [activeTabIndex, animatedValue]);
 
-  const AnimatedGlassView = Animated.createAnimatedComponent(GlassView);
-
   const BackgroundSlider = () => (
-    <AnimatedGlassView
-      //glassEffectStyle="clear"
+    <Animated.View
       style={[
         styles.slidingIndicator,
         {
@@ -145,7 +141,7 @@ const styles = StyleSheet.create({
     top: 4,
     bottom: 4,
     left: 4,
-    borderRadius: 16,
+    borderRadius: 12,
     shadowColor: '#252525',
     shadowOffset: {
       width: 0,

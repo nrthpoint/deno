@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: 'transparent',
     color: colors.neutral,
-    paddingVertical: 16,
   },
   content: {
     flexDirection: 'column',
@@ -43,21 +42,21 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginBottom: 14,
-    backgroundColor: colors.accent,
+    backgroundColor: colors.background,
     borderRadius: 12,
     padding: 12,
   },
   value: {
     fontSize: 20,
     fontFamily: LatoFonts.bold,
-    color: colors.neutral,
+    color: colors.background,
     marginBottom: 4,
   },
   label: {
     ...subheading,
+    marginBottom: 0,
     marginTop: 5,
-    fontFamily: LatoFonts.light,
-    color: colors.neutral,
-    marginBottom: 4,
+    fontFamily: LatoFonts.regular,
+    color: colors.background,
   },
 });

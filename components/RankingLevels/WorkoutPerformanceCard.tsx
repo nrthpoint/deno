@@ -9,7 +9,7 @@ import { LatoFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
 import { useRanking } from '@/hooks/useRanking';
 import { Ranking } from '@/services/rankingService/types';
-import { getRankingIcon, getLevelColor } from '@/services/rankingService/utils';
+import { getRankingIcon } from '@/services/rankingService/utils';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { subheading } from '@/utils/text';
 
@@ -75,8 +75,8 @@ export const WorkoutPerformanceCard: React.FC<WorkoutPerformanceCardProps> = ({
           <MaterialCommunityIcons
             name={getRankingIcon(ranking.level)}
             size={24}
-            color={colors.background}
-            style={[styles.performanceIcon, { backgroundColor: getLevelColor(ranking.level) }]}
+            color={colors.neutral}
+            style={[styles.performanceIcon /*, { backgroundColor: getLevelColor(ranking.level) }*/]}
           />
           <Text style={styles.levelText}>{ranking.level}</Text>
           <Text style={styles.subheading}>Rank</Text>
@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
   yourPerformanceCard: {
     backgroundColor: 'transparent',
     color: colors.neutral,
-    paddingVertical: 16,
   },
   errorCard: {
     backgroundColor: 'transparent',
@@ -120,7 +119,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
     fontSize: 16,
     fontFamily: LatoFonts.bold,
-    color: colors.neutral,
+    color: colors.background,
     marginTop: 4,
     marginBottom: 4,
   },
@@ -128,10 +127,13 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     borderRadius: 12,
     padding: 12,
+    backgroundColor: colors.background,
   },
   subheading: {
     ...subheading,
+    marginBottom: 0,
     marginTop: 5,
-    fontFamily: LatoFonts.light,
+    fontFamily: LatoFonts.regular,
+    color: colors.background,
   },
 });

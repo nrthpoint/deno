@@ -18,8 +18,8 @@ interface HalfMoonProgressProps extends ModalProps {
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
-const CIRCLE_SIZE = 50;
-const strokeWidth = 4;
+const CIRCLE_SIZE = 42;
+const strokeWidth = 5;
 
 export const HalfMoonProgress = ({ label, ...modalProps }: HalfMoonProgressProps) => {
   const { group, meta } = useGroupStats();
@@ -152,14 +152,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     zIndex: 1,
     color: colors.background,
-    marginLeft: 10,
+    marginLeft: 15,
     marginTop: 5,
   },
   title: {
     ...subheading,
     flex: 1,
     fontSize: 10,
-    marginLeft: 14,
+    marginLeft: 19,
     letterSpacing: 1,
     marginTop: 5,
     color: colors.background,

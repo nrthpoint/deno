@@ -5,7 +5,7 @@ import Toast from 'react-native-toast-message';
 import { TabBar } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 import { useGroupStats } from '@/context/GroupStatsContext';
-import { groupStatsTabs } from '@/grouping-engine/GroupingConfig';
+import { GROUPING_CONFIGS, groupStatsTabs } from '@/grouping-engine/GroupingConfig';
 import { generateLowDataWarningMessage, shouldShowLowDataWarning } from '@/utils/groupSummary';
 
 import { TabType } from './GroupStats.types';
@@ -53,13 +53,17 @@ export const GroupStats: React.FC = () => {
     setActiveTab(tabId as TabType);
   };
 
+  // Get the gradient start color from the current group's color profile
+  const activeTabColor =
+    GROUPING_CONFIGS[group.type]?.colorProfile?.gradientStart || colors.primary;
+
   return (
     <View style={styles.statsContainer}>
       <TabBar
         tabs={groupStatsTabs}
         activeTabId={activeTab}
         onTabPress={handleTabPress}
-        activeTabColor={colors.surfaceHighlight}
+        activeTabColor={activeTabColor}
         style={{
           marginTop: 5,
           marginHorizontal: 10,
