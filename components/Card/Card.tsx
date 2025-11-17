@@ -1,11 +1,27 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { colors } from '@/config/colors';
 
 import { CardProps } from './Card.types';
 
-export const Card = ({ children, backgroundColor = colors.surface, style }: CardProps) => {
+export const Card = ({ children, backgroundColor = colors.surface, style, onPress }: CardProps) => {
+  if (onPress) {
+    return (
+      <Pressable
+        onPress={onPress}
+        style={({ pressed }) => [
+          styles.container,
+          { backgroundColor },
+          style,
+          pressed && styles.pressed,
+        ]}
+      >
+        <View style={styles.innerContainer}>{children}</View>
+      </Pressable>
+    );
+  }
+
   return (
     <View style={[styles.container, { backgroundColor }, style]}>
       <View style={styles.innerContainer}>{children}</View>
@@ -30,5 +46,8 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 8,
     overflow: 'hidden',
+  },
+  pressed: {
+    opacity: 0.7,
   },
 });

@@ -35,6 +35,7 @@ export default function MapDetailScreen() {
         options={{
           headerShown: true,
           headerTitle: getTitle(),
+          headerTransparent: true,
           headerStyle: { backgroundColor: colors.background },
           headerTitleStyle: {
             color: colors.neutral,

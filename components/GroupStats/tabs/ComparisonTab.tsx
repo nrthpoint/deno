@@ -286,8 +286,8 @@ const styles = StyleSheet.create({
     marginHorizontal: -10,
   },
   mapContainer: {
-    marginVertical: 20,
-    marginBottom: 0,
+    //marginVertical: 20,
+    //marginBottom: 0,
     //borderTopWidth: 1,
     //borderBottomWidth: 1,
     paddingVertical: 10,

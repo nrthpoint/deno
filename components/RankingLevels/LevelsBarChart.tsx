@@ -39,7 +39,6 @@ const getHeatMapColor = (index: number, total: number): string => {
     const localRatio = (ratio - 0.6) / 0.2;
     return `hsl(${60 - localRatio * 30}, 100%, ${80 - localRatio * 10}%)`;
   } else {
-    console.log('oha');
     // Orange to red (slowest levels)
     const localRatio = Math.min(1, (ratio - 0.8) / 0.2); // Clamp to 1
     return `hsl(${50 - localRatio * 30}, 100%, ${70 - localRatio * 10}%)`;

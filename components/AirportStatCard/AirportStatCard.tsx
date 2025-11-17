@@ -12,11 +12,20 @@ interface AirportStatCardProps {
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
   label: string;
   value?: string | number;
+  onPress?: () => void;
 }
 
-export const AirportStatCard: React.FC<AirportStatCardProps> = ({ icon, value, label }) => {
+export const AirportStatCard: React.FC<AirportStatCardProps> = ({
+  icon,
+  value,
+  label,
+  onPress,
+}) => {
   return (
-    <Card style={styles.card}>
+    <Card
+      style={styles.card}
+      onPress={onPress}
+    >
       <View style={styles.content}>
         <MaterialCommunityIcons
           name={icon}

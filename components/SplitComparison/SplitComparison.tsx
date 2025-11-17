@@ -10,7 +10,7 @@ import { uppercase } from '@/utils/text';
 import {
   calculateSplitsForWorkout,
   calculateTimeDifference,
-  formatSplitPace,
+  //formatSplitPace,
   formatSplitTime,
   WorkoutSplit,
 } from '@/utils/workoutSplits';
@@ -82,7 +82,7 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
   }
 
   const maxSplits = Math.max(splits1.length, splits2.length);
-  const splitDistanceUnit = splits1[0]?.distanceUnit || distanceUnit;
+  //const splitDistanceUnit = splits1[0]?.distanceUnit || distanceUnit;
 
   const renderSplitRow = (splitIndex: number) => {
     const split1 = splits1[splitIndex];
@@ -90,11 +90,11 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
     const splitNumber = splitIndex + 1;
 
     let timeDiff: { diff: number; isPositive: boolean; formatted: string } | null = null;
-    let paceDiff: { diff: number; isPositive: boolean; formatted: string } | null = null;
+    //let paceDiff: { diff: number; isPositive: boolean; formatted: string } | null = null;
 
     if (split1 && split2) {
       timeDiff = calculateTimeDifference(split1.duration, split2.duration);
-      paceDiff = calculateTimeDifference(split1.pace, split2.pace);
+      //paceDiff = calculateTimeDifference(split1.pace, split2.pace);
     }
 
     return (
@@ -110,9 +110,9 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
           {split1 ? (
             <>
               <Text style={styles.timeValue}>{formatSplitTime(split1.duration)}</Text>
-              <Text style={styles.paceValue}>
+              {/* <Text style={styles.paceValue}>
                 {formatSplitPace(split1.pace, splitDistanceUnit)}
-              </Text>
+              </Text> */}
             </>
           ) : (
             <Text style={styles.noDataText}>-</Text>
@@ -123,9 +123,9 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
           {split2 ? (
             <>
               <Text style={styles.timeValue}>{formatSplitTime(split2.duration)}</Text>
-              <Text style={styles.paceValue}>
+              {/* <Text style={styles.paceValue}>
                 {formatSplitPace(split2.pace, splitDistanceUnit)}
-              </Text>
+              </Text> */}
             </>
           ) : (
             <Text style={styles.noDataText}>-</Text>
@@ -139,10 +139,10 @@ export const SplitComparison: React.FC<SplitComparisonProps> = ({
                 {timeDiff.isPositive ? '+' : '-'}
                 {timeDiff.formatted}
               </Text>
-              <Text style={[styles.diffPace, paceDiff?.isPositive ? styles.slower : styles.faster]}>
+              {/* <Text style={[styles.diffPace, paceDiff?.isPositive ? styles.slower : styles.faster]}>
                 {paceDiff?.isPositive ? '+' : '-'}
                 {paceDiff?.formatted}/{splitDistanceUnit}
-              </Text>
+              </Text> */}
             </>
           ) : (
             <Text style={styles.noDataText}>-</Text>
@@ -231,11 +231,11 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   table: {
-    borderWidth: 1,
-    borderColor: colors.surface,
-    borderRadius: 8,
+    //borderWidth: 1,
+    //borderColor: colors.surface,
+    // borderRadius: 8,
     overflow: 'hidden',
-    marginHorizontal: 16,
+    //marginHorizontal: 16,
   },
   headerRow: {
     flexDirection: 'row',
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   },
   splitRow: {
     flexDirection: 'row',
-    height: 50,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 12,
@@ -289,20 +289,20 @@ const styles = StyleSheet.create({
     color: '#CCCCCC',
     marginBottom: 2,
   },
-  paceValue: {
+  /*   paceValue: {
     fontSize: 12,
     fontFamily: LatoFonts.regular,
     color: '#CCCCCC',
-  },
+  }, */
   diffValue: {
     fontSize: 14,
     fontFamily: LatoFonts.bold,
     marginBottom: 2,
   },
-  diffPace: {
+  /*   diffPace: {
     fontSize: 10,
     fontFamily: LatoFonts.regular,
-  },
+  }, */
   faster: {
     color: colors.tertiary,
   },

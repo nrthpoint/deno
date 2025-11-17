@@ -12,6 +12,7 @@ interface GroupSummaryStatsProps {
   group: Group;
   groupType: GroupType;
   timeRangeInDays: number;
+  onViewAllWorkouts?: () => void;
 }
 
 const formatDaysAgo = (date: Date): number => {
@@ -20,7 +21,10 @@ const formatDaysAgo = (date: Date): number => {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 };
 
-export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({ group }) => {
+export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({
+  group,
+  onViewAllWorkouts,
+}) => {
   const runCount = group.runs.length;
   const lastRunDaysAgo = formatDaysAgo(group.mostRecent.endDate);
 
@@ -52,6 +56,7 @@ export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({ group }) =
           icon="run-fast"
           label={runCount === 1 ? 'Run' : 'Runs'}
           value={runCount}
+          onPress={onViewAllWorkouts}
         />
       </View>
 

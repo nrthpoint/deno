@@ -45,6 +45,7 @@ export const StatsTab: React.FC = () => {
           group={group}
           groupType={groupType}
           timeRangeInDays={timeRangeInDays}
+          onViewAllWorkouts={handleViewAllWorkouts}
         />
         <VisualCards />
       </View>

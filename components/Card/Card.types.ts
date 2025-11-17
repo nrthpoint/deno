@@ -5,4 +5,5 @@ export interface CardProps {
   children: ReactNode;
   backgroundColor?: string;
   style?: ViewStyle;
+  onPress?: () => void;
 }

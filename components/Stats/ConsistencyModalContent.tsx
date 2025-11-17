@@ -152,6 +152,24 @@ export const ConsistencyModalContent: React.FC = () => {
     }
   };
 
+  const getSampleLabels = (): { lowest: string; highest: string } => {
+    switch (group.type) {
+      case 'pace':
+        return { lowest: 'Shortest Run', highest: 'Longest Run' };
+      case 'distance':
+        return { lowest: 'Quickest Run', highest: 'Longest Run' };
+      case 'duration':
+        return { lowest: 'Shortest Run', highest: 'Furthest Run' };
+      case 'elevation':
+        return { lowest: 'Quickest Run', highest: 'Longest Run' };
+      case 'temperature':
+      case 'humidity':
+        return { lowest: 'Fastest Run', highest: 'Slowest Run' };
+      default:
+        return { lowest: 'Most Consistent Run', highest: 'Least Consistent Run' };
+    }
+  };
+
   return (
     <ScrollView
       style={styles.scrollContainer}
@@ -209,7 +227,7 @@ export const ConsistencyModalContent: React.FC = () => {
           {lowestVariation && (
             <WorkoutRow
               workout={lowestVariation}
-              label="Most Consistent Run"
+              label={getSampleLabels().lowest}
               value={formatValue(lowestVariation)}
               onPress={() => handleWorkoutPress(lowestVariation)}
             />
@@ -218,7 +236,7 @@ export const ConsistencyModalContent: React.FC = () => {
           {highestVariation && (
             <WorkoutRow
               workout={highestVariation}
-              label="Least Consistent Run"
+              label={getSampleLabels().highest}
               value={formatValue(highestVariation)}
               onPress={() => handleWorkoutPress(highestVariation)}
             />
