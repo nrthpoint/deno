@@ -12,7 +12,6 @@ import {
   getSegmentsBySplits,
   reduceRoutePoints,
 } from '@/components/RouteMap/RouteMap.utils';
-import { TabBar, TabOption } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useSettings } from '@/context/SettingsContext';
@@ -26,11 +25,6 @@ const routeStyles = [
 
 type PaceDisplayMode = 'per-minute' | 'per-mile';
 type MapType = 'standard' | 'satellite';
-
-const paceDisplayTabs: TabOption[] = [
-  { id: 'per-minute', label: 'Per Minute' },
-  { id: 'per-mile', label: 'Per Mile' },
-];
 
 export const RouteMap = ({
   samples,
@@ -120,29 +114,33 @@ export const RouteMap = ({
       ]}
     >
       {!previewMode && (
-        <View style={styles.tabContainer}>
-          <TabBar
-            tabs={paceDisplayTabs}
-            activeTabId={paceDisplayMode}
-            onTabPress={(tabId) => setPaceDisplayMode(tabId as PaceDisplayMode)}
-            activeTabColor={colors.primary}
-            transparent
-          />
-        </View>
-      )}
+        <View style={styles.toggleContainer}>
+          <TouchableOpacity
+            style={styles.iconToggle}
+            onPress={() =>
+              setPaceDisplayMode(paceDisplayMode === 'per-minute' ? 'per-mile' : 'per-minute')
+            }
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name={paceDisplayMode === 'per-minute' ? 'time-outline' : 'speedometer-outline'}
+              size={24}
+              color="#FFFFFF"
+            />
+          </TouchableOpacity>
 
-      {!previewMode && (
-        <TouchableOpacity
-          style={styles.mapTypeToggle}
-          onPress={() => setMapType(mapType === 'standard' ? 'satellite' : 'standard')}
-          activeOpacity={0.8}
-        >
-          <Ionicons
-            name={mapType === 'standard' ? 'layers-outline' : 'map-outline'}
-            size={24}
-            color="#FFFFFF"
-          />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconToggle}
+            onPress={() => setMapType(mapType === 'standard' ? 'satellite' : 'standard')}
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name={mapType === 'standard' ? 'layers-outline' : 'map-outline'}
+              size={24}
+              color="#FFFFFF"
+            />
+          </TouchableOpacity>
+        </View>
       )}
 
       <MapView
@@ -233,18 +231,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.surfaceHighlight,
   },
-  tabContainer: {
-    zIndex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 16,
-    backgroundColor: 'transparent',
-  },
-  mapTypeToggle: {
+  toggleContainer: {
     position: 'absolute',
     bottom: 16,
     right: 16,
     zIndex: 2,
+    flexDirection: 'row',
+    gap: 12,
+  },
+  iconToggle: {
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     width: 48,
     height: 48,
