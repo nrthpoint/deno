@@ -21,7 +21,6 @@ export const parseWorkoutSample = async ({
 }): Promise<ExtendedWorkout | null> => {
   try {
     const { workoutActivityType, duration, uuid, startDate, endDate } = sample;
-
     const rawDistance = await retrieveDistanceFromSample(sample, distanceUnit);
 
     const distance = normalizeGenericQuantity({ q: rawDistance, unit: distanceUnit });

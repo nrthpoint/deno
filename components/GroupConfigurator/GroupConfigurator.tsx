@@ -67,41 +67,39 @@ export const GroupingConfigModal: React.FC<GroupingConfigModalProps> = ({
                 />
               </View>
 
-              {config.enabled &&
-                config.tolerance !== undefined &&
-                config.groupSize !== undefined && (
-                  <>
-                    <CardSlider
-                      style={styles.slider}
-                      title="Tolerance"
-                      subheading={labels.tolerance.subheading}
-                      value={config.tolerance}
-                      unit={labels.tolerance.unit}
-                      step={labels.tolerance.step}
-                      thumbColor={colorProfile.primary}
-                      minimumValue={labels.tolerance.min}
-                      maximumValue={labels.tolerance.max}
-                      minimumLabel={labels.tolerance.min.toString()}
-                      maximumLabel={labels.tolerance.max.toString()}
-                      onValueChange={handleToleranceChange}
-                    />
+              {config.enabled && config.groupSize !== undefined && (
+                <>
+                  <CardSlider
+                    style={styles.slider}
+                    title="Tolerance"
+                    subheading={labels.tolerance.subheading}
+                    value={config.tolerance}
+                    unit={labels.tolerance.unit}
+                    step={labels.tolerance.step}
+                    thumbColor={colorProfile.primary}
+                    minimumValue={labels.tolerance.min}
+                    maximumValue={labels.tolerance.max}
+                    minimumLabel={labels.tolerance.min.toString()}
+                    maximumLabel={labels.tolerance.max.toString()}
+                    onValueChange={handleToleranceChange}
+                  />
 
-                    <CardSlider
-                      style={styles.slider}
-                      title="Group Size"
-                      subheading={labels.groupSize.subheading}
-                      value={config.groupSize}
-                      unit={labels.groupSize.unit}
-                      step={labels.groupSize.step}
-                      thumbColor={colorProfile.primary}
-                      minimumValue={labels.groupSize.min}
-                      maximumValue={labels.groupSize.max}
-                      minimumLabel={labels.groupSize.min.toString()}
-                      maximumLabel={labels.groupSize.max.toString()}
-                      onValueChange={handleGroupSizeChange}
-                    />
-                  </>
-                )}
+                  <CardSlider
+                    style={styles.slider}
+                    title="Group Size"
+                    subheading={labels.groupSize.subheading}
+                    value={config.groupSize}
+                    unit={labels.groupSize.unit}
+                    step={labels.groupSize.step}
+                    thumbColor={colorProfile.primary}
+                    minimumValue={labels.groupSize.min}
+                    maximumValue={labels.groupSize.max}
+                    minimumLabel={labels.groupSize.min.toString()}
+                    maximumLabel={labels.groupSize.max.toString()}
+                    onValueChange={handleGroupSizeChange}
+                  />
+                </>
+              )}
 
               <Button
                 mode="contained"

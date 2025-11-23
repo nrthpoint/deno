@@ -1,8 +1,12 @@
-import { GlassView } from 'expo-glass-effect';
+import { LinearGradient } from 'expo-linear-gradient';
+
+import { colors } from '@/config/colors';
 
 export const CardBackground = () => (
-  <GlassView
-    glassEffectStyle="clear"
+  <LinearGradient
+    colors={[colors.surface, colors.surfaceHighlight]}
+    start={{ x: 0, y: 0 }}
+    end={{ x: 1, y: 1 }}
     style={{
       position: 'absolute',
       top: 0,

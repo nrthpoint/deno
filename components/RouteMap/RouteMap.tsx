@@ -224,7 +224,6 @@ const styles = StyleSheet.create({
   },
   previewContainer: {
     height: 200,
-    marginTop: 12,
   },
   loadingContainer: {
     justifyContent: 'center',

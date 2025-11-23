@@ -1,6 +1,8 @@
+import { Ionicons } from '@expo/vector-icons';
 import { LengthUnit } from '@kingstinct/react-native-healthkit';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
@@ -63,13 +65,41 @@ export const WorkoutSplits: React.FC<WorkoutSplitsProps> = ({ workout, distanceU
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Pace Breakdown</Text>
+      <View style={styles.headerContainer}>
+        <LinearGradient
+          colors={['#6291FF', '#4F75E5']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.headerGradient}
+        />
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <View style={styles.iconCircle}>
+              <Ionicons
+                name="speedometer-outline"
+                size={20}
+                color={colors.neutral}
+              />
+            </View>
+            <Text style={styles.title}>Pace Breakdown</Text>
+          </View>
 
-      <ScrollView
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        style={styles.scrollView}
-      >
+          {splits.length > 1 && (
+            <View style={styles.headerLegend}>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, styles.fastestDot]} />
+                <Text style={styles.legendText}>Fastest</Text>
+              </View>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, styles.slowestDot]} />
+                <Text style={styles.legendText}>Slowest</Text>
+              </View>
+            </View>
+          )}
+        </View>
+      </View>
+
+      <View style={styles.tableContainer}>
         <View style={styles.table}>
           <View style={styles.headerRow}>
             <View style={styles.splitColumn}>
@@ -126,39 +156,57 @@ export const WorkoutSplits: React.FC<WorkoutSplitsProps> = ({ workout, distanceU
             );
           })}
         </View>
-      </ScrollView>
-
-      {splits.length > 1 && (
-        <View style={styles.legend}>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: colors.tertiary }]} />
-            <Text style={styles.legendText}>Fastest</Text>
-          </View>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: '#ff1744' }]} />
-            <Text style={styles.legendText}>Slowest</Text>
-          </View>
-        </View>
-      )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 16,
+    borderRadius: 8,
+    backgroundColor: colors.surface,
+    overflow: 'hidden',
+  },
+  headerContainer: {
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  headerGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconCircle: {
+    backgroundColor: colors.background,
+    borderRadius: 12,
+    padding: 8,
+    marginRight: 12,
   },
   title: {
     fontSize: 13,
     fontFamily: LatoFonts.bold,
-    color: colors.neutral,
+    color: colors.background,
     textTransform: 'uppercase',
     letterSpacing: 1.5,
-    marginBottom: 12,
-    paddingHorizontal: 16,
   },
-  scrollView: {
-    marginHorizontal: -16,
+  headerLegend: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  tableContainer: {
+    overflow: 'hidden',
   },
   loadingContainer: {
     paddingVertical: 40,
@@ -171,16 +219,11 @@ const styles = StyleSheet.create({
     color: colors.lightGray,
   },
   table: {
-    borderWidth: 1,
-    borderColor: colors.surface,
-    borderRadius: 8,
     overflow: 'hidden',
-    marginHorizontal: 16,
-    minWidth: 300,
   },
   headerRow: {
     flexDirection: 'row',
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceHighlight,
     paddingHorizontal: 16,
   },
   splitRow: {
@@ -200,31 +243,37 @@ const styles = StyleSheet.create({
   splitColumn: {
     width: 60,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   timeColumn: {
-    width: 100,
+    flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   paceColumn: {
-    width: 120,
+    flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   headerText: {
     ...uppercase,
-    color: '#FFFFFF',
+    color: colors.lightGray,
     fontSize: 12,
     fontFamily: LatoFonts.bold,
     paddingVertical: 12,
+    textAlign: 'center',
   },
   splitNumber: {
     fontSize: 13,
     fontFamily: LatoFonts.regular,
     color: colors.lightGray,
+    textAlign: 'center',
   },
   splitValue: {
     fontSize: 13,
     fontFamily: LatoFonts.regular,
     color: colors.neutral,
+    textAlign: 'center',
   },
   fastestText: {
     color: colors.tertiary,
@@ -234,26 +283,28 @@ const styles = StyleSheet.create({
     color: '#ff1744',
     fontFamily: LatoFonts.bold,
   },
-  legend: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 20,
-    marginTop: 12,
-  },
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
   },
   legendDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 20,
+    height: 20,
+    borderRadius: 6,
+    borderWidth: 7,
+    borderColor: colors.background,
+  },
+  fastestDot: {
+    backgroundColor: colors.tertiary,
+  },
+  slowestDot: {
+    backgroundColor: '#ff1744',
   },
   legendText: {
-    fontSize: 11,
-    fontFamily: LatoFonts.regular,
-    color: colors.lightGray,
+    textTransform: 'uppercase',
+    fontSize: 10,
+    fontFamily: LatoFonts.bold,
+    color: colors.background,
   },
 });

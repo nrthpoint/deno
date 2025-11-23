@@ -174,8 +174,11 @@ export const formatDaysAgo = (date: Date): string => {
   return `${diffDays} days ago`;
 };
 
-export const getDaysAgo = (date: Date): string =>
-  `${Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24))} days ago`;
+export const getDaysAgo = (date: Date): string => {
+  const daysAgo = Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24));
+
+  return daysAgo === 0 ? 'today' : daysAgo === 1 ? '1 day ago' : `${daysAgo} days ago`;
+};
 
 /**
  * Formats time in seconds to MM:SS format
