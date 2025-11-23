@@ -82,26 +82,22 @@ const getDistanceInMeters = (point1: LocationPoint, point2: LocationPoint): numb
   return R * c;
 };
 
-const getSplitColorByIndex = (splitIndex: number): string => {
-  const colors = [
-    PACING.veryFast,
-    PACING.fast,
-    PACING.medium,
-    PACING.slow,
-    '#9c27b0',
-    '#3f51b5',
-    '#2196f3',
-    '#00bcd4',
-    '#009688',
-    '#4caf50',
-    '#8bc34a',
-    '#cddc39',
-    '#ffeb3b',
-    '#ffc107',
-    '#ff9800',
-    '#ff5722',
-  ];
-  return colors[splitIndex % colors.length];
+const calculateAveragePace = (
+  route: LocationPoint[],
+  startIndex: number,
+  endIndex: number,
+): number | undefined => {
+  const paces: number[] = [];
+
+  for (let i = startIndex; i <= endIndex; i++) {
+    if (route[i].pace !== undefined) {
+      paces.push(route[i].pace!);
+    }
+  }
+
+  if (paces.length === 0) return undefined;
+
+  return paces.reduce((sum, pace) => sum + pace, 0) / paces.length;
 };
 
 export const getSegmentsBySplits = (route: LocationPoint[], distanceUnit: LengthUnit) => {
@@ -110,7 +106,6 @@ export const getSegmentsBySplits = (route: LocationPoint[], distanceUnit: Length
   const segments: { coords: LatLng[]; color: string }[] = [];
   const splitDistanceMeters = distanceUnit === 'mi' ? 1609.34 : 1000;
 
-  let currentSplitIndex = 0;
   let accumulatedDistance = 0;
   let splitStartIndex = 0;
 
@@ -122,7 +117,8 @@ export const getSegmentsBySplits = (route: LocationPoint[], distanceUnit: Length
     accumulatedDistance += segmentDistance;
 
     if (accumulatedDistance >= splitDistanceMeters || i === route.length - 1) {
-      const splitColor = getSplitColorByIndex(currentSplitIndex);
+      const averagePace = calculateAveragePace(route, splitStartIndex, i);
+      const splitColor = getPaceColor(averagePace);
 
       for (let j = splitStartIndex + 1; j <= i; j++) {
         segments.push({
@@ -131,7 +127,6 @@ export const getSegmentsBySplits = (route: LocationPoint[], distanceUnit: Length
         });
       }
 
-      currentSplitIndex++;
       splitStartIndex = i;
       accumulatedDistance = 0;
     }

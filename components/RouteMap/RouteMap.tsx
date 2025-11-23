@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import MapView, { Polyline, PROVIDER_GOOGLE, Region } from 'react-native-maps';
@@ -24,6 +25,7 @@ const routeStyles = [
 ];
 
 type PaceDisplayMode = 'per-minute' | 'per-mile';
+type MapType = 'standard' | 'satellite';
 
 const paceDisplayTabs: TabOption[] = [
   { id: 'per-minute', label: 'Per Minute' },
@@ -44,6 +46,7 @@ export const RouteMap = ({
   const [isLoading, setIsLoading] = useState(true);
   const [hasLocationData, setHasLocationData] = useState(true);
   const [paceDisplayMode, setPaceDisplayMode] = useState<PaceDisplayMode>('per-minute');
+  const [mapType, setMapType] = useState<MapType>('standard');
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -123,13 +126,29 @@ export const RouteMap = ({
             activeTabId={paceDisplayMode}
             onTabPress={(tabId) => setPaceDisplayMode(tabId as PaceDisplayMode)}
             activeTabColor={colors.primary}
+            transparent
           />
         </View>
+      )}
+
+      {!previewMode && (
+        <TouchableOpacity
+          style={styles.mapTypeToggle}
+          onPress={() => setMapType(mapType === 'standard' ? 'satellite' : 'standard')}
+          activeOpacity={0.8}
+        >
+          <Ionicons
+            name={mapType === 'standard' ? 'layers-outline' : 'map-outline'}
+            size={24}
+            color="#FFFFFF"
+          />
+        </TouchableOpacity>
       )}
 
       <MapView
         style={styles.map}
         provider={PROVIDER_GOOGLE}
+        mapType={mapType === 'satellite' ? 'hybrid' : 'standard'}
         initialRegion={initialRegion}
         scrollEnabled={!previewMode}
         zoomEnabled={!previewMode}
@@ -219,7 +238,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 16,
-    backgroundColor: colors.surface,
+    backgroundColor: 'transparent',
+  },
+  mapTypeToggle: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    zIndex: 2,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   map: {
     ...StyleSheet.absoluteFillObject,

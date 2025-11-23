@@ -15,6 +15,7 @@ interface TabBarProps {
   activeTabId: string | number;
   style?: any;
   activeTabColor?: string;
+  transparent?: boolean;
   onTabPress: (tabId: string | number) => void;
 }
 
@@ -23,6 +24,7 @@ export const TabBar: React.FC<TabBarProps> = ({
   style,
   activeTabId,
   activeTabColor = '#424bff',
+  transparent = false,
   onTabPress,
 }) => {
   // Find the index of the active tab
@@ -96,6 +98,7 @@ export const TabBar: React.FC<TabBarProps> = ({
         style={[
           styles.tabText,
           isActive && styles.activeTabText,
+          isActive && transparent && styles.activeTabTextTransparent,
           !isActive && styles.inactiveTabText,
           isDisabled && styles.disabledTabText,
         ]}
@@ -106,7 +109,7 @@ export const TabBar: React.FC<TabBarProps> = ({
   );
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, transparent && styles.transparentContainer, style]}>
       <View style={styles.tabContainer}>
         <BackgroundSlider />
 
@@ -135,6 +138,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 4,
     overflow: 'hidden',
+  },
+  transparentContainer: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   tabContainer: {
     flexDirection: 'row',
@@ -189,6 +197,9 @@ const styles = StyleSheet.create({
   activeTabText: {
     fontWeight: '700',
     color: colors.surface,
+  },
+  activeTabTextTransparent: {
+    color: '#FFFFFF',
   },
   inactiveTabText: {
     fontWeight: '600',
