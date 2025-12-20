@@ -79,7 +79,8 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
       if (groupSize) {
         const start = Number(key);
         const end = start + groupSize;
-        return `${start}-${end}`;
+
+        return `${start} to ${end}`;
       }
       return `${key}`;
     },

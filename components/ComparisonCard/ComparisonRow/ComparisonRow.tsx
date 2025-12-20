@@ -69,6 +69,9 @@ const styles = StyleSheet.create({
   comparisonRow: {
     paddingHorizontal: 12,
     paddingVertical: 18,
+    marginHorizontal: 20,
+    marginBottom: 10,
+    borderRadius: 8,
   },
   propertyLabel: {
     ...uppercase,

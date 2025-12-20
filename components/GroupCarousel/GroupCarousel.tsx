@@ -4,7 +4,6 @@ import { Text } from 'react-native-paper';
 import { useSharedValue } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 
-import { FlyingBirds } from '@/components/FlyingBirds/FlyingBirds';
 import { BackgroundImage } from '@/components/GroupCarousel/BackgroundImage';
 import { CardBackground } from '@/components/GroupCarousel/CardBackground';
 import { colors } from '@/config/colors';
@@ -41,7 +40,7 @@ export const GroupCarousel = ({
 
   const deviceWidth = Dimensions.get('window').width;
   const itemWidth = (deviceWidth - PADDING) / VISIBLE_ITEMS;
-  const textColor = GROUPING_CONFIGS[groupType].foregroundColor;
+  const textColor = GROUPING_CONFIGS[groupType].backgroundColor;
 
   const getFontSize = (size: number) => {
     if (size === 1) {
@@ -60,7 +59,7 @@ export const GroupCarousel = ({
       return 30;
     }
 
-    return 20;
+    return 30;
   };
 
   const Card = ({ isIndoor, title, unit }: CardProps) => (
@@ -98,8 +97,6 @@ export const GroupCarousel = ({
         parallaxOffset={parallaxOffset}
         selectedOption={selectedOption}
       />
-
-      <FlyingBirds count={3} />
 
       <Carousel
         ref={carouselRef}

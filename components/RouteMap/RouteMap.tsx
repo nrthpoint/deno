@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import MapView, { Polyline, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { Text } from 'react-native-paper';
+import Svg, { Line } from 'react-native-svg';
 
 import { parseRouteLocations } from '@/components/RouteMap/parseRouteLocations';
 import { RouteMapProps, RouteSegments } from '@/components/RouteMap/RouteMap.types';
@@ -41,6 +42,12 @@ export const RouteMap = ({
   const [hasLocationData, setHasLocationData] = useState(true);
   const [paceDisplayMode, setPaceDisplayMode] = useState<PaceDisplayMode>('per-minute');
   const [mapType, setMapType] = useState<MapType>('standard');
+  const [visibleRoutes, setVisibleRoutes] = useState<boolean[]>(samples.map(() => true));
+
+  useEffect(() => {
+    // Reset visibility when samples change
+    setVisibleRoutes(samples.map(() => true));
+  }, [samples]);
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -88,6 +95,14 @@ export const RouteMap = ({
     fetchRoutes();
   }, [samples, previewMode, maxPoints, paceDisplayMode, distanceUnit]);
 
+  const toggleRouteVisibility = (index: number) => {
+    setVisibleRoutes((prev) => {
+      const newVisibility = [...prev];
+      newVisibility[index] = !newVisibility[index];
+      return newVisibility;
+    });
+  };
+
   if (isLoading) {
     return (
       <View style={[styles.mapContainer, styles.loadingContainer, style]}>
@@ -115,19 +130,26 @@ export const RouteMap = ({
     >
       {!previewMode && (
         <View style={styles.toggleContainer}>
-          <TouchableOpacity
-            style={styles.iconToggle}
-            onPress={() =>
-              setPaceDisplayMode(paceDisplayMode === 'per-minute' ? 'per-mile' : 'per-minute')
-            }
-            activeOpacity={0.8}
-          >
-            <Ionicons
-              name={paceDisplayMode === 'per-minute' ? 'time-outline' : 'speedometer-outline'}
-              size={24}
-              color="#FFFFFF"
-            />
-          </TouchableOpacity>
+          <View style={styles.toggleWithLabel}>
+            <View style={styles.toggleLabel}>
+              <Text style={styles.toggleLabelText}>
+                {paceDisplayMode === 'per-minute' ? 'Per Min' : 'Per Mile'}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.iconToggle}
+              onPress={() =>
+                setPaceDisplayMode(paceDisplayMode === 'per-minute' ? 'per-mile' : 'per-minute')
+              }
+              activeOpacity={0.8}
+            >
+              <Ionicons
+                name={paceDisplayMode === 'per-minute' ? 'time-outline' : 'speedometer-outline'}
+                size={24}
+                color="#FFFFFF"
+              />
+            </TouchableOpacity>
+          </View>
 
           <TouchableOpacity
             style={styles.iconToggle}
@@ -155,15 +177,17 @@ export const RouteMap = ({
         userInterfaceStyle="dark"
       >
         {routes.map((route, routeIdx) =>
-          route.map((seg, idx) => (
-            <Polyline
-              key={`route${routeIdx}-seg${idx}`}
-              coordinates={seg.coords}
-              strokeColor={seg.color}
-              strokeWidth={routeStyles[routeIdx]?.strokeWidth || 4}
-              lineDashPattern={routeStyles[routeIdx]?.lineDashPattern}
-            />
-          )),
+          visibleRoutes[routeIdx]
+            ? route.map((seg, idx) => (
+                <Polyline
+                  key={`route${routeIdx}-seg${idx}`}
+                  coordinates={seg.coords}
+                  strokeColor={seg.color}
+                  strokeWidth={routeStyles[routeIdx]?.strokeWidth || 4}
+                  lineDashPattern={routeStyles[routeIdx]?.lineDashPattern}
+                />
+              ))
+            : null,
         )}
       </MapView>
 
@@ -177,25 +201,44 @@ export const RouteMap = ({
 
             const routeStyle = routeStyles[index] || routeStyles[0];
             const isDashed = routeStyle.lineDashPattern !== undefined;
+            const isVisible = visibleRoutes[index];
+            const lineColor = routes[index][0]?.color || colors.primary;
 
             return (
-              <View
+              <TouchableOpacity
                 key={`label-${index}`}
-                style={styles.labelBadge}
+                style={[styles.labelBadge, { opacity: isVisible ? 1 : 0.4 }]}
+                onPress={() => toggleRouteVisibility(index)}
+                activeOpacity={0.7}
               >
-                <View
-                  style={[
-                    styles.labelLine,
-                    {
-                      borderStyle: isDashed ? 'dashed' : 'solid',
-                      borderWidth: isDashed ? 0 : 2,
-                      borderTopWidth: isDashed ? 2 : 0,
-                      borderColor: routes[index][0]?.color || colors.primary,
-                    },
-                  ]}
-                />
+                {isDashed ? (
+                  <Svg
+                    height="2"
+                    width="20"
+                    style={styles.labelLine}
+                  >
+                    <Line
+                      x1="0"
+                      y1="1"
+                      x2="20"
+                      y2="1"
+                      stroke={lineColor}
+                      strokeWidth="2"
+                      strokeDasharray="4 2"
+                    />
+                  </Svg>
+                ) : (
+                  <View
+                    style={[
+                      styles.labelLine,
+                      {
+                        backgroundColor: lineColor,
+                      },
+                    ]}
+                  />
+                )}
                 <Text style={styles.labelText}>{label}</Text>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </View>
@@ -237,6 +280,23 @@ const styles = StyleSheet.create({
     zIndex: 2,
     flexDirection: 'row',
     gap: 12,
+    alignItems: 'center',
+  },
+  toggleWithLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  toggleLabel: {
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+  },
+  toggleLabelText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontFamily: LatoFonts.bold,
   },
   iconToggle: {
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
@@ -261,8 +321,8 @@ const styles = StyleSheet.create({
   },
   labelsContainer: {
     position: 'absolute',
-    top: 16,
-    right: 16,
+    bottom: 16,
+    left: 16,
     zIndex: 2,
     gap: 8,
   },

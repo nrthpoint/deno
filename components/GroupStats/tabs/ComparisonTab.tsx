@@ -1,12 +1,11 @@
-import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo, useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Modal, TouchableOpacity } from 'react-native';
 
 import { ComparisonCard } from '@/components/ComparisonCard/ComparisonCard';
 import { SampleOption, SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
 import { SampleDropdown } from '@/components/ComparisonCard/SampleDropdown';
-/* import { TabHeader } from '@/components/GroupStats/tabs/components/TabHeader';
- */ import { RouteMap } from '@/components/RouteMap/RouteMap';
+import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { SplitComparison } from '@/components/SplitComparison/SplitComparison';
 import { TabBar, TabOption } from '@/components/TabBar/TabBar';
 import { Warning } from '@/components/Warning';
@@ -15,7 +14,6 @@ import { colors, SAMPLE1_COLOR, SAMPLE2_COLOR } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
-import { useWorkout } from '@/context/Workout';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 
 type ComparisonMode = 'general' | 'splits' | 'weather';
@@ -33,13 +31,13 @@ export const ComparisonTab = () => {
   } = useGroupStats();
 
   const { distanceUnit } = useSettings();
-  const { setSelectedWorkouts } = useWorkout();
 
   const activeTabColor = GROUPING_CONFIGS[type]?.colorProfile?.gradientStart || colors.primary;
 
   const [comparisonMode, setComparisonMode] = useState<ComparisonMode>('general');
   const [selectedSample1Type, setSelectedSample1Type] = useState<SampleType>('highlight');
   const [selectedSample2Type, setSelectedSample2Type] = useState<SampleType>('mostRecent');
+  const [isMapModalVisible, setIsMapModalVisible] = useState(false);
 
   const mostRecentLabel = useMemo(() => {
     const today = new Date();
@@ -91,8 +89,7 @@ export const ComparisonTab = () => {
   const selectedSample2 = getSelectedSample(selectedSample2Type);
 
   const handleMapPress = () => {
-    setSelectedWorkouts([selectedSample1, selectedSample2]);
-    router.push('/map-detail?mode=comparison');
+    setIsMapModalVisible(true);
   };
 
   const isSameWorkout =
@@ -195,11 +192,6 @@ export const ComparisonTab = () => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        {/* <TabHeader
-          title="Compare"
-          description="Put key runs side-by-side to see how you're progressing."
-        /> */}
-
         <WorkoutSelectors />
 
         {isSameWorkout && (
@@ -235,6 +227,35 @@ export const ComparisonTab = () => {
       </View>
 
       <Comparison />
+
+      <Modal
+        visible={isMapModalVisible}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setIsMapModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Route Comparison</Text>
+            <TouchableOpacity
+              onPress={() => setIsMapModalVisible(false)}
+              style={styles.closeButton}
+            >
+              <Ionicons
+                name="close"
+                size={28}
+                color={colors.neutral}
+              />
+            </TouchableOpacity>
+          </View>
+          <RouteMap
+            samples={[selectedSample1, selectedSample2]}
+            previewMode={false}
+            maxPoints={100}
+            sampleLabels={['1', '2']}
+          />
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -244,7 +265,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   innerContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingVertical: 10,
   },
   workoutSelectors: {
@@ -278,7 +299,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
   },
   tabBar: {
-    marginTop: 20,
+    marginTop: 0,
     marginVertical: 10,
   },
   splitContainer: {
@@ -286,12 +307,31 @@ const styles = StyleSheet.create({
     marginHorizontal: -10,
   },
   mapContainer: {
-    //marginVertical: 20,
-    //marginBottom: 0,
-    //borderTopWidth: 1,
-    //borderBottomWidth: 1,
-    paddingVertical: 10,
-    paddingBottom: 20,
+    paddingVertical: 20,
     borderColor: colors.surface,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 25,
+    paddingVertical: 16,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 2,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontFamily: LatoFonts.bold,
+    color: colors.neutral,
+  },
+  closeButton: {
+    padding: 8,
   },
 });

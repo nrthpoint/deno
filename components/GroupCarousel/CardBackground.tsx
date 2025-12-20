@@ -4,7 +4,7 @@ import { colors } from '@/config/colors';
 
 export const CardBackground = () => (
   <LinearGradient
-    colors={[colors.surface, colors.surfaceHighlight]}
+    colors={[colors.neutral, colors.neutral]}
     start={{ x: 0, y: 0 }}
     end={{ x: 1, y: 1 }}
     style={{

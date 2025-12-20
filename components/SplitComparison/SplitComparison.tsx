@@ -231,11 +231,9 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   table: {
-    //borderWidth: 1,
-    //borderColor: colors.surface,
-    // borderRadius: 8,
+    borderRadius: 8,
     overflow: 'hidden',
-    //marginHorizontal: 16,
+    marginHorizontal: 10,
   },
   headerRow: {
     flexDirection: 'row',

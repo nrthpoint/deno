@@ -25,7 +25,7 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.comparisonRowsContainer}>
-        {filteredProperties.map((property, index) => (
+        {filteredProperties.map((property) => (
           <ComparisonRow
             key={property}
             property={property}
@@ -33,7 +33,7 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
             sample2={sample2}
             sample1Label={sample1Label}
             sample2Label={sample2Label}
-            style={index % 2 === 1 ? { backgroundColor: colors.background } : undefined}
+            style={{ backgroundColor: colors.surface }}
           />
         ))}
       </View>
@@ -43,7 +43,7 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.surface,
+    //backgroundColor: colors.surface,
     overflow: 'hidden',
   },
   comparisonRowsContainer: {},
