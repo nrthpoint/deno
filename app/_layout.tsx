@@ -109,6 +109,13 @@ export default function RootLayout() {
           maskAllImages: false,
           maskAllSandboxedViews: false,
         },
+        errorTracking: {
+          autocapture: {
+            uncaughtExceptions: true,
+            unhandledRejections: true,
+            console: ['error', 'warn'],
+          },
+        },
       }}
       autocapture={{
         captureTouches: true,

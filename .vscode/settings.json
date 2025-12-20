@@ -1,11 +1,13 @@
 {
   "cSpell.words": [
+    "autocapture",
     "datetimepicker",
     "gorhom",
     "healthkit",
     "kingstinct",
     "Lato",
     "Orelega",
+    "posthog",
     "Pressable"
   ],
   "typescript.preferences.importModuleSpecifier": "non-relative",
