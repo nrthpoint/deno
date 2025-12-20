@@ -1,3 +1,4 @@
+import { usePostHog } from 'posthog-react-native';
 import { useRef } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -7,6 +8,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import { BackgroundImage } from '@/components/GroupCarousel/BackgroundImage';
 import { CardBackground } from '@/components/GroupCarousel/CardBackground';
 import { colors } from '@/config/colors';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { GroupType } from '@/types/Groups';
 import { subheading } from '@/utils/text';
@@ -35,6 +37,7 @@ export const GroupCarousel = ({
   selectedOption,
   setSelectedOption,
 }: GroupCarouselProps) => {
+  const posthog = usePostHog();
   const carouselRef = useRef<any>(null);
   const parallaxOffset = useSharedValue(0);
 
@@ -106,7 +109,21 @@ export const GroupCarousel = ({
         data={options.length > 0 ? options : ['--']}
         scrollAnimationDuration={300}
         onSnapToItem={(index) => {
-          setSelectedOption(options[index]);
+          const selectedValue = options[index];
+          const group = groups[selectedValue];
+
+          setSelectedOption(selectedValue);
+
+          // Track carousel swipe event in PostHog
+          posthog?.capture(ANALYTICS_EVENTS.CAROUSEL_SWIPE, {
+            $screen_name: 'home',
+            group_type: groupType,
+            selected_value: selectedValue,
+            selected_index: index,
+            is_indoor: group?.isIndoor || false,
+            title: group?.title || selectedValue,
+            unit: group?.unit || '',
+          });
         }}
         onProgressChange={(offsetProgress) => {
           parallaxOffset.value = offsetProgress * 100;

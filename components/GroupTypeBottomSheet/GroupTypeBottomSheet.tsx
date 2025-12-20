@@ -1,11 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
+import { usePostHog } from 'posthog-react-native';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Portal } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { GroupType } from '@/types/Groups';
 
@@ -29,6 +31,7 @@ export const GroupTypeBottomSheetWithRef = React.forwardRef<
   GroupTypeBottomSheetRef,
   GroupTypeBottomSheetProps
 >(function GroupTypeBottomSheetWithRef({ selectedGroupType, onSelect }, ref) {
+  const posthog = usePostHog();
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const enabledConfigs = Object.entries(GROUPING_CONFIGS).filter(([, config]) => config.enabled);
@@ -65,9 +68,14 @@ export const GroupTypeBottomSheetWithRef = React.forwardRef<
   const handleSelectOption = useCallback(
     (groupType: GroupType) => {
       onSelect(groupType);
+      posthog?.capture(ANALYTICS_EVENTS.GROUP_TYPE_CHANGED, {
+        $screen_name: 'home',
+        new_type: groupType,
+        previous_type: selectedGroupType,
+      });
       handleClosePress();
     },
-    [onSelect, handleClosePress],
+    [onSelect, posthog, selectedGroupType, handleClosePress],
   );
 
   // Render backdrop

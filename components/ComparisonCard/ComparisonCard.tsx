@@ -43,7 +43,6 @@ export const ComparisonCard: React.FC<SampleComparisonCardProps> = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    //backgroundColor: colors.surface,
     overflow: 'hidden',
   },
   comparisonRowsContainer: {},

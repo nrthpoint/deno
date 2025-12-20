@@ -2,6 +2,7 @@ import { AuthorizationRequestStatus } from '@kingstinct/react-native-healthkit';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { PostHogProvider } from 'posthog-react-native';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper';
@@ -97,21 +98,33 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
-      <QueryProvider>
-        <PaperProvider>
-          <SettingsProvider>
-            <TutorialProvider>
-              <WorkoutProvider>
-                <WorkoutAnalyticsProvider>
-                  <AppContent />
-                </WorkoutAnalyticsProvider>
-              </WorkoutProvider>
-            </TutorialProvider>
-          </SettingsProvider>
-          <Toast config={toastConfig} />
-        </PaperProvider>
-      </QueryProvider>
-    </GestureHandlerRootView>
+    <PostHogProvider
+      apiKey="phc_GyYvvj2ZbEd0iUmHQEJLwR6CpDZ5jBu34LNJjQnuV06"
+      options={{
+        host: 'https://eu.i.posthog.com',
+        captureAppLifecycleEvents: true,
+      }}
+      autocapture={{
+        captureTouches: true,
+        captureScreens: true,
+      }}
+    >
+      <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
+        <QueryProvider>
+          <PaperProvider>
+            <SettingsProvider>
+              <TutorialProvider>
+                <WorkoutProvider>
+                  <WorkoutAnalyticsProvider>
+                    <AppContent />
+                  </WorkoutAnalyticsProvider>
+                </WorkoutProvider>
+              </TutorialProvider>
+            </SettingsProvider>
+            <Toast config={toastConfig} />
+          </PaperProvider>
+        </QueryProvider>
+      </GestureHandlerRootView>
+    </PostHogProvider>
   );
 }

@@ -36,6 +36,7 @@ export default {
       package: 'com.nrthpoint.deno.app',
     },
     plugins: [
+      'expo-localization',
       [
         'react-native-maps',
         {

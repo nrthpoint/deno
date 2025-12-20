@@ -102,8 +102,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   message: {
-    color: colors.background,
-    fontSize: 12,
+    color: colors.warning,
+    fontSize: 14,
     lineHeight: 20,
     fontFamily: LatoFonts?.regular,
   },

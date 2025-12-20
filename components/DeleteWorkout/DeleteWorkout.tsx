@@ -1,12 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
+import { usePostHog } from 'posthog-react-native';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { ConfirmAction } from '@/components/ConfirmAction/ConfirmAction';
 import { colors } from '@/config/colors';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { useWorkout } from '@/context/Workout';
 import { canDeleteWorkout } from '@/services/workoutStorage';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { logError } from '@/utils/analytics';
 
 interface DeleteWorkoutProps {
   workout: ExtendedWorkout;
@@ -23,6 +26,7 @@ export const DeleteWorkout: React.FC<DeleteWorkoutProps> = ({
   onDelete,
   onShowDeletionInfo,
 }) => {
+  const posthog = usePostHog();
   const { deleteWorkout } = useWorkout();
   const [canDelete, setCanDelete] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -33,7 +37,11 @@ export const DeleteWorkout: React.FC<DeleteWorkoutProps> = ({
         const deletable = await canDeleteWorkout(workout.uuid);
         setCanDelete(deletable);
       } catch (error) {
-        console.error('Error checking if workout can be deleted:', error);
+        logError(posthog, error, {
+          component: 'DeleteWorkout',
+          action: 'checkCanDelete',
+          workout_uuid: workout.uuid,
+        });
         setCanDelete(false);
       } finally {
         setIsLoading(false);
@@ -41,14 +49,22 @@ export const DeleteWorkout: React.FC<DeleteWorkoutProps> = ({
     };
 
     checkCanDelete();
-  }, [workout.uuid]);
+  }, [workout.uuid, posthog]);
 
   const handleDelete = async () => {
     try {
       await deleteWorkout(workout);
+      posthog?.capture(ANALYTICS_EVENTS.WORKOUT_DELETED, {
+        $screen_name: 'view_workout',
+        workout_uuid: workout.uuid,
+      });
       onDelete?.();
     } catch (error) {
-      console.error('Failed to delete workout:', error);
+      logError(posthog, error, {
+        component: 'DeleteWorkout',
+        action: 'handleDelete',
+        workout_uuid: workout.uuid,
+      });
     }
   };
 

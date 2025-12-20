@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, router } from 'expo-router';
-import React from 'react';
+import { usePostHog } from 'posthog-react-native';
+import React, { useEffect } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
@@ -12,6 +13,7 @@ import { WorkoutSplits } from '@/components/WorkoutSplits/WorkoutSplits';
 import { WorkoutStatsTable } from '@/components/WorkoutStatsTable/WorkoutStatsTable';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { useSettings } from '@/context/SettingsContext';
 import { useWorkout } from '@/context/Workout';
 import { formatPace } from '@/utils/pace';
@@ -19,10 +21,24 @@ import { subheading } from '@/utils/text';
 import { formatDuration, formatTime, formatWorkoutDate } from '@/utils/time';
 
 export default function ViewWorkoutScreen() {
+  const posthog = usePostHog();
   const { selectedWorkouts } = useWorkout();
   const { distanceUnit } = useSettings();
 
   const selectedWorkout = selectedWorkouts[0];
+
+  useEffect(() => {
+    if (selectedWorkout) {
+      posthog?.capture(ANALYTICS_EVENTS.WORKOUT_VIEWED, {
+        $screen_name: 'view_workout',
+        workout_uuid: selectedWorkout.uuid,
+        distance_quantity: selectedWorkout.distance.quantity,
+        distance_unit: selectedWorkout.distance.unit,
+        duration: selectedWorkout.duration,
+        has_achievements: Object.values(selectedWorkout.achievements).some((a) => a === true),
+      });
+    }
+  }, [selectedWorkout, posthog]);
 
   if (!selectedWorkout) {
     return (

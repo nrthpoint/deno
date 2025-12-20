@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
+import { usePostHog } from 'posthog-react-native';
 import React, { useMemo, useState } from 'react';
-import { StyleSheet, View, Text, Modal, TouchableOpacity } from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { ComparisonCard } from '@/components/ComparisonCard/ComparisonCard';
 import { SampleOption, SampleType } from '@/components/ComparisonCard/ComparisonCard.types';
@@ -12,6 +13,7 @@ import { Warning } from '@/components/Warning';
 import { WeatherComparison } from '@/components/WeatherComparison/WeatherComparison';
 import { colors, SAMPLE1_COLOR, SAMPLE2_COLOR } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { useGroupStats } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
@@ -26,6 +28,7 @@ const comparisonTabs: TabOption[] = [
 ];
 
 export const ComparisonTab = () => {
+  const posthog = usePostHog();
   const {
     group: { highlight, worst, mostRecent, type },
   } = useGroupStats();
@@ -90,6 +93,13 @@ export const ComparisonTab = () => {
 
   const handleMapPress = () => {
     setIsMapModalVisible(true);
+
+    posthog?.capture(ANALYTICS_EVENTS.MAP_OPENED, {
+      $screen_name: 'comparison_tab',
+      context: 'comparison_tab',
+      sample1_type: selectedSample1Type,
+      sample2_type: selectedSample2Type,
+    });
   };
 
   const isSameWorkout =
@@ -113,7 +123,15 @@ export const ComparisonTab = () => {
           <SampleDropdown
             options={sampleOptions}
             selectedType={selectedSample1Type}
-            onSelect={setSelectedSample1Type}
+            onSelect={(type) => {
+              setSelectedSample1Type(type);
+              posthog?.capture(ANALYTICS_EVENTS.COMPARISON_SAMPLE_CHANGED, {
+                $screen_name: 'comparison_tab',
+                sample_number: 1,
+                new_type: type,
+                comparison_mode: comparisonMode,
+              });
+            }}
             placeholder="Select Sample 1"
             showShortLabel={true}
             shortLabel="1"
@@ -131,7 +149,15 @@ export const ComparisonTab = () => {
           <SampleDropdown
             options={sampleOptions}
             selectedType={selectedSample2Type}
-            onSelect={setSelectedSample2Type}
+            onSelect={(type) => {
+              setSelectedSample2Type(type);
+              posthog?.capture(ANALYTICS_EVENTS.COMPARISON_SAMPLE_CHANGED, {
+                $screen_name: 'comparison_tab',
+                sample_number: 2,
+                new_type: type,
+                comparison_mode: comparisonMode,
+              });
+            }}
             placeholder="Select Sample 2"
             showShortLabel={true}
             shortLabel="2"
@@ -198,7 +224,7 @@ export const ComparisonTab = () => {
           <Warning
             title="Same Workout Selected"
             iconColor={colors.background}
-            style={{ marginTop: 20, backgroundColor: activeTabColor }}
+            style={{ marginTop: 20, marginBottom: 20 }}
             labelStyle={{ color: colors.background }}
             message="You're comparing the same workout to itself. Select different workouts to see meaningful comparisons."
           />
@@ -220,7 +246,16 @@ export const ComparisonTab = () => {
         <TabBar
           tabs={comparisonTabs}
           activeTabId={comparisonMode}
-          onTabPress={(tabId) => setComparisonMode(tabId as ComparisonMode)}
+          onTabPress={(tabId) => {
+            const newMode = tabId as ComparisonMode;
+            setComparisonMode(newMode);
+            posthog?.capture(ANALYTICS_EVENTS.COMPARISON_MODE_CHANGED, {
+              $screen_name: 'comparison_tab',
+              new_mode: newMode,
+              sample1_type: selectedSample1Type,
+              sample2_type: selectedSample2Type,
+            });
+          }}
           style={styles.tabBar}
           activeTabColor={activeTabColor}
         />
@@ -232,13 +267,25 @@ export const ComparisonTab = () => {
         visible={isMapModalVisible}
         animationType="slide"
         presentationStyle="pageSheet"
-        onRequestClose={() => setIsMapModalVisible(false)}
+        onRequestClose={() => {
+          setIsMapModalVisible(false);
+          posthog?.capture(ANALYTICS_EVENTS.MAP_CLOSED, {
+            $screen_name: 'route_map_modal',
+            context: 'comparison_tab',
+          });
+        }}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Route Comparison</Text>
             <TouchableOpacity
-              onPress={() => setIsMapModalVisible(false)}
+              onPress={() => {
+                setIsMapModalVisible(false);
+                posthog?.capture(ANALYTICS_EVENTS.MAP_CLOSED, {
+                  $screen_name: 'route_map_modal',
+                  context: 'comparison_tab',
+                });
+              }}
               style={styles.closeButton}
             >
               <Ionicons

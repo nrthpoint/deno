@@ -6,6 +6,7 @@ import {
   useHealthkitAuthorization,
   WorkoutQueryOptions,
 } from '@kingstinct/react-native-healthkit';
+import { usePostHog } from 'posthog-react-native';
 import { createContext, ReactNode, useCallback, useEffect, useMemo, useReducer } from 'react';
 
 import { SampleTypesToRead, SampleTypesToWrite } from '@/config/sampleIdentifiers';
@@ -14,6 +15,7 @@ import { useWorkoutSubscription } from '@/hooks/useWorkoutSubscription';
 import { handleAchievementNotifications } from '@/services/achievements';
 import { addAppCreatedWorkoutUUID, removeAppCreatedWorkoutUUID } from '@/services/workoutStorage';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
+import { logError } from '@/utils/analytics';
 import { parseWorkoutSamples } from '@/utils/parser/parser';
 
 import { WORKOUT_ACTIONS } from './actions';
@@ -37,6 +39,7 @@ const EMPTY_WORKOUT_GROUP: WorkoutQueryResult = {
 };
 
 export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
+  const posthog = usePostHog();
   const { activityType, distanceUnit, timeRangeInDays } = useSettings();
   const [_authorizationStatus, requestAuthorization] = useHealthkitAuthorization(
     SampleTypesToRead,
@@ -73,7 +76,11 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 
       try {
         if (_authorizationStatus !== AuthorizationRequestStatus.unnecessary) {
-          console.error('WorkoutProvider: Authorization not granted.');
+          logError(posthog, new Error('Authorization not granted'), {
+            component: 'WorkoutProvider',
+            action: 'fetchWorkouts',
+            authorization_status: _authorizationStatus,
+          });
           return;
         }
 
@@ -123,7 +130,11 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
 
         await handleAchievementNotifications(parsedWorkouts);
       } catch (error) {
-        console.error('fetchWorkouts: Error fetching workouts:', error);
+        logError(posthog, error, {
+          component: 'WorkoutProvider',
+          action: 'fetchWorkouts',
+          query_key: queryKey,
+        });
 
         dispatch({
           type: WORKOUT_ACTIONS.SET_WORKOUT_DATA,
@@ -136,32 +147,39 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
         });
       }
     },
-    [_authorizationStatus, defaultQuery],
+    [_authorizationStatus, defaultQuery, posthog],
   );
 
   const setSelectedWorkouts = useCallback((workouts: ExtendedWorkout[]) => {
     dispatch({ type: WORKOUT_ACTIONS.SET_SELECTED_WORKOUTS, workouts });
   }, []);
 
-  const deleteWorkout = useCallback(async (workout: ExtendedWorkout): Promise<void> => {
-    try {
-      const resp = await deleteObjects('HKWorkoutTypeIdentifier', { uuid: workout.uuid });
+  const deleteWorkout = useCallback(
+    async (workout: ExtendedWorkout): Promise<void> => {
+      try {
+        const resp = await deleteObjects('HKWorkoutTypeIdentifier', { uuid: workout.uuid });
 
-      if (!resp || resp === 0) {
-        throw new Error(`Failed to delete workout with id: ${workout.uuid}`);
+        if (!resp || resp === 0) {
+          throw new Error(`Failed to delete workout with id: ${workout.uuid}`);
+        }
+
+        await removeAppCreatedWorkoutUUID(workout.uuid);
+
+        dispatch({ type: WORKOUT_ACTIONS.REMOVE_WORKOUT_FROM_CACHE, workoutUuid: workout.uuid });
+
+        console.log(`Successfully deleted workout with id: ${workout.uuid}`);
+      } catch (error) {
+        logError(posthog, error, {
+          component: 'WorkoutProvider',
+          action: 'deleteWorkout',
+          workout_uuid: workout.uuid,
+        });
+
+        throw error;
       }
-
-      await removeAppCreatedWorkoutUUID(workout.uuid);
-
-      dispatch({ type: WORKOUT_ACTIONS.REMOVE_WORKOUT_FROM_CACHE, workoutUuid: workout.uuid });
-
-      console.log(`Successfully deleted workout with id: ${workout.uuid}`);
-    } catch (error) {
-      console.error(`deleteWorkout: Failed to delete workout ${workout.uuid}:`, error);
-
-      throw error;
-    }
-  }, []);
+    },
+    [posthog],
+  );
 
   const saveWorkout = useCallback(
     async (params: SaveWorkoutParams) => {

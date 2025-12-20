@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { usePostHog } from 'posthog-react-native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import MapView, { Polyline, PROVIDER_GOOGLE, Region } from 'react-native-maps';
@@ -15,6 +16,7 @@ import {
 } from '@/components/RouteMap/RouteMap.utils';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { useSettings } from '@/context/SettingsContext';
 
 const routeStyles = [
@@ -35,6 +37,7 @@ export const RouteMap = ({
   style,
   sampleLabels,
 }: RouteMapProps) => {
+  const posthog = usePostHog();
   const { distanceUnit } = useSettings();
   const [routes, setRouteSegments] = useState<RouteSegments>([]);
   const [initialRegion, setInitialRegion] = useState<Region | undefined>();
@@ -98,7 +101,18 @@ export const RouteMap = ({
   const toggleRouteVisibility = (index: number) => {
     setVisibleRoutes((prev) => {
       const newVisibility = [...prev];
-      newVisibility[index] = !newVisibility[index];
+      const willBeVisible = !newVisibility[index];
+      newVisibility[index] = willBeVisible;
+
+      // Track route toggle
+      posthog?.capture(ANALYTICS_EVENTS.MAP_ROUTE_TOGGLED, {
+        $screen_name: previewMode ? 'comparison_tab' : 'route_map_modal',
+        route_index: index,
+        route_label: sampleLabels?.[index] || null,
+        is_visible: willBeVisible,
+        preview_mode: previewMode,
+      });
+
       return newVisibility;
     });
   };
@@ -138,9 +152,16 @@ export const RouteMap = ({
             </View>
             <TouchableOpacity
               style={styles.iconToggle}
-              onPress={() =>
-                setPaceDisplayMode(paceDisplayMode === 'per-minute' ? 'per-mile' : 'per-minute')
-              }
+              onPress={() => {
+                const newMode = paceDisplayMode === 'per-minute' ? 'per-mile' : 'per-minute';
+                setPaceDisplayMode(newMode);
+
+                posthog?.capture(ANALYTICS_EVENTS.MAP_PACE_MODE_CHANGED, {
+                  $screen_name: 'route_map_modal',
+                  new_mode: newMode,
+                  preview_mode: previewMode,
+                });
+              }}
               activeOpacity={0.8}
             >
               <Ionicons
@@ -153,7 +174,16 @@ export const RouteMap = ({
 
           <TouchableOpacity
             style={styles.iconToggle}
-            onPress={() => setMapType(mapType === 'standard' ? 'satellite' : 'standard')}
+            onPress={() => {
+              const newMapType = mapType === 'standard' ? 'satellite' : 'standard';
+              setMapType(newMapType);
+
+              posthog?.capture(ANALYTICS_EVENTS.MAP_TYPE_CHANGED, {
+                $screen_name: 'route_map_modal',
+                new_type: newMapType,
+                preview_mode: previewMode,
+              });
+            }}
             activeOpacity={0.8}
           >
             <Ionicons

@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { WorkoutActivityType } from '@kingstinct/react-native-healthkit';
 import { Stack, router } from 'expo-router';
+import { usePostHog } from 'posthog-react-native';
 import React, { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Text, TextInput, TouchableRipple } from 'react-native-paper';
@@ -10,8 +11,10 @@ import { DateTimeModal } from '@/components/DateTimeModal/DateTimeModal';
 import { DurationModal } from '@/components/DurationModal/DurationModal';
 import { colors } from '@/config/colors';
 import { LatoFonts, OrelegaOneFonts } from '@/config/fonts';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { useSettings } from '@/context/SettingsContext';
 import { useWorkout } from '@/context/Workout';
+import { logError } from '@/utils/analytics';
 import { subheading } from '@/utils/text';
 import { formatDate, formatTime } from '@/utils/time';
 
@@ -38,6 +41,7 @@ const getActivityTypeLabel = (type: WorkoutActivityType) => {
 };
 
 export default function AddWorkoutScreen() {
+  const posthog = usePostHog();
   const { activityType, distanceUnit } = useSettings();
   const { requestAuthorization, authorizationStatus, saveWorkout } = useWorkout();
 
@@ -87,10 +91,25 @@ export default function AddWorkoutScreen() {
         durationInMinutes,
         activityType,
       });
+
+      posthog?.capture(ANALYTICS_EVENTS.WORKOUT_ADDED, {
+        $screen_name: 'add_workout',
+        distance: distanceValue,
+        distance_unit: distanceUnit,
+        duration_minutes: durationInMinutes,
+        activity_type: activityType,
+        is_indoor: isIndoor,
+      });
+
       resetForm();
       router.back();
     } catch (error) {
-      console.error('Error saving workout:', error);
+      logError(posthog, error, {
+        component: 'AddWorkoutScreen',
+        action: 'save_workout',
+        distance: distanceValue,
+        duration: durationInMinutes,
+      });
 
       Alert.alert(
         'Error',

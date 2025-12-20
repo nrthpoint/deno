@@ -1,4 +1,5 @@
 import { LengthUnit, WorkoutActivityType } from '@kingstinct/react-native-healthkit';
+import { usePostHog } from 'posthog-react-native';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
@@ -7,9 +8,11 @@ import { TabBar } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 import { DISTANCE_UNIT_OPTIONS } from '@/config/distanceUnits';
 import { LatoFonts } from '@/config/fonts';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { useSettings } from '@/context/SettingsContext';
 
 export const GeneralSettings: React.FC = () => {
+  const posthog = usePostHog();
   const {
     distanceUnit,
     activityType,
@@ -52,7 +55,15 @@ export const GeneralSettings: React.FC = () => {
           disabled: !option.enabled,
         }))}
         activeTabId={distanceUnit}
-        onTabPress={(id) => setDistanceUnit(id as unknown as LengthUnit)}
+        onTabPress={(id) => {
+          const newUnit = id as unknown as LengthUnit;
+          setDistanceUnit(newUnit);
+          posthog?.capture(ANALYTICS_EVENTS.DISTANCE_UNIT_CHANGED, {
+            $screen_name: 'settings',
+            new_unit: newUnit,
+            previous_unit: distanceUnit,
+          });
+        }}
         activeTabColor={colors.primary}
       />
 
@@ -70,7 +81,16 @@ export const GeneralSettings: React.FC = () => {
           { id: String(WorkoutActivityType.cycling), label: 'Cycling', disabled: true },
         ]}
         activeTabId={String(activityType)}
-        onTabPress={(value) => setActivityType(value as unknown as WorkoutActivityType)}
+        onTabPress={(value) => {
+          const newActivityType = value as unknown as WorkoutActivityType;
+          setActivityType(newActivityType);
+          posthog?.capture(ANALYTICS_EVENTS.SETTING_CHANGED, {
+            $screen_name: 'settings',
+            setting: 'activity_type',
+            new_value: newActivityType,
+            previous_value: activityType,
+          });
+        }}
         activeTabColor={colors.primary}
       />
 
@@ -126,7 +146,16 @@ export const GeneralSettings: React.FC = () => {
           { id: 'Other', label: 'Other' },
         ]}
         activeTabId={gender || ''}
-        onTabPress={(id) => setGender(id as 'Male' | 'Female' | 'Other')}
+        onTabPress={(id) => {
+          const newGender = id as 'Male' | 'Female' | 'Other';
+          setGender(newGender);
+          posthog?.capture(ANALYTICS_EVENTS.SETTING_CHANGED, {
+            $screen_name: 'settings',
+            setting: 'gender',
+            new_value: newGender,
+            previous_value: gender,
+          });
+        }}
         activeTabColor={colors.primary}
       />
     </ScrollView>

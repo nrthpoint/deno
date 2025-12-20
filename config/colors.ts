@@ -20,6 +20,7 @@ export const colors = {
 
   // Status Colors
   error: '#ff4444',
+  warning: '#ffbb33',
 };
 
 export const SAMPLE1_COLOR = '#2196f3';
