@@ -103,6 +103,12 @@ export default function RootLayout() {
       options={{
         host: 'https://eu.i.posthog.com',
         captureAppLifecycleEvents: true,
+        enableSessionReplay: true,
+        sessionReplayConfig: {
+          maskAllTextInputs: false,
+          maskAllImages: false,
+          maskAllSandboxedViews: false,
+        },
       }}
       autocapture={{
         captureTouches: true,
