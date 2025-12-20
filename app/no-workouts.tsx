@@ -6,9 +6,12 @@ import { Button, Text } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts, OrelegaOneFonts } from '@/config/fonts';
+import { SCREEN_NAMES } from '@/constants/analytics';
 import { useWorkout } from '@/context/Workout';
+import { usePageView } from '@/hooks/usePageView';
 
 export default function NoWorkoutsScreen() {
+  usePageView({ screenName: SCREEN_NAMES.NO_WORKOUTS });
   const { workouts } = useWorkout();
 
   if (workouts.samples.length > 0) {

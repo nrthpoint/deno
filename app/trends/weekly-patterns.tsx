@@ -6,8 +6,10 @@ import { ActivityIndicator } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { SCREEN_NAMES } from '@/constants/analytics';
 import { useWorkout } from '@/context/Workout';
 import { useWorkoutAnalytics } from '@/context/WorkoutAnalytics';
+import { usePageView } from '@/hooks/usePageView';
 
 export default function WeeklyPatternsScreen() {
   const router = useRouter();
@@ -18,6 +20,8 @@ export default function WeeklyPatternsScreen() {
   const [weeklyTrends, setWeeklyTrends] = useState<any>(null);
 
   const { samples, loading: isWorkoutsLoading } = workouts;
+
+  usePageView({ screenName: SCREEN_NAMES.WEEKLY_PATTERNS });
 
   useEffect(() => {
     const loadWeeklyTrends = async () => {

@@ -11,9 +11,10 @@ import { DateTimeModal } from '@/components/DateTimeModal/DateTimeModal';
 import { DurationModal } from '@/components/DurationModal/DurationModal';
 import { colors } from '@/config/colors';
 import { LatoFonts, OrelegaOneFonts } from '@/config/fonts';
-import { ANALYTICS_EVENTS } from '@/constants/analytics';
+import { ANALYTICS_EVENTS, SCREEN_NAMES } from '@/constants/analytics';
 import { useSettings } from '@/context/SettingsContext';
 import { useWorkout } from '@/context/Workout';
+import { usePageView } from '@/hooks/usePageView';
 import { logError } from '@/utils/analytics';
 import { subheading } from '@/utils/text';
 import { formatDate, formatTime } from '@/utils/time';
@@ -41,6 +42,7 @@ const getActivityTypeLabel = (type: WorkoutActivityType) => {
 };
 
 export default function AddWorkoutScreen() {
+  usePageView({ screenName: SCREEN_NAMES.ADD_WORKOUT });
   const posthog = usePostHog();
   const { activityType, distanceUnit } = useSettings();
   const { requestAuthorization, authorizationStatus, saveWorkout } = useWorkout();

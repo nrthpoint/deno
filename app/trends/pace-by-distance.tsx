@@ -8,11 +8,15 @@ import { ActivityIndicator } from 'react-native-paper';
 import { RotatePhone } from '@/components/RotatePhone';
 import { PaceDistanceGraph } from '@/components/Trends/Graphs/PaceDistanceGraph';
 import { colors } from '@/config/colors';
+import { SCREEN_NAMES } from '@/constants/analytics';
 import { useWorkout } from '@/context/Workout';
+import { usePageView } from '@/hooks/usePageView';
 
 export default function PaceByDistanceScreen() {
   const router = useRouter();
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
+
+  usePageView({ screenName: SCREEN_NAMES.PACE_BY_DISTANCE });
 
   useEffect(() => {
     const onChange = (result: { window: typeof screenData }) => {

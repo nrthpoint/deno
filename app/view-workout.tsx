@@ -13,14 +13,16 @@ import { WorkoutSplits } from '@/components/WorkoutSplits/WorkoutSplits';
 import { WorkoutStatsTable } from '@/components/WorkoutStatsTable/WorkoutStatsTable';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { ANALYTICS_EVENTS } from '@/constants/analytics';
+import { ANALYTICS_EVENTS, SCREEN_NAMES } from '@/constants/analytics';
 import { useSettings } from '@/context/SettingsContext';
 import { useWorkout } from '@/context/Workout';
+import { usePageView } from '@/hooks/usePageView';
 import { formatPace } from '@/utils/pace';
 import { subheading } from '@/utils/text';
 import { formatDuration, formatTime, formatWorkoutDate } from '@/utils/time';
 
 export default function ViewWorkoutScreen() {
+  usePageView({ screenName: SCREEN_NAMES.VIEW_WORKOUT });
   const posthog = usePostHog();
   const { selectedWorkouts } = useWorkout();
   const { distanceUnit } = useSettings();
@@ -34,7 +36,8 @@ export default function ViewWorkoutScreen() {
         workout_uuid: selectedWorkout.uuid,
         distance_quantity: selectedWorkout.distance.quantity,
         distance_unit: selectedWorkout.distance.unit,
-        duration: selectedWorkout.duration,
+        duration_quantity: selectedWorkout.duration.quantity,
+        duration_unit: selectedWorkout.duration.unit,
         has_achievements: Object.values(selectedWorkout.achievements).some((a) => a === true),
       });
     }

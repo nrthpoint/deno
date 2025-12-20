@@ -16,17 +16,21 @@ import { TimeRangeModal } from '@/components/TimeRangeModal/TimeRangeModal';
 import { TutorialOverlay } from '@/components/Tutorial/TutorialOverlay';
 import { colors } from '@/config/colors';
 import { TimeRange } from '@/config/timeRanges';
+import { SCREEN_NAMES } from '@/constants/analytics';
 import { GroupStatsProvider } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { useTutorialContext } from '@/context/TutorialContext';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { useGroupConfig } from '@/hooks/useGroupConfig';
+import { usePageView } from '@/hooks/usePageView';
 import { useWorkoutGroups } from '@/hooks/useWorkoutGroups';
 import { GroupType } from '@/types/Groups';
 import { subheading } from '@/utils/text';
 
 export default function Index() {
+  usePageView({ screenName: SCREEN_NAMES.HOME });
+
   const {
     distanceUnit,
     timeRangeInDays,

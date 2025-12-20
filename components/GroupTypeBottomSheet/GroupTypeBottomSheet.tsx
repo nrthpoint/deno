@@ -7,7 +7,7 @@ import { Portal } from 'react-native-paper';
 
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
-import { ANALYTICS_EVENTS } from '@/constants/analytics';
+import { ANALYTICS_EVENTS, SCREEN_NAMES } from '@/constants/analytics';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { GroupType } from '@/types/Groups';
 
@@ -57,7 +57,12 @@ export const GroupTypeBottomSheetWithRef = React.forwardRef<
   // Handle opening the bottom sheet
   const handleOpenPress = useCallback(() => {
     bottomSheetRef.current?.expand();
-  }, []);
+    posthog?.capture(ANALYTICS_EVENTS.PAGEVIEW, {
+      $current_url: 'app://group-type-selector',
+      $pathname: '/group-type-selector',
+      $screen_name: SCREEN_NAMES.GROUP_TYPE_SELECTOR,
+    });
+  }, [posthog]);
 
   // Handle closing the bottom sheet
   const handleClosePress = useCallback(() => {

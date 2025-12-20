@@ -7,9 +7,12 @@ import { Text } from 'react-native-paper';
 import { RouteMap } from '@/components/RouteMap/RouteMap';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { SCREEN_NAMES } from '@/constants/analytics';
 import { useWorkout } from '@/context/Workout';
+import { usePageView } from '@/hooks/usePageView';
 
 export default function MapDetailScreen() {
+  usePageView({ screenName: SCREEN_NAMES.MAP_DETAIL });
   const { selectedWorkouts } = useWorkout();
   const params = useLocalSearchParams();
 

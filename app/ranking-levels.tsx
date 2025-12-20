@@ -8,10 +8,13 @@ import { ComparisonHeader } from '@/components/RankingLevels/ComparisonHeader';
 import { LevelsList } from '@/components/RankingLevels/LevelsList';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { SCREEN_NAMES } from '@/constants/analytics';
 import { useSettings } from '@/context/SettingsContext';
+import { usePageView } from '@/hooks/usePageView';
 import { useRanking } from '@/hooks/useRanking';
 
 export default function RankingLevelsModal() {
+  usePageView({ screenName: SCREEN_NAMES.RANKING_LEVELS });
   const router = useRouter();
   const params = useLocalSearchParams<{
     distance?: string;

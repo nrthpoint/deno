@@ -1,5 +1,6 @@
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
+import { usePostHog } from 'posthog-react-native';
 import React, { forwardRef, useCallback, useMemo, useImperativeHandle, useRef } from 'react';
 import { Pressable, StyleSheet, ScrollView, View } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -7,6 +8,7 @@ import { Text } from 'react-native-paper';
 import { DeleteWorkoutWithModal } from '@/components/DeleteWorkout/DeleteWorkoutWithModal';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { ANALYTICS_EVENTS, SCREEN_NAMES } from '@/constants/analytics';
 import { useWorkout } from '@/context/Workout';
 import { ExtendedWorkout } from '@/types/ExtendedWorkout';
 import { formatDistance } from '@/utils/distance';
@@ -28,13 +30,25 @@ export const WorkoutListBottomSheet = forwardRef<
 >(({ workouts, title = 'All Workouts' }, ref) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const { setSelectedWorkouts } = useWorkout();
+  const posthog = usePostHog();
 
   const snapPoints = useMemo(() => ['20%'], []);
 
-  useImperativeHandle(ref, () => ({
-    open: () => bottomSheetRef.current?.expand(),
-    close: () => bottomSheetRef.current?.close(),
-  }));
+  useImperativeHandle(
+    ref,
+    () => ({
+      open: () => {
+        bottomSheetRef.current?.expand();
+        posthog?.capture(ANALYTICS_EVENTS.PAGEVIEW, {
+          $current_url: 'app://workout-list',
+          $pathname: '/workout-list',
+          $screen_name: SCREEN_NAMES.WORKOUT_LIST,
+        });
+      },
+      close: () => bottomSheetRef.current?.close(),
+    }),
+    [posthog],
+  );
 
   const handleWorkoutPress = useCallback(
     (workout: ExtendedWorkout) => {

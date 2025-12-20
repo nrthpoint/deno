@@ -14,10 +14,13 @@ import {
 } from '@/components/SettingsMenu';
 import { colors } from '@/config/colors';
 import { OrelegaOneFonts } from '@/config/fonts';
+import { SCREEN_NAMES } from '@/constants/analytics';
+import { usePageView } from '@/hooks/usePageView';
 
 type SettingsSection = 'menu' | 'general' | 'notifications' | 'developer' | 'app';
 
 export default function ConfigurationScreen() {
+  usePageView({ screenName: SCREEN_NAMES.SETTINGS });
   const { section } = useLocalSearchParams<{ section?: string }>();
   const [currentSection, setCurrentSection] = useState<SettingsSection>('menu');
 

@@ -119,7 +119,6 @@ export default function RootLayout() {
       }}
       autocapture={{
         captureTouches: true,
-        captureScreens: true,
       }}
     >
       <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>

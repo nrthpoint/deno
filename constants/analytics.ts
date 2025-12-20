@@ -7,6 +7,7 @@ export const ANALYTICS_EVENTS = {
   // Navigation
   TAB_CHANGED: 'tab_changed',
   SCREEN_VIEWED: 'screen_viewed',
+  PAGEVIEW: '$pageview',
 
   // Carousel interactions
   CAROUSEL_SWIPE: 'carousel_swipe',
@@ -51,5 +52,35 @@ export const ANALYTICS_EVENTS = {
   ERROR_BOUNDARY_TRIGGERED: 'error_boundary_triggered',
 } as const;
 
+/**
+ * Screen Names for PostHog $pageview Events
+ * Centralized constants for all screen names used in pageview tracking
+ */
+export const SCREEN_NAMES = {
+  // Tab Screens
+  HOME: 'HomeScreen',
+  TRENDS: 'TrendsScreen',
+  PROFILE: 'ProfileScreen',
+  SETTINGS: 'SettingsScreen',
+
+  // Modal Screens
+  ADD_WORKOUT: 'AddWorkoutModal',
+  VIEW_WORKOUT: 'ViewWorkoutModal',
+  NO_WORKOUTS: 'NoWorkoutsScreen',
+  RANKING_LEVELS: 'RankingLevelsModal',
+
+  // Trend Detail Screens
+  PACE_BY_DISTANCE: 'PaceByDistanceScreen',
+  WEEKLY_PATTERNS: 'WeeklyPatternsScreen',
+  MAP_DETAIL: 'MapDetailScreen',
+
+  // Bottom Sheets
+  GROUP_TYPE_SELECTOR: 'GroupTypeBottomSheet',
+  WORKOUT_LIST: 'WorkoutListBottomSheet',
+} as const;
+
 // Type for all analytics event names
 export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];
+
+// Type for all screen names
+export type ScreenName = (typeof SCREEN_NAMES)[keyof typeof SCREEN_NAMES];

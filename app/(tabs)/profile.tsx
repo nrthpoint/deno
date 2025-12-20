@@ -6,9 +6,11 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-nat
 import { ProfileStatCard } from '@/components/ProfileStatCard/ProfileStatCard';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
+import { SCREEN_NAMES } from '@/constants/analytics';
 import { useSettings } from '@/context/SettingsContext';
 import { useWorkout } from '@/context/Workout';
 import { useWorkoutAnalytics, WorkoutAnalytics } from '@/context/WorkoutAnalytics';
+import { usePageView } from '@/hooks/usePageView';
 
 export default function ProfileScreen() {
   const { distanceUnit } = useSettings();
@@ -18,6 +20,8 @@ export default function ProfileScreen() {
   const [cachedStats, setCachedStats] = useState<WorkoutAnalytics | null>(null);
 
   const { samples, loading: isWorkoutsLoading } = workouts;
+
+  usePageView({ screenName: SCREEN_NAMES.PROFILE });
 
   useEffect(() => {
     const loadProfileStats = async () => {

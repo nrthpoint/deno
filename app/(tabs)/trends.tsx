@@ -3,9 +3,14 @@ import { ScrollView, StyleSheet, View, Text } from 'react-native';
 
 import { TrendCard } from '@/components/Trends/TrendCard';
 import { colors } from '@/config/colors';
+import { SCREEN_NAMES } from '@/constants/analytics';
+import { usePageView } from '@/hooks/usePageView';
 
 export default function TrendsScreen() {
   const router = useRouter();
+
+  usePageView({ screenName: SCREEN_NAMES.TRENDS });
+
   return (
     <View style={styles.screenContainer}>
       <View style={styles.header}>
