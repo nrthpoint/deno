@@ -108,6 +108,7 @@ export default function RootLayout() {
           maskAllTextInputs: false,
           maskAllImages: false,
           maskAllSandboxedViews: false,
+          throttleDelayMs: 500,
         },
         errorTracking: {
           autocapture: {
