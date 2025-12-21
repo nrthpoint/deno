@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Hermes application",
+      "request": "attach",
+      "type": "reactnativedirect",
+      "cwd": "${workspaceFolder}",
+      "address": "192.168.1.169"
+    },
+    {
+      "name": "Debug Exponent Hermes",
+      "request": "launch",
+      "type": "reactnativedirect",
+      "cwd": "${workspaceFolder}",
+      "platform": "exponent",
+      "expoHostType": "tunnel"
+    }
+  ]
+}

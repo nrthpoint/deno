@@ -12,8 +12,12 @@ import {
   GroupTypeBottomSheetRef,
   GroupTypeBottomSheetWithRef,
 } from '@/components/GroupTypeBottomSheet/GroupTypeBottomSheet';
+import { OTAUpdatePrompt } from '@/components/OTAUpdate';
 import { TimeRangeModal } from '@/components/TimeRangeModal/TimeRangeModal';
+import { TutorialDebugger } from '@/components/Tutorial/Debug';
 import { TutorialOverlay } from '@/components/Tutorial/TutorialOverlay';
+import { tutorialSteps } from '@/components/Tutorial/tutorialSteps';
+import { useTutorialDebug } from '@/components/Tutorial/useTutorialDebug';
 import { colors } from '@/config/colors';
 import { TimeRange } from '@/config/timeRanges';
 import { SCREEN_NAMES } from '@/constants/analytics';
@@ -50,6 +54,14 @@ export default function Index() {
     completeTutorial,
     startTutorial,
   } = useTutorialContext();
+
+  console.log('tutorialVisible', tutorialVisible);
+
+  // Tutorial debug mode
+  const { isDebugEnabled } = useTutorialDebug();
+  const [showDebugger, setShowDebugger] = useState(false);
+
+  console.log('__DEV__', __DEV__);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const groupTypeBottomSheetRef = useRef<GroupTypeBottomSheetRef>(null);
@@ -175,6 +187,8 @@ export default function Index() {
 
   return (
     <ThemeProvider groupType={groupType}>
+      {/* OTA Update Prompt */}
+      <OTAUpdatePrompt autoDownload={false} />
       {/* No Data Overlay */}
       {noData && (
         <View style={styles.noDataOverlay}>
@@ -183,7 +197,6 @@ export default function Index() {
           </Text>
         </View>
       )}
-
       <Animated.ScrollView
         style={styles.container}
         contentContainerStyle={{ paddingBottom: 0, paddingTop: 0 }}
@@ -255,7 +268,6 @@ export default function Index() {
           </GroupStatsProvider>
         )}
       </Animated.ScrollView>
-
       {/* Tutorial Overlay */}
       {tutorialVisible && currentStep && (
         <TutorialOverlay
@@ -266,6 +278,37 @@ export default function Index() {
           onNext={nextStep}
           onSkip={skipTutorial}
           onComplete={completeTutorial}
+        />
+      )}
+      {/* Tutorial Debug Button (dev-only) */}
+      {console.log('isDebugEnabled', isDebugEnabled)}
+      {__DEV__ && isDebugEnabled && !tutorialVisible && (
+        <>
+          <TouchableOpacity
+            style={styles.debugButton}
+            onPress={() => setShowDebugger(!showDebugger)}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.debugButtonText}>🐛</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.tutorialButton}
+            onPress={startTutorial}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.debugButtonText}>▶️</Text>
+          </TouchableOpacity>
+        </>
+      )}
+      {console.log('__DEV__, showDebugger', __DEV__, showDebugger)}
+      {/* Tutorial Debugger (dev-only) */}
+      {__DEV__ && showDebugger && (
+        <TutorialDebugger
+          visible={showDebugger}
+          initialSteps={tutorialSteps}
+          currentStepIndex={0}
+          onClose={() => setShowDebugger(false)}
+          onStepChange={(index) => console.log('Step changed to:', index)}
         />
       )}
     </ThemeProvider>
@@ -322,5 +365,32 @@ export const styles = StyleSheet.create({
     zIndex: 10,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  debugButton: {
+    position: 'absolute',
+    bottom: 100,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+  },
+  tutorialButton: {
+    position: 'absolute',
+    bottom: 100,
+    right: 90,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+  },
+  debugButtonText: {
+    fontSize: 28,
   },
 });

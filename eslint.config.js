@@ -8,7 +8,7 @@ module.exports = defineConfig([
   expoConfig,
   eslintPluginPrettierRecommended,
   {
-    ignores: ['dist/*', '*env.d.ts'],
+    ignores: ['dist/*', '*env.d.ts', '.vscode/exponentIndex.js'],
   },
   {
     plugins: {

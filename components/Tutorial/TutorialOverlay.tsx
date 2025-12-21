@@ -5,6 +5,8 @@ import { Text, Button } from 'react-native-paper';
 import { colors } from '@/config/colors';
 import { LatoFonts } from '@/config/fonts';
 
+import { useDimensionScaling } from './Debug/useDimensionScaling';
+
 export interface TutorialStep {
   id: string;
   title: string;
@@ -42,6 +44,7 @@ export const TutorialOverlay: React.FC<TutorialOverlayProps> = ({
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
+  const { scalePosition } = useDimensionScaling();
 
   useEffect(() => {
     if (visible) {
@@ -68,7 +71,9 @@ export const TutorialOverlay: React.FC<TutorialOverlayProps> = ({
   const renderHighlight = () => {
     if (!step.targetElement) return null;
 
-    const { x, y, width, height } = step.targetElement;
+    // Scale position from base dimensions to current screen size
+    const scaledPosition = scalePosition(step.targetElement);
+    const { x, y, width, height } = scaledPosition;
     const borderRadius = 12;
     const padding = 8;
 
@@ -93,11 +98,13 @@ export const TutorialOverlay: React.FC<TutorialOverlayProps> = ({
       return styles.contentCenter;
     }
 
-    const { y, height } = step.targetElement;
+    // Use scaled position for content positioning
+    const scaledPosition = scalePosition(step.targetElement);
+    const { y, height } = scaledPosition;
     const contentHeight = 200; // Approximate content height
 
     if (step.position === 'top' && y > contentHeight + 100) {
-      return [styles.contentTop, { top: y - contentHeight - 50 }];
+      return [styles.contentTop, { top: y - contentHeight - 100 }];
     } else if (step.position === 'bottom' && y + height + contentHeight < screenHeight - 100) {
       return [styles.contentBottom, { top: y + height + 50 }];
     } else {
@@ -186,7 +193,7 @@ const styles = StyleSheet.create({
   },
   darkOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   highlight: {
     position: 'absolute',
@@ -217,6 +224,8 @@ const styles = StyleSheet.create({
   contentInner: {
     backgroundColor: colors.background,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.surfaceHighlight,
     padding: 24,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },

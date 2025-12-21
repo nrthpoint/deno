@@ -1,0 +1,9 @@
+{
+  "expo": {
+    "slug": "deno",
+    "name": "deno",
+    "sdkVersion": "54.0.0",
+    "entryPoint": ".vscode/exponentIndex.js"
+  },
+  "name": "deno"
+}
