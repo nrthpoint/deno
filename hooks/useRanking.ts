@@ -14,13 +14,19 @@ export const useRanking = (request: RankingRequest) => {
 
   const hasAllParams = missingParams.length === 0;
 
-  if (!hasAllParams) {
-    console.warn('[useRanking] Missing required parameters:', missingParams.join(', '));
-  }
-
-  return useQuery({
+  const queryResult = useQuery({
     queryFn: () => fetchRanking(request),
     queryKey: ['ranking', request.distance, request.unit, request.age, request.gender],
     enabled: hasAllParams,
   });
+
+  if (!hasAllParams) {
+    return {
+      ...queryResult,
+      error: new Error(`Missing ${missingParams.join(', ')}`),
+      isError: true,
+    };
+  }
+
+  return queryResult;
 };

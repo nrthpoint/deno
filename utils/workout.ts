@@ -130,6 +130,26 @@ export const findLongestRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
 };
 
 /**
+ * Finds the run with the shortest duration from an array of runs
+ * @param runs - Array of ExtendedWorkout objects
+ * @returns The run with the shortest duration, or undefined if no valid runs
+ */
+export const findShortestDurationRun = (runs: ExtendedWorkout[]): ExtendedWorkout => {
+  return runs.reduce((prev, curr) => {
+    if (!prev || !curr) {
+      return prev || curr;
+    }
+
+    // Compare duration values - lower duration is shorter
+    if (!prev.duration || !curr.duration) {
+      return prev.duration ? prev : curr;
+    }
+
+    return prev.duration.quantity <= curr.duration.quantity ? prev : curr;
+  });
+};
+
+/**
  * Calculates the average duration of an array of runs
  * @param runs - Array of ExtendedWorkout objects
  * @returns The average duration as a Quantity object

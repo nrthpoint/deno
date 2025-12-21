@@ -8,17 +8,6 @@ export interface ColorGradient {
 }
 
 /**
- * Gets the background opacity based on consistency score
- * Higher consistency = more opaque background
- * @param score - Consistency score (0-100)
- * @returns Opacity value between 0.3 and 0.8
- */
-export function getBackgroundOpacity(score: number): number {
-  // Map 0-100 score to 0.3-0.8 opacity
-  return 0.3 + (score / 100) * 0.5;
-}
-
-/**
  * Gets the gradient colors based on consistency score
  * Maps score ranges to color gradients:
  * - 80-100: Green (high consistency)
@@ -31,19 +20,19 @@ export function getBackgroundOpacity(score: number): number {
  */
 export function getConsistencyColors(score: number): ColorGradient {
   if (score >= 80) {
-    // High consistency - green
-    return { start: 'rgba(96, 212, 100, 0.8)', end: 'rgba(54, 174, 60, 0.9)' };
+    // High consistency - bright green
+    return { start: 'rgba(129, 230, 134, 1)', end: 'rgba(76, 201, 82, 1)' };
   } else if (score >= 60) {
-    // Medium-high consistency - light green
-    return { start: 'rgba(139, 195, 74, 0.8)', end: 'rgba(104, 159, 56, 0.9)' };
+    // Medium-high consistency - bright light green
+    return { start: 'rgba(174, 213, 129, 1)', end: 'rgba(139, 195, 74, 1)' };
   } else if (score >= 40) {
-    // Medium consistency - yellow/orange
-    return { start: 'rgba(255, 193, 7, 0.8)', end: 'rgba(251, 140, 0, 0.9)' };
+    // Medium consistency - bright yellow/orange
+    return { start: 'rgba(255, 213, 79, 1)', end: 'rgba(255, 179, 0, 1)' };
   } else if (score >= 20) {
-    // Low-medium consistency - orange
-    return { start: 'rgba(255, 152, 0, 0.8)', end: 'rgba(245, 124, 0, 0.9)' };
+    // Low-medium consistency - bright orange
+    return { start: 'rgba(255, 183, 77, 1)', end: 'rgba(255, 152, 0, 1)' };
   } else {
-    // Low consistency - red
-    return { start: 'rgba(244, 67, 54, 0.8)', end: 'rgba(211, 47, 47, 0.9)' };
+    // Low consistency - bright red
+    return { start: 'rgba(255, 138, 128, 1)', end: 'rgba(244, 67, 54, 1)' };
   }
 }

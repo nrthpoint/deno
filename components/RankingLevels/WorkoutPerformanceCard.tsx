@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
@@ -54,11 +55,21 @@ export const WorkoutPerformanceCard: React.FC<WorkoutPerformanceCardProps> = ({
 
   if (error || !ranking) {
     return (
-      <Card style={styles.errorCard}>
-        <Text style={styles.errorText}>
-          {error?.message || 'Unable to load your performance data'}
-        </Text>
-      </Card>
+      <Pressable onPress={() => router.push('/(tabs)/settings')}>
+        <Card style={styles.yourPerformanceCard}>
+          <View style={styles.performanceInfo}>
+            <MaterialCommunityIcons
+              name="alert-circle-outline"
+              size={24}
+              color={colors.neutral}
+              style={styles.performanceIcon}
+            />
+            <Text style={styles.levelText}>{error?.message || 'Unable to load'}</Text>
+            {/*             <Text style={styles.subheading}>Tap to update settings</Text>
+             */}
+          </View>
+        </Card>
+      </Pressable>
     );
   }
 
@@ -91,28 +102,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     color: colors.neutral,
   },
-  errorCard: {
-    backgroundColor: 'transparent',
-    marginTop: 20,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-  },
   loadingContainer: {
     alignItems: 'center',
     paddingVertical: 40,
     paddingLeft: 10,
   },
-  errorText: {
-    marginVertical: 10,
-    fontSize: 12,
-    fontFamily: LatoFonts.regular,
-    color: colors.neutral,
-    textAlign: 'center',
-    lineHeight: 18,
-  },
   performanceInfo: {
     flexDirection: 'column',
     alignItems: 'center',
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   levelText: {
     textTransform: 'uppercase',
@@ -122,6 +121,7 @@ const styles = StyleSheet.create({
     color: colors.background,
     marginTop: 4,
     marginBottom: 4,
+    textAlign: 'center',
   },
   performanceIcon: {
     marginBottom: 14,
@@ -135,5 +135,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontFamily: LatoFonts.regular,
     color: colors.background,
+    textAlign: 'center',
   },
 });

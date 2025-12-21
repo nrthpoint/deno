@@ -65,7 +65,9 @@ export function calculateConsistency(values: number[]): ConsistencyResult {
   // Convert coefficient of variation to consistency score
   // CV close to 0 = high consistency (score near 100)
   // CV high = low consistency (score near 0)
-  const score = clamp(100 - coefficientOfVariation * 100, 0, 100);
+  // Using exponential decay to make scores more discriminating
+  // This spreads out the scores more than a linear scale
+  const score = clamp(100 * Math.exp(-10 * coefficientOfVariation), 0, 100);
 
   return {
     score: Math.round(score),

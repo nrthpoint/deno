@@ -4,7 +4,7 @@ import { ModalProvider } from '@/components/Modal/Modal';
 import { ModalProps } from '@/components/Modal/Modal.types';
 import { CircularProgress } from '@/components/Stats/CircularProgress';
 import { useGroupStats } from '@/context/GroupStatsContext';
-import { getBackgroundOpacity, getConsistencyColors } from '@/utils/consistencyColors';
+import { getConsistencyColors } from '@/utils/consistencyColors';
 
 interface ConsistencyScoreProps extends ModalProps {
   label: string;
@@ -31,7 +31,7 @@ export const ConsistencyScore = ({ label, ...modalProps }: ConsistencyScoreProps
         percentage={score}
         label={label}
         gradientColors={consistencyColors}
-        gradientOpacity={getBackgroundOpacity(score)}
+        gradientOpacity={1}
       />
     </ModalProvider>
   );

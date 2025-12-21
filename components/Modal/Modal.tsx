@@ -116,7 +116,7 @@ export const styles = StyleSheet.create({
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 10,
   },
   modalTitle: {
     ...getLatoFont('bold'),

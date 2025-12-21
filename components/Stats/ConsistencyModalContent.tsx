@@ -1,6 +1,5 @@
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { colors } from '@/config/colors';
@@ -42,48 +41,19 @@ const WorkoutRow: React.FC<WorkoutRowProps> = ({ workout, label, value, onPress 
 export const ConsistencyModalContent: React.FC = () => {
   const { group } = useGroupStats();
   const { setSelectedWorkouts } = useWorkout();
-  const [isMethodExpanded, setIsMethodExpanded] = useState(false);
 
-  // Find the workouts with lowest and highest variation from the mean
+  // For consistency display, show the actual best/worst workouts from the group
+  // which represent the extremes of the consistency metric being measured
   const { lowestVariation, highestVariation } = useMemo(() => {
     if (!group || group.runs.length === 0) {
       return { lowestVariation: null, highestVariation: null };
     }
 
-    const mean = group.consistencyMean;
-    const workoutsWithVariation = group.runs.map((workout) => {
-      let value: number;
-      switch (group.type) {
-        case 'pace':
-          value = workout.distance.quantity;
-          break;
-        case 'distance':
-        case 'elevation':
-          value = workout.duration.quantity;
-          break;
-        case 'duration':
-          value = workout.distance.quantity;
-          break;
-        case 'temperature':
-        case 'humidity':
-          value = workout.pace.quantity;
-          break;
-        default:
-          value = workout.pace.quantity;
-      }
-
-      return {
-        workout,
-        value,
-        deviation: Math.abs(value - mean),
-      };
-    });
-
-    workoutsWithVariation.sort((a, b) => a.deviation - b.deviation);
-
+    // Use the group's highlight (best) and worst properties
+    // which already represent the extremes of the metric being measured
     return {
-      lowestVariation: workoutsWithVariation[0]?.workout || null,
-      highestVariation: workoutsWithVariation[workoutsWithVariation.length - 1]?.workout || null,
+      lowestVariation: group.highlight,
+      highestVariation: group.worst,
     };
   }, [group]);
 
@@ -178,30 +148,6 @@ export const ConsistencyModalContent: React.FC = () => {
       <View style={styles.container}>
         <Text style={styles.description}>{getConsistencyExplanation()}</Text>
 
-        <TouchableOpacity
-          style={styles.methodSection}
-          onPress={() => setIsMethodExpanded(!isMethodExpanded)}
-          activeOpacity={0.7}
-        >
-          <View style={{ padding: 20 }}>
-            <View style={styles.methodHeader}>
-              <Text style={styles.sectionTitle}>How It&apos;s Calculated</Text>
-              <Ionicons
-                name={isMethodExpanded ? 'chevron-up' : 'chevron-down'}
-                size={18}
-                color={colors.neutral}
-              />
-            </View>
-            {isMethodExpanded && (
-              <Text style={styles.methodText}>
-                The consistency score uses the coefficient of variation (CV), which is the standard
-                deviation divided by the mean. A lower CV indicates more consistent performance. The
-                score is calculated as: 100 - (CV × 100), clamped between 0-100.
-              </Text>
-            )}
-          </View>
-        </TouchableOpacity>
-
         <View style={styles.statsSection}>
           <Text style={styles.sectionTitle}>Statistics</Text>
           <View style={styles.statRow}>
@@ -221,9 +167,6 @@ export const ConsistencyModalContent: React.FC = () => {
         </View>
 
         <View style={styles.workoutsSection}>
-          <Text style={styles.sectionTitle}>Example Workouts</Text>
-          <Text style={styles.tapHint}>Tap on a workout to view details</Text>
-
           {lowestVariation && (
             <WorkoutRow
               workout={lowestVariation}
@@ -261,27 +204,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     lineHeight: 22,
   },
-  methodSection: {
-    marginBottom: 20,
-    backgroundColor: colors.background,
-    borderRadius: 8,
-  },
-  methodHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  methodText: {
-    ...getLatoFont('regular'),
-    fontSize: 13,
-    color: colors.lightGray,
-    lineHeight: 20,
-    marginTop: 8,
-  },
   statsSection: {
     marginBottom: 24,
   },
   sectionTitle: {
     ...uppercase,
+    fontSize: 14,
     color: colors.neutral,
   },
   statRow: {
@@ -302,6 +230,9 @@ const styles = StyleSheet.create({
     color: colors.neutral,
   },
   workoutsSection: {
+    borderTopWidth: 1,
+    borderTopColor: '#c3c3c31a',
+    paddingTop: 14,
     marginBottom: 16,
   },
   workoutRow: {
@@ -310,7 +241,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderRadius: 8,
-    //paddingVertical: 16,
     marginTop: 12,
     marginBottom: 8,
   },
@@ -328,19 +258,10 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: colors.lightGray,
   },
-  workoutValue: {
-    //marginLeft: 16,
-  },
+  workoutValue: {},
   workoutValueText: {
     ...uppercase,
     ...getLatoFont('bold'),
     color: colors.neutral,
-  },
-  tapHint: {
-    ...getLatoFont('regular'),
-    fontSize: 11,
-    color: colors.lightGray,
-    fontStyle: 'italic',
-    marginTop: 8,
   },
 });

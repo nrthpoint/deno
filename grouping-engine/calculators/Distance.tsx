@@ -8,7 +8,7 @@ import { generateWorkoutPrediction } from '@/utils/prediction';
 import { getAbsoluteDifference } from '@/utils/quantity';
 import { formatDaysAgo } from '@/utils/time';
 import { generateTimeLabel } from '@/utils/timeLabels';
-import { findFastestRun, findSlowestRun } from '@/utils/workout';
+import { findLongestRun, findShortestDurationRun } from '@/utils/workout';
 
 /**
  * Distance-based group statistics calculator
@@ -21,8 +21,10 @@ export class DistanceGroupStatCalculator extends BaseGroupStatCalculator {
   ): void {
     super.calculateStats(group, samples, timeRangeInDays);
 
-    group.highlight = findFastestRun(group.runs);
-    group.worst = findSlowestRun(group.runs);
+    // For distance grouping, highlight is the fastest time (shortest duration)
+    // and worst is the slowest time (longest duration)
+    group.highlight = findShortestDurationRun(group.runs);
+    group.worst = findLongestRun(group.runs);
 
     group.totalVariation = getAbsoluteDifference(group.worst.duration, group.highlight.duration);
     group.variantDistribution = group.runs.map((run) => run.duration.quantity);
