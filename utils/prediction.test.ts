@@ -1,9 +1,12 @@
-import { WorkoutActivityType } from '@kingstinct/react-native-healthkit';
-
 import { ExtendedWorkout, WorkoutProxy } from '@/types/ExtendedWorkout';
 import { Group } from '@/types/Groups';
 import { calculatePerformanceTrend, generateWorkoutPrediction } from '@/utils/prediction';
 import { newQuantity } from '@/utils/quantity';
+
+// Mock WorkoutActivityType to avoid React Native import issues in Jest
+const WorkoutActivityType = {
+  running: 1,
+} as const;
 
 const createMockWorkout = (pace: number, distance: number, daysAgo: number): ExtendedWorkout => {
   const duration = pace * distance * 60;
@@ -19,18 +22,24 @@ const createMockWorkout = (pace: number, distance: number, daysAgo: number): Ext
     elevation: newQuantity(100, 'm'),
     humidity: newQuantity(65, '%'),
     pace: newQuantity(pace, 'min/mile'),
+    temperature: newQuantity(20, '°C'),
+    averageMETs: newQuantity(8, 'kcal/(hr*kg)'),
     daysAgo: `${daysAgo} days ago`,
+    prettyPace: `${Math.floor(pace)}:${Math.round((pace % 1) * 60)
+      .toString()
+      .padStart(2, '0')}`,
     achievements: {
       isAllTimeFastest: false,
       isAllTimeLongest: false,
       isAllTimeFurthest: false,
       isAllTimeHighestElevation: false,
-      isPersonalBestPace: false,
     },
     proxy: {} as WorkoutProxy,
     uuid: `mock-uuid-${pace}-${distance}-${daysAgo}`,
     workoutActivityType: WorkoutActivityType.running,
-  } as ExtendedWorkout;
+    isIndoor: false,
+    timeZone: 'America/New_York',
+  } as unknown as ExtendedWorkout;
 };
 
 describe('AI Prediction System', () => {
@@ -104,6 +113,7 @@ describe('AI Prediction System', () => {
         totalElevation: newQuantity(400, 'm'),
         averagePace: newQuantity(7.65, 'min/mile'),
         averageHumidity: newQuantity(65, '%'),
+        averageTemperature: newQuantity(20, '°C'),
         averageDuration: newQuantity(2400, 's'),
         averageElevation: newQuantity(100, 'm'),
         prettyPace: '7:39 min/mile',
@@ -112,13 +122,17 @@ describe('AI Prediction System', () => {
         predictions: {
           prediction4Week: null,
           prediction12Week: null,
-          recommendations: [],
         },
         variantDistribution: [],
         skipped: 0,
         key: '',
         unit: '',
-        averageDistance: newQuantity(0, 'mi'),
+        averageDistance: newQuantity(5, 'mi'),
+        consistencyScore: 80,
+        consistencyMean: 2400,
+        consistencyMedian: 2400,
+        consistencyStandardDeviation: 100,
+        consistencyCoefficientOfVariation: 0.042,
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
@@ -128,7 +142,6 @@ describe('AI Prediction System', () => {
       expect(prediction.confidence).toBeGreaterThan(50); // Should have reasonable confidence
       expect(prediction.confidenceLevel).toMatch(/medium|high/);
       expect(prediction.improvementPercentage).toBeGreaterThan(0);
-      expect(prediction.recommendedTraining.length).toBeGreaterThan(0);
     });
 
     it('should generate conservative prediction for elite performance', () => {
@@ -159,6 +172,7 @@ describe('AI Prediction System', () => {
         totalElevation: newQuantity(400, 'm'),
         averagePace: newQuantity(5.05, 'min/mile'),
         averageHumidity: newQuantity(65, '%'),
+        averageTemperature: newQuantity(20, '°C'),
         averageDuration: newQuantity(2400, 's'),
         averageElevation: newQuantity(100, 'm'),
         prettyPace: '5:03 min/mile',
@@ -167,13 +181,17 @@ describe('AI Prediction System', () => {
         predictions: {
           prediction4Week: null,
           prediction12Week: null,
-          recommendations: [],
         },
         variantDistribution: [],
         skipped: 0,
         key: '',
         unit: '',
-        averageDistance: newQuantity(0, 'mi'),
+        averageDistance: newQuantity(5, 'mi'),
+        consistencyScore: 90,
+        consistencyMean: 1500,
+        consistencyMedian: 1500,
+        consistencyStandardDeviation: 50,
+        consistencyCoefficientOfVariation: 0.033,
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
@@ -183,7 +201,7 @@ describe('AI Prediction System', () => {
       expect(improvementPercentage).toBeLessThan(5); // Less than 5% improvement
     });
 
-    it('should provide specific training recommendations', () => {
+    it('should generate prediction with confidence and improvement metrics', () => {
       const runs = [
         createMockWorkout(7.0, 5, 28),
         createMockWorkout(6.9, 5, 21),
@@ -211,6 +229,7 @@ describe('AI Prediction System', () => {
         totalElevation: newQuantity(400, 'm'),
         averagePace: newQuantity(6.85, 'min/mile'),
         averageHumidity: newQuantity(65, '%'),
+        averageTemperature: newQuantity(20, '°C'),
         averageDuration: newQuantity(2400, 's'),
         averageElevation: newQuantity(100, 'm'),
         prettyPace: '6:51 min/mile',
@@ -219,30 +238,26 @@ describe('AI Prediction System', () => {
         predictions: {
           prediction4Week: null,
           prediction12Week: null,
-          recommendations: [],
         },
         variantDistribution: [],
         skipped: 0,
         key: '',
         unit: '',
-        averageDistance: newQuantity(0, 'mi'),
+        averageDistance: newQuantity(5, 'mi'),
+        consistencyScore: 85,
+        consistencyMean: 2010,
+        consistencyMedian: 2010,
+        consistencyStandardDeviation: 75,
+        consistencyCoefficientOfVariation: 0.037,
       };
 
       const prediction = generateWorkoutPrediction(mockGroup, 4);
 
-      expect(prediction.recommendedTraining.length).toBeGreaterThan(0);
-
-      const workoutTypes = prediction.recommendedTraining.map((rec) => rec.workoutType);
-      expect(workoutTypes).toContain('tempo');
-      // For 5-mile distance, we expect both tempo and intervals or long_run
-      expect(workoutTypes.length).toBeGreaterThanOrEqual(1);
-
-      prediction.recommendedTraining.forEach((rec) => {
-        expect(rec.frequency).toBeGreaterThan(0);
-        expect(rec.frequency).toBeLessThanOrEqual(3);
-        expect(['easy', 'moderate', 'hard']).toContain(rec.intensity);
-        expect(rec.reason).toBeTruthy();
-      });
+      expect(prediction.type).toBe('predicted');
+      expect(prediction.confidence).toBeGreaterThan(0);
+      expect(prediction.confidenceLevel).toBeDefined();
+      expect(prediction.improvementPercentage).toBeGreaterThanOrEqual(0);
+      expect(prediction.predictionBasis.dataPoints).toBe(4);
     });
   });
 

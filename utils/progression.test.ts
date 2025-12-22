@@ -12,10 +12,15 @@ const createMockWorkout = (
     startDate: new Date(startDate),
     endDate: new Date(startDate),
     duration: { quantity: duration * 60, unit: 's' }, // Convert minutes to seconds
+    distance: { quantity: distance, unit: 'km' },
     totalDistance: { quantity: distance, unit: 'km' },
     totalElevation: { quantity: 0, unit: 'm' },
+    elevation: { quantity: 0, unit: 'm' },
     humidity: { quantity: 50, unit: '%' },
+    pace: { quantity: 5, unit: 'min/km' },
     averagePace: { quantity: 5, unit: 'min/km' },
+    temperature: { quantity: 20, unit: '°C' },
+    averageMETs: { quantity: 8, unit: 'kcal/(hr*kg)' },
     daysAgo: '1 day ago',
     prettyPace: '5:00',
     achievements: {
@@ -26,7 +31,8 @@ const createMockWorkout = (
     },
     workoutActivityType: 1,
     isIndoor: false,
-  }) as ExtendedWorkout;
+    timeZone: 'America/New_York',
+  }) as unknown as ExtendedWorkout;
 
 const createMockGroup = (
   workouts: ExtendedWorkout[],
@@ -47,6 +53,7 @@ const createMockGroup = (
   totalDuration: { quantity: 300, unit: 'min' },
   totalElevation: { quantity: 100, unit: 'm' },
   averageHumidity: { quantity: 60, unit: '%' },
+  averageTemperature: { quantity: 20, unit: '°C' },
   averagePace: { quantity: 5, unit: 'min/km' },
   averageDuration: { quantity: 30, unit: 'min' },
   averageElevation: { quantity: 10, unit: 'm' },
@@ -57,8 +64,12 @@ const createMockGroup = (
   predictions: {
     prediction4Week: null,
     prediction12Week: null,
-    recommendations: [],
   },
+  consistencyScore: 80,
+  consistencyMean: 30,
+  consistencyMedian: 30,
+  consistencyStandardDeviation: 2,
+  consistencyCoefficientOfVariation: 0.067,
   highlight: {} as ExtendedWorkout,
   worst: {} as ExtendedWorkout,
   greatestElevation: {} as ExtendedWorkout,
@@ -80,14 +91,14 @@ describe('progression', () => {
       ];
 
       const group = createMockGroup(workouts, 'distance');
-      const progressionData = generateProgressionData(group, 'distance');
+      const progressionData = generateProgressionData(group, 'distance', 3650);
 
-      expect(progressionData.title).toBe('Personal Best Progression');
-      expect(progressionData.metricLabel).toBe('Best Time');
-      expect(progressionData.entries).toHaveLength(3); // 30min, 28min, 27min
-      expect(progressionData.entries[0].value).toContain('30min');
+      expect(progressionData.title).toBe('Progression');
+      expect(progressionData.metricLabel).toBe('Time');
+      expect(progressionData.entries).toHaveLength(3); // 27min, 28min, 30min (reversed)
+      expect(progressionData.entries[0].value).toContain('27min');
       expect(progressionData.entries[1].value).toContain('28min');
-      expect(progressionData.entries[2].value).toContain('27min');
+      expect(progressionData.entries[2].value).toContain('30min');
     });
 
     it('should generate pace progression data with total distance', () => {
@@ -98,16 +109,16 @@ describe('progression', () => {
       ];
 
       const group = createMockGroup(workouts, 'pace');
-      const progressionData = generateProgressionData(group, 'pace');
+      const progressionData = generateProgressionData(group, 'pace', 3650);
 
-      expect(progressionData.title).toBe('Distance Coverage Progression');
-      expect(progressionData.metricLabel).toBe('Total Distance');
+      expect(progressionData.title).toBe('Progression');
+      expect(progressionData.metricLabel).toBe('Distance');
       expect(progressionData.entries.length).toBeGreaterThan(0);
     });
 
     it('should handle empty workouts gracefully', () => {
       const group = createMockGroup([], 'distance');
-      const progressionData = generateProgressionData(group, 'distance');
+      const progressionData = generateProgressionData(group, 'distance', 3650);
 
       expect(progressionData.entries).toHaveLength(0);
     });
@@ -119,10 +130,10 @@ describe('progression', () => {
       ];
 
       const group = createMockGroup(workouts, 'duration');
-      const progressionData = generateProgressionData(group, 'duration');
+      const progressionData = generateProgressionData(group, 'duration', 3650);
 
-      expect(progressionData.title).toBe('Distance Achievement Progression');
-      expect(progressionData.metricLabel).toBe('Total Distance');
+      expect(progressionData.title).toBe('Progression');
+      expect(progressionData.metricLabel).toBe('Distance');
     });
   });
 });

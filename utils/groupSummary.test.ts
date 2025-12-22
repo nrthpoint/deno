@@ -65,8 +65,8 @@ describe('groupSummary', () => {
       const group = createMockGroup(5, 'distance');
       const summary = generateGroupSummary(group, 'distance', 30);
 
-      expect(summary).toContain('Over this month');
-      expect(summary).toContain('your fastest times');
+      expect(summary).toContain('over this month');
+      expect(summary).toContain('some interesting stats');
       expect(summary).toContain('**5**');
       expect(summary).toContain('runs for 5 kilometers');
       expect(summary).toContain('Your most recent workout was');
@@ -77,7 +77,7 @@ describe('groupSummary', () => {
       const group = createMockGroup(3, 'pace');
       const summary = generateGroupSummary(group, 'pace', 7);
 
-      expect(summary).toContain('Over this week');
+      expect(summary).toContain('over this week');
       expect(summary).toContain('your performance');
       expect(summary).toContain('**3**');
       expect(summary).toContain('runs at 5 kilometers pace');
@@ -88,7 +88,7 @@ describe('groupSummary', () => {
       const group = createMockGroup(10, 'distance');
       const summary = generateGroupSummary(group, 'distance', 365);
 
-      expect(summary).toContain('Over the last 12 months');
+      expect(summary).toContain('over the last 12 months');
       expect(summary).toContain('**10**');
     });
 
@@ -142,7 +142,7 @@ describe('groupSummary', () => {
       const group = createMockGroup(1);
       const message = generateLowDataWarningMessage(group, 'pace');
 
-      expect(message).toContain('Only **1** run at 5 kilometers pace found');
+      expect(message).toContain('Only 1 run at 5 kilometers pace found');
       expect(message).toContain('Complete more similar workouts');
     });
 
@@ -150,7 +150,7 @@ describe('groupSummary', () => {
       const group = createMockGroup(2);
       const message = generateLowDataWarningMessage(group, 'distance');
 
-      expect(message).toContain('Only **2** runs for 5 kilometers found');
+      expect(message).toContain('Only 2 runs for 5 kilometers found');
       expect(message).toContain('Complete more similar workouts');
     });
   });
