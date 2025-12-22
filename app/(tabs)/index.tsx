@@ -12,7 +12,6 @@ import {
   GroupTypeBottomSheetRef,
   GroupTypeBottomSheetWithRef,
 } from '@/components/GroupTypeBottomSheet/GroupTypeBottomSheet';
-import { OTAUpdatePrompt } from '@/components/OTAUpdate';
 import { TimeRangeModal } from '@/components/TimeRangeModal/TimeRangeModal';
 import { TutorialDebugger } from '@/components/Tutorial/Debug';
 import { TutorialOverlay } from '@/components/Tutorial/TutorialOverlay';
@@ -182,8 +181,6 @@ export default function Index() {
 
   return (
     <ThemeProvider groupType={groupType}>
-      {/* OTA Update Prompt */}
-      <OTAUpdatePrompt autoDownload={false} />
       {/* No Data Overlay */}
       {noData && (
         <View style={styles.noDataOverlay}>

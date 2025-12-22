@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
+import { OTAUpdatePrompt } from '@/components/OTAUpdate';
 import { TabBar } from '@/components/TabBar/TabBar';
 import { colors } from '@/config/colors';
 import { useGroupStats } from '@/context/GroupStatsContext';
@@ -59,6 +60,9 @@ export const GroupStats: React.FC = () => {
 
   return (
     <View style={styles.statsContainer}>
+      {/* OTA Update Prompt */}
+      <OTAUpdatePrompt autoDownload={false} />
+
       <TabBar
         tabs={groupStatsTabs}
         activeTabId={activeTab}
