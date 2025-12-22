@@ -28,7 +28,7 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }) =>
   );
   const [timeRangeInDays, setTimeRangeState] = useState<TimeRange>(30); // Default to 1 month
   const [age, setAgeState] = useState<number | null>(null);
-  const [gender, setGenderState] = useState<'Male' | 'Female' | 'Other' | null>(null);
+  const [gender, setGenderState] = useState<'Male' | 'Female' | 'Other' | null>('Male');
   const [advancedGroupingEnabled, setAdvancedGroupingEnabledState] = useState<boolean>(false);
 
   useEffect(() => {
