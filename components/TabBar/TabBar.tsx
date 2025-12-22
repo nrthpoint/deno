@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     fontWeight: '700',
-    color: colors.surface,
+    color: colors.neutral,
   },
   activeTabTextTransparent: {
     color: '#FFFFFF',
