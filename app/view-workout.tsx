@@ -18,7 +18,6 @@ import { useSettings } from '@/context/SettingsContext';
 import { useWorkout } from '@/context/Workout';
 import { usePageView } from '@/hooks/usePageView';
 import { formatPace } from '@/utils/pace';
-import { subheading } from '@/utils/text';
 import { formatDuration, formatTime, formatWorkoutDate } from '@/utils/time';
 
 export default function ViewWorkoutScreen() {
@@ -198,8 +197,11 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   workoutDate: {
-    ...subheading,
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
+    fontFamily: LatoFonts.regular,
     color: colors.lightGray,
+    fontSize: 12,
     marginTop: 10,
     marginBottom: 0,
   },

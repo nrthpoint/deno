@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -26,12 +25,6 @@ export const WorkoutStatsTable: React.FC<WorkoutStatsTableProps> = ({ workout })
     <View style={styles.container}>
       <View style={styles.statsContainer}>
         <View style={styles.sectionHeaderContainer}>
-          <LinearGradient
-            colors={['#6291FF', '#4F75E5']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.sectionHeaderGradient}
-          />
           <View style={styles.sectionHeader}>
             <View style={styles.iconCircle}>
               <Ionicons
@@ -127,6 +120,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: colors.surface,
     overflow: 'hidden',
+    marginTop: 8,
   },
   statsContainer: {
     overflow: 'hidden',
@@ -135,17 +129,11 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
   },
-  sectionHeaderGradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: colors.accent,
   },
   iconCircle: {
     backgroundColor: colors.background,
@@ -156,7 +144,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 13,
     fontFamily: LatoFonts.bold,
-    color: colors.background,
+    //color: colors.background,
     textTransform: 'uppercase',
     letterSpacing: 1.5,
   },

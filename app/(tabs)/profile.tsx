@@ -122,35 +122,6 @@ export default function ProfileScreen() {
               onPress={() => handleStatPress(cachedStats.profileStats.shortestWorkout.workout)}
               color="#2196f3"
             />
-
-            <Text style={styles.trendsTitle}>Weekly Trends</Text>
-
-            <ProfileStatCard
-              icon="calendar"
-              title="Fastest Day"
-              value={cachedStats.weeklyTrends.fastestDay.dayName}
-              subtitle={`${cachedStats.weeklyTrends.fastestDay.count} runs`}
-              onPress={() => {}}
-              color="#00e676"
-            />
-
-            <ProfileStatCard
-              icon="calendar"
-              title="Longest Day"
-              value={cachedStats.weeklyTrends.longestDay.dayName}
-              subtitle={`${cachedStats.weeklyTrends.longestDay.count} runs`}
-              onPress={() => {}}
-              color="#ff9800"
-            />
-
-            <ProfileStatCard
-              icon="calendar"
-              title="Highest Elevation Day"
-              value={cachedStats.weeklyTrends.highestElevationDay.dayName}
-              subtitle={`${cachedStats.weeklyTrends.highestElevationDay.count} runs`}
-              onPress={() => {}}
-              color="#6cea12ff"
-            />
           </>
         ) : (
           <View style={styles.noDataContainer}>
@@ -229,13 +200,5 @@ const styles = StyleSheet.create({
     color: colors.lightGray,
     marginTop: 8,
     textAlign: 'center',
-  },
-  trendsTitle: {
-    fontSize: 24,
-    fontFamily: LatoFonts.bold,
-    color: colors.neutral,
-    marginTop: 32,
-    marginBottom: 16,
-    textAlign: 'left',
   },
 });
