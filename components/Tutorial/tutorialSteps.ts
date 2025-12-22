@@ -108,6 +108,20 @@ export const tutorialSteps: TutorialStep[] = [
     position: 'bottom',
   },
   {
+    // add a manual workout.
+    id: 'add_workout',
+    title: 'Add Manual Workouts',
+    description:
+      'Tap the "+" button to manually add workouts that may not have been automatically recorded. This ensures all your training is tracked in one place.',
+    targetElement: {
+      x: 268,
+      y: 76,
+      width: 44,
+      height: 44,
+    },
+    position: 'top',
+  },
+  {
     id: 'complete',
     title: "You're All Set!",
     description:

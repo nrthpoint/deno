@@ -55,13 +55,8 @@ export default function Index() {
     startTutorial,
   } = useTutorialContext();
 
-  console.log('tutorialVisible', tutorialVisible);
-
-  // Tutorial debug mode
   const { isDebugEnabled } = useTutorialDebug();
   const [showDebugger, setShowDebugger] = useState(false);
-
-  console.log('__DEV__', __DEV__);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const groupTypeBottomSheetRef = useRef<GroupTypeBottomSheetRef>(null);
@@ -280,8 +275,7 @@ export default function Index() {
           onComplete={completeTutorial}
         />
       )}
-      {/* Tutorial Debug Button (dev-only) */}
-      {console.log('isDebugEnabled', isDebugEnabled)}
+
       {__DEV__ && isDebugEnabled && !tutorialVisible && (
         <>
           <TouchableOpacity
@@ -300,8 +294,7 @@ export default function Index() {
           </TouchableOpacity>
         </>
       )}
-      {console.log('__DEV__, showDebugger', __DEV__, showDebugger)}
-      {/* Tutorial Debugger (dev-only) */}
+
       {__DEV__ && showDebugger && (
         <TutorialDebugger
           visible={showDebugger}

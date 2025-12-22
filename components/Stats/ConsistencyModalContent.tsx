@@ -127,11 +127,10 @@ export const ConsistencyModalContent: React.FC = () => {
       case 'pace':
         return { lowest: 'Shortest Run', highest: 'Longest Run' };
       case 'distance':
-        return { lowest: 'Quickest Run', highest: 'Longest Run' };
+      case 'elevation':
+        return { lowest: 'Fastest Run', highest: 'Slowest Run' };
       case 'duration':
         return { lowest: 'Shortest Run', highest: 'Furthest Run' };
-      case 'elevation':
-        return { lowest: 'Quickest Run', highest: 'Longest Run' };
       case 'temperature':
       case 'humidity':
         return { lowest: 'Fastest Run', highest: 'Slowest Run' };
@@ -201,11 +200,14 @@ const styles = StyleSheet.create({
     ...getLatoFont('regular'),
     fontSize: 14,
     color: colors.neutral,
-    marginBottom: 20,
+    marginBottom: 24,
     lineHeight: 22,
   },
   statsSection: {
-    marginBottom: 24,
+    borderTopWidth: 1,
+    borderTopColor: '#c3c3c31a',
+    paddingTop: 24,
+    marginBottom: 10,
   },
   sectionTitle: {
     ...uppercase,
@@ -226,13 +228,10 @@ const styles = StyleSheet.create({
   },
   statValue: {
     ...getLatoFont('bold'),
-    fontSize: 14,
+    ...uppercase,
     color: colors.neutral,
   },
   workoutsSection: {
-    borderTopWidth: 1,
-    borderTopColor: '#c3c3c31a',
-    paddingTop: 14,
     marginBottom: 16,
   },
   workoutRow: {

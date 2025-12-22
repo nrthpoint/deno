@@ -45,18 +45,18 @@ export const GroupSummaryStats: React.FC<GroupSummaryStatsProps> = ({
       <ThemedGradient style={styles.gradient} />
 
       <View style={styles.cardItem}>
-        <WorkoutPerformanceCard
-          workout={group.highlight}
-          onPress={handleRankingPress}
-        />
-      </View>
-
-      <View style={styles.cardItem}>
         <AirportStatCard
           icon="run-fast"
           label={runCount === 1 ? 'Run' : 'Runs'}
           value={runCount}
           onPress={onViewAllWorkouts}
+        />
+      </View>
+
+      <View style={styles.cardItem}>
+        <WorkoutPerformanceCard
+          workout={group.highlight}
+          onPress={handleRankingPress}
         />
       </View>
 

@@ -153,7 +153,7 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
   },
 
   humidity: {
-    enabled: true,
+    enabled: false,
     useRange: true,
 
     backgroundColor: '#ced0de',
