@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
-    marginTop: 8,
+    marginTop: 20,
   },
   versionRow: {
     flexDirection: 'row',

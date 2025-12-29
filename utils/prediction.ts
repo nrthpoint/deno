@@ -248,9 +248,6 @@ export const generateWorkoutPrediction = (
   const predictedDurationMinutes = predictedPace * distance;
   const predictedDuration = predictedDurationMinutes * 60; // Convert to seconds
 
-  // Generate training recommendations
-  //const recommendations = generateTrainingRecommendations(group, trend, totalImprovement);
-
   const timeSpanDays =
     group.runs.length > 1
       ? differenceInDays(group.mostRecent.startDate, group.runs[0].startDate)

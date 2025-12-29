@@ -19,25 +19,6 @@ export const getLevelColor = (level: string): string => {
   }
 };
 
-/* export const getLevelIntensity = (level: string): number => {
-  switch (level.toLowerCase()) {
-    case 'wr':
-      return 0.9; // Maximum intensity for world record
-    case 'elite':
-      return 0.85; // Very high intensity for elite
-    case 'advanced':
-      return 0.8; // High intensity for advanced
-    case 'intermediate':
-      return 0.75; // Good intensity for intermediate
-    case 'novice':
-      return 0.7; // Moderate intensity for novice
-    case 'beginner':
-      return 0.65; // Lower intensity for beginner
-    default:
-      return 0.1;
-  }
-};
- */
 export const getRankingIcon = (level: string): keyof typeof MaterialCommunityIcons.glyphMap => {
   switch (level) {
     case 'WR':

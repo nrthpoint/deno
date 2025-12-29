@@ -5,7 +5,7 @@
   "scripts": {
     "prepare": "husky",
     "start": "expo start",
-    "sim": "expo run:ios --device 'iPhone Air'",
+    "sim": "expo run:ios",
     "device": "expo run:ios --device '00008150-001E51923C00401C'",
     "lint": "expo lint .",
     "lint:fix": "expo lint . --fix",

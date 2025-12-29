@@ -87,7 +87,7 @@ export const WorkoutPerformanceCard: React.FC<WorkoutPerformanceCardProps> = ({
             name={getRankingIcon(ranking.level)}
             size={24}
             color={colors.neutral}
-            style={[styles.performanceIcon /*, { backgroundColor: getLevelColor(ranking.level) }*/]}
+            style={[styles.performanceIcon]}
           />
           <Text style={styles.levelText}>{ranking.level}</Text>
           <Text style={styles.subheading}>Rank</Text>
