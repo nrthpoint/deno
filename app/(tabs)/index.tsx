@@ -1,5 +1,6 @@
+import { AuthorizationRequestStatus } from '@kingstinct/react-native-healthkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { IconButton, Text } from 'react-native-paper';
@@ -24,6 +25,7 @@ import { GroupStatsProvider } from '@/context/GroupStatsContext';
 import { useSettings } from '@/context/SettingsContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { useTutorialContext } from '@/context/TutorialContext';
+import { useWorkout } from '@/context/Workout';
 import { GROUPING_CONFIGS } from '@/grouping-engine/GroupingConfig';
 import { useGroupConfig } from '@/hooks/useGroupConfig';
 import { usePageView } from '@/hooks/usePageView';
@@ -33,6 +35,8 @@ import { subheading } from '@/utils/text';
 
 export default function Index() {
   usePageView({ screenName: SCREEN_NAMES.HOME });
+
+  const { authorizationStatus: workoutAuthStatus } = useWorkout();
 
   const {
     distanceUnit,
@@ -119,6 +123,11 @@ export default function Index() {
       }
     });
   }, [groupType, options]);
+
+  // Redirect to authorization screen if not authorized (after ALL hooks)
+  if (workoutAuthStatus !== AuthorizationRequestStatus.unnecessary) {
+    return <Redirect href="/authorization" />;
+  }
 
   // Persist selected option when it changes
   const handleSelectedOptionChange = (newOption: string) => {

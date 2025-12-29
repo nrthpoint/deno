@@ -1,3 +1,4 @@
+import { AuthorizationRequestStatus } from '@kingstinct/react-native-healthkit';
 import { Redirect } from 'expo-router';
 import { NativeTabs, Icon, Label } from 'expo-router/unstable-native-tabs';
 import { useFeatureFlag } from 'posthog-react-native';
@@ -5,8 +6,13 @@ import { useFeatureFlag } from 'posthog-react-native';
 import { useWorkout } from '@/context/Workout';
 
 export default function TabLayout() {
-  const { workouts } = useWorkout();
+  const { workouts, authorizationStatus } = useWorkout();
   const showTrends = useFeatureFlag('trends');
+
+  // Redirect to authorization if not authorized
+  if (authorizationStatus !== AuthorizationRequestStatus.unnecessary) {
+    return <Redirect href="/authorization" />;
+  }
 
   if (workouts.samples.length === 0) {
     return <Redirect href="/no-workouts" />;

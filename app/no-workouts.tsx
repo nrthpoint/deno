@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { AuthorizationRequestStatus } from '@kingstinct/react-native-healthkit';
 import { Redirect, router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -12,7 +13,12 @@ import { usePageView } from '@/hooks/usePageView';
 
 export default function NoWorkoutsScreen() {
   usePageView({ screenName: SCREEN_NAMES.NO_WORKOUTS });
-  const { workouts } = useWorkout();
+  const { workouts, authorizationStatus } = useWorkout();
+
+  // Redirect to authorization if not authorized
+  if (authorizationStatus !== AuthorizationRequestStatus.unnecessary) {
+    return <Redirect href="/authorization" />;
+  }
 
   if (workouts.samples.length > 0) {
     return <Redirect href="/(tabs)" />;

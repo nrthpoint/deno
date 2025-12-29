@@ -8,7 +8,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 
-import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { colors } from '@/config/colors';
 import { toastConfig } from '@/config/toast';
@@ -21,19 +20,10 @@ import { WorkoutAnalyticsProvider } from '@/context/WorkoutAnalytics';
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
-  const { authorizationStatus, requestAuthorization } = useWorkout();
+  const { authorizationStatus } = useWorkout();
 
   if (authorizationStatus === null || authorizationStatus === AuthorizationRequestStatus.unknown) {
     return <LoadingScreen message="Initializing..." />;
-  }
-
-  if (authorizationStatus !== AuthorizationRequestStatus.unnecessary) {
-    return (
-      <AuthorizationOverlay
-        authorizationStatus={authorizationStatus}
-        requestAuthorization={requestAuthorization}
-      />
-    );
   }
 
   return (
@@ -42,6 +32,12 @@ function AppContent() {
         headerShown: false,
       }}
     >
+      <Stack.Screen
+        name="authorization"
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stack.Screen
         name="(tabs)"
         options={{

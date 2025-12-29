@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LengthUnit } from '@kingstinct/react-native-healthkit';
-import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -66,36 +65,15 @@ export const WorkoutSplits: React.FC<WorkoutSplitsProps> = ({ workout, distanceU
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <LinearGradient
-          colors={['#6291FF', '#4F75E5']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.headerGradient}
-        />
         <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <View style={styles.iconCircle}>
-              <Ionicons
-                name="speedometer-outline"
-                size={20}
-                color={colors.neutral}
-              />
-            </View>
-            <Text style={styles.title}>Pace Breakdown</Text>
+          <View style={styles.iconCircle}>
+            <Ionicons
+              name="speedometer-outline"
+              size={20}
+              color={colors.neutral}
+            />
           </View>
-
-          {splits.length > 1 && (
-            <View style={styles.headerLegend}>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDot, styles.fastestDot]} />
-                <Text style={styles.legendText}>Fastest</Text>
-              </View>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendDot, styles.slowestDot]} />
-                <Text style={styles.legendText}>Slowest</Text>
-              </View>
-            </View>
-          )}
+          <Text style={styles.title}>Pace Breakdown</Text>
         </View>
       </View>
 
@@ -171,22 +149,11 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
   },
-  headerGradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     padding: 16,
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    backgroundColor: colors.accent,
   },
   iconCircle: {
     backgroundColor: colors.background,
@@ -197,13 +164,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 13,
     fontFamily: LatoFonts.bold,
-    color: colors.background,
     textTransform: 'uppercase',
     letterSpacing: 1.5,
-  },
-  headerLegend: {
-    flexDirection: 'row',
-    gap: 16,
   },
   tableContainer: {
     overflow: 'hidden',
@@ -282,29 +244,5 @@ const styles = StyleSheet.create({
   slowestText: {
     color: '#ff1744',
     fontFamily: LatoFonts.bold,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  legendDot: {
-    width: 20,
-    height: 20,
-    borderRadius: 6,
-    borderWidth: 7,
-    borderColor: colors.background,
-  },
-  fastestDot: {
-    backgroundColor: colors.tertiary,
-  },
-  slowestDot: {
-    backgroundColor: '#ff1744',
-  },
-  legendText: {
-    textTransform: 'uppercase',
-    fontSize: 10,
-    fontFamily: LatoFonts.bold,
-    color: colors.background,
   },
 });

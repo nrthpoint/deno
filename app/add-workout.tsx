@@ -6,7 +6,6 @@ import React, { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Text, TextInput, TouchableRipple } from 'react-native-paper';
 
-import { AuthorizationOverlay } from '@/components/AuthorizationOverlay';
 import { DateTimeModal } from '@/components/DateTimeModal/DateTimeModal';
 import { DurationModal } from '@/components/DurationModal/DurationModal';
 import { colors } from '@/config/colors';
@@ -45,7 +44,7 @@ export default function AddWorkoutScreen() {
   usePageView({ screenName: SCREEN_NAMES.ADD_WORKOUT });
   const posthog = usePostHog();
   const { activityType, distanceUnit } = useSettings();
-  const { requestAuthorization, authorizationStatus, saveWorkout } = useWorkout();
+  const { saveWorkout } = useWorkout();
 
   const [distance, setDistance] = useState('');
   const [duration, setDuration] = useState('');
@@ -331,11 +330,6 @@ export default function AddWorkoutScreen() {
           </Button>
         </View>
       </ScrollView>
-
-      <AuthorizationOverlay
-        authorizationStatus={authorizationStatus}
-        requestAuthorization={requestAuthorization}
-      />
     </>
   );
 }
