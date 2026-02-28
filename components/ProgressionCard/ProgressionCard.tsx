@@ -143,7 +143,7 @@ export const ProgressionCard: React.FC<ProgressionCardProps> = ({ entries, metri
       <View style={styles.spacerCell}></View>
       <Text style={styles.headerCell}>{metricLabel}</Text>
       <Text style={styles.headerCell}>Distance</Text>
-      <Text style={styles.headerCell}>Difference</Text>
+      <Text style={styles.headerCell}>Diff.</Text>
     </View>
   );
 

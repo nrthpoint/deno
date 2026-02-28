@@ -16,6 +16,7 @@ export default function NoWorkoutsScreen() {
   const { workouts, authorizationStatus } = useWorkout();
 
   // Redirect to authorization if not authorized
+  // Only show "no workouts" screen when explicitly authorized but no data exists
   if (authorizationStatus !== AuthorizationRequestStatus.unnecessary) {
     return <Redirect href="/authorization" />;
   }

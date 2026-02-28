@@ -37,7 +37,7 @@ export const ComparisonHeader: React.FC<ComparisonHeaderProps> = ({
 
       {ranking?.distanceDifference && (
         <View style={styles.differenceContainer}>
-          <Text style={styles.differenceLabel}>Distance Difference:</Text>
+          <Text style={styles.differenceLabel}>Distance Diff:</Text>
           <Text style={styles.differenceValue}>
             {formatDistanceDifference(
               ranking.distanceDifference.quantity,

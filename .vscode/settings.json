@@ -11,5 +11,6 @@
     "Pressable"
   ],
   "typescript.preferences.importModuleSpecifier": "non-relative",
-  "javascript.preferences.importModuleSpecifier": "non-relative"
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "snyk.advanced.autoSelectOrganization": true
 }

@@ -75,12 +75,20 @@ export const WorkoutProvider = ({ children }: { children: ReactNode }) => {
       dispatch({ type: WORKOUT_ACTIONS.SET_LOADING, queryKey });
 
       try {
+        // Only proceed with fetching if authorization is granted
+        // Don't fetch if status is null/unknown (not initialized) or explicitly denied
         if (_authorizationStatus !== AuthorizationRequestStatus.unnecessary) {
-          logError(posthog, new Error('Authorization not granted'), {
-            component: 'WorkoutProvider',
-            action: 'fetchWorkouts',
-            authorization_status: _authorizationStatus,
-          });
+          // Only log error if we have a definitive non-null status that isn't granted
+          if (
+            _authorizationStatus !== null &&
+            _authorizationStatus !== AuthorizationRequestStatus.unknown
+          ) {
+            logError(posthog, new Error('Authorization not granted'), {
+              component: 'WorkoutProvider',
+              action: 'fetchWorkouts',
+              authorization_status: _authorizationStatus,
+            });
+          }
           return;
         }
 

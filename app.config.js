@@ -19,7 +19,6 @@ export default {
       supportsTablet: false,
       bundleIdentifier: 'com.nrthpoint.deno.app',
       backgroundModes: ['fetch', 'processing'],
-      deploymentTarget: '16.0',
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
         NSHealthShareUsageDescription:
@@ -36,6 +35,8 @@ export default {
       package: 'com.nrthpoint.deno.app',
     },
     plugins: [
+      '@react-native-community/datetimepicker',
+      'expo-font',
       'expo-localization',
       [
         'react-native-maps',
