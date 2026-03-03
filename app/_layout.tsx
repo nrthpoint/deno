@@ -115,6 +115,7 @@ export default function RootLayout() {
         },
       }}
       autocapture={{
+        captureScreens: false,
         captureTouches: true,
       }}
     >
