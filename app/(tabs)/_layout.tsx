@@ -1,6 +1,6 @@
 import { AuthorizationRequestStatus } from '@kingstinct/react-native-healthkit';
 import { Redirect } from 'expo-router';
-import { NativeTabs, Icon, Label } from 'expo-router/unstable-native-tabs';
+import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { useFeatureFlag } from 'posthog-react-native';
 
 import { useWorkout } from '@/context/Workout';
@@ -20,32 +20,25 @@ export default function TabLayout() {
 
   return (
     <NativeTabs>
-      <NativeTabs.Trigger
-        name="index"
-        options={{
-          titlePositionAdjustment: {
-            vertical: 2,
-          },
-        }}
-      >
-        <Label>Home</Label>
-        <Icon sf={{ default: 'chart.bar', selected: 'chart.bar.fill' }} />
+      <NativeTabs.Trigger name="index">
+        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'chart.bar', selected: 'chart.bar.fill' }} />
       </NativeTabs.Trigger>
       {showTrends && (
         <NativeTabs.Trigger name="trends">
-          <Label>Trends</Label>
-          <Icon
+          <NativeTabs.Trigger.Label>Trends</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon
             sf={{ default: 'chart.line.uptrend.xyaxis', selected: 'chart.line.uptrend.xyaxis' }}
           />
         </NativeTabs.Trigger>
       )}
       <NativeTabs.Trigger name="profile">
-        <Label>Profile</Label>
-        <Icon sf={{ default: 'person', selected: 'person.fill' }} />
+        <NativeTabs.Trigger.Label>Profile</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'person', selected: 'person.fill' }} />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="settings">
-        <Label>Settings</Label>
-        <Icon sf={{ default: 'gearshape', selected: 'gearshape.fill' }} />
+        <NativeTabs.Trigger.Label>Settings</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'gearshape', selected: 'gearshape.fill' }} />
       </NativeTabs.Trigger>
     </NativeTabs>
   );

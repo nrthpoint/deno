@@ -64,6 +64,13 @@ function AppContent() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="workout-list"
+        options={{
+          presentation: 'modal',
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

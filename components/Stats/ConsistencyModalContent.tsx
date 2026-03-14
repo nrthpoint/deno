@@ -84,8 +84,14 @@ export const ConsistencyModalContent: React.FC = () => {
   };
 
   const handleWorkoutPress = (workout: ExtendedWorkout) => {
-    setSelectedWorkouts([workout]);
-    router.push('/view-workout');
+    console.log('Navigating to workout with ID:', workout);
+
+    try {
+      setSelectedWorkouts([workout]);
+      router.push('/view-workout');
+    } catch (error) {
+      console.error('Failed to navigate to workout:', error);
+    }
   };
 
   const formatValue = (workout: ExtendedWorkout): string => {

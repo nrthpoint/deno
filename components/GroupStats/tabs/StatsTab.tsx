@@ -1,16 +1,14 @@
-import React, { useRef } from 'react';
+import { router } from 'expo-router';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { CollapsibleStatSection } from '@/components/CollapsibleStatSection/CollapsibleStatSection';
 import { VisualCards } from '@/components/GroupStats/GroupHighlights';
 import { GroupSummaryStats } from '@/components/GroupSummaryHeader/GroupSummaryStats';
-import {
-  WorkoutListBottomSheet,
-  WorkoutListBottomSheetRef,
-} from '@/components/WorkoutListBottomSheet/WorkoutListBottomSheet';
 import { colors } from '@/config/colors';
 import { useGroupStats } from '@/context/GroupStatsContext';
+import { useWorkout } from '@/context/Workout';
 
 const getTabColor = (label: string) => {
   switch (label.toLowerCase()) {
@@ -31,11 +29,11 @@ const getTabColor = (label: string) => {
 
 export const StatsTab: React.FC = () => {
   const { group, groupType, timeRangeInDays } = useGroupStats();
-
-  const workoutListRef = useRef<WorkoutListBottomSheetRef>(null);
+  const { setSelectedWorkouts } = useWorkout();
 
   const handleViewAllWorkouts = () => {
-    workoutListRef.current?.open();
+    setSelectedWorkouts(group.runs);
+    router.push('/workout-list');
   };
 
   return (
@@ -70,12 +68,6 @@ export const StatsTab: React.FC = () => {
           View All {group.runs.length} Workouts
         </Button>
       </View>
-
-      <WorkoutListBottomSheet
-        ref={workoutListRef}
-        workouts={group.runs}
-        title={`All ${group.runs.length} Workouts`}
-      />
     </>
   );
 };

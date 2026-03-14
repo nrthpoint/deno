@@ -147,8 +147,8 @@ importers:
         specifier: ~2.30.0
         version: 2.30.0(react-native@0.83.2(@babel/core@7.28.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       react-native-maps:
-        specifier: 1.26.20
-        version: 1.26.20(react-native-web@0.21.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+        specifier: 1.27.2
+        version: 1.27.2(react-native-web@0.21.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       react-native-nitro-modules:
         specifier: ^0.29.8
         version: 0.29.8(react-native@0.83.2(@babel/core@7.28.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
@@ -4479,8 +4479,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  react-native-maps@1.26.20:
-    resolution: {integrity: sha512-kWibDz6wLLQ0685gOEFz5jdzm4miD7PMeVdtZV7ilgftDcusC2iy7SueBJpHF0LKCoOSa1BEUiKqpx1dBMSNpA==}
+  react-native-maps@1.27.2:
+    resolution: {integrity: sha512-VKr+xZ2RZGHHJlY6KhlafvGSmK0dq/tUu5uhfJ7K9rwN5pUdubdugzMKGDU/16lXmQSg7xbClKhRctj3Pm5F5g==}
     engines: {node: '>= 20.19.4'}
     peerDependencies:
       react: '>= 18.3.1'
@@ -10673,7 +10673,7 @@ snapshots:
       react: 19.2.0
       react-native: 0.83.2(@babel/core@7.28.0)(@types/react@19.2.14)(react@19.2.0)
 
-  react-native-maps@1.26.20(react-native-web@0.21.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
+  react-native-maps@1.27.2(react-native-web@0.21.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.28.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
     dependencies:
       '@types/geojson': 7946.0.16
       react: 19.2.0
