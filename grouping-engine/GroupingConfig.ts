@@ -48,9 +48,9 @@ export const GROUPING_CONFIGS: Record<GroupType, GroupConfig> = {
     property: 'pace',
     type: 'pace',
 
-    suffixFormatter: () => 'min/mile',
+    suffixFormatter: (distanceUnit) => `min/${distanceUnit}`,
     titleFormatter: ({ key }) => `${key}`,
-    unitFormatter: () => 'min/mile',
+    unitFormatter: (_key, _sample, distanceUnit) => `min/${distanceUnit}`,
     valueExtractor: ({ pace }) => pace,
   },
 

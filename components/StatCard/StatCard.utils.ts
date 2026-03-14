@@ -19,9 +19,8 @@ export const formatQuantityValue = (value: Quantity, type?: string): DisplayValu
   switch (type) {
     case 'pace':
       const paceFormattedValue = formatPace(value, false);
-      const paceFormattedUnit = value.unit || 'min/mi';
 
-      return [{ displayValue: paceFormattedValue, unit: paceFormattedUnit }];
+      return [{ displayValue: paceFormattedValue, unit: value.unit }];
 
     case 'duration':
       return formatDurationSeparate(value);
